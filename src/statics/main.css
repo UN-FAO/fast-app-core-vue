@@ -1,0 +1,68 @@
+    html {
+        font-size: inherit !important
+    }
+    input {
+      color:black !important;
+    }
+
+label.control-label.field-required {
+    color: #666666;
+}
+
+label.control-label {
+    color: #666666;
+}
+
+.choices__list--multiple .choices__item.is-highlighted {
+    background-color: #0d6cac !important;
+    border: 1px solid #0d6cac !important;
+}
+
+.choices__list--multiple .choices__item--selectable {
+    background-color: #0d6cac !important;
+    border: 1px solid #0d6cac !important;
+}
+
+.panel-primary>.panel-heading {
+    color: #ffffff;
+    background-color: #0d6cac !important;
+    border-color: #0d6cac !important;
+}
+
+.panel-danger>.panel-heading {
+    color: #ffffff;
+    background-color: #ad2121;
+    border-color: #ad2121;
+}
+
+.alert-danger {
+    background-color: transparent;
+    border-color: #f7a4af;
+    color: white !important;
+}
+
+.alert {
+    border: none;
+    color: red !important;
+}
+.formio-errors .help-block {
+  color: red !important;
+}
+
+input.form-control {
+    border: 1px solid rgb(185,185,185) !important;
+    padding-left: 2% !important;
+}
+
+.choices.form-group.formio-choices {
+    border: 1px solid rgb(185,185,185) !important;
+}
+
+button.choices__button {
+    position: unset !important;
+}
+
+.row {
+    margin-right: 0px !important;
+    margin-left: 0px !important;
+}

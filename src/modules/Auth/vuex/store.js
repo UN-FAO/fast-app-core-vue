@@ -1,0 +1,160 @@
+// import Auth from 'modules/Auth/api/Auth'
+import Formio from 'modules/Formio//api/Formio'
+import { Toast } from 'quasar'
+import * as Database from 'database/Database'
+import SyncHelper from 'database/helpers/SyncHelper'
+import { APP_URL, APP_NAME } from 'config/env'
+import Connection from 'modules/Wrappers/Connection'
+
+const state = {
+  layoutNeeded: false,
+  isLoginPage: true,
+  authUser: {},
+  appURL: APP_URL,
+  appName: APP_NAME,
+  isOnline: true
+}
+
+const mutations = {
+  /**
+   * [setLayoutNeeded description]
+   * @param {[type]} state [description]
+   * @param {[type]} value [description]
+   */
+  setLayoutNeeded (state, value) {
+    state.layoutNeeded = value
+  },
+  /**
+   * [setIsLoginPage description]
+   * @param {[type]} state [description]
+   * @param {[type]} value [description]
+   */
+  setIsLoginPage (state, value) {
+    state.isLoginPage = value
+  },
+  /**
+   * [SET_AUTH_USER description]
+   * @param {[type]} state [description]
+   * @param {[type]} User  [description]
+   */
+  SET_AUTH_USER (state, User) {
+    state.authUser = User
+  },
+  /**
+   * [CLEAR_AUTH_USER description]
+   * @param {[type]} state [description]
+   */
+  CLEAR_AUTH_USER (state) {
+    state.authUser = null
+  },
+
+  CHANGE_IS_ONLINE_STATUS (state, status) {
+    state.isOnline = status
+  }
+}
+
+const getters = {
+  /**
+   * [getLayoutNeeded description]
+   * @return {[type]} [description]
+   */
+  getLayoutNeeded () {
+    return state.layoutNeeded
+  },
+  /**
+   * [getIsLoginPage description]
+   * @return {[type]} [description]
+   */
+  getIsLoginPage () {
+    return state.isLoginPage
+  },
+
+  getMachineUrl () {
+    return state.appName
+  },
+  getAuthUser () {
+    return state.authUser
+  }
+}
+
+const actions = {
+  /**
+   * [description]
+   * @param  {[type]} options.commit [description]
+   * @param  {[type]} User           [description]
+   * @return {[type]}                [description]
+   */
+  setUserObject: ({ commit }, User) => {
+    commit('SET_AUTH_USER', User)
+  },
+  /**
+   * [description]
+   * @param  {[type]} options.commit [description]
+   * @return {[type]}                [description]
+   */
+  clearAuthUser: ({ commit }) => {
+    commit('CLEAR_AUTH_USER')
+  },
+
+  changeIsOnlineStatus: ({ commit }, status) => {
+    commit('CHANGE_IS_ONLINE_STATUS', status)
+  },
+  /**
+   * [description]
+   * @param  {[type]} options.commit [description]
+   * @param  {[type]} currentForm    [description]
+   * @return {[type]}                [description]
+   */
+  registerUser: async ({ commit }, formIoUser) => {
+    formIoUser = SyncHelper.deleteNulls(formIoUser)
+
+    let isOnline = Connection.isOnline()
+
+    if (isOnline) {
+      Formio.createSubmission(formIoUser)
+    }
+  },
+  /**
+   * [description]
+   * @param  {[type]} options.commit [description]
+   * @param  {[type]} currentForm    [description]
+   * @return {[type]}                [description]
+   */
+  storeUserLocally: async ({ commit }, formIoUser) => {
+    console.log('Store user locally')
+    let DB = await Database.get()
+    let user = await DB.users.findOne().where('data.data.email').eq(formIoUser.data.email).exec()
+    formIoUser = SyncHelper.deleteNulls(formIoUser)
+    let isUserAlreadyStored = !!user
+    console.log('User already present in local store?', isUserAlreadyStored)
+
+    //  check if user is already present in local storage
+    if (isUserAlreadyStored) {
+      console.log('Update user')
+      console.log(formIoUser)
+
+      //  update the user with the updated information
+      user.update({
+        $set: {
+          data: formIoUser
+        }
+      })
+      Toast.create.positive({ html: 'USER UPDATED' })
+    } else {
+      console.log('Create user')
+      console.log(formIoUser)
+      //  Insert the new user
+      DB.users.insert({
+        data: formIoUser
+      })
+      Toast.create.positive({ html: 'NEW USER CREATED' })
+    }
+  }
+}
+
+export default {
+  state,
+  mutations,
+  getters,
+  actions
+}
