@@ -11,12 +11,7 @@
 <template>
   <div>
       <div ref="formIO" class="formContainer">
-      </div>
-        <button
-           class="primary raised" 
-           @click="submitForm()">
-           {{ $t("App.submit") }}
-        </button>        
+      </div>  
   </div>
 </template>
 <script>
@@ -43,8 +38,6 @@ export default {
   },
   mounted () {
     Formio.setToken(Auth.user().x_jwt_token)
-    // Create the formIO Instance
-    this.formIO = new FormioForm(this.$refs.formIO)
     this.$eventHub.$on('lenguageSelection', () => {
       this.renderForm()
     })
@@ -98,7 +91,7 @@ export default {
       // Wait until form is present
       if (submissionNotLoaded || jsonFormNotLoaded) { return }
 
-      this.registerOfflinePlugin()
+      // this.registerOfflinePlugin()
 
       // Solving problem of multiple classes added to the element
       // YES! its a pork around
@@ -237,12 +230,21 @@ export default {
          * [mountFormIOForm description]
          * @return {[type]} [description]
          */
-    mountFormIOForm () {
+    mountFormIOForm (savedSubmission) {
+      savedSubmission = savedSubmission || null
+      // Create the formIOForm Instance (Renderer)
+      this.formIO = new FormioForm(this.$refs.formIO)
+
+      // Create FormIOJS plugin instace (Manipulation)
       let formio = new Formio(this.formioURL)
+
       formio.loadForm().then(onlineJsonForm => {
+        // Clone the original object to avoid changes
         let cloneJsonForm = _.cloneDeep(onlineJsonForm)
 
-        cloneJsonForm.components = this.loadExternalResources(onlineJsonForm.components)
+        // Load data stored locally
+        // cloneJsonForm.components = this.loadExternalResources(onlineJsonForm.components)
+        
         // Translate the form
         cloneJsonForm.components = this.setTranslations(_.cloneDeep(onlineJsonForm.components))
 
@@ -257,7 +259,8 @@ export default {
         this.formIO.setForm(cloneJsonForm)
         // Set Submission if we are Updating
         this.formIO.submission = !_.isEmpty(this.jsonSubmission) ? {data: this.jsonSubmission} : {data: {}}
-        // this.formIO.render()
+        
+        this.formIO.submission = savedSubmission ? {data: savedSubmission.data} : this.formIO.submission
         /*
                 this.formIO.on('error', (error) => {
 
@@ -269,6 +272,39 @@ export default {
                   console.log('There is an error', error);
                 });
             */
+           
+        this.formIO.on('submit', (submission) => {
+          console.log('The form was submitted', submission)
+          let formSubmission = {
+            data: submission.data
+          }
+
+          // If we have the recent submission, then use it
+          if (savedSubmission) {
+            formSubmission._id = savedSubmission._id
+          // If we are editing, then use the json
+          } else if (this.jsonSubmission) {
+            formSubmission._id = this.jsonSubmission._id
+          }
+          
+          console.log('The form about to save is: ', formSubmission)
+
+          formio.saveSubmission(formSubmission).then((created) => {
+            let title = 'Saved'
+            let message = 'Submission saved successfuly'
+            if (formSubmission._id) {
+              title = 'Updated'
+              message = 'Submission updated successfuly'
+            }
+            this.$swal({
+              timer: 1500,
+              title: title,
+              text: message,
+              type: 'success'
+            })
+            this.mountFormIOForm(created)
+          })
+        })
       })
     },
     /**
@@ -276,36 +312,26 @@ export default {
          * @return {[type]} [description]
          */
     submitForm () {
-      let errors = this.formIO.showErrors()
-      let emptyErrors = [] // Formio.getEmptyErrors(this.formIO)
-      if (!errors && emptyErrors.length === 0) {
-        this.$store.dispatch('addSubmission', {
-          currentForm: this.formIO,
-          isOnline: this.isOnline,
-          formId: this.formId,
-          User: Auth.user().data
+      this.$store.dispatch('addSubmission', {
+        currentForm: this.formIO,
+        isOnline: this.isOnline,
+        formId: this.formId,
+        User: Auth.user().data
+      })
+        .then(() => {
+          this.formIO.render()
+          this.formIO.reset()
+          this.$router.push({
+            name: 'formio_form_show',
+            params: {
+              idForm: this.formId,
+              newsubmission: 'true'
+            }
+          })
         })
-          .then(() => {
-            this.formIO.render()
-            this.formIO.reset()
-            this.$router.push({
-              name: 'formio_form_show',
-              params: {
-                idForm: this.formId,
-                newsubmission: 'true'
-              }
-            })
-          })
-          .catch((error) => {
-            console.log(error)
-          })
-      } else {
-        this.$swal(
-          'Oops...',
-          'There are errors in the form!',
-          'error'
-        )
-      }
+        .catch((error) => {
+          console.log(error)
+        })
     }
   }
 }

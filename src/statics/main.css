@@ -1,9 +1,14 @@
     html {
-        font-size: inherit !important
+        font-size: inherit !important;
+        line-height: inherit !important;
     }
     input {
       color:black !important;
     }
+
+    body {
+    line-height: inherit !important;
+}
 
 label.control-label.field-required {
     color: #666666;

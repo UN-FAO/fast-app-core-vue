@@ -34,13 +34,13 @@
               push
             >
               <q-fab-action
-                color="primary"
+                color="secondary"
                 @click="refreshForm()"
                 icon="autorenew"
               ></q-fab-action>
 
               <q-fab-action
-                color="black"
+                color="amber"
                 @click="addSurvey()"
                 icon="person_add"
               ></q-fab-action>

@@ -11,7 +11,6 @@
 
 <template>
     <q-pull-to-refresh :handler="refreshSubmissions">
-
       <q-card>
         <q-card-title class="bg-primary text-white">
           {{ $t("App.submissions_for") }} :
@@ -26,13 +25,13 @@
               push
             >
               <q-fab-action
-                color="primary"
+                color="secondary"
                 @click="createSubmission()"
                 icon="add"
               ></q-fab-action>
 
               <q-fab-action
-                color="black"
+                color="amber"
                 @click="pullSubmissions()"
                 icon="cloud_download"
               ></q-fab-action>
