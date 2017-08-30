@@ -20,8 +20,6 @@ import Auth from 'modules/Auth/api/Auth'
 import Formio from 'formiojs'
 import FormioUtils from 'formiojs/utils'
 import FormioForm from 'formiojs/form'
-import 'bootstrap/dist/css/bootstrap.css'
-import 'src/statics/formio.full.min.css'
 
 export default {
   name: 'formio',
@@ -57,7 +55,7 @@ export default {
       this.renderForm()
     },
     submission: function (value) {
-      // this.jsonSubmission
+      this.jsonSubmission = value
       this.renderForm()
     }
   },
@@ -250,60 +248,36 @@ export default {
 
         // Render the form
         // this.formIO.form = copyOnlineJsonForm;
-        if (cloneJsonForm._id !== this.$route.params.idForm) {
-          console.log('The intended form is Wrong...stoping render')
+        if (cloneJsonForm.name !== this.$route.params.idForm) {
+          console.log('The intended form is Wrong...stoping render', cloneJsonForm)
           return
         }
 
         // this.formIO.form= cloneJsonForm
         this.formIO.setForm(cloneJsonForm)
+        console.log('The form about to save is: ', this.jsonSubmission)
         // Set Submission if we are Updating
-        this.formIO.submission = !_.isEmpty(this.jsonSubmission) ? {data: this.jsonSubmission} : {data: {}}
+        this.formIO.submission = !_.isEmpty(this.jsonSubmission) ? {data: this.jsonSubmission.data.data} : {data: {}}
         
         this.formIO.submission = savedSubmission ? {data: savedSubmission.data} : this.formIO.submission
-        /*
-                this.formIO.on('error', (error) => {
+        
+        this.formIO.on('error', (error) => {
+          console.log('There is an error', error)
+        })
 
-                    this.$swal(
-                    'Oops...',
-                    error[0].message,
-                    'error'
-                    )
-                  console.log('There is an error', error);
-                });
-            */
-           
-        this.formIO.on('submit', (submission) => {
-          console.log('The form was submitted', submission)
+        this.formIO.on('submit', async (submission) => {
           let formSubmission = {
             data: submission.data
           }
-
           // If we have the recent submission, then use it
           if (savedSubmission) {
             formSubmission._id = savedSubmission._id
           // If we are editing, then use the json
           } else if (this.jsonSubmission) {
-            formSubmission._id = this.jsonSubmission._id
+            formSubmission._id = this.jsonSubmission.data._id ? this.jsonSubmission.data._id : this.jsonSubmission._id
           }
-          
-          console.log('The form about to save is: ', formSubmission)
-
-          formio.saveSubmission(formSubmission).then((created) => {
-            let title = 'Saved'
-            let message = 'Submission saved successfuly'
-            if (formSubmission._id) {
-              title = 'Updated'
-              message = 'Submission updated successfuly'
-            }
-            this.$swal({
-              timer: 1500,
-              title: title,
-              text: message,
-              type: 'success'
-            })
-            this.mountFormIOForm(created)
-          })
+          console.log('The form about to save is ----: ', this.jsonSubmission)
+          await this.storeForm(formSubmission, formio)
         })
       })
     },
@@ -311,16 +285,16 @@ export default {
          * [submitForm description]
          * @return {[type]} [description]
          */
-    submitForm () {
+    async storeForm (formSubmission, formio) {
+      console.log('formSubmission => ', formSubmission)
+      console.log('formio => ', formio)
       this.$store.dispatch('addSubmission', {
-        currentForm: this.formIO,
-        isOnline: this.isOnline,
-        formId: this.formId,
+        formSubmission: formSubmission,
+        formio: formio,
         User: Auth.user().data
       })
-        .then(() => {
-          this.formIO.render()
-          this.formIO.reset()
+        .then((created) => {
+          // this.mountFormIOForm()
           this.$router.push({
             name: 'formio_form_show',
             params: {

@@ -9,7 +9,7 @@ const LocalForm = class {
   static async get (id) {
   	id = id.replace(/\s/g, '')
   	let db = await Database.get()
- 	let formRequest = await db.forms.findOne().where('data._id').eq(id).exec()
+ 	let formRequest = await db.forms.findOne().where('data.name').eq(id).exec()
  	return formRequest.data
   }
 }

@@ -9,8 +9,17 @@ const LocalSubmission = class {
   static async get (id) {
   	let db = await Database.get()
   	id = id.replace(/\s/g, '')
- 	return db.submissions.findOne()
+    let offline = await db.submissions.findOne()
+      .where('_id').eq(id).exec()
+    let online = await db.submissions.findOne()
       .where('data._id').eq(id).exec()
+
+    if (online) {
+      return online
+    }
+    if (offline) {
+      return offline
+    }
   }
 }
 export default LocalSubmission

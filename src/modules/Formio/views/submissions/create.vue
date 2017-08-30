@@ -58,7 +58,7 @@
 import _ from 'lodash'
 import formio from 'modules/Formio/components/formio'
 import LocalForm from 'database/collections/Scopes/LocalForm'
-import LocalSubmission from 'database/collections/Scopes/LocalSubmission'
+import LocalSubmission from 'database/collections/scopes/LocalSubmission'
 import {APP_URL} from 'config/env'
 import {QCard, QCardTitle, QCardSeparator, QCardMain, QFab, QFabAction, QFixedPosition, QPullToRefresh, QTabs, QTab, QTabPane, QCollapsible, QBtn, QIcon, QTooltip, QList, QItem, QItemSeparator} from 'quasar'
 
@@ -70,13 +70,13 @@ export default {
     // Load the form and submission before entering the route
     let form = await LocalForm.get(to.params.idForm)
     if (to.params.idSubmission) {
-      var submission = this.$route.params.idSubmission ? await LocalSubmission.get(this.$route.params.idSubmission) : undefined
+      var submission = to.params.idSubmission ? await LocalSubmission.get(to.params.idSubmission) : undefined
     }
     next(vm => {
       // Load the form and submission before entering the route
       vm.form = form
       if (to.params.idSubmission) {
-        vm.submission = (!_.isEmpty(submission)) ? submission.data.data : undefined
+        vm.submission = (!_.isEmpty(submission)) ? submission : undefined
       }
     })
   },
@@ -93,7 +93,7 @@ export default {
   data: function () {
     return {
       form: null,
-      formioURL: APP_URL + '/' + this.$route.query.formPath,
+      formioURL: APP_URL + '/' + this.$route.params.idForm,
       submission: undefined,
       people: [{name: 'P1'}]
     }
@@ -131,7 +131,7 @@ export default {
     // Get Submission if we are Updating
     async getSubmission () {
       let submission = this.$route.params.idSubmission ? await LocalSubmission.get(this.$route.params.idSubmission) : undefined
-      this.submission = (!_.isEmpty(submission)) ? submission.data.data : undefined
+      this.submission = (!_.isEmpty(submission)) ? submission : undefined
     }
   }
 }

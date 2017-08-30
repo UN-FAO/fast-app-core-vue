@@ -20,18 +20,30 @@
 
 
   <q-item v-for="(submission, index) in Unsynced"  separator :key="submission._id">
-    <q-item-side icon="input">
-      {{index + 1}}
-    </q-item-side>
+    <q-item-side icon="assignmente" />
     <q-item-main>
       <q-item-tile label>
-        {{submission.data.formName}}
-      </q-item-tile>
-      <q-item-tile sublabel>
-        {{humanizeDate(submission.data.created)}}
+        {{submission.data.formio.formId}}
       </q-item-tile>
 
     </q-item-main>
+
+    <q-item-side right icon="more_vert">
+    <q-item-tile stamp>{{humanizeDate(submission.data.created)}}</q-item-tile>
+            <q-popover ref="popover">
+              <q-list link>
+                <q-item @click="$refs.popover.close()">
+                  <q-item-main label="Reply" />
+                </q-item>
+                <q-item @click="$refs.popover.close()">
+                  <q-item-main label="Forward" />
+                </q-item>
+                <q-item @click="$refs.popover.close()">
+                  <q-item-main label="Delete" />
+                </q-item>
+              </q-list>
+            </q-popover>
+          </q-item-side>
   </q-item>
 
 
@@ -45,10 +57,10 @@ import layoutStore from './layout-store'
 import * as Database from 'database/Database'
 import moment from 'moment'
 import Auth from 'modules/Auth/api/Auth'
-import {QTabs, QTab, QTabPane, QScrollArea, QSideLink, QItemTile, QItemSide, QItemMain, QListHeader, QCollapsible, QBtn, QIcon, QTooltip, QList, QItem, QItemSeparator} from 'quasar'
+import {QTabs, QTab, QTabPane, QScrollArea, QSideLink, QItemTile, QItemSide, QItemMain, QListHeader, QCollapsible, QBtn, QIcon, QTooltip, QList, QItem, QItemSeparator, QPopover} from 'quasar'
 export default {
   components: {
-    QTabs, QTab, QTabPane, QScrollArea, QSideLink, QItemTile, QItemSide, QItemMain, QListHeader, QCollapsible, QBtn, QIcon, QTooltip, QList, QItem, QItemSeparator
+    QTabs, QTab, QTabPane, QScrollArea, QSideLink, QItemTile, QItemSide, QItemMain, QListHeader, QCollapsible, QBtn, QIcon, QTooltip, QList, QItem, QItemSeparator, QPopover
   },
   data () {
     return {
@@ -56,6 +68,10 @@ export default {
       allSubmissionSubs: [],
       layoutStore
     }
+  },
+  beforeDestroy: function () {
+    console.log('Destroying')
+    this.allSubmissionSubs.forEach(sub => sub.unsubscribe())
   },
   /**
      * [beforeRouteUpdate description]
@@ -66,8 +82,9 @@ export default {
      */
   mounted: async function () {
     const db = await Database.get()
-    _.isEmpty(Auth.user())
-    return
+    if (_.isEmpty(Auth.user())) {
+      return
+    }
     
     this.allSubmissionSubs.push(
       db.submissions
@@ -86,18 +103,10 @@ export default {
           })
 
           filter = _.orderBy(filter, ['data.created'], ['desc'])
+          console.log('filter => ', filter)
           this.Unsynced = filter
         })
     )
-  },
-  computed: {
-    /**
-       * [isOnline description]
-       * @return {Boolean} [description]
-       */
-    isOnline () {
-      return this.$root.VueOnline
-    }
   },
   methods: {
     humanizeDate (givenDate) {

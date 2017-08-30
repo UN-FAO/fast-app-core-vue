@@ -39,7 +39,7 @@
             </q-fab>
         </q-fixed-position>
             <data-tables :data="submissions" :search-def="searchDef" :action-col-def="getRowActionsDef()"
-                           action-col-label="Actions" :actions-def="actionsDef">
+            action-col-label="Actions" :actions-def="actionsDef">
                 <el-table-column type="expand">
 
                   <template scope="props">
@@ -81,13 +81,28 @@
                   </template>
 
                 </el-table-column>
+
+
+                <el-table-column
+                  label="status"
+                  prop="status"
+                  width="90"
+                  sortable
+                >
+                <template scope="scope">
+                    <el-tag
+                      :type="scope.row.status === 'offline' ? 'danger' : 'primary'"
+                      close-transition>{{scope.row.status}}</el-tag>
+                  </template>
+                </el-table-column>
+
                 <el-table-column
                   :label="$t('App.submission_id')"
-                  prop="id_submision_state"
+                  prop="id_submision"
                   sortable
                 >
                 </el-table-column>
-
+                
 
                 <el-table-column
                   :label="$t('App.created_at')"
@@ -135,6 +150,9 @@ export default {
     this.subscribeToSubmissions()
     // this.$forceUpdate();
     next()
+  },
+  beforeDestroy: function () {
+    this.subs.forEach(sub => sub.unsubscribe())
   },
   data () {
     return {
@@ -187,14 +205,6 @@ export default {
       }
     }
   },
-  computed: {
-    formTitle () {
-      // return this.currentForm[0].title
-    },
-    isOnline () {
-      return this.$root.VueOnline
-    }
-  },
   methods: {
     humanizeDate (givenDate) {
       let start = moment(givenDate)
@@ -234,7 +244,7 @@ export default {
         db.submissions
           // .select('-projectId')
           .find({
-            'data.form': this.$route.params.idForm
+            'data.formio.formId': this.$route.params.idForm
           })
           .$
           .subscribe(submissions => {
@@ -245,7 +255,8 @@ export default {
               submission.data.data.Humancreated = self.humanizeDate(submission.data.created)
               submission.data.data.id_submision = submission.data._id ? submission.data._id : submission._id
               submission.data.data.local = !submission.data._id
-              submission.data.data.id_submision_state = submission.data._id ? submission.data.data.id_submision : submission.data.data.id_submision + '(Offline)'
+              submission.data.data.id_submision_state = submission.data.sync ? submission.data.data.id_submision : submission.data.data.id_submision + '(Offline)'
+              submission.data.data.status = submission.data.sync ? 'online' : 'offline'
               return submission.data
             })
 
@@ -266,20 +277,22 @@ export default {
     },
     getRowActionsDef () {
       let self = this
+      let idForm = this.$route.params.idForm
+      let formPath = this.$route.query.formPath
+
       return {
         label: self.$t('App.actions'),
         def: [{
           type: 'text',
           handler (submission) {
-            console.log(submission)
             self.$router.push(
               {
                 name: 'formio_submission_update',
                 params: {
-                  idForm: self.$route.params.idForm,
+                  idForm: idForm,
                   idSubmission: submission.id_submision
                 },
-                query: {formPath: self.$route.query.formPath}
+                query: {formPath: formPath}
               })
           },
           icon: 'edit'
@@ -288,10 +301,17 @@ export default {
           async handler (submission) {
             let db = await Database.get()
 
-            let deleteSubmission =
-                  await db.submissions
-                .findOne().where('data._id')
-                .eq(submission.id_submision).exec()
+            let online = await db.submissions
+              .findOne().where('data._id')
+              .eq(submission.id_submision).exec()
+            let offline = await db.submissions
+              .findOne().where('_id')
+              .eq(submission.id_submision).exec()
+
+            let deleteSubmission = offline
+            if (online) {
+              deleteSubmission = online
+            }
 
             self.$swal({
               title: 'Are you sure?',
@@ -320,12 +340,11 @@ export default {
       let db = await Database.get()
 
       this.currentForm = await db.forms.findOne()
-        .where('data._id').eq(this.$route.params.idForm).exec()
+        .where('data.name').eq(this.$route.params.idForm).exec()
       console.log('the current form is:  ', this.currentForm)
       this.$store.dispatch('getSubmissions',
         {
           currentForm: this.currentForm,
-          isOnline: this.isOnline,
           User: this.$store.getters.getAuthUser
         })
     },

@@ -6,7 +6,7 @@ import _ from 'lodash'
 import moment from 'moment'
 import Auth from 'modules/Auth/api/Auth'
 import Connection from 'modules/Wrappers/Connection'
-
+import LocalSubmission from 'database/collections/scopes/LocalSubmission'
 const actions = {
 
   async updateLocalResource ({ collection, label, data }) {
@@ -95,8 +95,9 @@ const actions = {
    * @param  {[type]} projectName    [description]
    * @return {[type]}                [description]
    */
-  async getSubmissions ({ commit }, { currentForm, isOnline, User }) {
+  async getSubmissions ({ commit }, { currentForm, User }) {
     const DB = await Database.get()
+    let isOnline = Connection.isOnline()
 
     let remoteSubmissions = isOnline ? await
     Formio.getSubmissions(
@@ -163,20 +164,32 @@ const actions = {
    * @param {[type]} options.commit [description]
    * @param {[type]} currentForm    [description]
    */
-  async addSubmission ({ commit }, { currentForm, isOnline, formId, User }) {
+  async addSubmission ({ commit }, { formSubmission, formio, User }) {
     const DB = await Database.get()
-    let submission = currentForm.submission
+
+    let submission = formSubmission
     submission.sync = false
     submission.user_email = User.email
-    submission.form = formId
-    submission.formName = currentForm.formio.formUrl.split('/').pop()
+    submission.formio = formio
     submission.created = moment().format()
-    submission.formio = {}
-    submission.formio.formUrl = currentForm.formio.formUrl
     submission = SyncHelper.deleteNulls(submission)
+    console.log('creating the submission', submission)
+    if (formSubmission._id) {
+      submission.type = 'update'
+      let localSubmission = await LocalSubmission.get(formSubmission._id)
+      console.log('updating local', submission)
+      await localSubmission.update({
+        $set: {
+          data: submission
+        }
+      })
+      return submission
+    }
+    console.log('Creating new', submission)
     await DB.submissions.insert({
       data: submission
     })
+    return submission
   },
 
   /**
@@ -185,7 +198,10 @@ const actions = {
    * @param  {[type]} offlineSubmissions [description]
    * @return {[type]}                    [description]
    */
-  async sendOfflineData ({ commit }, { offlineSubmissions, isOnline }) {
+  async sendOfflineData ({ commit }, { offlineSubmissions }) {
+    return
+    let isOnline = Connection.isOnline()
+
     if (isOnline) {
       let syncedSubmissions = 0
       _.forEach(offlineSubmissions, async function (offlineSubmission) {
