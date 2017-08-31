@@ -71,7 +71,9 @@
 
                     <el-table-column label="status" prop="status" width="90" sortable>
                         <template scope="scope">
-                            <el-tag :type="scope.row.status === 'offline' ? 'danger' : 'primary'" close-transition>{{scope.row.status}}</el-tag>
+                            <el-tag :type="scope.row.status === 'offline' ? 'danger' : 'success'" close-transition>
+                            <i class="material-icons">{{scope.row.status === 'offline' ? 'cloud_off' : 'cloud_done'}}</i>
+                            </el-tag>
                         </template>
                     </el-table-column>
 

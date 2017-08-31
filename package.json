@@ -25,6 +25,7 @@
     "pouchdb-adapter-cordova-sqlite": "^2.0.2",
     "pouchdb-adapter-http": "^6.3.4",
     "pouchdb-adapter-idb": "^6.3.4",
+    "pouchdb-adapter-localstorage": "^6.3.4",
     "pouchdb-replication": "^6.3.4",
     "quasar-extras": "0.x",
     "quasar-framework": "^0.14.1",

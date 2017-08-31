@@ -22,7 +22,7 @@ RxDB.plugin(require('pouchdb-adapter-idb'))
 RxDB.plugin(require('pouchdb-replication')) // enable syncing
 RxDB.plugin(require('pouchdb-adapter-http')) // enable syncing over http
 RxDB.plugin(require('pouchdb-adapter-cordova-sqlite'))
-
+RxDB.plugin(require('pouchdb-adapter-localstorage'))
 // const syncURL = SYNC_URL
 let dbPromise = null
 
@@ -45,7 +45,17 @@ const _create = async function () {
     name: store.getters.getMachineUrl,
     password: LOCAL_DB_PASSWORD
   }
-  database.adapter = Platform.is.cordova ? 'idb' : 'idb'
+  if (Platform.is.mobile) {
+    database.adapter = 'localstorage'
+  } else if (Platform.is.cordova) {
+    database.adapter = 'cordova-sqlite'
+  } else {
+    database.adapter = 'idb'
+  }
+ 
+  console.log('#########################')
+  console.log('We are using', database.adapter)
+  console.log('#########################')
   // database.multiInstance = Platform.is.desktop ? false : false
   database.multiInstance = false
   const db = await RxDB.create(database)

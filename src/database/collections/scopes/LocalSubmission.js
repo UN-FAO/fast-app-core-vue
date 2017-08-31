@@ -21,5 +21,40 @@ const LocalSubmission = class {
       return offline
     }
   }
+
+  static async offline (userId, formId) {
+    let db = await Database.get()
+    return db.submissions
+      .find({
+        // Only include this filter if we dont share data
+        // between users
+        'data.owner': {
+          $exists: true,
+          $eq: userId
+        },
+        'data.formio.formId': {
+          $exists: true,
+          $eq: formId
+        },
+        'data.sync': false
+      }).exec()
+  }
+
+  static async stored (userId, formId) {
+    let db = await Database.get()
+    return db.submissions
+      .find({
+        // Only include this filter if we dont share data
+        // between users
+        'data.owner': {
+          $exists: true,
+          $eq: userId
+        },
+        'data.formio.formId': {
+          $exists: true,
+          $eq: formId
+        }
+      }).exec()
+  }
 }
 export default LocalSubmission

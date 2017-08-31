@@ -295,7 +295,6 @@ export default {
       })
         .then((created) => {
           console.log('An element was created')
-          return
           this.$router.push({
             name: 'formio_form_show',
             params: {

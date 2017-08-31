@@ -106,46 +106,22 @@ const actions = {
     let formUrl = 'https://' + currentForm.data.machineName.substring(0, currentForm.data.machineName.indexOf(':')) + '.form.io/' + currentForm.data.name
     
     let formio = new FormioJS(formUrl)
+
+    let localUnSyncSubmissions = LocalSubmission.offline(User.id, currentForm.data.name)
+
+    console.log('GetSubmission - Actions.js ,localUnSyncSubmissions', localUnSyncSubmissions)
     
-    let remoteSubmissions = isOnline ? await formio.loadSubmissions() : []
+    let remoteSubmissions = (isOnline && localUnSyncSubmissions.length === 0) ? await formio.loadSubmissions() : []
 
     _.map(remoteSubmissions, function (o) {
       o.formio = formio
     })
+    
     console.log('GetSubmission - Actions.js ,Remote Submissions', remoteSubmissions)
     
-    let localSubmissions = await DB.submissions
-      .find({
-        // Only include this filter if we dont share data
-        // between users
-        'data.owner': {
-          $exists: true,
-          $eq: User.id
-        },
-        'data.formio.formId': {
-          $exists: true,
-          $eq: currentForm.data.name
-        }
-      }).exec()
+    let localSubmissions = LocalSubmission.stored(User.id, currentForm.data.name)
       
     console.log('GetSubmission - Actions.js ,localSubmissions', localSubmissions)
-
-    let localUnSyncSubmissions = await DB.submissions
-      .find({
-        // Only include this filter if we dont share data
-        // between users
-        'data.owner': {
-          $exists: true,
-          $eq: User.id
-        },
-        'data.formio.formId': {
-          $exists: true,
-          $eq: currentForm.data.name
-        },
-        'data.sync': false
-      }).exec()
-
-    console.log('GetSubmission - Actions.js ,localUnSyncSubmissions', localUnSyncSubmissions)
 
     var Localresult = _.unionBy(localSubmissions, localUnSyncSubmissions, '_id')
     let sync = SyncHelper.offlineOnlineSync({
