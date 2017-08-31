@@ -7,6 +7,7 @@ import moment from 'moment'
 import Auth from 'modules/Auth/api/Auth'
 import Connection from 'modules/Wrappers/Connection'
 import LocalSubmission from 'database/collections/scopes/LocalSubmission'
+
 const actions = {
 
   async updateLocalResource ({ collection, label, data }) {

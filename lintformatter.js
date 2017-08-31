@@ -3,7 +3,7 @@ import Auth from 'modules/Auth/api/Auth'
 import Formio from 'formiojs'
 import FormioUtils from 'formiojs/utils'
 import FormioForm from 'formiojs/form'
-
+import debounce from 'async-debounce'
 export default {
   name: 'formio',
   props: {
@@ -231,15 +231,16 @@ export default {
 
         // Render the form
         // this.formIO.form = copyOnlineJsonForm;
-        if (cloneJsonForm._id !== this.$route.params.idForm) {
-          console.log('The intended form is Wrong...stoping render')
+        if (cloneJsonForm.name !== this.$route.params.idForm) {
+          console.log('The intended form is Wrong...stoping render', cloneJsonForm)
           return
         }
 
         // this.formIO.form= cloneJsonForm
         this.formIO.setForm(cloneJsonForm)
+        console.log('The form about to save is: ', this.jsonSubmission)
         // Set Submission if we are Updating
-        this.formIO.submission = !_.isEmpty(this.jsonSubmission) ? {data: this.jsonSubmission.data} : {data: {}}
+        this.formIO.submission = !_.isEmpty(this.jsonSubmission) ? {data: this.jsonSubmission.data.data} : {data: {}}
         
         this.formIO.submission = savedSubmission ? {data: savedSubmission.data} : this.formIO.submission
         
@@ -256,12 +257,10 @@ export default {
             formSubmission._id = savedSubmission._id
           // If we are editing, then use the json
           } else if (this.jsonSubmission) {
-            formSubmission._id = this.jsonSubmission._id
+            formSubmission._id = this.jsonSubmission.data._id ? this.jsonSubmission.data._id : this.jsonSubmission._id
           }
-          
-          console.log('The form about to save is: ', formSubmission)
-
-          await this.storeForm(formSubmission, formio)
+          console.log('The form about to save is ----: ', this.jsonSubmission)
+          this.storeForm(formSubmission, formio)
         })
       })
     },
@@ -269,16 +268,17 @@ export default {
          * [submitForm description]
          * @return {[type]} [description]
          */
-    async storeForm (formSubmission, formio) {
+    storeForm (formSubmission, formio) {
       console.log('formSubmission => ', formSubmission)
       console.log('formio => ', formio)
 
       this.$store.dispatch('addSubmission', {
-        currentForm: formSubmission,
-        formio: formio
+        formSubmission: formSubmission,
+        formio: formio,
+        User: Auth.user().data
       })
-        .then(() => {
-          this.mountFormIOForm(created)
+        .then((created) => {
+          console.log('An element was created')
           this.$router.push({
             name: 'formio_form_show',
             params: {

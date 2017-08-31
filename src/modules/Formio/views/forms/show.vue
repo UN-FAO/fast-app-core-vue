@@ -11,109 +11,79 @@
 
 <template>
     <q-pull-to-refresh :handler="refreshSubmissions">
-      <q-card>
-        <q-card-title class="bg-primary text-white">
-          {{ $t("App.submissions_for") }} :
-        </q-card-title>
-        <q-card-separator />
-        <q-card-main>
-           <q-fixed-position corner="top-right" :offset="[18, 18]">
-         <q-fab
-              color="red"
-              icon="add"
-              direction="left"
-              push
-            >
-              <q-fab-action
-                color="secondary"
-                @click="createSubmission()"
-                icon="add"
-              ></q-fab-action>
+        <q-card>
+            <q-card-title class="bg-primary text-white">
+                {{ $t("App.submissions_for") }} :
+            </q-card-title>
+            <q-card-separator />
+            <q-card-main>
+                <q-fixed-position corner="top-right" :offset="[18, 18]">
+                    <q-fab color="red" icon="add" direction="left" push>
+                        <q-fab-action color="secondary" @click="createSubmission()" icon="add"></q-fab-action>
 
-              <q-fab-action
-                color="amber"
-                @click="pullSubmissions()"
-                icon="cloud_download"
-              ></q-fab-action>
+                        <q-fab-action color="amber" @click="pullSubmissions()" icon="cloud_download"></q-fab-action>
 
-            </q-fab>
-        </q-fixed-position>
-            <data-tables :data="submissions" :search-def="searchDef" :action-col-def="getRowActionsDef()"
-            action-col-label="Actions" :actions-def="actionsDef">
-                <el-table-column type="expand">
+                    </q-fab>
+                </q-fixed-position>
+                <data-tables :data="submissions" :search-def="searchDef" :action-col-def="getRowActionsDef()" action-col-label="Actions" :actions-def="actionsDef">
+                    <el-table-column type="expand">
 
-                  <template scope="props">
-                    <p class="caption" id="Fields">Fields</p>
-                    <div class="list striped">
-                      <div class="item" v-for="(value, key, index) in props.row">
-                        <!--This is the row of the table -->
-                        <div v-if="!Array.isArray(value)" class="item-content">
-                          <strong>{{key}}</strong> : <span class="label bg-primary text-white">{{value}}</span>
-                        </div>
-                        <div v-else class="item-content">
-                          <strong>{{key}}</strong> : <a @click="scrollToEnd(key)"><span
+                        <template scope="props">
+                            <p class="caption" id="Fields">Fields</p>
+                            <div class="list striped">
+                                <div class="item" v-for="(value, key, index) in props.row">
+                                    <!--This is the row of the table -->
+                                    <div v-if="!Array.isArray(value)" class="item-content">
+                                        <strong>{{key}}</strong> : <span class="label bg-primary text-white">{{value}}</span>
+                                    </div>
+                                    <div v-else class="item-content">
+                                        <strong>{{key}}</strong> : <a @click="scrollToEnd(key)"><span
                           class="label  bg-secondary text-white">Multiple values, will be displayed down</span> </a>
-                        </div>
+                                    </div>
 
-                      </div>
-                    </div>
-                    <!--This is the table inside the table (When elements are arrays) -->
-                    <div v-for="(value, key, index) in props.row">
-                      <p></p>
-                      <div v-if="Array.isArray(value)">
-                        <a @click="scrollToEnd('Fields')"><p class="caption" :id="key">{{key}}</p></a>
-                        <div class="list striped" v-for="(gridValue, gridKey) in value">
-                          <div class="item">
+                                </div>
+                            </div>
+                            <!--This is the table inside the table (When elements are arrays) -->
+                            <div v-for="(value, key, index) in props.row">
+                                <p></p>
+                                <div v-if="Array.isArray(value)">
+                                    <a @click="scrollToEnd('Fields')">
+                                        <p class="caption" :id="key">{{key}}</p>
+                                    </a>
+                                    <div class="list striped" v-for="(gridValue, gridKey) in value">
+                                        <div class="item">
 
-                            <strong>{{key}}</strong> : <span
-                            class="label  bg-secondary text-white">{{gridKey + 1}}</span>
-                          </div>
+                                            <strong>{{key}}</strong> : <span class="label  bg-secondary text-white">{{gridKey + 1}}</span>
+                                        </div>
 
-                          <div class="item" v-for="(rowValue, rowKey) in gridValue">
-                            <strong>{{rowKey}}</strong> : <span class="label bg-primary text-white">{{rowValue}}</span>
-                          </div>
+                                        <div class="item" v-for="(rowValue, rowKey) in gridValue">
+                                            <strong>{{rowKey}}</strong> : <span class="label bg-primary text-white">{{rowValue}}</span>
+                                        </div>
 
-                        </div>
+                                    </div>
 
-                      </div>
-                    </div>
+                                </div>
+                            </div>
 
-                  </template>
+                        </template>
 
-                </el-table-column>
+                    </el-table-column>
 
+                    <el-table-column label="status" prop="status" width="90" sortable>
+                        <template scope="scope">
+                            <el-tag :type="scope.row.status === 'offline' ? 'danger' : 'primary'" close-transition>{{scope.row.status}}</el-tag>
+                        </template>
+                    </el-table-column>
 
-                <el-table-column
-                  label="status"
-                  prop="status"
-                  width="90"
-                  sortable
-                >
-                <template scope="scope">
-                    <el-tag
-                      :type="scope.row.status === 'offline' ? 'danger' : 'primary'"
-                      close-transition>{{scope.row.status}}</el-tag>
-                  </template>
-                </el-table-column>
+                    <el-table-column :label="$t('App.submission_id')" prop="id_submision" sortable>
+                    </el-table-column>
 
-                <el-table-column
-                  :label="$t('App.submission_id')"
-                  prop="id_submision"
-                  sortable
-                >
-                </el-table-column>
-                
+                    <el-table-column :label="$t('App.created_at')" prop="Humancreated" sortable>
+                    </el-table-column>
 
-                <el-table-column
-                  :label="$t('App.created_at')"
-                  prop="Humancreated"
-                  sortable
-                >
-                </el-table-column>
-
-              </data-tables>
-        </q-card-main>
-      </q-card>
+                </data-tables>
+            </q-card-main>
+        </q-card>
     </q-pull-to-refresh>
 
 </template>

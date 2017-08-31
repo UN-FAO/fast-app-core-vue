@@ -9,10 +9,10 @@
   }
 </style>
 <template>
-  <div>
-      <div ref="formIO" class="formContainer">
-      </div>  
-  </div>
+    <div>
+        <div ref="formIO" class="formContainer">
+        </div>
+    </div>
 </template>
 <script>
 import _ from 'lodash'
@@ -20,7 +20,7 @@ import Auth from 'modules/Auth/api/Auth'
 import Formio from 'formiojs'
 import FormioUtils from 'formiojs/utils'
 import FormioForm from 'formiojs/form'
-
+import debounce from 'async-debounce'
 export default {
   name: 'formio',
   props: {
@@ -39,6 +39,8 @@ export default {
     this.$eventHub.$on('lenguageSelection', () => {
       this.renderForm()
     })
+    // Avoid function for been called multiple times
+    this.storeForm = debounce(this.storeForm, 300)
     this.renderForm()
   },
   data: () => {
@@ -277,24 +279,22 @@ export default {
             formSubmission._id = this.jsonSubmission.data._id ? this.jsonSubmission.data._id : this.jsonSubmission._id
           }
           console.log('The form about to save is ----: ', this.jsonSubmission)
-          await this.storeForm(formSubmission, formio)
+          this.storeForm(formSubmission, formio)
         })
       })
     },
-    /**
-         * [submitForm description]
-         * @return {[type]} [description]
-         */
-    async storeForm (formSubmission, formio) {
+    storeForm (formSubmission, formio) {
       console.log('formSubmission => ', formSubmission)
       console.log('formio => ', formio)
+      console.log('this => ', this)
+
       this.$store.dispatch('addSubmission', {
         formSubmission: formSubmission,
         formio: formio,
         User: Auth.user().data
       })
         .then((created) => {
-          // this.mountFormIOForm()
+          console.log('An element was created')
           this.$router.push({
             name: 'formio_form_show',
             params: {
@@ -307,6 +307,11 @@ export default {
           console.log(error)
         })
     }
+    /**
+         * [submitForm description]
+         * @return {[type]} [description]
+         */
+    
   }
 }
 </script>
