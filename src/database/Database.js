@@ -77,11 +77,12 @@ export function get () {
  * @return {[type]}                  [description]
  */
 const syncSubmissions = async ({ db, isOnline }) => {
+  console.log('Aboout to sync data')
   let usersAreSync = await areUsersSynced()
 
   if (usersAreSync) {
     let filter = await db.submissions.find().exec()
-
+    console.log('All users are sync')
     // updated incomplete submission
     filter = _.filter(filter, function (o) {
       return (o.data.sync === false)
@@ -90,6 +91,7 @@ const syncSubmissions = async ({ db, isOnline }) => {
     filter = _.orderBy(filter, ['data.created'], ['asc'])
 
     if (filter.length > 0) {
+      console.log('there are offline submissions', filter)
       store.dispatch('sendOfflineData', { offlineSubmissions: filter, isOnline })
     }
   }

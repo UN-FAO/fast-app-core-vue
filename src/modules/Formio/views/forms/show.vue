@@ -87,8 +87,6 @@
     </q-pull-to-refresh>
 
 </template>
-
-
 <script>
 import DataTables from 'vue-data-tables'
 import _ from 'lodash'
@@ -226,7 +224,7 @@ export default {
               submission.data.data.id_submision = submission.data._id ? submission.data._id : submission._id
               submission.data.data.local = !submission.data._id
               submission.data.data.id_submision_state = submission.data.sync ? submission.data.data.id_submision : submission.data.data.id_submision + '(Offline)'
-              submission.data.data.status = submission.data.sync ? 'online' : 'offline'
+              submission.data.data.status = submission.data.sync === false ? 'offline' : 'online'
               return submission.data
             })
 
@@ -311,7 +309,6 @@ export default {
 
       this.currentForm = await db.forms.findOne()
         .where('data.name').eq(this.$route.params.idForm).exec()
-      console.log('the current form is:  ', this.currentForm)
       this.$store.dispatch('getSubmissions',
         {
           currentForm: this.currentForm,

@@ -34,12 +34,6 @@ const collections = [
     schema: require('../schemas/Users.js').default,
     methods: {},
     sync: true
-  },
-  {
-    name: 'queues',
-    schema: require('../schemas/Queues.js').default,
-    methods: {},
-    sync: true
   }
 ]
 export default collections
