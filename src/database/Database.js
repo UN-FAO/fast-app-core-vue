@@ -107,6 +107,8 @@ const syncSubmissions = async ({ db, isOnline }) => {
   }
 }
 
+const d_syncSubmissions = _.debounce(syncSubmissions, 300)
+
 /**
  * [description]
  * @return {[type]} [description]
@@ -141,6 +143,8 @@ const syncUsers = async ({ db, isOnline }) => {
   }
 }
 
+const d_syncUsers = _.debounce(syncUsers, 300)
+
 /**
  * [description]
  * @param  {[type]} vm [description]
@@ -151,10 +155,10 @@ export const sync = async function (vm) {
   const isOnline = await Connection.heartBeat(vm)
 
   if (Auth.check() && isOnline) {
-    await syncSubmissions({ db, isOnline })
+    await d_syncSubmissions({ db, isOnline })
   }
 
   if (isOnline) {
-    await syncUsers({ db, isOnline })
+    await d_syncUsers({ db, isOnline })
   }
 }
