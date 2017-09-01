@@ -1,10 +1,7 @@
-// import Auth from 'modules/Auth/api/Auth'
-import Formio from 'modules/Formio//api/Formio'
 import { Toast } from 'quasar'
 import * as Database from 'database/Database'
 import SyncHelper from 'database/helpers/SyncHelper'
 import { APP_URL, APP_NAME } from 'config/env'
-import Connection from 'modules/Wrappers/Connection'
 
 const state = {
   layoutNeeded: false,
@@ -105,23 +102,8 @@ const actions = {
    * @param  {[type]} currentForm    [description]
    * @return {[type]}                [description]
    */
-  registerUser: async ({ commit }, formIoUser) => {
-    formIoUser = SyncHelper.deleteNulls(formIoUser)
-
-    let isOnline = Connection.isOnline()
-
-    if (isOnline) {
-      Formio.createSubmission(formIoUser)
-    }
-  },
-  /**
-   * [description]
-   * @param  {[type]} options.commit [description]
-   * @param  {[type]} currentForm    [description]
-   * @return {[type]}                [description]
-   */
   storeUserLocally: async ({ commit }, formIoUser) => {
-    console.log('Store user locally')
+    console.log('Store user locally', formIoUser)
     let DB = await Database.get()
     let user = await DB.users.findOne().where('data.data.email').eq(formIoUser.data.email).exec()
     formIoUser = SyncHelper.deleteNulls(formIoUser)

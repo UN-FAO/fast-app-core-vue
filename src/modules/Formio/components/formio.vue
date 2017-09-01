@@ -21,6 +21,8 @@ import Formio from 'formiojs'
 import FormioUtils from 'formiojs/utils'
 import FormioForm from 'formiojs/form'
 import debounce from 'async-debounce'
+import md5 from 'md5'
+import {MD5_KEY} from 'config/env'
 export default {
   name: 'formio',
   props: {
@@ -32,9 +34,14 @@ export default {
     },
     submission: {
       required: false
+    },
+    hashField: {
+      required: false
     }
   },
   mounted () {
+    console.log('component mounted')
+
     Formio.setToken(Auth.user().x_jwt_token)
     this.$eventHub.$on('lenguageSelection', () => {
       this.renderForm()
@@ -85,11 +92,15 @@ export default {
          * @return {[type]} [description]
          */
     renderForm () {
+      console.log('Rendering form')
       let submissionNotLoaded = (typeof this.jsonSubmission !== 'undefined') && _.isEmpty(this.jsonSubmission)
-      let jsonFormNotLoaded = _.isEmpty(this.jsonForm)
+      let jsonFormNotLoaded = (typeof this.localJsonForm !== 'undefined') && _.isEmpty(this.jsonForm)
 
       // Wait until form is present
-      if (submissionNotLoaded || jsonFormNotLoaded) { return }
+      if (submissionNotLoaded || jsonFormNotLoaded) {
+        console.log('Stoping render', submissionNotLoaded, jsonFormNotLoaded)
+        return
+      }
 
       // this.registerOfflinePlugin()
 
@@ -248,13 +259,6 @@ export default {
         // Translate the form
         cloneJsonForm.components = this.setTranslations(_.cloneDeep(onlineJsonForm.components))
 
-        // Render the form
-        // this.formIO.form = copyOnlineJsonForm;
-        if (cloneJsonForm.name !== this.$route.params.idForm) {
-          console.log('The intended form is Wrong...stoping render', cloneJsonForm)
-          return
-        }
-
         // this.formIO.form= cloneJsonForm
         this.formIO.setForm(cloneJsonForm)
         console.log('The form about to save is: ', this.jsonSubmission)
@@ -288,30 +292,36 @@ export default {
       console.log('formio => ', formio)
       console.log('this => ', this)
 
-      this.$store.dispatch('addSubmission', {
-        formSubmission: formSubmission,
-        formio: formio,
-        User: Auth.user().data
-      })
-        .then((created) => {
-          console.log('An element was created')
-          this.$router.push({
-            name: 'formio_form_show',
-            params: {
-              idForm: this.formId,
-              newsubmission: 'true'
-            }
+      if ((typeof this.hashField !== 'undefined')) {
+        formSubmission.data.hashedPassword = md5(formSubmission.data.password, MD5_KEY)
+        this.$store.dispatch('storeUserLocally', {data: formSubmission.data, sync: false, formio: formio})
+          .then(() => {
+            this.$router.push({path: '/login'})
           })
+          .catch((error) => {
+            console.log(error)
+          })
+      } else {
+        this.$store.dispatch('addSubmission', {
+          formSubmission: formSubmission,
+          formio: formio,
+          User: Auth.user().data
         })
-        .catch((error) => {
-          console.log(error)
-        })
+          .then((created) => {
+            console.log('An element was created')
+            this.$router.push({
+              name: 'formio_form_show',
+              params: {
+                idForm: this.formId,
+                newsubmission: 'true'
+              }
+            })
+          })
+          .catch((error) => {
+            console.log(error)
+          })
+      }
     }
-    /**
-         * [submitForm description]
-         * @return {[type]} [description]
-         */
-    
   }
 }
 </script>

@@ -12,3 +12,4 @@ thumbs.db
 !.gitkeep
 /.idea/
 *.iml
+cordova/
