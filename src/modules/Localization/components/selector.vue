@@ -53,8 +53,23 @@ export default {
   },
   methods: {
     setLanguage (lenguage) {
-      this.$i18n.locale = lenguage.code
-      this.$eventHub.$emit('lenguageSelection', lenguage.direction)
+      this.$swal({
+        title: 'Are you sure?',
+        text: 'If you change the lenguage all the unsaved changes will be removed!',
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, change it!'
+      }).then(() => {
+        this.$i18n.locale = lenguage.code
+        this.$eventHub.$emit('lenguageSelection', lenguage.direction)
+        this.$swal(
+          'Changed!',
+          'The language has been changed',
+          'success'
+        )
+      })
     }
   }
 }
