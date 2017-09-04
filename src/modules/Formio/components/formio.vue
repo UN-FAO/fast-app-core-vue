@@ -45,17 +45,18 @@ export default {
       this.renderForm()
     })
 
-    this.$eventHub.$on('submission_created', (formio) => {
+    this.$eventHub.$on('submission_created', debounce((formio) => {
       console.log('submission was created', formio, this.formId)
-      this.registerOfflinePlugin()
-      this.$router.push({
-        name: 'formio_form_show',
-        params: {
-          idForm: this.formId,
-          newsubmission: 'true'
-        }
-      })
-    })
+      if (formio.formId === this.formId) {
+        this.$router.push({
+          name: 'formio_form_show',
+          params: {
+            idForm: this.formId,
+            newsubmission: 'true'
+          }
+        })
+      }
+    }), 300)
     // Avoid function for been called multiple times
     this.storeForm = debounce(this.storeForm, 300)
     this.renderForm()

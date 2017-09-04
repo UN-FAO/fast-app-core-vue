@@ -5,6 +5,7 @@ import store from 'config/store'
 import md5 from 'md5'
 import {MD5_KEY} from 'config/env'
 import Auth from 'modules/Auth/api/Auth'
+import _ from 'lodash'
 
 const OFFLINE_PLUGIN = class {
   static storeForm (formSubmission, formio, redirect, hashField, formId, eventHub) {
@@ -26,7 +27,7 @@ const OFFLINE_PLUGIN = class {
       })
         .then((created) => {
           console.log('An element was created')
-          eventHub.emit('some', formio)
+          eventHub.$emit('submission_created', formio)
           return created
         })
         .catch((error) => {
@@ -56,7 +57,8 @@ const OFFLINE_PLUGIN = class {
           let formPath = form.machineName.split(':')[1]
           let formioURL = 'https://' + domainPath + '.form.io/' + formPath
           let formio = new Formio(formioURL)
-          this.storeForm(args.data, formio, redirect, hashField, formId, eventHub)
+          let dStoreForm = _.debounce(this.storeForm, 300)
+          dStoreForm(args.data, formio, redirect, hashField, formId, eventHub)
           return args.data
         }
       }
