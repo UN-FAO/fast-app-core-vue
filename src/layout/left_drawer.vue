@@ -42,7 +42,6 @@
       <q-side-link multiline highlight separator item
           v-for="(form, index) in forms"
           v-if="
-            form.data.type!=='resource' &&
             form.data.name!=='admin' &&
             form.data.name!=='translations'&&
             form.data.name!=='user' &&
@@ -52,7 +51,7 @@
           :to="{name: 'formio_form_show', params: { idForm: form.data.path}}"
           :key="form.data._id">
           <q-item-side icon="assignmente" />
-           <q-item-main :label="form.data.title" sublabel="Learn more about it" />
+           <q-item-main :label="form.data.title" :sublabel="form.data.type" />
         </q-side-link>
 
         <div class="fixed-bottom text-center light text-italic">

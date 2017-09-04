@@ -143,6 +143,7 @@ export default {
         def: [{
           name: '',
           handler: () => {
+            let self = this
             var download = function (content, fileName, mimeType) {
               var a = document.createElement('a')
               mimeType = mimeType || 'application/octet-stream'
@@ -163,11 +164,18 @@ export default {
                 location.href = 'data:application/octet-stream,' + encodeURIComponent(content) // only this mime type is supported
               }
             }
-
+            
             jsonexport(this.submissions, function (err, csv) {
               if (err) return console.log(err)
+
+              // If browser we have to export it like this
               download(csv, 'backup.csv', 'text/csv;encoding:utf-8')
-              this.$message('Data Exported')
+
+              // If its cordova, we have to export like this
+              // self.DATA2FILE('backup.csv', csv, function (FILE) {
+              //  console.log(FILE)
+              // })
+              self.$message('Data Exported')
             })
           },
           icon: 'document'
@@ -176,6 +184,42 @@ export default {
     }
   },
   methods: {
+    DATA2FILE: function (filename, data, callback) {
+      // default filename
+      var defaultFileName = 'export-file.txt'
+ 
+      if (filename === undefined || filename === null) {
+        filename = defaultFileName
+      }
+ 
+      // Request the file system
+      window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, gotFS, fail)
+ 
+      // Access to filesystem is OK
+      function gotFS (fileSystem) {
+        fileSystem.root.getFile(filename, {create: true}, gotFileEntry, fail)
+      }
+ 
+      // File is ready
+      function gotFileEntry (fileEntry) {
+        fileEntry.createWriter(gotFileWriter, fail)
+      }
+ 
+      // Write file content
+      function gotFileWriter (writer) {
+        writer.onwriteend = function (evt) {
+          console.log('finished writing')
+          if (callback !== undefined) {
+            callback(writer)
+          }
+        }
+        writer.write(data)
+      }
+ 
+      function fail (error) {
+        console.log('Error: ', error.code)
+      }
+    },
     humanizeDate (givenDate) {
       let start = moment(givenDate)
       let end = moment()

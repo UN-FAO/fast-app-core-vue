@@ -12,13 +12,18 @@ import FormioJS from 'formiojs'
 const actions = {
 
   async updateLocalResource ({ collection, label, data }) {
-    console.log('updateing', data)
+    console.log('updateing', data, collection, label)
+    var formio = new FormioJS('https://' + data.appName + '.form.io')
     let isOnline = Connection.isOnline()
-
     const DB = await Database.get()
-    let localResources = await DB[collection].find().exec()
 
+    let localResources = await DB[collection].find().exec()
     let remoteResources = isOnline ? await Formio[collection](data.appName) : []
+
+    if (collection === 'forms') {
+      remoteResources = isOnline ? await formio.loadForms() : []
+    }
+    
     let sync = SyncHelper.offlineOnlineSync({
       collection,
       LocalResults: localResources,
@@ -156,7 +161,7 @@ const actions = {
    */
   async addSubmission ({ commit }, { formSubmission, formio, User }) {
     const DB = await Database.get()
-
+    console.log('formSubmission from inside the function => ', formSubmission)
     let submission = formSubmission
     submission.sync = false
     submission.user_email = User.email
@@ -192,6 +197,7 @@ const actions = {
     let isOnline = Connection.isOnline()
 
     if (isOnline) {
+      let offlinePlugin = FormioJS.getPlugin('offline')
       let syncedSubmissions = 0
       _.forEach(offlineSubmissions, async function (offlineSubmission) {
         // Create FormIOJS plugin instace (Manipulation)
@@ -205,7 +211,8 @@ const actions = {
           postData._id = offlineSubmission.data._id
         }
         console.log('We are about to send to formio', postData)
-   
+        console.log('The plugin registered is: ', offlinePlugin)
+        FormioJS.deregisterPlugin('offline')
         formio.saveSubmission(postData)
           .then(async (FormIOinsertedData) => {
             console.log('this is what came back from FOrmio', FormIOinsertedData)
@@ -217,6 +224,7 @@ const actions = {
               }
             })
             syncedSubmissions = syncedSubmissions + 1
+            FormioJS.registerPlugin(offlinePlugin, 'offline')
           })
       })
       if (syncedSubmissions > 0) {

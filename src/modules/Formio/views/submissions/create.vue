@@ -37,7 +37,7 @@
 <script>
 import _ from 'lodash'
 import formio from 'modules/Formio/components/formio'
-import LocalForm from 'database/collections/Scopes/LocalForm'
+import LocalForm from 'database/collections/scopes/LocalForm'
 import LocalSubmission from 'database/collections/scopes/LocalSubmission'
 import {APP_URL} from 'config/env'
 import {QCard, QCardTitle, QCardSeparator, QCardMain, QFab, QFabAction, QFixedPosition, QPullToRefresh, QTabs, QTab, QTabPane, QCollapsible, QBtn, QIcon, QTooltip, QList, QItem, QItemSeparator} from 'quasar'

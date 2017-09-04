@@ -17,6 +17,7 @@ module.exports = {
         'import'
     ],
     globals: {
+        'LocalFileSystem': true,
         'cordova': true,
         'DEV': true,
         'PROD': true,

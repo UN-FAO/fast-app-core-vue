@@ -21,8 +21,8 @@ import Formio from 'formiojs'
 import FormioUtils from 'formiojs/utils'
 import FormioForm from 'formiojs/form'
 import debounce from 'async-debounce'
-import md5 from 'md5'
-import {MD5_KEY} from 'config/env'
+import OFFLINE_PLUGIN from 'modules/Formio/api/offlinePlugin'
+
 export default {
   name: 'formio',
   props: {
@@ -40,11 +40,21 @@ export default {
     }
   },
   mounted () {
-    console.log('component mounted')
-
     Formio.setToken(Auth.user().x_jwt_token)
     this.$eventHub.$on('lenguageSelection', () => {
       this.renderForm()
+    })
+
+    this.$eventHub.$on('submission_created', (formio) => {
+      console.log('submission was created', formio, this.formId)
+      this.registerOfflinePlugin()
+      this.$router.push({
+        name: 'formio_form_show',
+        params: {
+          idForm: this.formId,
+          newsubmission: 'true'
+        }
+      })
     })
     // Avoid function for been called multiple times
     this.storeForm = debounce(this.storeForm, 300)
@@ -54,7 +64,8 @@ export default {
     return {
       formIO: null,
       jsonForm: null,
-      jsonSubmission: undefined
+      jsonSubmission: undefined,
+      offlineModePlugin: null
     }
   },
   watch: {
@@ -102,7 +113,7 @@ export default {
         return
       }
 
-      // this.registerOfflinePlugin()
+      this.registerOfflinePlugin()
 
       // Solving problem of multiple classes added to the element
       // YES! its a pork around
@@ -227,15 +238,9 @@ export default {
          * @return {[type]} [description]
          */
     registerOfflinePlugin () {
-      let self = this
-      var offlineMode = {
-        priority: 0,
-        request: (requestArgs) => {
-          return self.getCurrentForm()
-        }
-      }
+      this.offlineModePlugin = OFFLINE_PLUGIN.getPlugin(this.formId, this.getCurrentForm, this.storeForm, this.hashField, false, this.$eventHub)
       Formio.deregisterPlugin('offline')
-      Formio.registerPlugin(offlineMode, 'offline')
+      Formio.registerPlugin(this.offlineModePlugin, 'offline')
     },
     /**
          * [mountFormIOForm description]
@@ -282,45 +287,9 @@ export default {
           } else if (this.jsonSubmission) {
             formSubmission._id = this.jsonSubmission.data._id ? this.jsonSubmission.data._id : this.jsonSubmission._id
           }
-          console.log('The form about to save is ----: ', this.jsonSubmission)
-          this.storeForm(formSubmission, formio)
+          formio.saveSubmission(formSubmission)
         })
       })
-    },
-    storeForm (formSubmission, formio) {
-      console.log('formSubmission => ', formSubmission)
-      console.log('formio => ', formio)
-      console.log('this => ', this)
-
-      if ((typeof this.hashField !== 'undefined')) {
-        formSubmission.data.hashedPassword = md5(formSubmission.data.password, MD5_KEY)
-        this.$store.dispatch('storeUserLocally', {data: formSubmission.data, sync: false, formio: formio})
-          .then(() => {
-            this.$router.push({path: '/login'})
-          })
-          .catch((error) => {
-            console.log(error)
-          })
-      } else {
-        this.$store.dispatch('addSubmission', {
-          formSubmission: formSubmission,
-          formio: formio,
-          User: Auth.user().data
-        })
-          .then((created) => {
-            console.log('An element was created')
-            this.$router.push({
-              name: 'formio_form_show',
-              params: {
-                idForm: this.formId,
-                newsubmission: 'true'
-              }
-            })
-          })
-          .catch((error) => {
-            console.log(error)
-          })
-      }
     }
   }
 }

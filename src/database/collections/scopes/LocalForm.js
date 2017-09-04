@@ -10,7 +10,14 @@ const LocalForm = class {
   	id = id.replace(/\s/g, '')
   	let db = await Database.get()
  	let formRequest = await db.forms.findOne().where('data.name').eq(id).exec()
- 	return formRequest.data
+ 	let formRequestID = await db.forms.findOne().where('data._id').eq(id).exec()
+ 	
+ 	if (formRequest) {
+ 		return formRequest.data
+ 	}
+ 	if (formRequestID) {
+ 		return formRequestID.data
+ 	}
   }
 }
 export default LocalForm
