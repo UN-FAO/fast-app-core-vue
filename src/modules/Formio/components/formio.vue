@@ -46,6 +46,10 @@ export default {
     this.$eventHub.$on('lenguageSelection', () => {
       this.renderForm()
     })
+    document.removeEventListener('gpsRequested', function (e) {}, false)
+    document.addEventListener('gpsRequested', (e) => {
+      this.reRenderForm()
+    })
     // Avoid function for been called multiple times
     this.storeForm = debounce(this.storeForm, 300)
     this.renderForm()
@@ -161,6 +165,9 @@ export default {
     },
     getCurrentForm () {
       return this.jsonForm
+    },
+    reRenderForm () {
+      this.formIO.render()
     },
     /**
          * [registerOfflinePlugin description]
