@@ -215,15 +215,26 @@ export default {
         console.log('The form about to save is: ', this.jsonSubmission)
         // Set Submission if we are Updating
         this.formIO.submission = !_.isEmpty(this.jsonSubmission) ? {data: this.jsonSubmission.data.data} : {data: {}}
+        if (onlineJsonForm.display === 'wizard') {
+          console.log('this.formIO => ', this.formIO)
+          // this.formIO.data = !_.isEmpty(this.jsonSubmission) ? {data: this.jsonSubmission.data.data} : {data: {}}
+        }
         
         this.formIO.submission = savedSubmission ? {data: savedSubmission.data} : this.formIO.submission
-        
+
         this.formIO.on('error', (error) => {
           console.log('There is an error', error)
         })
         if (this.formIO.eventListeners.filter(e => e.type === 'formio.submit').length > 0) {
           return
         }
+        /**
+         * This function manages how the form is submitted
+         * for Offline behaivor
+         * @param  {[type]} 'submit'    [description]
+         * @param  {[type]} (submission [description]
+         * @return {[type]}             [description]
+         */
         this.formIO.on('submit', (submission) => {
           let formSubmission = {
             data: submission.data
