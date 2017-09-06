@@ -1,271 +1,231 @@
-import DataTables from 'vue-data-tables'
 import _ from 'lodash'
-import lang from 'element-ui/lib/locale/lang/en'
-import locale from 'element-ui/lib/locale'
-import * as Database from 'database/Database'
-import moment from 'moment'
-import jsonexport from 'jsonexport'
-import Auth from 'modules/Auth/api/Auth'
-import {QCard, QCardTitle, QCardSeparator, QCardMain, QFab, QFabAction, QFixedPosition, QPullToRefresh} from 'quasar'
-locale.use(lang)
+import Formio from 'formiojs'
+import FormioUtils from 'formiojs/utils'
+import FormioForm from 'formiojs/form'
+import FormioWizard from 'formiojs/wizard'
+import debounce from 'async-debounce'
+import OFFLINE_PLUGIN from 'modules/Formio/api/offlinePlugin'
 
 export default {
-  mounted: async function () {
-      
+  name: 'formio',
+  props: {
+    formioURL: {
+      required: true
+    },
+    localJsonForm: {
+      required: false
+    },
+    submission: {
+      required: false
+    },
+    hashField: {
+      required: false
+    },
+    formioToken: {
+      required: false
+    }
   },
-  components: {
-    DataTables, QCard, QCardTitle, QCardSeparator, QCardMain, QFab, QFabAction, QFixedPosition, QPullToRefresh
-  },
-  beforeRouteEnter (to, from, next) {
-    next(vm => {
-      vm.pullSubmissions()
-      vm.subscribeToSubmissions()
-      // vm.$forceUpdate();
+  mounted () {
+    Formio.setToken(this.formioToken)
+    this.$eventHub.$on('lenguageSelection', () => {
+      this.renderForm()
     })
+    document.removeEventListener('gpsRequested', function (e) {}, false)
+    document.addEventListener('gpsRequested', (e) => {
+      this.renderForm()
+    })
+    // Avoid function for been called multiple times
+    this.storeForm = debounce(this.storeForm, 500)
+    this.renderForm()
   },
-  beforeRouteUpdate (to, from, next) {
-    this.pullSubmissions()
-    this.subscribeToSubmissions()
-    // this.$forceUpdate();
-    next()
+  beforeDestroy () {
+    this.formIO.on('submit', async (submission) => {})
+    this.formIO = null
   },
-  beforeDestroy: function () {
-    this.subs.forEach(sub => sub.unsubscribe())
-  },
-  data () {
+  data: () => {
     return {
-      tableData: [],
-      filteredData: [],
-      currentForm: {},
-      submissions: [],
-      subs: [],
-      searchDef: {
-        colProps: {
-          span: 9
-        }
-      },
-      actionsDef: {
-        colProps: {
-          span: 14
-        },
-        def: [{
-          name: '',
-          handler: () => {
-            var download = function (content, fileName, mimeType) {
-              var a = document.createElement('a')
-              mimeType = mimeType || 'application/octet-stream'
-
-              if (navigator.msSaveBlob) { // IE10
-                navigator.msSaveBlob(new Blob([content], {
-                  type: mimeType
-                }), fileName)
-              } else if (URL && 'download' in a) { // html5 A[download]
-                a.href = URL.createObjectURL(new Blob([content], {
-                  type: mimeType
-                }))
-                a.setAttribute('download', fileName)
-                document.body.appendChild(a)
-                a.click()
-                document.body.removeChild(a)
-              } else {
-                location.href = 'data:application/octet-stream,' + encodeURIComponent(content) // only this mime type is supported
-              }
-            }
-
-            jsonexport(this.submissions, function (err, csv) {
-              if (err) return console.log(err)
-              download(csv, 'backup.csv', 'text/csv;encoding:utf-8')
-              this.$message('Data Exported')
-            })
-          },
-          icon: 'document'
-        }]
-      }
+      formIO: null,
+      jsonForm: null,
+      jsonSubmission: undefined,
+      offlineModePlugin: null
+    }
+  },
+  watch: {
+    // Re render form on changes
+    localJsonForm: function (value) {
+      this.jsonForm = value
+      this.renderForm()
+    },
+    submission: function (value) {
+      this.jsonSubmission = value
+      this.renderForm()
+    }
+  },
+  computed: {
+    formId () {
+      return this.formioURL.split('/').pop()
+    },
+    baseURL () {
+      return 'https://' + this.formioURL.split('/')[2] + '/'
+    },
+    formioPath () {
+      return this.jsonForm ? this.jsonForm.path : ''
     }
   },
   methods: {
-    DATA2FILE: function (filename, data, callback) {
-      // default filename
-      var defaultFileName = 'export-file.txt'
- 
-      if (filename === undefined || filename === null) {
-        filename = defaultFileName
+    /**
+         * Refresh when pulled Down
+         * @return {[type]} [description]
+         */
+    refreshForm () {
+      this.renderForm()
+    },
+    /**
+         * [renderForm description]
+         * @return {[type]} [description]
+         */
+    renderForm () {
+      console.log('Rendering form')
+      let submissionNotLoaded = (typeof this.jsonSubmission !== 'undefined') && _.isEmpty(this.jsonSubmission)
+      let jsonFormNotLoaded = (typeof this.localJsonForm !== 'undefined') && _.isEmpty(this.jsonForm)
+
+      // Wait until form is present
+      if (submissionNotLoaded || jsonFormNotLoaded) {
+        console.log('Stoping render', submissionNotLoaded, jsonFormNotLoaded)
+        return
       }
- 
-      // Request the file system
-      window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, gotFS, fail)
- 
-      // Access to filesystem is OK
-      function gotFS (fileSystem) {
-        fileSystem.root.getFile(filename, {create: true}, gotFileEntry, fail)
-      }
- 
-      // File is ready
-      function gotFileEntry (fileEntry) {
-        fileEntry.createWriter(gotFileWriter, fail)
-      }
- 
-      // Write file content
-      function gotFileWriter (writer) {
-        writer.onwriteend = function (evt) {
-          console.log('finished writing')
-          if (callback !== undefined) {
-            callback(writer)
+
+      this.registerOfflinePlugin()
+
+      // Solving problem of multiple classes added to the element
+      // YES! its a pork around
+      let x = document.getElementsByClassName('formio-form');
+      [].forEach.call(x, function (el) {
+        el.classList.remove('formio-form')
+        el.classList.add('formio-form')
+      })
+
+      this.mountFormIOForm()
+    },
+    /**
+         * [loadExternalResources description]
+         * @param  {[type]} Components [description]
+         * @return {[type]}            [description]
+         */
+    loadExternalResources (Components) {
+      // return OFFLINE_PLUGIN.externalResources(Components)
+    },
+    /**
+         * [setTranslations description]
+         * @param {[type]} Components [description]
+         */
+    setTranslations (Components) {
+      let translations = Components
+      FormioUtils.eachComponent(translations, (component, index) => {
+        if (component.label === 'projectID' || component.label === 'projectName') {
+          return
+        }
+        if (component.label &&
+                    component.label !== '') {
+          let tLabel = component.label.replace('translations.', '')
+          tLabel = tLabel.replace(/[^a-zA-Z0-9]/g, '_')
+          tLabel = tLabel.split(' ').join('_')
+          component.label = this.$t('translations.' + tLabel)
+        }
+
+        if (component.description &&
+                    component.description !== '') {
+          let tDescription = component.description.replace('translations.', '')
+          tDescription = tDescription.replace(/[^a-zA-Z0-9]/g, '_')
+          tDescription = tDescription.split(' ').join('_')
+          component.description = this.$t('translations.' + tDescription)
+        }
+
+        if (component.placeholder &&
+                    component.placeholder !== '') {
+          let tPlaceholder = component.placeholder.replace('translations.', '')
+          tPlaceholder = tPlaceholder.replace(/[^a-zA-Z0-9]/g, '_')
+          tPlaceholder = tPlaceholder.split(' ').join('_')
+          component.placeholder = this.$t('translations.' + tPlaceholder)
+        }
+      })
+      return translations
+    },
+    getCurrentForm () {
+      return this.jsonForm
+    },
+    reRenderForm () {
+      this.formIO.render()
+    },
+    /**
+         * [registerOfflinePlugin description]
+         * @return {[type]} [description]
+         */
+    registerOfflinePlugin () {
+      this.offlineModePlugin = OFFLINE_PLUGIN.getPlugin(this.formId, this.getCurrentForm, this.storeForm, this.hashField, false, this.$eventHub)
+      Formio.deregisterPlugin('offline')
+      Formio.registerPlugin(this.offlineModePlugin, 'offline')
+    },
+    /**
+         * [mountFormIOForm description]
+         * @return {[type]} [description]
+         */
+    mountFormIOForm (savedSubmission) {
+      savedSubmission = savedSubmission || null
+
+      // Create FormIOJS plugin instace (Manipulation)
+      let formio = new Formio(this.formioURL)
+
+      formio.loadForm().then(onlineJsonForm => {
+        console.log('this.localJsonForm => ', this.localJsonForm)
+        // Create the formIOForm Instance (Renderer)
+        if (onlineJsonForm.display === 'wizard') {
+          if (_.isEmpty(this.formIO)) {
+            this.formIO = new FormioWizard(this.$refs.formIO)
+          }
+        } else {
+          if (_.isEmpty(this.formIO)) {
+            this.formIO = new FormioForm(this.$refs.formIO)
           }
         }
-        writer.write(data)
-      }
- 
-      function fail (error) {
-        console.log('Error: ', error.code)
-      }
-    },
-    humanizeDate (givenDate) {
-      let start = moment(givenDate)
-      let end = moment()
-      return end.to(start)
-    },
-    scrollToEnd: function (ID) {
-      // console.log("scroling to", ID)
-      var container = this.$el.querySelector('#container')
-      container.scrollTop = container.scrollHeight
-    },
-    goToProject () {
-      this.$router.push(
-        {
-          name: 'formio_form_show',
-          params: {
-            idForm: this.$route.params.idForm
-          },
-          query: {formPath: this.$route.query.formPath}
+        // Clone the original object to avoid changes
+        let cloneJsonForm = _.cloneDeep(onlineJsonForm)
+
+        // Load data stored locally
+        cloneJsonForm.components = this.loadExternalResources(onlineJsonForm.components)
+        
+        // Translate the form
+        cloneJsonForm.components = this.setTranslations(_.cloneDeep(onlineJsonForm.components))
+
+        // this.formIO.form= cloneJsonForm
+        this.formIO.setForm(cloneJsonForm)
+        console.log('The form about to save is: ', this.jsonSubmission)
+        // Set Submission if we are Updating
+        this.formIO.submission = !_.isEmpty(this.jsonSubmission) ? {data: this.jsonSubmission.data.data} : {data: {}}
+        
+        this.formIO.submission = savedSubmission ? {data: savedSubmission.data} : this.formIO.submission
+        
+        this.formIO.on('error', (error) => {
+          console.log('There is an error', error)
         })
-    },
-    createSubmission () {
-      this.$router.push({
-        name: 'formio_form_submission',
-        params: {
-          id: this.$route.params.id,
-          idForm: this.$route.params.idForm
-        },
-        query: {formPath: this.$route.query.formPath}
+
+        this.formIO.on('submit', this.submit)
       })
     },
-    async subscribeToSubmissions () {
-      this.subs.forEach(sub => sub.unsubscribe())
-      let self = this
-      const db = await Database.get()
-      this.subs.push(
-        db.submissions
-          // .select('-projectId')
-          .find({
-            'data.formio.formId': this.$route.params.idForm
-          })
-          .$
-          .subscribe(submissions => {
-            console.log('Initial submissions', submissions)
-            submissions = _.map(submissions, function (submission) {
-              submission = _.clone(submission)
-              submission.data.data.created = submission.data.created
-              submission.data.data.Humancreated = self.humanizeDate(submission.data.created)
-              submission.data.data.id_submision = submission.data._id ? submission.data._id : submission._id
-              submission.data.data.local = !submission.data._id
-              submission.data.data.id_submision_state = submission.data.sync ? submission.data.data.id_submision : submission.data.data.id_submision + '(Offline)'
-              submission.data.data.status = submission.data.sync === false ? 'offline' : 'online'
-              return submission.data
-            })
 
-            let userEmail = Auth.user().data.email || Auth.user().email
-            console.log('After adding the required data', submissions)
-            submissions = _.filter(submissions, function (o) {
-              return (
-                (o.owner && o.owner === Auth.user()._id) ||
-                  (o.user_email && o.user_email === userEmail)
-              )
-            })
-            submissions = _.map(submissions, 'data')
-            submissions = _.orderBy(submissions, ['created'], ['desc'])
-            console.log('After filters', submissions)
-            this.submissions = submissions
-          })
-      )
-    },
-    getRowActionsDef () {
-      let self = this
-      let idForm = this.$route.params.idForm
-      let formPath = this.$route.query.formPath
-
-      return {
-        label: self.$t('App.actions'),
-        def: [{
-          type: 'text',
-          handler (submission) {
-            self.$router.push(
-              {
-                name: 'formio_submission_update',
-                params: {
-                  idForm: idForm,
-                  idSubmission: submission.id_submision
-                },
-                query: {formPath: formPath}
-              })
-          },
-          icon: 'edit'
-        },
-        {
-          async handler (submission) {
-            let db = await Database.get()
-
-            let online = await db.submissions
-              .findOne().where('data._id')
-              .eq(submission.id_submision).exec()
-            let offline = await db.submissions
-              .findOne().where('_id')
-              .eq(submission.id_submision).exec()
-
-            let deleteSubmission = offline
-            if (online) {
-              deleteSubmission = online
-            }
-
-            self.$swal({
-              title: 'Are you sure?',
-              text: "You won't be able to revert this!",
-              type: 'warning',
-              showCancelButton: true,
-              confirmButtonColor: '#3085d6',
-              cancelButtonColor: '#d33',
-              confirmButtonText: 'Yes, delete it!'
-            }).then(async () => {
-              await deleteSubmission.remove()
-              self.$swal(
-                'Deleted!',
-                'Your submission has been deleted.',
-                'success'
-              )
-            })
-          },
-          type: 'text',
-          icon: 'delete2'
-
-        }]
+    async submit (submission) {
+      let formSubmission = {
+        data: submission.data
       }
-    },
-    async pullSubmissions () {
-      let db = await Database.get()
-
-      this.currentForm = await db.forms.findOne()
-        .where('data.name').eq(this.$route.params.idForm).exec()
-      this.$store.dispatch('getSubmissions',
-        {
-          currentForm: this.currentForm,
-          User: this.$store.getters.getAuthUser
-        })
-    },
-    refreshSubmissions (done) {
-      this.pullSubmissions()
-      setTimeout(function () {
-        done()
-      }, 1200)
+      // If we have the recent submission, then use it
+      if (savedSubmission) {
+        formSubmission._id = savedSubmission._id
+        // If we are editing, then use the json
+      } else if (this.jsonSubmission) {
+        formSubmission._id = this.jsonSubmission.data._id ? this.jsonSubmission.data._id : this.jsonSubmission._id
+      }
+      formSubmission.redirect = true
+      formio.saveSubmission(formSubmission)
     }
   }
 }
