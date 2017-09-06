@@ -53,6 +53,13 @@ export default {
   },
   methods: {
     setLanguage (lenguage) {
+      this.$i18n.locale = lenguage.code
+      this.$swal(
+        'Changed!',
+        'The language has been changed',
+        'success'
+      )
+      /*
       this.$swal({
         title: 'Are you sure?',
         text: 'If you change the lenguage all the unsaved changes will be removed!',
@@ -70,6 +77,7 @@ export default {
           'success'
         )
       })
+      */
     }
   }
 }

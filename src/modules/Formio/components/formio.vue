@@ -19,6 +19,7 @@ import _ from 'lodash'
 import Formio from 'formiojs'
 import FormioUtils from 'formiojs/utils'
 import FormioForm from 'formiojs/form'
+import FormioWizard from 'formiojs/wizard'
 import debounce from 'async-debounce'
 import OFFLINE_PLUGIN from 'modules/Formio/api/offlinePlugin'
 
@@ -48,7 +49,7 @@ export default {
     })
     document.removeEventListener('gpsRequested', function (e) {}, false)
     document.addEventListener('gpsRequested', (e) => {
-      this.reRenderForm()
+      this.renderForm()
     })
     // Avoid function for been called multiple times
     this.storeForm = debounce(this.storeForm, 300)
@@ -184,13 +185,22 @@ export default {
          */
     mountFormIOForm (savedSubmission) {
       savedSubmission = savedSubmission || null
-      // Create the formIOForm Instance (Renderer)
-      this.formIO = new FormioForm(this.$refs.formIO)
 
       // Create FormIOJS plugin instace (Manipulation)
       let formio = new Formio(this.formioURL)
 
       formio.loadForm().then(onlineJsonForm => {
+        console.log('this.localJsonForm => ', this.localJsonForm)
+        // Create the formIOForm Instance (Renderer)
+        if (onlineJsonForm.display === 'wizard') {
+          if (_.isEmpty(this.formIO)) {
+            this.formIO = new FormioWizard(this.$refs.formIO)
+          }
+        } else {
+          if (_.isEmpty(this.formIO)) {
+            this.formIO = new FormioForm(this.$refs.formIO)
+          }
+        }
         // Clone the original object to avoid changes
         let cloneJsonForm = _.cloneDeep(onlineJsonForm)
 
