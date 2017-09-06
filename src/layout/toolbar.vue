@@ -9,7 +9,7 @@
        <img src="statics/2000px-FAO_logo_reverse.png" style="max-height: 40px; max-width: 40px;"></img>  {{ $t("App.title") }}
       <span slot="subtitle">Optional subtitle</span>
       </q-toolbar-title>
-      <q-btn class="within-iframe-hide" flat @click="$router.replace('/showcase')" style="margin-right: 15px">
+      <q-btn class="within-iframe-hide" flat @click="$router.go(-1)" style="margin-right: 15px">
         <q-icon name="keyboard_arrow_left" />
         Go back
       </q-btn>

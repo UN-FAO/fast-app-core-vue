@@ -213,19 +213,18 @@ const actions = {
         console.log('We are about to send to formio', postData)
         console.log('The plugin registered is: ', offlinePlugin)
         FormioJS.deregisterPlugin('offline')
-        formio.saveSubmission(postData)
-          .then(async (FormIOinsertedData) => {
-            console.log('this is what came back from FOrmio', FormIOinsertedData)
-            FormIOinsertedData.formio = formio
+        let FormIOinsertedData = await formio.saveSubmission(postData)
+        console.log('this is what came back from FOrmio', FormIOinsertedData)
+        FormIOinsertedData.formio = formio
 
-            await offlineSubmission.update({
-              $set: {
-                data: FormIOinsertedData
-              }
-            })
-            syncedSubmissions = syncedSubmissions + 1
-            FormioJS.registerPlugin(offlinePlugin, 'offline')
-          })
+        await offlineSubmission.update({
+          $set: {
+            data: FormIOinsertedData
+          }
+        })
+        syncedSubmissions = syncedSubmissions + 1
+        FormioJS.deregisterPlugin('offline')
+        FormioJS.registerPlugin(offlinePlugin, 'offline')
       })
       if (syncedSubmissions > 0) {
         Toast.create.positive({ html: syncedSubmissions + 'SUBMISSIONS SYNCED' })

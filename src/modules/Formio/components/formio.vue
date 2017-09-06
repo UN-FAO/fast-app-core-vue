@@ -16,7 +16,6 @@
 </template>
 <script>
 import _ from 'lodash'
-import Auth from 'modules/Auth/api/Auth'
 import Formio from 'formiojs'
 import FormioUtils from 'formiojs/utils'
 import FormioForm from 'formiojs/form'
@@ -37,26 +36,16 @@ export default {
     },
     hashField: {
       required: false
+    },
+    formioToken: {
+      required: false
     }
   },
   mounted () {
-    Formio.setToken(Auth.user().x_jwt_token)
+    Formio.setToken(this.formioToken)
     this.$eventHub.$on('lenguageSelection', () => {
       this.renderForm()
     })
-
-    this.$eventHub.$on('submission_created', debounce((formio) => {
-      console.log('submission was created', formio, this.formId)
-      if (formio.formId === this.formId) {
-        this.$router.push({
-          name: 'formio_form_show',
-          params: {
-            idForm: this.formId,
-            newsubmission: 'true'
-          }
-        })
-      }
-    }), 300)
     // Avoid function for been called multiple times
     this.storeForm = debounce(this.storeForm, 300)
     this.renderForm()
@@ -132,68 +121,7 @@ export default {
          * @return {[type]}            [description]
          */
     loadExternalResources (Components) {
-      FormioUtils.eachComponent(Components, function (component) {
-        if (component.type === 'select') {
-          if (component.dataSrc === 'url') {
-            delete component.selectValues
-            // select.multiple = true
-            component.data.url = ''
-            component.dataSrc = 'values'
-            component.project = ''
-            component.resource = ''
-
-            component.data.values = [
-              {
-                label: 'charmander',
-                value: 'charmander',
-                name: 'charmander',
-                nameOfPastoral: 'charmander'
-              },
-              {
-                label: 'pikachu',
-                value: 'pikachu',
-                name: 'pikachu',
-                nameOfPastoral: 'pikachu'
-              },
-              {
-                label: 'squirtle',
-                value: 'squirtle',
-                name: 'squirtle',
-                nameOfPastoral: 'squirtle'
-              }]
-          } else if (component.dataSrc === 'resource') {
-            delete component.selectValues
-            // select.multiple = true
-            component.data.url = ''
-            component.dataSrc = 'values'
-            component.project = ''
-            component.resource = ''
-
-            component.data.values = [
-              {
-                label: 'charmander2',
-                value: 'charmander2',
-                name: 'charmander2',
-                nameOfPastoral: 'charmander2'
-              },
-              {
-                label: 'pikachu2',
-                value: 'pikachu2',
-                name: 'pikachu2',
-                nameOfPastoral: 'pikachu2'
-              },
-              {
-                label: 'squirtle2',
-                value: 'squirtle2',
-                name: 'squirtle2',
-                nameOfPastoral: 'squirtle2'
-              }]
-          }
-        }
-      }
-      )
-
-      return Components
+      // return OFFLINE_PLUGIN.externalResources(Components)
     },
     /**
          * [setTranslations description]
@@ -260,7 +188,7 @@ export default {
         let cloneJsonForm = _.cloneDeep(onlineJsonForm)
 
         // Load data stored locally
-        // cloneJsonForm.components = this.loadExternalResources(onlineJsonForm.components)
+        cloneJsonForm.components = this.loadExternalResources(onlineJsonForm.components)
         
         // Translate the form
         cloneJsonForm.components = this.setTranslations(_.cloneDeep(onlineJsonForm.components))
@@ -288,6 +216,7 @@ export default {
           } else if (this.jsonSubmission) {
             formSubmission._id = this.jsonSubmission.data._id ? this.jsonSubmission.data._id : this.jsonSubmission._id
           }
+          formSubmission.redirect = true
           formio.saveSubmission(formSubmission)
         })
       })

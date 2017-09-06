@@ -15,7 +15,12 @@
                     <q-tab-pane name="tab-1">
 
                         <!-- Tabs -->
-                        <formio :formioURL="formioURL" :localJsonForm="form" :submission="submission"></formio>
+                        <formio 
+                          :formioURL="formioURL" 
+                          :localJsonForm="form" 
+                          :submission="submission"
+                          :formioToken="formioToken"
+                        />
                     </q-tab-pane>
 
                 </q-tabs>
@@ -36,6 +41,7 @@
 
 <script>
 import _ from 'lodash'
+import Auth from 'modules/Auth/api/Auth'
 import formio from 'modules/Formio/components/formio'
 import LocalForm from 'database/collections/scopes/LocalForm'
 import LocalSubmission from 'database/collections/scopes/LocalSubmission'
@@ -75,7 +81,8 @@ export default {
       form: null,
       formioURL: APP_URL + '/' + this.$route.params.idForm,
       submission: undefined,
-      people: [{name: 'P1'}]
+      people: [{name: 'P1'}],
+      formioToken: Auth.user().x_jwt_token
     }
   },
   methods: {

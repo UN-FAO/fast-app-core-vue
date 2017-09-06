@@ -126,8 +126,6 @@ export default {
   },
   data () {
     return {
-      tableData: [],
-      filteredData: [],
       currentForm: {},
       submissions: [],
       subs: [],
@@ -229,16 +227,6 @@ export default {
       // console.log("scroling to", ID)
       var container = this.$el.querySelector('#container')
       container.scrollTop = container.scrollHeight
-    },
-    goToProject () {
-      this.$router.push(
-        {
-          name: 'formio_form_show',
-          params: {
-            idForm: this.$route.params.idForm
-          },
-          query: {formPath: this.$route.query.formPath}
-        })
     },
     createSubmission () {
       this.$router.push({
