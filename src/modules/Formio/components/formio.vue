@@ -221,13 +221,9 @@ export default {
         this.formIO.on('error', (error) => {
           console.log('There is an error', error)
         })
-        this.formIO.on('submit', (submission) => {})
-        console.log('the formio instance', this.formIO.eventListeners)
-        // delete this.formIO.eventListeners
-        this.formIO.eventListeners = _.remove(this.formIO.eventListeners, function (o) {
-          return o.type === 'form.submit'
-        })
-        console.log('the formio instance', this.formIO.eventListeners)
+        if (this.formIO.eventListeners.filter(e => e.type === 'formio.submit').length > 0) {
+          return
+        }
         this.formIO.on('submit', (submission) => {
           let formSubmission = {
             data: submission.data
@@ -240,8 +236,6 @@ export default {
             formSubmission._id = this.jsonSubmission.data._id ? this.jsonSubmission.data._id : this.jsonSubmission._id
           }
           formSubmission.redirect = true
-          console.log('heeeeeeeereeeeeeee')
-          console.log('the formio instance', this.formIO.eventListeners)
           formio.saveSubmission(formSubmission)
         })
       })
