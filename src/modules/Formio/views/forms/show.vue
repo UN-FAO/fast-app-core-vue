@@ -13,7 +13,7 @@
     <q-pull-to-refresh :handler="refreshSubmissions">
         <q-card>
             <q-card-title class="bg-primary text-white">
-                {{ $t("App.submissions_for") }} :
+                {{ $t("App.submissions_for") }} : {{formTitle}}
             </q-card-title>
             <q-card-separator />
             <q-card-main>
@@ -102,8 +102,15 @@ import {QCard, QCardTitle, QCardSeparator, QCardMain, QFab, QFabAction, QFixedPo
 locale.use(lang)
 
 export default {
-  mounted: async function () {
-      
+  computed: {
+    formTitle () {
+      console.log('this.currentForm.title => ', this.currentForm)
+      let title = ''
+      if (this.currentForm) {
+        title = this.currentForm.data ? this.currentForm.data.title : ''
+      }
+      return title
+    }
   },
   components: {
     DataTables, QCard, QCardTitle, QCardSeparator, QCardMain, QFab, QFabAction, QFixedPosition, QPullToRefresh

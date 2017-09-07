@@ -2,7 +2,7 @@ const ar = {
   App: {
     submissions_for: 'تقديمات ل',
     new_submission_for: 'تقديم جديد ل',
-    title: 'تحليل قدرة تربية النباتات',
+    title: 'Sharp',
     form: 'شكل',
     submission_id: 'رقم تعريف الإرسال',
     created_at: 'أنشئت في',

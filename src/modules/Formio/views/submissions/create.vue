@@ -2,7 +2,7 @@
     <q-pull-to-refresh :handler="refreshSubmissions">
         <q-card>
             <q-card-title class="bg-primary text-white">
-                {{ $t("App.new_submission_for") }}
+                {{ $t("App.new_submission_for") }} {{formTitle}}
             </q-card-title>
             <q-card-separator />
             <q-card-main>
@@ -75,6 +75,16 @@ export default {
     let form = await LocalForm.get(this.$route.params.idForm)
     this.form = form
     next()
+  },
+  computed: {
+    formTitle () {
+      console.log('this.currentForm.title => ', this.form)
+      let title = ''
+      if (this.form) {
+        title = this.form ? this.form.title : ''
+      }
+      return title
+    }
   },
   data: function () {
     return {

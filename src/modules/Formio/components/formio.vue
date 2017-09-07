@@ -216,7 +216,7 @@ export default {
         // Set Submission if we are Updating
         this.formIO.submission = !_.isEmpty(this.jsonSubmission) ? {data: this.jsonSubmission.data.data} : {data: {}}
         if (onlineJsonForm.display === 'wizard') {
-          console.log('this.formIO => ', this.formIO)
+          console.log('this.formIO => ', this.formIO, this.jsonSubmission.data.data)
           // this.formIO.data = !_.isEmpty(this.jsonSubmission) ? {data: this.jsonSubmission.data.data} : {data: {}}
         }
         

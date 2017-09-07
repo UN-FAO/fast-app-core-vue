@@ -7,7 +7,7 @@
       <div class="row" style="display: block">
       <img src="statics/fao-logo-white.png" style="width: 60%; height: 50%">
       </div>
-        <h4 style="color:white; text-transform: uppercase;"> Plant Breeding Capacity Analysis</h4>
+        <h4 style="color:white; text-transform: uppercase;font-size: -webkit-xxx-large;">Sharp</h4>
       </q-card-title>
         <q-card-main>
           <q-field
