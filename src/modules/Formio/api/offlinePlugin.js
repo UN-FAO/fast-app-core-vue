@@ -92,9 +92,12 @@ const OFFLINE_PLUGIN = class {
           let form = await LocalForm.get(args.formio.formId)
           return form
         }
-        if (args.method === 'POST' && args.type === 'submission') {
-          let form = await LocalForm.get(args.formio.formId)
-          let formioURL = 'https://' + form.machineName.split(':')[0] + '.form.io/' + form.machineName.split(':')[1]
+        if ((args.method === 'POST' || args.method === 'PUT') && args.type === 'submission') {
+        	console.log('args => ', args)
+        	let form = await LocalForm.get(args.formio.formId)
+        	console.log('form => ', form)
+          let formioURL = 'https://' + form.machineName.split(':')[0] + '.form.io/' + form.path
+          console.log('formioURL => ', formioURL)
           let formio = new Formio(formioURL)
           let dStoreForm = _.debounce(this.storeForm, 300)
           dStoreForm(args.data, formio, redirect, hashField, formId, eventHub)

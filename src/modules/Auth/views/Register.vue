@@ -48,7 +48,7 @@
   async beforeRouteEnter (to, from, next) {
     // Load the form and submission before entering the route
     let db = await Database.get();
-    let formRequest = await db.forms.findOne().where('data.name').eq('userRegister').exec();
+    let formRequest = await db.forms.findOne().where('data.name').eq('userregister').exec();
     let form = formRequest.data;
     console.log('form => ', form)
     next(vm => {
@@ -58,7 +58,7 @@
   },
   async beforeRouteUpdate (to, from, next) {
     this.form = null
-    let formRequest = await db.forms.findOne().where('data.name').eq('userRegister').exec();
+    let formRequest = await db.forms.findOne().where('data.name').eq('userregister').exec();
     this.form = formRequest.data;
     console.log('this.form => ' , this.form)
     next()
@@ -85,7 +85,7 @@
     data() {
       return {
         form: null,
-        formioURL: APP_URL + '/user/register',
+        formioURL: APP_URL + '/userregister',
       }
     },
     /**

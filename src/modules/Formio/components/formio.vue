@@ -50,6 +50,11 @@ export default {
     document.removeEventListener('gpsRequested', function (e) {}, false)
     document.addEventListener('gpsRequested', (e) => {
       this.renderForm()
+      this.$swal(
+        'GPS Registered!',
+        'Your GPS position was detected',
+        'success'
+      )
     })
     // Avoid function for been called multiple times
     this.storeForm = debounce(this.storeForm, 500)
@@ -236,6 +241,7 @@ export default {
          * @return {[type]}             [description]
          */
         this.formIO.on('submit', (submission) => {
+          console.log('we have a submission', submission)
           let formSubmission = {
             data: submission.data
           }

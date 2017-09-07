@@ -46,9 +46,9 @@
             form.data.name!=='translations'&&
             form.data.name!=='user' &&
             form.data.name!=='userLogin' &&
-            form.data.name!=='userRegister' &&
+            form.data.name!=='userregister' &&
             form.data.name!=='adminLogin'"
-          :to="{name: 'formio_form_show', params: { idForm: form.data.path}}"
+          :to="{name: 'formio_form_submission', params: { idForm: form.data.path}}"
           :key="form.data._id">
           <q-item-side icon="assignmente" />
            <q-item-main :label="form.data.title" :sublabel="form.data.type" />
