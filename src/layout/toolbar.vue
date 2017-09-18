@@ -7,7 +7,7 @@
       </q-btn>
       <q-toolbar-title>
        <img src="statics/2000px-FAO_logo_reverse.png" style="max-height: 40px; max-width: 40px;"></img>  {{ $t("App.title") }}
-      <span slot="subtitle">Optional subtitle</span>
+      <span slot="subtitle">Proof of Concept for FAST</span>
       </q-toolbar-title>
       <q-btn class="within-iframe-hide" flat @click="$router.go(-1)" style="margin-right: 15px">
         <q-icon name="keyboard_arrow_left" />

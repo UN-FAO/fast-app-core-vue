@@ -71,3 +71,20 @@ button.choices__button {
     margin-right: 0px !important;
     margin-left: 0px !important;
 }
+
+label {
+    font-size: .8rem !important;
+}
+
+legend {
+    font-size: 16px !important;
+    color: #0d6cac !important;
+}
+
+.q-tab-pane {
+    border: none !important;
+}
+
+.q-tabs-inverted.q-tabs-position-top .q-tabs-panes {
+    border-top: none !important;
+}

@@ -12,7 +12,7 @@ const Auth = class {
    * Retrieves the current auth user
    * @return {boolean} [description]
    */
-  static user () {
+  static user() {
     let user = JSON.parse(LocalStorage.get.item('authUser'))
     return user === null ? false : user
   }
@@ -22,7 +22,7 @@ const Auth = class {
    * Authenticated
    * @return {boolean}
    */
-  static check () {
+  static check() {
     let user = JSON.parse(LocalStorage.get.item('authUser'))
     return !!user && !!user.x_jwt_token
   }
@@ -30,7 +30,7 @@ const Auth = class {
   /**
    * Logs the Authenticated User Out
    */
-  static logOut () {
+  static logOut() {
     LocalStorage.remove('authUser')
     LocalStorage.remove('id_token')
     router.push({ path: '/login' })
@@ -41,7 +41,7 @@ const Auth = class {
    * @param  {[type]}   credentials [description]
    * @return {Promise}   callback    [description]
    */
-  static attempt (credentials, baseUrl) {
+  static attempt(credentials, baseUrl) {
     return new Promise((resolve, reject) => {
       this.authenticate(credentials, baseUrl)
         // If credentials are OK
@@ -70,7 +70,7 @@ const Auth = class {
    * @param  {[type]} credentials [description]
    * @return {Promise}             [description]
    */
-  static authenticate (credentials, baseUrl) {
+  static authenticate(credentials, baseUrl) {
     let isOnline = Connection.isOnline()
 
     if (isOnline) {
@@ -89,7 +89,7 @@ const Auth = class {
    * @param  {[type]} baseUrl     [description]
    * @return {[type]}             [description]
    */
-  static remoteAuthenticate (credentials, baseUrl) {
+  static remoteAuthenticate(credentials, baseUrl) {
     Loading.show({
       message: 'Authenticating to Formio..'
     })
@@ -108,7 +108,7 @@ const Auth = class {
    * @param  {[type]} credentials [description]
    * @return {[type]}             [description]
    */
-  static async localAuthenticate (credentials) {
+  static async localAuthenticate(credentials) {
     const { username, password } = credentials
     // Hash password
     const hashedPassword = md5(password, MD5_KEY)

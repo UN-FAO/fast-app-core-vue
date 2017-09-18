@@ -12,25 +12,28 @@ import FormioJS from 'formiojs'
 const actions = {
 
   async updateLocalResource ({ collection, label, data }) {
-    console.log('updateing', data, collection, label)
+    // let offlinePlugin = FormioJS.getPlugin('offline')
     var formio = new FormioJS('https://' + data.appName + '.form.io')
     let isOnline = Connection.isOnline()
     const DB = await Database.get()
 
     let localResources = await DB[collection].find().exec()
-    let remoteResources = isOnline ? await Formio[collection](data.appName) : []
+    let remoteResources = (isOnline && collection !== 'forms') ? await Formio[collection](data.appName) : []
 
     if (collection === 'forms') {
-      remoteResources = isOnline ? await formio.loadForms() : []
+      if (isOnline) {
+        FormioJS.clearCache()
+      }
+      remoteResources = isOnline ? await formio.loadForms({params: {limit: '100'}}) : []
     }
-    
+
     let sync = SyncHelper.offlineOnlineSync({
       collection,
       LocalResults: localResources,
       OnlineResults: remoteResources,
       isOnline: isOnline
     })
-    // await DB.forms.remove();
+
     // For every new or updated entry
     _.forEach(sync, async function (res, key) {
       let localRes = await DB[collection].find().where('data._id').eq(res._id).exec()

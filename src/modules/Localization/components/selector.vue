@@ -7,11 +7,11 @@
       <q-item @click="setLanguage({code: 'en', direction: 'ltr'}), $refs.popover.close()">
       en
       </q-item>
-      <q-item @click="setLanguage({code: 'ja', direction: 'ltr'}), $refs.popover.close()">
-        日本人
+      <q-item @click="setLanguage({code: 'fr', direction: 'ltr'}), $refs.popover.close()">
+        fr
       </q-item>
-      <q-item @click="setLanguage({code: 'ar', direction: 'rtl'}), $refs.popover.close()">
-        عربى
+      <q-item @click="setLanguage({code: 'es', direction: 'rtl'}), $refs.popover.close()">
+       es
       </q-item>
     </q-list>
   </q-popover>

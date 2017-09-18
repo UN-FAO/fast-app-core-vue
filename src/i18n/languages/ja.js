@@ -2,7 +2,7 @@ const ja = {
   App: {
     submissions_for: 'こんにちは、世界',
     new_submission_for: 'ちは、世界',
-    title: 'こんにちは、世界 こんにちは、世界 こんにち',
+    title: 'FAST POC',
     form: '形',
     submission_id: '提出ID',
     created_at: '作成日',

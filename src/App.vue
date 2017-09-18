@@ -55,8 +55,7 @@ export default {
   name: 'app',
   mounted () {
     this.getResources({
-      appName: this.$store.state.authStore.appName,
-      isOnline: this.$root.VueOnline// this.$store.getters.isOnline
+      appName: this.$store.state.authStore.appName
     })
     this.$eventHub.on('lenguageSelection', (lenguage) => {
       this.toggleRtl(lenguage)

@@ -1,16 +1,12 @@
 <template>
     <q-pull-to-refresh :handler="refreshSubmissions">
-        <q-card>
-            <q-card-title class="bg-primary text-white">
-                {{ $t("App.new_submission_for") }} {{formTitle}}
-            </q-card-title>
-            <q-card-separator />
+        <q-card flat>
+            
             <q-card-main>
 
                 <q-tabs inverted>
                     <!-- Tabs - notice slot="title" -->
                     <q-tab default slot="title" name="tab-1" icon="person" label="P1" />
-
                     <!-- Targets -->
                     <q-tab-pane name="tab-1">
 
@@ -29,6 +25,8 @@
                     <q-fab color="red" icon="add" direction="left" push>
                         <q-fab-action color="secondary" @click="refreshForm()" icon="autorenew"></q-fab-action>
 
+                        <q-fab-action color="primary" @click="getForms()" icon="cloud_download"></q-fab-action>
+
                         <q-fab-action color="amber" @click="addSurvey()" icon="person_add"></q-fab-action>
 
                     </q-fab>
@@ -41,6 +39,7 @@
 
 <script>
 import _ from 'lodash'
+import {mapActions} from 'vuex'
 import Auth from 'modules/Auth/api/Auth'
 import formio from 'modules/Formio/components/formio'
 import LocalForm from 'database/collections/scopes/LocalForm'
@@ -72,13 +71,12 @@ export default {
     if (to.params.idSubmission) {
       this.getSubmission()
     }
-    let form = await LocalForm.get(this.$route.params.idForm)
+    let form = await LocalForm.get(to.params.idForm)
     this.form = form
     next()
   },
   computed: {
     formTitle () {
-      console.log('this.currentForm.title => ', this.form)
       let title = ''
       if (this.form) {
         title = this.form ? this.form.title : ''
@@ -96,6 +94,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['getResources']),
     addSurvey () {
       let self = this
       this.$swal({
@@ -113,9 +112,13 @@ export default {
         })
       })
     },
+    getForms () {
+      this.getResources({
+        appName: this.$store.state.authStore.appName
+      })
+    },
     // Refresh when pulled Down
     async refreshForm (done) {
-      // this.getLocalForm()
       let form = await LocalForm.get(this.$route.params.idForm)
       this.form = form
       this.getSubmission()

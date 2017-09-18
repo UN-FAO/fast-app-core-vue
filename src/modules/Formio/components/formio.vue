@@ -22,7 +22,7 @@ import FormioForm from 'formiojs/form'
 import FormioWizard from 'formiojs/wizard'
 import debounce from 'async-debounce'
 import OFFLINE_PLUGIN from 'modules/Formio/api/offlinePlugin'
-
+import {MULTILANGUAGE} from 'config/env'
 export default {
   name: 'formio',
   props: {
@@ -139,6 +139,9 @@ export default {
          */
     setTranslations (Components) {
       let translations = Components
+      if (!MULTILANGUAGE) {
+        return translations
+      }
       FormioUtils.eachComponent(translations, (component, index) => {
         if (component.label === 'projectID' || component.label === 'projectName') {
           return
@@ -196,6 +199,7 @@ export default {
 
       formio.loadForm().then(onlineJsonForm => {
         console.log('this.localJsonForm => ', this.localJsonForm)
+
         // Create the formIOForm Instance (Renderer)
         if (onlineJsonForm.display === 'wizard') {
           if (_.isEmpty(this.formIO)) {
@@ -215,17 +219,17 @@ export default {
         // Translate the form
         cloneJsonForm.components = this.setTranslations(_.cloneDeep(onlineJsonForm.components))
 
-        // this.formIO.form= cloneJsonForm
+        // Define the form to display
         this.formIO.setForm(cloneJsonForm)
-        console.log('The form about to save is: ', this.jsonSubmission)
+
         // Set Submission if we are Updating
         this.formIO.submission = !_.isEmpty(this.jsonSubmission) ? {data: this.jsonSubmission.data.data} : {data: {}}
+
         if (onlineJsonForm.display === 'wizard') {
-          console.log('this.formIO => ', this.formIO, this.jsonSubmission.data.data)
-          // this.formIO.data = !_.isEmpty(this.jsonSubmission) ? {data: this.jsonSubmission.data.data} : {data: {}}
+          this.formIO.data = !_.isEmpty(this.jsonSubmission) ? this.jsonSubmission.data.data : {}
+        } else {
+          this.formIO.submission = savedSubmission ? {data: savedSubmission.data} : this.formIO.submission
         }
-        
-        this.formIO.submission = savedSubmission ? {data: savedSubmission.data} : this.formIO.submission
 
         this.formIO.on('error', (error) => {
           console.log('There is an error', error)

@@ -1,42 +1,68 @@
-<style lang='css'>
-  .desc {
-    margin-top: 20px;
-    margin-bottom: 40px;
-  }
-  .pl {
-    padding-left: 20px;
-  }
+<style lang="css">
+.desc {
+  margin-top: 20px;
+  margin-bottom: 40px;
+}
+
+.pl {
+  padding-left: 20px;
+}
 </style>
 
 <template>
-<div class="layout-padding">
-<router-link :to="{ name: '' }">
-
-<div class="card" max-width="10%" style="">
-  
-  <div class="card-title bg-primary text-white">
-    Data Collection Dashboard
-  </div>
-  <div class="card-content card-force-top-padding">  
-  </div>
+<div class="row">
+  <q-card inline
+          class="col-lg-5 col-lg-offset-1">
+    <q-card-media>
+    </q-card-media>
+    <q-card-title>
+      MDC Welcome Survey
+      <q-rating slot="subtitle"
+                v-model="stars"
+                :max="5" />
+      <div slot="right"
+           class="row items-center">
+        <q-icon name="place" /> FAO
+      </div>
+    </q-card-title>
+    <q-card-main>
+      <p>
+        <router-link :to="{ name: 'formio_form_submission', params: { idForm: 'welcome' }}">Go to Survey</router-link>
+      </p>
+      <p>
+        <router-link :to="{ name: 'formio_form_show', params: { idForm: 'welcome' }}">See submitions</router-link>
+      </p>
+    </q-card-main>
+    <q-card-separator />
+  </q-card>
 </div>
-</router-link>
 
-
-
-
-
-
-</div>
 </template>
 
-
 <script>
-import lang from 'element-ui/lib/locale/lang/en'
-import locale from 'element-ui/lib/locale'
-locale.use(lang)
-
+import { QCard, QCardTitle, QCardSeparator, QCardMain, QFab, QFabAction, QFixedPosition, QPullToRefresh, QTabs, QTab, QTabPane, QCollapsible, QBtn, QIcon, QTooltip, QList, QItem, QItemSeparator } from 'quasar'
 export default {
+  components: {
+    QCard,
+    QCardTitle,
+    QCardSeparator,
+    QCardMain,
+    QFab,
+    QFabAction,
+    QFixedPosition,
+    QPullToRefresh,
+    QTabs,
+    QTab,
+    QTabPane,
+    QCollapsible,
+    QBtn,
+    QIcon,
+    QTooltip,
+    QList,
+    QItem,
+    QItemSeparator
+  }
 
 }
+
 </script>

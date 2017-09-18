@@ -18,7 +18,7 @@ const mutations = {
    * @param {[type]} state [description]
    * @param {[type]} value [description]
    */
-  setLayoutNeeded (state, value) {
+  setLayoutNeeded(state, value) {
     state.layoutNeeded = value
   },
   /**
@@ -26,7 +26,7 @@ const mutations = {
    * @param {[type]} state [description]
    * @param {[type]} value [description]
    */
-  setIsLoginPage (state, value) {
+  setIsLoginPage(state, value) {
     state.isLoginPage = value
   },
   /**
@@ -34,18 +34,18 @@ const mutations = {
    * @param {[type]} state [description]
    * @param {[type]} User  [description]
    */
-  SET_AUTH_USER (state, User) {
+  SET_AUTH_USER(state, User) {
     state.authUser = User
   },
   /**
    * [CLEAR_AUTH_USER description]
    * @param {[type]} state [description]
    */
-  CLEAR_AUTH_USER (state) {
+  CLEAR_AUTH_USER(state) {
     state.authUser = null
   },
 
-  CHANGE_IS_ONLINE_STATUS (state, status) {
+  CHANGE_IS_ONLINE_STATUS(state, status) {
     state.isOnline = status
   }
 }
@@ -55,21 +55,21 @@ const getters = {
    * [getLayoutNeeded description]
    * @return {[type]} [description]
    */
-  getLayoutNeeded () {
+  getLayoutNeeded() {
     return state.layoutNeeded
   },
   /**
    * [getIsLoginPage description]
    * @return {[type]} [description]
    */
-  getIsLoginPage () {
+  getIsLoginPage() {
     return state.isLoginPage
   },
 
-  getMachineUrl () {
+  getMachineUrl() {
     return state.appName
   },
-  getAuthUser () {
+  getAuthUser() {
     return state.authUser
   }
 }
@@ -102,7 +102,7 @@ const actions = {
    * @param  {[type]} currentForm    [description]
    * @return {[type]}                [description]
    */
-  storeUserLocally: async ({ commit }, formIoUser) => {
+  storeUserLocally: async({ commit }, formIoUser) => {
     console.log('Store user locally', formIoUser)
     let DB = await Database.get()
     let user = await DB.users.findOne().where('data.data.email').eq(formIoUser.data.email).exec()
