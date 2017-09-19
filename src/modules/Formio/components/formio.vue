@@ -11,7 +11,7 @@
 <template>
     <div>
         <div v-if="loading">
-          <q-spinner color="secondary" :size="30" />
+          <q-spinner-gears color="primary" :size="100" />
         </div>
         <div ref="formIO" class="formContainer">
         </div>
@@ -26,12 +26,12 @@ import FormioWizard from 'formiojs/wizard'
 import debounce from 'async-debounce'
 import OFFLINE_PLUGIN from 'modules/Formio/api/offlinePlugin'
 import {MULTILANGUAGE} from 'config/env'
-import {QSpinner} from 'quasar'
+import {QSpinner, QSpinnerGears, Loading} from 'quasar'
 
 export default {
   name: 'formio',
   components: {
-    QSpinner
+    QSpinner, QSpinnerGears
   },
   props: {
     formioURL: {
@@ -53,8 +53,17 @@ export default {
     this.$eventHub.$on('lenguageSelection', this.renderForm)
     this.$eventHub.$on('formio.destroyComponent', this.triggerDestroy)
 
+    document.removeEventListener('gpsSucceeded', function (e) {}, false)
     document.removeEventListener('gpsRequested', function (e) {}, false)
+    
     document.addEventListener('gpsRequested', (e) => {
+      Loading.show({
+        message: 'Getting GPS information',
+        spinnerSize: 100
+      })
+    })
+    document.addEventListener('gpsSucceeded', (e) => {
+      Loading.hide()
       this.renderForm()
       this.$swal(
         'GPS Registered!',
