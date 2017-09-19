@@ -9,7 +9,6 @@
                     <q-tab default slot="title" name="tab-1" icon="person" label="P1" />
                     <!-- Targets -->
                     <q-tab-pane name="tab-1">
-
                         <!-- Tabs -->
                         <formio 
                           :formioURL="formioURL" 
@@ -66,12 +65,11 @@ export default {
     })
   },
   async beforeRouteUpdate (to, from, next) {
-    this.submission = undefined
     this.form = null
+    let form = await LocalForm.get(to.params.idForm)
     if (to.params.idSubmission) {
       this.getSubmission()
     }
-    let form = await LocalForm.get(to.params.idForm)
     this.form = form
     next()
   },
@@ -98,7 +96,7 @@ export default {
     addSurvey () {
       let self = this
       this.$swal({
-        title: 'Enter short name to add',
+        title: 'Give her a name',
         input: 'text',
         showCancelButton: true,
         confirmButtonText: 'Add',

@@ -13,7 +13,7 @@
   </template>
     
     
-    <router-view />
+    <router-view :key="$route.path" />
 
  
   </q-layout>

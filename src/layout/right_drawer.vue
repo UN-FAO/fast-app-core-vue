@@ -1,10 +1,13 @@
 <template>
   <q-tabs>
         <!-- Tabs - notice slot="title" -->
-        <q-tab default  slot="title" name="tab-1" icon="assessment" label="Score" />
-        <q-tab :count="Unsynced.length"  slot="title" name="tab-2" icon="signal_wifi_off" label="Unsync" />
+        <!-- This tab should render only when we have Wizards -->
+        <q-tab v-if="_isWizard"  slot="title" name="tab-wizard" icon="signal_wifi_off" label="Components"/>
+        <q-tab   slot="title" name="tab-1" icon="assessment" label="Score" />
+        <q-tab default :count="Unsynced.length"  slot="title" name="tab-2" icon="signal_wifi_off" label="Unsync" />
 
         <!-- Targets -->
+        <q-tab-pane v-if="_isWizard" name="tab-wizard">Wizard tab</q-tab-pane>
         <q-tab-pane name="tab-1">Tab One</q-tab-pane>
         <q-tab-pane name="tab-2">
   
@@ -66,7 +69,13 @@ export default {
     return {
       Unsynced: [],
       allSubmissionSubs: [],
-      layoutStore
+      layoutStore,
+      isWizard: false
+    }
+  },
+  computed: {
+    _isWizard () {
+      return this.isWizard
     }
   },
   beforeDestroy: function () {
@@ -81,6 +90,11 @@ export default {
      * @return {[type]}        [description]
      */
   mounted: async function () {
+    this.$eventHub.on('formio.render', (data) => {
+      console.log('The form is now redered', data)
+      this.isWizard = !!(data.formio.wizard)
+    })
+
     const db = await Database.get()
     if (_.isEmpty(Auth.user())) {
       return

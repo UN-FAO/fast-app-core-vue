@@ -23,6 +23,7 @@ import FormioWizard from 'formiojs/wizard'
 import debounce from 'async-debounce'
 import OFFLINE_PLUGIN from 'modules/Formio/api/offlinePlugin'
 import {MULTILANGUAGE} from 'config/env'
+
 export default {
   name: 'formio',
   props: {
@@ -44,9 +45,10 @@ export default {
   },
   mounted () {
     Formio.setToken(this.formioToken)
-    this.$eventHub.$on('lenguageSelection', () => {
-      this.renderForm()
-    })
+
+    this.$eventHub.$on('lenguageSelection', this.renderForm)
+    this.$eventHub.$on('formio.destroyComponent', this.triggerDestroy)
+
     document.removeEventListener('gpsRequested', function (e) {}, false)
     document.addEventListener('gpsRequested', (e) => {
       this.renderForm()
@@ -60,6 +62,9 @@ export default {
     this.storeForm = debounce(this.storeForm, 500)
     this.renderForm()
   },
+  beforeDestroy() {
+    this.$eventHub.$off('lenguageSelection', this.renderForm)
+  },
   data: () => {
     return {
       formIO: null,
@@ -72,6 +77,7 @@ export default {
     // Re render form on changes
     localJsonForm: function (value) {
       this.jsonForm = value
+      console.log('changing the value of the form', value)
       this.renderForm()
     },
     submission: function (value) {
@@ -97,6 +103,9 @@ export default {
          */
     refreshForm () {
       this.renderForm()
+    },
+    triggerDestroy () {
+      this.$destroy()
     },
     /**
          * [renderForm description]
@@ -179,18 +188,18 @@ export default {
       this.formIO.render()
     },
     /**
-         * [registerOfflinePlugin description]
-         * @return {[type]} [description]
-         */
+      * [registerOfflinePlugin description]
+      * @return {[type]} [description]
+      */
     registerOfflinePlugin () {
       this.offlineModePlugin = OFFLINE_PLUGIN.getPlugin(this.formId, this.getCurrentForm, this.storeForm, this.hashField, false, this.$eventHub)
       Formio.deregisterPlugin('offline')
       Formio.registerPlugin(this.offlineModePlugin, 'offline')
     },
     /**
-         * [mountFormIOForm description]
-         * @return {[type]} [description]
-         */
+      * [mountFormIOForm description]
+      * @return {[type]} [description]
+      */
     mountFormIOForm (savedSubmission) {
       savedSubmission = savedSubmission || null
 
@@ -199,7 +208,8 @@ export default {
 
       formio.loadForm().then(onlineJsonForm => {
         console.log('this.localJsonForm => ', this.localJsonForm)
-
+        console.log('onlineJsonForm => ', onlineJsonForm)
+        console.log('this.jsonSubmission => ', this.jsonSubmission)
         // Create the formIOForm Instance (Renderer)
         if (onlineJsonForm.display === 'wizard') {
           if (_.isEmpty(this.formIO)) {
@@ -210,6 +220,7 @@ export default {
             this.formIO = new FormioForm(this.$refs.formIO)
           }
         }
+
         // Clone the original object to avoid changes
         let cloneJsonForm = _.cloneDeep(onlineJsonForm)
 
@@ -231,34 +242,67 @@ export default {
           this.formIO.submission = savedSubmission ? {data: savedSubmission.data} : this.formIO.submission
         }
 
-        this.formIO.on('error', (error) => {
-          console.log('There is an error', error)
-        })
-        if (this.formIO.eventListeners.filter(e => e.type === 'formio.submit').length > 0) {
-          return
+        let events = this.formIO.eventListeners
+        console.log('this.formIO => ', this.formIO, events)
+        // Add error event listener only if we do not have it
+        if (events.filter(e => e.type === 'formio.render').length < 1) {
+          this.formIO.on('render', (render) => {
+            this.$eventHub.$emit('formio.render', {render: render, formio: this.formIO})
+          })
         }
-        /**
-         * This function manages how the form is submitted
-         * for Offline behaivor
-         * @param  {[type]} 'submit'    [description]
-         * @param  {[type]} (submission [description]
-         * @return {[type]}             [description]
-         */
-        this.formIO.on('submit', (submission) => {
-          console.log('we have a submission', submission)
-          let formSubmission = {
-            data: submission.data
-          }
-          // If we have the recent submission, then use it
-          if (savedSubmission) {
-            formSubmission._id = savedSubmission._id
-          // If we are editing, then use the json
-          } else if (this.jsonSubmission) {
-            formSubmission._id = this.jsonSubmission.data._id ? this.jsonSubmission.data._id : this.jsonSubmission._id
-          }
-          formSubmission.redirect = true
-          formio.saveSubmission(formSubmission)
-        })
+  
+        // Add error event listener only if we do not have it
+        if (events.filter(e => e.type === 'formio.error').length < 1) {
+          this.formIO.on('error', (error) => {
+            this.$eventHub.$emit('formio.error', {error: error, formio: this.formIO})
+          })
+        }
+
+        // Add error event listener only if we do not have it
+        if (events.filter(e => e.type === 'formio.change').length < 1) {
+          this.formIO.on('change', (change) => {
+            this.$eventHub.$emit('formio.change', {change: change, formio: this.formIO})
+          })
+        }
+
+        // Add error event listener only if we do not have it
+        if (events.filter(e => e.type === 'formio.nextPage').length < 1) {
+          this.formIO.on('nextPage', (nextPage) => {
+            this.$eventHub.$emit('formio.nextPage', {nextPage: nextPage, formio: this.formIO})
+          })
+        }
+
+        // Add error event listener only if we do not have it
+        if (events.filter(e => e.type === 'formio.prevPage').length < 1) {
+          this.formIO.on('prevPage', (prevPage) => {
+            this.$eventHub.$emit('formio.prevPage', {prevPage: prevPage, formio: this.formIO})
+          })
+        }
+        
+        // Ad submit event listener only if its not present before
+        if (events.filter(e => e.type === 'formio.submit').length < 1) {
+          /**
+           * This function manages how the form is 
+           * submitted for Offline behaivor
+           * @param  {[type]} 'submit'    [description]
+           * @param  {[type]} (submission [description]
+           * @return {[type]}             [description]
+           */
+          this.formIO.on('submit', (submission) => {
+            let formSubmission = {
+              data: submission.data
+            }
+            // If we have the recent submission, then use it
+            if (savedSubmission) {
+              formSubmission._id = savedSubmission._id
+            // If we are editing, then use the json
+            } else if (this.jsonSubmission) {
+              formSubmission._id = this.jsonSubmission.data._id ? this.jsonSubmission.data._id : this.jsonSubmission._id
+            }
+            formSubmission.redirect = true
+            formio.saveSubmission(formSubmission)
+          })
+        }
       })
     }
   }
