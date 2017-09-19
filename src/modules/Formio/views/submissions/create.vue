@@ -10,9 +10,8 @@
                     <!-- Targets -->
                     <q-tab-pane name="tab-1">
                         <!-- Tabs -->
-                        <formio 
+                        <formio
                           :formioURL="formioURL" 
-                          :localJsonForm="form" 
                           :submission="submission"
                           :formioToken="formioToken"
                         />
@@ -65,7 +64,6 @@ export default {
     })
   },
   async beforeRouteUpdate (to, from, next) {
-    this.form = null
     let form = await LocalForm.get(to.params.idForm)
     if (to.params.idSubmission) {
       this.getSubmission()

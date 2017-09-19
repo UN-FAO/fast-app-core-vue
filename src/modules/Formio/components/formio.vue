@@ -10,6 +10,9 @@
 </style>
 <template>
     <div>
+        <div v-if="loading">
+          <q-spinner color="secondary" :size="30" />
+        </div>
         <div ref="formIO" class="formContainer">
         </div>
     </div>
@@ -23,15 +26,16 @@ import FormioWizard from 'formiojs/wizard'
 import debounce from 'async-debounce'
 import OFFLINE_PLUGIN from 'modules/Formio/api/offlinePlugin'
 import {MULTILANGUAGE} from 'config/env'
+import {QSpinner} from 'quasar'
 
 export default {
   name: 'formio',
+  components: {
+    QSpinner
+  },
   props: {
     formioURL: {
       required: true
-    },
-    localJsonForm: {
-      required: false
     },
     submission: {
       required: false
@@ -70,16 +74,11 @@ export default {
       formIO: null,
       jsonForm: null,
       jsonSubmission: undefined,
-      offlineModePlugin: null
+      offlineModePlugin: null,
+      loading: true
     }
   },
   watch: {
-    // Re render form on changes
-    localJsonForm: function (value) {
-      this.jsonForm = value
-      console.log('changing the value of the form', value)
-      this.renderForm()
-    },
     submission: function (value) {
       this.jsonSubmission = value
       this.renderForm()
@@ -114,11 +113,10 @@ export default {
     renderForm () {
       console.log('Rendering form')
       let submissionNotLoaded = (typeof this.jsonSubmission !== 'undefined') && _.isEmpty(this.jsonSubmission)
-      let jsonFormNotLoaded = (typeof this.localJsonForm !== 'undefined') && _.isEmpty(this.jsonForm)
 
       // Wait until form is present
-      if (submissionNotLoaded || jsonFormNotLoaded) {
-        console.log('Stoping render', submissionNotLoaded, jsonFormNotLoaded)
+      if (submissionNotLoaded) {
+        console.log('STOPPING RENDERING')
         return
       }
 
@@ -207,7 +205,6 @@ export default {
       let formio = new Formio(this.formioURL)
 
       formio.loadForm().then(onlineJsonForm => {
-        console.log('this.localJsonForm => ', this.localJsonForm)
         console.log('onlineJsonForm => ', onlineJsonForm)
         console.log('this.jsonSubmission => ', this.jsonSubmission)
         // Create the formIOForm Instance (Renderer)
@@ -247,6 +244,7 @@ export default {
         // Add error event listener only if we do not have it
         if (events.filter(e => e.type === 'formio.render').length < 1) {
           this.formIO.on('render', (render) => {
+            this.loading = false
             this.$eventHub.$emit('formio.render', {render: render, formio: this.formIO})
           })
         }
