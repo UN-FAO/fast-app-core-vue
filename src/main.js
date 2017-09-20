@@ -73,7 +73,7 @@ Quasar.start(async () => {
       lenguage.translations = {}
       _.forEach(translations, (translation, index) => {
         if (translation.data[lenguageCode]) {
-          lenguage.translations[translation.data.label] = translation.data[lenguageCode]
+          lenguage.translations[translation.data.en] = translation.data[lenguageCode]
         }
       })
     })

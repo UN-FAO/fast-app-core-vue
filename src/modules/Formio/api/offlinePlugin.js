@@ -1,5 +1,6 @@
 import LocalForm from 'database/collections/scopes/LocalForm'
 import LocalSubmission from 'database/collections/scopes/LocalSubmission'
+import LocalTranslation from 'database/collections/scopes/LocalTranslation'
 import Formio from 'formiojs'
 import router from 'config/router'
 import store from 'config/store'
@@ -93,12 +94,12 @@ const OFFLINE_PLUGIN = class {
       	return jsonSubmissions
       },
       request: async (args) => {
+      	// If we are trying to get a form we load it locally
         if (args.method === 'GET' && args.type === 'form') {
-        	console.log('getting the form from local')
           let form = await LocalForm.get(args.formio.formId)
-          console.log('returning the other', form)
           return form
         }
+        // If we are trying to get submissions from that form
         if ((args.method === 'POST' || args.method === 'PUT') && args.type === 'submission') {
         	console.log('args => ', args)
         	let form = await LocalForm.get(args.formio.formId)
@@ -128,6 +129,11 @@ const OFFLINE_PLUGIN = class {
 		  transformedArray.push(element.data)
     })
     return transformedArray
+  }
+
+  static async getLocalTranslations () {
+  	 let translations = await LocalTranslation.getFormTranslations()
+  	 return translations
   }
 }
 

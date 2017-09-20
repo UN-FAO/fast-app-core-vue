@@ -20,12 +20,10 @@
 <script>
 import _ from 'lodash'
 import Formio from 'formiojs'
-import FormioUtils from 'formiojs/utils'
 import FormioForm from 'formiojs/form'
 import FormioWizard from 'formiojs/wizard'
 import debounce from 'async-debounce'
 import OFFLINE_PLUGIN from 'modules/Formio/api/offlinePlugin'
-import {MULTILANGUAGE} from 'config/env'
 import {QSpinner, QSpinnerGears, Loading} from 'quasar'
 
 export default {
@@ -158,40 +156,7 @@ export default {
          * @param {[type]} Components [description]
          */
     setTranslations (Components) {
-      let translations = Components
-      if (!MULTILANGUAGE) {
-        return translations
-      }
-      return translations
-      FormioUtils.eachComponent(translations, (component, index) => {
-        if (component.label === 'projectID' || component.label === 'projectName') {
-          return
-        }
-        if (component.label &&
-                    component.label !== '') {
-          let tLabel = component.label.replace('translations.', '')
-          tLabel = tLabel.replace(/[^a-zA-Z0-9]/g, '_')
-          tLabel = tLabel.split(' ').join('_')
-          component.label = this.$t('translations.' + tLabel)
-        }
-
-        if (component.description &&
-                    component.description !== '') {
-          let tDescription = component.description.replace('translations.', '')
-          tDescription = tDescription.replace(/[^a-zA-Z0-9]/g, '_')
-          tDescription = tDescription.split(' ').join('_')
-          component.description = this.$t('translations.' + tDescription)
-        }
-
-        if (component.placeholder &&
-                    component.placeholder !== '') {
-          let tPlaceholder = component.placeholder.replace('translations.', '')
-          tPlaceholder = tPlaceholder.replace(/[^a-zA-Z0-9]/g, '_')
-          tPlaceholder = tPlaceholder.split(' ').join('_')
-          component.placeholder = this.$t('translations.' + tPlaceholder)
-        }
-      })
-      return translations
+      return Components
     },
     getCurrentForm () {
       return this.jsonForm
@@ -212,35 +177,28 @@ export default {
       * [mountFormIOForm description]
       * @return {[type]} [description]
       */
-    mountFormIOForm (savedSubmission) {
+    async mountFormIOForm (savedSubmission) {
       savedSubmission = savedSubmission || null
 
       // Create FormIOJS plugin instace (Manipulation)
       let formio = new Formio(this.formioURL)
 
-      formio.loadForm().then(onlineJsonForm => {
+      formio.loadForm().then(async onlineJsonForm => {
         console.log('onlineJsonForm => ', onlineJsonForm)
         console.log('this.jsonSubmission => ', this.jsonSubmission)
+        let translations = await OFFLINE_PLUGIN.getLocalTranslations()
+
+        console.log('translations => ', translations)
+        console.log('example => ', {'hello': 'hello'})
+
         // Create the formIOForm Instance (Renderer)
         if (onlineJsonForm.display === 'wizard') {
           if (_.isEmpty(this.formIO)) {
-            this.formIO = new FormioWizard(this.$refs.formIO)
+            this.formIO = new FormioWizard(this.$refs.formIO, translations)
           }
         } else {
           if (_.isEmpty(this.formIO)) {
-            this.formIO = new FormioForm(this.$refs.formIO, {
-              i18n: {
-                es: {
-                  'latitude': 'latitud',
-                  'longitude': 'longitud',
-                  'GPS Position': 'Posicion del GPS',
-                  'GPS LOCATIONS': 'Posiciones del GPS',
-                  'Name': 'Nombre',
-                  'fileUpload': 'Subir un archivo',
-                  'addGpslocation': 'Agregar posicion GPS'
-                }
-              }
-            })
+            this.formIO = new FormioForm(this.$refs.formIO, translations)
           }
         }
         // Clone the original object to avoid changes
