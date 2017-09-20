@@ -54,7 +54,7 @@ export default {
   methods: {
     setLanguage (lenguage) {
       this.$i18n.locale = lenguage.code
-      this.$eventHub.$emit('lenguageSelection', lenguage.direction)
+      this.$eventHub.$emit('lenguageSelection', lenguage)
       this.$swal(
         'Changed!',
         'The language has been changed',

@@ -50,7 +50,11 @@ export default {
   mounted () {
     Formio.setToken(this.formioToken)
 
-    this.$eventHub.$on('lenguageSelection', this.renderForm)
+    this.$eventHub.$on('lenguageSelection', (lenguage) => {
+      this.formIO.language = lenguage.code
+      this.renderForm()
+    })
+     
     this.$eventHub.$on('formio.destroyComponent', this.triggerDestroy)
 
     document.removeEventListener('gpsSucceeded', function (e) {}, false)
@@ -158,6 +162,7 @@ export default {
       if (!MULTILANGUAGE) {
         return translations
       }
+      return translations
       FormioUtils.eachComponent(translations, (component, index) => {
         if (component.label === 'projectID' || component.label === 'projectName') {
           return
@@ -223,10 +228,21 @@ export default {
           }
         } else {
           if (_.isEmpty(this.formIO)) {
-            this.formIO = new FormioForm(this.$refs.formIO)
+            this.formIO = new FormioForm(this.$refs.formIO, {
+              i18n: {
+                es: {
+                  'latitude': 'latitud',
+                  'longitude': 'longitud',
+                  'GPS Position': 'Posicion del GPS',
+                  'GPS LOCATIONS': 'Posiciones del GPS',
+                  'Name': 'Nombre',
+                  'fileUpload': 'Subir un archivo',
+                  'addGpslocation': 'Agregar posicion GPS'
+                }
+              }
+            })
           }
         }
-
         // Clone the original object to avoid changes
         let cloneJsonForm = _.cloneDeep(onlineJsonForm)
 
