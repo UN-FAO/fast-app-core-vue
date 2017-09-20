@@ -34,6 +34,7 @@ var gpsPositions = function (data, latitudField, longitudField) {
       document.dispatchEvent(requestedEvent)
       navigator.geolocation.getCurrentPosition(showPosition, error, {maximumAge: 3000, timeout: 5000, enableHighAccuracy: true})
     } else {
+      document.dispatchEvent(doneEvent)
       console.log('Geolocation is not supported by this browser.')
     }
     function showPosition (position) {
