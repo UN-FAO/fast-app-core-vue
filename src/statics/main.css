@@ -8,6 +8,7 @@
 
     body {
     line-height: inherit !important;
+    background-color:#f4f4f4 !important; 
 }
 
 label.control-label.field-required {
@@ -65,6 +66,9 @@ input.form-control {
 
 button.choices__button {
     position: unset !important;
+}
+.choices__list {
+    color: black;
 }
 
 .row {

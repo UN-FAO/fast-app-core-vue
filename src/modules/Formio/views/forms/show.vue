@@ -12,7 +12,8 @@
 <template>
   <div>
     <q-pull-to-refresh :handler="refreshSubmissions">
-        <q-card flat>
+      <div class="row">
+        <q-card color="white" class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 centered">
             <q-card-main>
                 <data-tables :data="submissions" :search-def="searchDef" :action-col-def="getRowActionsDef()" action-col-label="Actions" :actions-def="actionsDef">
                     <el-table-column type="expand">
@@ -75,10 +76,10 @@
                 </data-tables>
             </q-card-main>
         </q-card>
-
+      </div>
     </q-pull-to-refresh>
-    <q-fixed-position corner="bottom-right" :offset="[18, 18]">
-                    <q-fab color="red" icon="add" direction="up" push>
+    <q-fixed-position corner="top-right" :offset="[18, 18]">
+                    <q-fab color="red" icon="add" direction="left" push>
                         <q-fab-action color="secondary" @click="createSubmission()" icon="add"></q-fab-action>
 
                         <q-fab-action color="amber" @click="pullSubmissions()" icon="cloud_download"></q-fab-action>

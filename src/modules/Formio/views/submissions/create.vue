@@ -1,7 +1,7 @@
 <template>
     <q-pull-to-refresh :handler="refreshSubmissions">
       <div class="row">
-        <q-card  class="col-lg-9 col-lg-offset-1 col-md-10 col-md-offset-1">
+        <q-card color="white" class="col-lg-9 col-lg-offset-1 col-md-10 col-md-offset-1">
             
             <q-card-main>
 

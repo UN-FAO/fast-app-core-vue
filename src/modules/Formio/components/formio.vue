@@ -184,13 +184,7 @@ export default {
       let formio = new Formio(this.formioURL)
 
       formio.loadForm().then(async onlineJsonForm => {
-        console.log('onlineJsonForm => ', onlineJsonForm)
-        console.log('this.jsonSubmission => ', this.jsonSubmission)
         let translations = await OFFLINE_PLUGIN.getLocalTranslations()
-
-        console.log('translations => ', translations)
-        console.log('example => ', {'hello': 'hello'})
-
         // Create the formIOForm Instance (Renderer)
         if (onlineJsonForm.display === 'wizard') {
           if (_.isEmpty(this.formIO)) {
@@ -223,7 +217,7 @@ export default {
         }
 
         let events = this.formIO.eventListeners
-        console.log('this.formIO => ', this.formIO, events)
+
         // Add error event listener only if we do not have it
         if (events.filter(e => e.type === 'formio.render').length < 1) {
           this.formIO.on('render', (render) => {
