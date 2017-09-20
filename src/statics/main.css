@@ -71,6 +71,13 @@ button.choices__button {
     color: black;
 }
 
+ul.list-group.list-group-striped {
+    color: #666666;
+}
+.fileSelector {
+    color: #666666;
+}
+
 .row {
     margin-right: 0px !important;
     margin-left: 0px !important;
