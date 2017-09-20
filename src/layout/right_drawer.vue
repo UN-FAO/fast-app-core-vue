@@ -7,8 +7,40 @@
         <q-tab default :count="Unsynced.length"  slot="title" name="tab-2" icon="signal_wifi_off" label="Unsync" />
 
         <!-- Targets -->
-        <q-tab-pane v-if="_isWizard" name="tab-wizard">Wizard tab</q-tab-pane>
-        <q-tab-pane name="tab-1">Tab One</q-tab-pane>
+        <!-- This should be extracted to its own component -->
+        <q-tab-pane v-if="_isWizard" name="tab-wizard">
+        </q-tab-pane>
+        <!-- //////////////////////////// -->
+
+        <q-tab-pane name="tab-1">
+            <q-list separator>
+          <!-- collapsible to hide sub-level menu entries -->
+          <q-collapsible v-for="(panel, index) in scorePanels"  separator :key="panel.key" icon="apps" :label="panel.title" >
+           
+            <q-item multiline icon="favorite" v-for="(component, cIndex) in panel.components" :label="component.label" :key="component.key">
+            <q-item-side icon="school" />
+            <q-item-main
+              :label="component.label"
+              label-lines="3"
+            />
+            <q-item-side right :stamp="component.value" />
+          </q-item>
+
+
+          </q-collapsible>
+        </q-list>
+
+
+
+
+        </q-tab-pane>
+
+
+
+
+
+
+
         <q-tab-pane name="tab-2">
   
        <q-list-header>{{ $t("App.unsynced_actions") }}
@@ -60,6 +92,7 @@ import layoutStore from './layout-store'
 import * as Database from 'database/Database'
 import moment from 'moment'
 import Auth from 'modules/Auth/api/Auth'
+import FormioUtils from 'formiojs/utils'
 import {QTabs, QTab, QTabPane, QScrollArea, QSideLink, QItemTile, QItemSide, QItemMain, QListHeader, QCollapsible, QBtn, QIcon, QTooltip, QList, QItem, QItemSeparator, QPopover} from 'quasar'
 export default {
   components: {
@@ -70,7 +103,8 @@ export default {
       Unsynced: [],
       allSubmissionSubs: [],
       layoutStore,
-      isWizard: false
+      isWizard: false,
+      scorePanels: []
     }
   },
   computed: {
@@ -91,8 +125,32 @@ export default {
      */
   mounted: async function () {
     this.$eventHub.on('formio.render', (data) => {
-      console.log('The form is now redered', data)
       this.isWizard = !!(data.formio.wizard)
+    })
+
+    this.$eventHub.on('formio.change', (data) => {
+      let scorePanels = []
+
+      // This should only be called if this is a Wizard
+      // Search all of the Score components in different pages
+      _.forEach(data.formio.pages, (page) => {
+          let panels = FormioUtils.findComponents(page.components, {
+          'type': 'panel'
+        })
+          if (panels.length > 0) {
+            _.forEach(panels, (panel, index) => {
+              // Make sure that the panel contains Score
+              if (panel.key.indexOf('score') !== -1) {
+                _.forEach(panel.components, (component, cindex) => {
+                  // Search the current value of the Score and add it
+                  component.value = data.formio.data[component.key]
+                })
+                scorePanels.push(panel)
+              }
+            })
+          }
+      })
+        this.scorePanels = scorePanels
     })
 
     const db = await Database.get()
