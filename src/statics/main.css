@@ -99,3 +99,7 @@ legend {
 .q-tabs-inverted.q-tabs-position-top .q-tabs-panes {
     border-top: none !important;
 }
+
+button.btn.btn-default.btn-wizard-nav-cancel {
+    display: none;
+}

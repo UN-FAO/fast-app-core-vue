@@ -57,6 +57,59 @@ export default {
 
     document.removeEventListener('gpsSucceeded', function (e) {}, false)
     document.removeEventListener('gpsRequested', function (e) {}, false)
+    document.removeEventListener('messageRequested', function (e) {}, false)
+
+    document.addEventListener('messageRequested', (e) => {
+      console.log('Sending SMS message', e.detail.data)
+      if (!this.$q.platform.is.cordova) {
+        var Sender = require('aws-sms-send')
+        var config = {
+          AWS: {
+            accessKeyId: 'AKIAILPFH2E36W2UDT5A',
+            secretAccessKey: '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',
+            region: 'eu-west-1'
+          },
+          topicArn: 'arn:aws:sns:eu-west-1:839360539511:fastPoc'
+        }
+         
+        var sender = new Sender(config)
+        var body = JSON.stringify(e.detail.data)
+        /* Send direct sms */
+        sender.sendSms(body, 'FAST APP POC', false, String(e.detail.data.phoneNumber))
+        .then((response) => {
+          console.log('SUccess', response)
+          this.$swal(
+          'SMS Sent',
+          'Your Message was sent!',
+          'success'
+          )
+        })
+        .catch(function(err) {
+          console.log('error', err)
+        })
+      }
+       var number = String(e.detail.data.phoneNumber)
+        var message = e.detail.data.message
+        console.log('number=' + number + ', message= ' + message)
+
+        // CONFIGURATION
+        var options = {
+            replaceLineBreaks: false,
+            android: {
+                intent: ''
+            }
+        }
+
+        var success = function () {
+          this.$swal(
+            'SMS sent!',
+            'Your message has been sent!',
+            'success'
+          )
+        }
+        var error = function (e) { alert('Message Failed:' + e) }
+        sms.send(number, message, options, success, error)
+    })
     
     document.addEventListener('gpsRequested', (e) => {
       Loading.show({

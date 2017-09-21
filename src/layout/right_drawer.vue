@@ -2,8 +2,8 @@
   <q-tabs>
         <!-- Tabs - notice slot="title" -->
         <!-- This tab should render only when we have Wizards -->
-        <q-tab v-if="_isWizard"  slot="title" name="tab-wizard" icon="signal_wifi_off" label="Components"/>
-        <q-tab   slot="title" name="tab-1" icon="assessment" label="Score" />
+        <q-tab v-if="_isWizard"  slot="title" name="tab-wizard" icon="signal_wifi_off" label="Sections"/>
+        <q-tab v-if="scorePanels.length > 0"  slot="title" name="tab-1" icon="assessment" label="Score" />
         <q-tab default :count="Unsynced.length"  slot="title" name="tab-2" icon="signal_wifi_off" label="Unsync" />
 
         <!-- Targets -->
@@ -34,11 +34,6 @@
 
 
         </q-tab-pane>
-
-
-
-
-
 
 
         <q-tab-pane name="tab-2">
@@ -113,7 +108,6 @@ export default {
     }
   },
   beforeDestroy: function () {
-    console.log('Destroying')
     this.allSubmissionSubs.forEach(sub => sub.unsubscribe())
   },
   /**

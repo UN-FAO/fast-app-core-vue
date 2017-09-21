@@ -82,3 +82,18 @@ var addIfNotEmpty = function (data, elements) {
   }
   return initialCount
 }
+
+/**
+ * [sendSMS description]
+ * @param  {[type]} data [description]
+ * @return {[type]}      [description]
+ */
+var sendSMS = function (data) {
+	// Create the event
+  var messageRequested = new CustomEvent('messageRequested',
+    {
+      'detail': {'data': data, 'text': 'SMS message requested'}
+    }
+  )
+  document.dispatchEvent(messageRequested)
+}
