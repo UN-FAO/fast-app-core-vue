@@ -1,7 +1,6 @@
 <template>
     <q-pull-to-refresh :handler="refreshSubmissions">
-      <div class="row">
-        
+      <div class="row">       
         <q-card color="white" class="col-lg-9 col-lg-offset-1 col-md-10 col-md-offset-1" >
             
             <q-card-main>
@@ -42,7 +41,7 @@
 import _ from 'lodash'
 import {mapActions} from 'vuex'
 import Auth from 'modules/Auth/api/Auth'
-import formio from 'modules/Formio/components/formio'
+import formio from 'modules/Formio/components/formio/formio'
 import LocalForm from 'database/collections/scopes/LocalForm'
 import LocalSubmission from 'database/collections/scopes/LocalSubmission'
 import {APP_URL} from 'config/env'

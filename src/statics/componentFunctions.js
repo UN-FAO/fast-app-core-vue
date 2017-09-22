@@ -27,6 +27,12 @@ var gpsPositions = function (data, latitudField, longitudField) {
 
   function error (e) {
     console.log('GPS error', e)
+    var errorEvent = new CustomEvent('gpsError',
+    	{
+      	'detail': {'data': e, 'text': 'GPS Error'}
+    	}
+  	)
+    document.dispatchEvent(errorEvent)
   }
 
   function getLocation () {

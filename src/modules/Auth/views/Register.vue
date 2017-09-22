@@ -17,7 +17,7 @@
       </q-card-title>
       <q-card-main>
         <formio :formioURL="formioURL"
-                hashField="password"></formio>
+                hashField="password" />
         <div class="col-md-12 col-lg-12 justify-center">
           <router-link :to="{ path: 'login' }">Back to login</router-link>
         </div>
@@ -39,7 +39,7 @@ import * as Database from 'database/Database';
 import _clone from 'lodash/clone'
 import md5 from 'md5';
 import { MD5_KEY } from 'config/env';
-import formio from 'modules/Formio/components/formio'
+import formio from 'modules/Formio/components/formio/formio'
 import { APP_URL } from 'config/env'
 
 export default {

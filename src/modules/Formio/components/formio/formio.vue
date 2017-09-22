@@ -24,7 +24,10 @@ import FormioForm from 'formiojs/form'
 import FormioWizard from 'formiojs/wizard'
 import debounce from 'async-debounce'
 import OFFLINE_PLUGIN from 'modules/Formio/api/offlinePlugin'
-import {QSpinner, QSpinnerGears, Loading} from 'quasar'
+import {QSpinner, QSpinnerGears} from 'quasar'
+import GPS from './src/gps'
+import Lenguage from './src/lenguage'
+import SMS from './src/sms'
 
 export default {
   name: 'formio',
@@ -47,91 +50,17 @@ export default {
   },
   mounted () {
     Formio.setToken(this.formioToken)
-
-    this.$eventHub.$on('lenguageSelection', (lenguage) => {
-      this.formIO.language = lenguage.code
-      this.renderForm()
-    })
-     
+    Lenguage.listen(this)
+    GPS.listen(this)
+    SMS.listen(this)
     this.$eventHub.$on('formio.destroyComponent', this.triggerDestroy)
-
-    document.removeEventListener('gpsSucceeded', function (e) {}, false)
-    document.removeEventListener('gpsRequested', function (e) {}, false)
-    document.removeEventListener('messageRequested', function (e) {}, false)
-
-    document.addEventListener('messageRequested', (e) => {
-      console.log('Sending SMS message', e.detail.data)
-      if (!this.$q.platform.is.cordova) {
-        var Sender = require('aws-sms-send')
-        var config = {
-          AWS: {
-            accessKeyId: 'AKIAILPFH2E36W2UDT5A',
-            secretAccessKey: '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',
-            region: 'eu-west-1'
-          },
-          topicArn: 'arn:aws:sns:eu-west-1:839360539511:fastPoc'
-        }
-         
-        var sender = new Sender(config)
-        var body = JSON.stringify(e.detail.data)
-        /* Send direct sms */
-        sender.sendSms(body, 'FAST APP POC', false, String(e.detail.data.phoneNumber))
-        .then((response) => {
-          console.log('SUccess', response)
-          this.$swal(
-          'SMS Sent',
-          'Your Message was sent!',
-          'success'
-          )
-        })
-        .catch(function(err) {
-          console.log('error', err)
-        })
-      }
-       var number = String(e.detail.data.phoneNumber)
-        var message = e.detail.data.message
-        console.log('number=' + number + ', message= ' + message)
-
-        // CONFIGURATION
-        var options = {
-            replaceLineBreaks: false,
-            android: {
-                intent: ''
-            }
-        }
-
-        var success = function () {
-          this.$swal(
-            'SMS sent!',
-            'Your message has been sent!',
-            'success'
-          )
-        }
-        var error = function (e) { alert('Message Failed:' + e) }
-        sms.send(number, message, options, success, error)
-    })
     
-    document.addEventListener('gpsRequested', (e) => {
-      Loading.show({
-        message: 'Getting GPS information',
-        spinnerSize: 100
-      })
-    })
-    document.addEventListener('gpsSucceeded', (e) => {
-      Loading.hide()
-      this.renderForm()
-      this.$swal(
-        'GPS Registered!',
-        'Your GPS position was detected',
-        'success'
-      )
-    })
-    // Avoid function for been called multiple times
+    // Avoid store function to be called multiple times
     this.storeForm = debounce(this.storeForm, 500)
     this.renderForm()
   },
   beforeDestroy() {
-    this.$eventHub.$off('lenguageSelection', this.renderForm)
+    Lenguage.off(this)
   },
   data: () => {
     return {
@@ -175,14 +104,10 @@ export default {
          * @return {[type]} [description]
          */
     renderForm () {
-      console.log('Rendering form')
       let submissionNotLoaded = (typeof this.jsonSubmission !== 'undefined') && _.isEmpty(this.jsonSubmission)
 
       // Wait until form is present
-      if (submissionNotLoaded) {
-        console.log('STOPPING RENDERING')
-        return
-      }
+      if (submissionNotLoaded) { return }
 
       this.registerOfflinePlugin()
 
