@@ -167,6 +167,12 @@ const actions = {
     console.log('formSubmission from inside the function => ', formSubmission)
     let submission = formSubmission
     submission.sync = false
+    // Always store as draft if we do not manually submit
+    if (formSubmission._draft === false) {
+      submission.draft = false
+    } else {
+      submission.draft = true
+    }
     submission.user_email = User.email
     submission.formio = formio
     submission.created = moment().format()
@@ -181,13 +187,15 @@ const actions = {
           data: submission
         }
       })
-      return submission
+
+      localSubmission = await LocalSubmission.get(formSubmission._id)
+      return localSubmission
     }
     console.log('Creating new', submission)
-    await DB.submissions.insert({
+    let newSubmission = await DB.submissions.insert({
       data: submission
     })
-    return submission
+    return newSubmission
   },
 
   /**

@@ -28,6 +28,7 @@ import {QSpinner, QSpinnerGears} from 'quasar'
 import GPS from './src/gps'
 import Lenguage from './src/lenguage'
 import SMS from './src/sms'
+// import CSS from './src/css'
 
 export default {
   name: 'formio',
@@ -53,6 +54,7 @@ export default {
     Lenguage.listen(this)
     GPS.listen(this)
     SMS.listen(this)
+    // CSS.format(this)
     this.$eventHub.$on('formio.destroyComponent', this.triggerDestroy)
     
     // Avoid store function to be called multiple times
@@ -106,9 +108,10 @@ export default {
     renderForm () {
       let submissionNotLoaded = (typeof this.jsonSubmission !== 'undefined') && _.isEmpty(this.jsonSubmission)
 
-      // Wait until form is present
+      // Wait until submission is present (if needed)
       if (submissionNotLoaded) { return }
 
+      // Offline plugin functionallity
       this.registerOfflinePlugin()
 
       // Solving problem of multiple classes added to the element
@@ -147,8 +150,11 @@ export default {
       * @return {[type]} [description]
       */
     registerOfflinePlugin () {
+      // Get the Plugin
       this.offlineModePlugin = OFFLINE_PLUGIN.getPlugin(this.formId, this.getCurrentForm, this.storeForm, this.hashField, false, this.$eventHub)
+      // De register if there was a previous registration
       Formio.deregisterPlugin('offline')
+      // Register the plugin for offline mode
       Formio.registerPlugin(this.offlineModePlugin, 'offline')
     },
     /**
@@ -156,6 +162,8 @@ export default {
       * @return {[type]} [description]
       */
     async mountFormIOForm (savedSubmission) {
+      // Optional parameter (If we want to stay on
+      // the same page after submission)
       savedSubmission = savedSubmission || null
 
       // Create FormIOJS plugin instace (Manipulation)
@@ -172,6 +180,11 @@ export default {
           if (_.isEmpty(this.formIO)) {
             this.formIO = new FormioForm(this.$refs.formIO, translations)
           }
+        }
+
+        if (_.isEmpty(this.jsonSubmission)) {
+          console.log('We are creatttiinggggggggg', this.formIO)
+          formio.saveSubmission(this.formIO.data)
         }
         // Clone the original object to avoid changes
         let cloneJsonForm = _.cloneDeep(onlineJsonForm)
@@ -245,6 +258,7 @@ export default {
             let formSubmission = {
               data: submission.data
             }
+            formSubmission._draft = false
             // If we have the recent submission, then use it
             if (savedSubmission) {
               formSubmission._id = savedSubmission._id

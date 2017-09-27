@@ -156,6 +156,7 @@ export default {
       db.submissions
         .find({
           'data.sync': false,
+          'data.draft': false,
           'data.user_email': {
             $exists: true,
             $eq: Auth.user().data.email || Auth.user().email

@@ -39,16 +39,18 @@ const OFFLINE_PLUGIN = class {
         User: Auth.user().data
       })
         .then((created) => {
-         	if (formSubmission.redirect === true)	{
-         		   router.push({
-              name: 'formio_form_show',
-          	params: {
-           	 idForm: formId,
-           	 newsubmission: 'true'
-          	}
-        	})
-         	}
-       
+            console.log('Submission has been saved')
+            if (formSubmission._id) {
+              // window.location.reload()
+            } else {
+              router.push({
+                name: 'formio_submission_update',
+                 params: {
+                  idForm: formId,
+                  idSubmission: created._id
+                }
+              })
+            }
           return created
         })
         .catch((error) => {

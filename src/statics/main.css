@@ -103,3 +103,13 @@ legend {
 button.btn.btn-default.btn-wizard-nav-cancel {
     display: none;
 }
+
+.pagination > li {
+    display: none !important;
+}
+
+.pagination > li.active, 
+.pagination > li.active + li,
+.pagination > li.active + li + li{
+    display: inline-block !important;
+}
