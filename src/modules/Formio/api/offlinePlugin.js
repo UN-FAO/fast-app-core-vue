@@ -39,7 +39,7 @@ const OFFLINE_PLUGIN = class {
         User: Auth.user().data
       })
         .then((created) => {
-            console.log('Submission has been saved')
+            console.log('Submission has been saved', redirect)
             if (formSubmission._id) {
               // window.location.reload()
             } else {

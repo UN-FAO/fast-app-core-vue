@@ -28,6 +28,8 @@ import {QSpinner, QSpinnerGears} from 'quasar'
 import GPS from './src/gps'
 import Lenguage from './src/lenguage'
 import SMS from './src/sms'
+import SaveAsDraft from './src/saveAsDraft'
+
 // import CSS from './src/css'
 
 export default {
@@ -54,6 +56,7 @@ export default {
     Lenguage.listen(this)
     GPS.listen(this)
     SMS.listen(this)
+    SaveAsDraft.listen(this)
     // CSS.format(this)
     this.$eventHub.$on('formio.destroyComponent', this.triggerDestroy)
     
@@ -157,6 +160,23 @@ export default {
       // Register the plugin for offline mode
       Formio.registerPlugin(this.offlineModePlugin, 'offline')
     },
+    saveAsDraft (e) {
+      console.log('Saving as Draaaaft', e, this.formIO)
+      let formSubmission = {
+        data: this.formIO.data
+      }
+      formSubmission._draft = true
+      // If we have the recent submission, then use it
+      if (this.jsonSubmission) {
+        formSubmission._id = this.jsonSubmission.data._id ? this.jsonSubmission.data._id : this.jsonSubmission._id
+
+        formSubmission.redirect = false
+
+        let formio = new Formio(this.formioURL)
+
+        formio.saveSubmission(formSubmission)
+      }
+    },
     /**
       * [mountFormIOForm description]
       * @return {[type]} [description]
@@ -181,9 +201,8 @@ export default {
             this.formIO = new FormioForm(this.$refs.formIO, translations)
           }
         }
-
-        if (_.isEmpty(this.jsonSubmission)) {
-          console.log('We are creatttiinggggggggg', this.formIO)
+        console.log()
+        if (_.isEmpty(this.jsonSubmission) && this.$route.name === 'formio_form_submission') {
           formio.saveSubmission(this.formIO.data)
         }
         // Clone the original object to avoid changes

@@ -103,3 +103,18 @@ var sendSMS = function (data) {
   )
   document.dispatchEvent(messageRequested)
 }
+
+/**
+ * [saveAsDraft description]
+ * @param  {[type]} data [description]
+ * @return {[type]}      [description]
+ */
+var saveAsDraft = function (data) {
+    // Create the event
+  var saveAsDraft = new CustomEvent('saveAsDraft',
+    {
+      'detail': {'data': data, 'text': 'Save as Draft Requested'}
+    }
+  )
+  document.dispatchEvent(saveAsDraft)
+}

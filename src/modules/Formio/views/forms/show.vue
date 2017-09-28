@@ -277,6 +277,7 @@ export default {
             submissions = _.map(submissions, function(submission) {
               submission = _.clone(submission)
               console.log(submission)
+              submission.data.data = {}
               submission.data.data.created = submission.data.created
               submission.data.data.Humancreated = self.humanizeDate(submission.data.created)
               submission.data.data.id_submision = submission.data._id ? submission.data._id : submission._id
