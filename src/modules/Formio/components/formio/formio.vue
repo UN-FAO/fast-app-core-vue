@@ -241,10 +241,19 @@ export default {
             this.$eventHub.$emit('formio.error', {error: error, formio: this.formIO})
           })
         }
-
+        let timeoutId
         // Add error event listener only if we do not have it
         if (events.filter(e => e.type === 'formio.change').length < 1) {
           this.formIO.on('change', (change) => {
+            // AutoSave functionality
+            // If a timer was already started, clear it.
+            if (timeoutId) clearTimeout(timeoutId)
+
+            // Set timer that will save comment when it fires.
+            timeoutId = setTimeout(function () {
+              this.saveAsDraft({})
+            }, 750)
+
             this.$eventHub.$emit('formio.change', {change: change, formio: this.formIO})
           })
         }
