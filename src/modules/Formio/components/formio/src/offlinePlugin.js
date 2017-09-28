@@ -40,6 +40,14 @@ const OFFLINE_PLUGIN = class {
       })
         .then((created) => {
             console.log('Submission has been saved', redirect)
+              // Create the event
+            var draftSaved = new CustomEvent('draftSaved',
+              {
+                'detail': {'data': created, 'text': 'Draft Saved'}
+              }
+            )
+            document.dispatchEvent(draftSaved)
+            
             if (formSubmission._id) {
               // window.location.reload()
             } else {

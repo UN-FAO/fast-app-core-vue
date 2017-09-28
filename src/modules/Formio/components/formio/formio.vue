@@ -23,7 +23,7 @@ import Formio from 'formiojs'
 import FormioForm from 'formiojs/form'
 import FormioWizard from 'formiojs/wizard'
 import debounce from 'async-debounce'
-import OFFLINE_PLUGIN from 'modules/Formio/api/offlinePlugin'
+import OFFLINE_PLUGIN from './src/offlinePlugin'
 import {QSpinner, QSpinnerGears} from 'quasar'
 import GPS from './src/gps'
 import Lenguage from './src/lenguage'
@@ -201,7 +201,6 @@ export default {
             this.formIO = new FormioForm(this.$refs.formIO, translations)
           }
         }
-        console.log()
         if (_.isEmpty(this.jsonSubmission) && this.$route.name === 'formio_form_submission') {
           formio.saveSubmission(this.formIO.data)
         }
