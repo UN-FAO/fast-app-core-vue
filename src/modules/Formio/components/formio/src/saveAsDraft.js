@@ -11,7 +11,6 @@ const SaveAsDraft = class {
     document.addEventListener('saveAsDraft', (e) => {
         vm.saveAsDraft(e)
     })
-    SaveAsDraft.listenSaved(vm)
   }
 
   /**

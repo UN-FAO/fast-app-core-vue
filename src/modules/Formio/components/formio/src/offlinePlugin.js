@@ -39,7 +39,7 @@ const OFFLINE_PLUGIN = class {
         User: Auth.user().data
       })
         .then((created) => {
-            console.log('Submission has been saved', redirect)
+            console.log('Submission has been saved', formSubmission)
               // Create the event
             var draftSaved = new CustomEvent('draftSaved',
               {
@@ -47,9 +47,16 @@ const OFFLINE_PLUGIN = class {
               }
             )
             document.dispatchEvent(draftSaved)
-            
+
             if (formSubmission._id) {
-              // window.location.reload()
+              if (formSubmission.redirect === true) {
+                 router.push({
+                  name: 'formio_form_show',
+                  params: {
+                   idForm: formId
+                 }
+                })
+              }
             } else {
               router.push({
                 name: 'formio_submission_update',

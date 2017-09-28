@@ -161,7 +161,22 @@ export default {
       Formio.registerPlugin(this.offlineModePlugin, 'offline')
     },
     saveAsDraft (e) {
-      console.log('Saving as Draaaaft', e, this.formIO)
+      let formSubmission = {
+        data: this.formIO.data
+      }
+      formSubmission._draft = true
+      // If we have the recent submission, then use it
+      if (this.jsonSubmission) {
+        formSubmission._id = this.jsonSubmission.data._id ? this.jsonSubmission.data._id : this.jsonSubmission._id
+
+        formSubmission.redirect = true
+
+        let formio = new Formio(this.formioURL)
+
+        formio.saveSubmission(formSubmission)
+      }
+    },
+    autoSaveAsDraft (e) {
       let formSubmission = {
         data: this.formIO.data
       }
@@ -250,8 +265,8 @@ export default {
             if (timeoutId) clearTimeout(timeoutId)
 
             // Set timer that will save comment when it fires.
-            timeoutId = setTimeout(function () {
-              this.saveAsDraft({})
+            timeoutId = setTimeout(() => {
+              this.autoSaveAsDraft({automatic: true})
             }, 750)
 
             this.$eventHub.$emit('formio.change', {change: change, formio: this.formIO})
