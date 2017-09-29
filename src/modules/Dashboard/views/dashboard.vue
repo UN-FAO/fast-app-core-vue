@@ -12,7 +12,7 @@
 <template>
 <div class="row">
   <q-card inline
-          class="col-lg-5 col-lg-offset-1">
+          class="col-lg-5 col-lg-offset-1" style="background: white;">
     <q-card-media>
     </q-card-media>
     <q-card-title>

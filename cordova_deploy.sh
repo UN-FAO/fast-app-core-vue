@@ -9,6 +9,7 @@ cd cordova && \
  	cordova plugin add cordova-plugin-sqlite-2 && \
  	cordova plugin add cordova-plugin-network-information && \
  	cordova plugin add cordova-sms-plugin && \
+ 	cordova plugin add cordova-plugin-file && \
 	cordova platform add android #&& \
 	cordova run android
 	# cordova platform add https://github.com/apache/cordova-ios.git && cordova run --buildConfig=../build.json ios --device

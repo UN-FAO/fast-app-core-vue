@@ -13,6 +13,8 @@
         <div v-if="loading">
           <q-spinner-gears color="primary" :size="100" />
         </div>
+        <div v-if="!saved">Not Saved</div>
+        <div v-if="saved">Savhrthrthrthrred</div>
         <div ref="formIO" class="formContainer">
         </div>
     </div>
@@ -71,7 +73,8 @@ export default {
       jsonForm: null,
       jsonSubmission: undefined,
       offlineModePlugin: null,
-      loading: true
+      loading: true,
+      saved: false
     }
   },
   watch: {
@@ -278,6 +281,7 @@ export default {
         if (events.filter(e => e.type === 'formio.change').length < 1) {
           this.formIO.on('change', (change) => {
             if (this.localDraft) {
+              this.saved = false
               // AutoSave functionality
               // If a timer was already started, clear it.
               if (timeoutId) clearTimeout(timeoutId)
@@ -285,6 +289,7 @@ export default {
               // Set timer that will save comment when it fires.
               timeoutId = setTimeout(() => {
                 this.autoSaveAsDraft()
+                this.saved = true
               }, 750)
             }
             this.$eventHub.$emit('formio.change', {change: change, formio: this.formIO})

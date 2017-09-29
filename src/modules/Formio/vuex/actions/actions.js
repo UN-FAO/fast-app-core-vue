@@ -8,6 +8,7 @@ import Auth from 'modules/Auth/api/Auth'
 import Connection from 'modules/Wrappers/Connection'
 import LocalSubmission from 'database/collections/scopes/LocalSubmission'
 import FormioJS from 'formiojs'
+import deep from 'deep-diff'
 
 const actions = {
 
@@ -164,15 +165,23 @@ const actions = {
     submission.created = moment().format()
     submission = SyncHelper.deleteNulls(submission)
 
+    console.log('This is the submission about to been added', submission)
+
     if (formSubmission._id) {
       submission.type = 'update'
       let localSubmission = await LocalSubmission.get(formSubmission._id)
-      
-      await localSubmission.update({
-        $set: {
-          data: submission
-        }
-      })
+      let differences = deep.diff(SyncHelper.deleteNulls(localSubmission.data.data), SyncHelper.deleteNulls(submission.data))
+      console.log(localSubmission.data.data, submission.data)
+      if (differences || submission.draft === false) {
+        console.log('Updating the submission because there are changes')
+          await localSubmission.update({
+          $set: {
+            data: submission
+          }
+        })
+      } else {
+        console.log('There are no changes')
+      }
       return localSubmission
     } else {
       let newSubmission = await DB.submissions.insert({

@@ -61,7 +61,7 @@
 
                     <el-table-column label="status" prop="status" width="90" sortable>
                         <template scope="scope">
-                            <el-tag :type="scope.row.status === 'offline' ? 'danger' : 'success'" close-transition>
+                            <el-tag :type="getIconColor(scope.row)" close-transition>
                             <i class="material-icons">{{scope.row.status === 'offline' ? 'cloud_off' : 'cloud_done'}}</i>
                             </el-tag>
                         </template>
@@ -205,6 +205,16 @@ export default {
     }
   },
   methods: {
+    getIconColor: function (row) {
+      if (row.draft)
+        {
+          return 'primary'
+        } else if (row.status === 'offline') {
+          return 'danger'
+        } else {
+          return 'success'
+        }
+    },
     DATA2FILE: function(filename, data, callback) {
       // default filename
       var defaultFileName = 'export-file.txt'
@@ -283,6 +293,7 @@ export default {
               submission.data.data.local = !submission.data._id
               submission.data.data.id_submision_state = submission.data.sync ? submission.data.data.id_submision : submission.data.data.id_submision + '(Offline)'
               submission.data.data.status = submission.data.sync === false ? 'offline' : 'online'
+              submission.data.data.draft = submission.data.draft
               return submission.data
             })
 
