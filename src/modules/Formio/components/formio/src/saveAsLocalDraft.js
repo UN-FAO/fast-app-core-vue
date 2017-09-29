@@ -1,5 +1,4 @@
 import { Toast } from 'quasar'
-
 const SaveAsDraft = class {
   /**
    * [listen description]
@@ -7,10 +6,6 @@ const SaveAsDraft = class {
    * @return {[type]}    [description]
    */
   static listen (vm) {
-    document.removeEventListener('saveAsDraft', function (e) {}, false)
-    document.addEventListener('saveAsDraft', (e) => {
-        vm.saveAsLocalDraft(e)
-    })
   }
 
   /**

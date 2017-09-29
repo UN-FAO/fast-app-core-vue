@@ -27,7 +27,6 @@ import {QSpinner, QSpinnerGears} from 'quasar'
 import GPS from './src/gps'
 import Lenguage from './src/lenguage'
 import SMS from './src/sms'
-import SaveAsLocalDraft from './src/saveAsLocalDraft'
 
 export default {
   name: 'formio',
@@ -56,13 +55,15 @@ export default {
     Lenguage.listen(this)
     GPS.listen(this)
     SMS.listen(this)
-    SaveAsLocalDraft.listen(this)
+    document.addEventListener('saveAsDraft', this.saveAsLocalDraft)
     // CSS.format(this)
     this.$eventHub.$on('formio.destroyComponent', this.triggerDestroy)
+    this.save = _.debounce(this.save, 100)
     this.renderForm()
   },
   beforeDestroy() {
     Lenguage.off(this)
+    document.removeEventListener('saveAsDraft', this.saveAsLocalDraft)
   },
   data: () => {
     return {
