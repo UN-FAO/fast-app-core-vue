@@ -80,8 +80,6 @@ const Formio = class {
       })
       axios.get('https://' + projectName + '.form.io/' + resource)
         .then(response => {
-          console.log('-------- qui')
-          console.log(response.data)
           let forms = response.data
           if (typeof process === 'function') {
             process(forms)

@@ -106,7 +106,6 @@ const actions = {
    * @return {[type]}                [description]
    */
   async getSubmissions ({ commit }, { currentForm, User }) {
-    console.log('GetSubmission - Actions.js')
     FormioJS.setToken(Auth.user().x_jwt_token)
     const DB = await Database.get()
     let isOnline = Connection.isOnline()
@@ -117,19 +116,13 @@ const actions = {
 
     let localUnSyncSubmissions = LocalSubmission.offline(User.id, currentForm.data.name)
 
-    console.log('GetSubmission - Actions.js ,localUnSyncSubmissions', localUnSyncSubmissions)
-    
     let remoteSubmissions = (isOnline && localUnSyncSubmissions.length === 0) ? await formio.loadSubmissions() : []
 
     _.map(remoteSubmissions, function (o) {
       o.formio = formio
     })
-    
-    console.log('GetSubmission - Actions.js ,Remote Submissions', remoteSubmissions)
-    
+ 
     let localSubmissions = LocalSubmission.stored(User.id, currentForm.data.name)
-      
-    console.log('GetSubmission - Actions.js ,localSubmissions', localSubmissions)
 
     var Localresult = _.unionBy(localSubmissions, localUnSyncSubmissions, '_id')
     let sync = SyncHelper.offlineOnlineSync({
@@ -137,7 +130,6 @@ const actions = {
       OnlineResults: remoteSubmissions,
       isOnline: isOnline
     })
-    console.log('GetSubmission - Actions.js ,sync', sync)
     // await DB.submissions.remove();
     // For every new or updated entry
     _.forEach(sync, async function (submission, key) {
@@ -164,38 +156,30 @@ const actions = {
    */
   async addSubmission ({ commit }, { formSubmission, formio, User }) {
     const DB = await Database.get()
-    console.log('formSubmission from inside the function => ', formSubmission)
+    
     let submission = formSubmission
     submission.sync = false
-    // Always store as draft if we do not manually submit
-    if (formSubmission._draft === false) {
-      submission.draft = false
-    } else {
-      submission.draft = true
-    }
     submission.user_email = User.email
     submission.formio = formio
     submission.created = moment().format()
     submission = SyncHelper.deleteNulls(submission)
-    console.log('creating the submission', submission)
+
     if (formSubmission._id) {
       submission.type = 'update'
       let localSubmission = await LocalSubmission.get(formSubmission._id)
-      console.log('updating local', submission)
+      
       await localSubmission.update({
         $set: {
           data: submission
         }
       })
-
-      localSubmission = await LocalSubmission.get(formSubmission._id)
       return localSubmission
-    }
-    console.log('Creating new', submission)
-    let newSubmission = await DB.submissions.insert({
+    } else {
+      let newSubmission = await DB.submissions.insert({
       data: submission
-    })
-    return newSubmission
+       })
+      return newSubmission
+    }
   },
 
   /**
@@ -216,16 +200,15 @@ const actions = {
         let postData = {
           data: offlineSubmission.data.data
         }
-        console.log(offlineSubmission, formio)
+
         // If it has an ID and the Id its not local (doesnt contain ":")
         if (offlineSubmission.data._id && offlineSubmission.data._id.indexOf(':') === -1) {
           postData._id = offlineSubmission.data._id
         }
-        console.log('We are about to send to formio', postData)
-        console.log('The plugin registered is: ', offlinePlugin)
+
         FormioJS.deregisterPlugin('offline')
         let FormIOinsertedData = await formio.saveSubmission(postData)
-        console.log('this is what came back from FOrmio', FormIOinsertedData)
+
         FormIOinsertedData.formio = formio
 
         await offlineSubmission.update({

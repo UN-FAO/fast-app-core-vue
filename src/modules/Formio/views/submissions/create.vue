@@ -15,6 +15,7 @@
                           :formioURL="formioURL" 
                           :submission="submission"
                           :formioToken="formioToken"
+                          :localDraft="LOCAL_DRAFT_ENABLED"
                         />
                     </q-tab-pane>
 
@@ -44,8 +45,9 @@ import Auth from 'modules/Auth/api/Auth'
 import formio from 'modules/Formio/components/formio/formio'
 import LocalForm from 'database/collections/scopes/LocalForm'
 import LocalSubmission from 'database/collections/scopes/LocalSubmission'
-import {APP_URL} from 'config/env'
+import {APP_URL, LOCAL_DRAFT_ENABLED} from 'config/env'
 import {QCard, QCardTitle, QCardSeparator, QCardMain, QFab, QFabAction, QFixedPosition, QPullToRefresh, QTabs, QTab, QTabPane, QCollapsible, QBtn, QIcon, QTooltip, QList, QItem, QItemSeparator} from 'quasar'
+
 
 export default {
   components: {
@@ -88,7 +90,8 @@ export default {
       formioURL: APP_URL + '/' + this.$route.params.idForm,
       submission: undefined,
       people: [{name: 'P1'}],
-      formioToken: Auth.user().x_jwt_token
+      formioToken: Auth.user().x_jwt_token,
+      LOCAL_DRAFT_ENABLED: LOCAL_DRAFT_ENABLED
     }
   },
   methods: {

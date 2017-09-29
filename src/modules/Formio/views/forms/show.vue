@@ -276,7 +276,6 @@ export default {
             console.log('Initial submissions', submissions)
             submissions = _.map(submissions, function(submission) {
               submission = _.clone(submission)
-              console.log(submission)
               submission.data.data = {}
               submission.data.data.created = submission.data.created
               submission.data.data.Humancreated = self.humanizeDate(submission.data.created)
@@ -288,7 +287,7 @@ export default {
             })
 
             let userEmail = Auth.user().data.email || Auth.user().email
-            console.log('After adding the required data', submissions)
+       
             submissions = _.filter(submissions, function(o) {
               return (
                 (o.owner && o.owner === Auth.user()._id) ||
@@ -301,7 +300,6 @@ export default {
             ], [
               'desc'
             ])
-            console.log('After filters', submissions)
             this.submissions = submissions
           })
       )

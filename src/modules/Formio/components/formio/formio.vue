@@ -22,15 +22,12 @@ import _ from 'lodash'
 import Formio from 'formiojs'
 import FormioForm from 'formiojs/form'
 import FormioWizard from 'formiojs/wizard'
-import debounce from 'async-debounce'
 import OFFLINE_PLUGIN from './src/offlinePlugin'
 import {QSpinner, QSpinnerGears} from 'quasar'
 import GPS from './src/gps'
 import Lenguage from './src/lenguage'
 import SMS from './src/sms'
-import SaveAsDraft from './src/saveAsDraft'
-
-// import CSS from './src/css'
+import SaveAsLocalDraft from './src/saveAsLocalDraft'
 
 export default {
   name: 'formio',
@@ -49,6 +46,9 @@ export default {
     },
     formioToken: {
       required: false
+    },
+    localDraft: {
+      required: false
     }
   },
   mounted () {
@@ -56,12 +56,9 @@ export default {
     Lenguage.listen(this)
     GPS.listen(this)
     SMS.listen(this)
-    SaveAsDraft.listen(this)
+    SaveAsLocalDraft.listen(this)
     // CSS.format(this)
     this.$eventHub.$on('formio.destroyComponent', this.triggerDestroy)
-    
-    // Avoid store function to be called multiple times
-    this.storeForm = debounce(this.storeForm, 500)
     this.renderForm()
   },
   beforeDestroy() {
@@ -160,37 +157,57 @@ export default {
       // Register the plugin for offline mode
       Formio.registerPlugin(this.offlineModePlugin, 'offline')
     },
-    saveAsDraft (e) {
+    /**
+     * [saveAsDraft description]
+     * @param  {[type]} e [description]
+     * @return {[type]}   [description]
+     */
+    saveAsLocalDraft (e) {
       let formSubmission = {
         data: this.formIO.data
       }
-      formSubmission._draft = true
-      // If we have the recent submission, then use it
-      if (this.jsonSubmission) {
-        formSubmission._id = this.jsonSubmission.data._id ? this.jsonSubmission.data._id : this.jsonSubmission._id
-
-        formSubmission.redirect = true
-
-        let formio = new Formio(this.formioURL)
-
-        formio.saveSubmission(formSubmission)
-      }
+      formSubmission.redirect = true
+      formSubmission.draft = true
+      this.save(formSubmission)
     },
-    autoSaveAsDraft (e) {
+    /**
+     * [autoSaveAsDraft description]
+     * @param  {[type]} e [description]
+     * @return {[type]}   [description]
+     */
+    autoSaveAsDraft () {
       let formSubmission = {
         data: this.formIO.data
       }
-      formSubmission._draft = true
-      // If we have the recent submission, then use it
+      formSubmission.draft = true
+      formSubmission.redirect = false
+      console.log('Autosaving')
+      this.save(formSubmission)
+    },
+    /**
+     * [createLocalDraft description]
+     * @return {[type]} [description]
+     */
+    createLocalDraft() {
+      let formSubmission = {
+        data: this.formIO.data
+      }
+      formSubmission.draft = true
+      formSubmission.redirect = 'Update'
+      this.save(formSubmission)
+    },
+    /**
+     * [save description]
+     * @param  {[type]} formSubmission [description]
+     * @return {[type]}                [description]
+     */
+    save (formSubmission) {
       if (this.jsonSubmission) {
         formSubmission._id = this.jsonSubmission.data._id ? this.jsonSubmission.data._id : this.jsonSubmission._id
-
-        formSubmission.redirect = false
-
-        let formio = new Formio(this.formioURL)
-
-        formio.saveSubmission(formSubmission)
       }
+      console.log('Saving the submission')
+      let formio = new Formio(this.formioURL)
+      formio.saveSubmission(formSubmission)
     },
     /**
       * [mountFormIOForm description]
@@ -217,7 +234,8 @@ export default {
           }
         }
         if (_.isEmpty(this.jsonSubmission) && this.$route.name === 'formio_form_submission') {
-          formio.saveSubmission(this.formIO.data)
+          this.createLocalDraft()
+          return
         }
         // Clone the original object to avoid changes
         let cloneJsonForm = _.cloneDeep(onlineJsonForm)
@@ -260,15 +278,16 @@ export default {
         // Add error event listener only if we do not have it
         if (events.filter(e => e.type === 'formio.change').length < 1) {
           this.formIO.on('change', (change) => {
-            // AutoSave functionality
-            // If a timer was already started, clear it.
-            if (timeoutId) clearTimeout(timeoutId)
+            if (this.localDraft) {
+              // AutoSave functionality
+              // If a timer was already started, clear it.
+              if (timeoutId) clearTimeout(timeoutId)
 
-            // Set timer that will save comment when it fires.
-            timeoutId = setTimeout(() => {
-              this.autoSaveAsDraft({automatic: true})
-            }, 750)
-
+              // Set timer that will save comment when it fires.
+              timeoutId = setTimeout(() => {
+                this.autoSaveAsDraft()
+              }, 750)
+            }
             this.$eventHub.$emit('formio.change', {change: change, formio: this.formIO})
           })
         }
@@ -300,17 +319,11 @@ export default {
             let formSubmission = {
               data: submission.data
             }
-            formSubmission._draft = false
-            // If we have the recent submission, then use it
-            if (savedSubmission) {
-              formSubmission._id = savedSubmission._id
-            // If we are editing, then use the json
-            } else if (this.jsonSubmission) {
-              formSubmission._id = this.jsonSubmission.data._id ? this.jsonSubmission.data._id : this.jsonSubmission._id
-            }
+            formSubmission.draft = false
             formSubmission.redirect = true
-            formio.saveSubmission(formSubmission)
-          })
+            console.log('We are submiting', formSubmission)
+            this.save(formSubmission)
+            })
         }
       })
     }

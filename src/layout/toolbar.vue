@@ -13,7 +13,8 @@
         <q-icon name="keyboard_arrow_left" />
         Go back
       </q-btn>
-      <localization></localization>
+      <localization/>
+      <wifiDisplay/>
       <q-btn flat @click="openRightDrawer()">
         <q-icon name="menu" />
       </q-btn>
@@ -21,6 +22,7 @@
 </template>
 <script>
 import Localization from 'modules/Localization/components/selector'
+import wifiDisplay from 'modules/Connection/components/display'
 import {QToolbar, QToolbarTitle, QAjaxBar, QBtn, QIcon} from 'quasar'
 export default {
   components: {
@@ -29,7 +31,8 @@ export default {
     QToolbarTitle,
     QAjaxBar,
     QBtn,
-    QIcon
+    QIcon,
+    wifiDisplay
   },
   methods: {
     openLeftDrawer () {

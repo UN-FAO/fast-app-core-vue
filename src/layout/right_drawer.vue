@@ -124,7 +124,6 @@ export default {
 
     this.$eventHub.on('formio.change', (data) => {
       let scorePanels = []
-
       // This should only be called if this is a Wizard
       // Search all of the Score components in different pages
       _.forEach(data.formio.pages, (page) => {
@@ -170,7 +169,6 @@ export default {
           })
 
           filter = _.orderBy(filter, ['data.created'], ['desc'])
-          console.log('filter => ', filter)
           this.Unsynced = filter
         })
     )

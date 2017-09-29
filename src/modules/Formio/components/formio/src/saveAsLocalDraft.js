@@ -9,7 +9,7 @@ const SaveAsDraft = class {
   static listen (vm) {
     document.removeEventListener('saveAsDraft', function (e) {}, false)
     document.addEventListener('saveAsDraft', (e) => {
-        vm.saveAsDraft(e)
+        vm.saveAsLocalDraft(e)
     })
   }
 

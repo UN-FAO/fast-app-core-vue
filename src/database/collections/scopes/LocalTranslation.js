@@ -12,14 +12,13 @@ const LocalTranslation = class {
     let formTranslations = {i18n: {}}
     let localTranslations = await DB.translations.findOne().exec()
     localTranslations = localTranslations.data
-    console.log('localTranslations => ', localTranslations)
+
     _.forEach(localTranslations, (lenguage, index) => {
-        console.log(lenguage, index)
         if (index !== 'type') {
           formTranslations.i18n[index] = lenguage ? lenguage.translations : {}
         }
     })
-     console.log('formTranslations => ', formTranslations)
+
     return formTranslations
   }
 }
