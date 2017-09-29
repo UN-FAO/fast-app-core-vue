@@ -182,7 +182,6 @@ export default {
       }
       formSubmission.draft = true
       formSubmission.redirect = false
-      console.log('Autosaving')
       this.save(formSubmission)
     },
     /**
@@ -206,7 +205,6 @@ export default {
       if (this.jsonSubmission) {
         formSubmission._id = this.jsonSubmission.data._id ? this.jsonSubmission.data._id : this.jsonSubmission._id
       }
-      console.log('Saving the submission')
       let formio = new Formio(this.formioURL)
       formio.saveSubmission(formSubmission)
     },
