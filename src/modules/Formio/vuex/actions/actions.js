@@ -167,7 +167,7 @@ const actions = {
 
     console.log('This is the submission about to been added', submission)
 
-    if (formSubmission._id) {
+    if (formSubmission._id || formSubmission.trigger !== 'createLocalDraft') {
       submission.type = 'update'
       let localSubmission = await LocalSubmission.get(formSubmission._id)
       let differences = deep.diff(SyncHelper.deleteNulls(localSubmission.data.data), SyncHelper.deleteNulls(submission.data))
@@ -183,10 +183,11 @@ const actions = {
         console.log('There are no changes')
       }
       return localSubmission
-    } else {
+    } else if (formSubmission.trigger === 'createLocalDraft') {
       let newSubmission = await DB.submissions.insert({
       data: submission
        })
+      console.log('creating new submission', newSubmission)
       return newSubmission
     }
   },

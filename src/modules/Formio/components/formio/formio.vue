@@ -13,8 +13,6 @@
         <div v-if="loading">
           <q-spinner-gears color="primary" :size="100" />
         </div>
-        <div v-if="!saved">Not Saved</div>
-        <div v-if="saved">Savhrthrthrthrred</div>
         <div ref="formIO" class="formContainer">
         </div>
     </div>
@@ -168,10 +166,11 @@ export default {
      */
     saveAsLocalDraft (e) {
       let formSubmission = {
-        data: this.formIO.data
+        data: this.formIO.data,
+        redirect: true,
+        draft: true,
+        trigger: 'saveAsLocalDraft'
       }
-      formSubmission.redirect = true
-      formSubmission.draft = true
       this.save(formSubmission)
     },
     /**
@@ -181,10 +180,11 @@ export default {
      */
     autoSaveAsDraft () {
       let formSubmission = {
-        data: this.formIO.data
+        data: this.formIO.data,
+        redirect: false,
+        draft: true,
+        trigger: 'autoSaveAsDraft'
       }
-      formSubmission.draft = true
-      formSubmission.redirect = false
       this.save(formSubmission)
     },
     /**
@@ -193,10 +193,11 @@ export default {
      */
     createLocalDraft() {
       let formSubmission = {
-        data: this.formIO.data
+        data: this.formIO.data,
+        redirect: 'Update',
+        draft: true,
+        trigger: 'createLocalDraft'
       }
-      formSubmission.draft = true
-      formSubmission.redirect = 'Update'
       this.save(formSubmission)
     },
     /**

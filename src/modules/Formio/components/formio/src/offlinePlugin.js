@@ -39,7 +39,10 @@ const OFFLINE_PLUGIN = class {
         User: Auth.user().data
       })
         .then((created) => {
-              // Create the event
+          console.log(created)
+          if (!created) {
+            return
+          }
             var draftSaved = new CustomEvent('draftSaved',
               {
                 'detail': {'data': created, 'text': 'Draft Saved'}
