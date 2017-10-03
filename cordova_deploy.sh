@@ -10,6 +10,10 @@ cd cordova && \
  	cordova plugin add cordova-plugin-network-information && \
  	cordova plugin add cordova-sms-plugin && \
  	cordova plugin add cordova-plugin-file && \
+ 	cordova plugin add cordova-plugin-media && \
+ 	cordova plugin add cordova-plugin-camera && \
+ 	cordova plugin add cordova-plugin-file-transfer && \
+ 	cordova plugin add cordova-plugin-indexeddb-async && \
 	cordova platform add android #&& \
-	cordova run android
+	cordova emulate android
 	# cordova platform add https://github.com/apache/cordova-ios.git && cordova run --buildConfig=../build.json ios --device

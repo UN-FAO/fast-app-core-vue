@@ -39,16 +39,15 @@ const OFFLINE_PLUGIN = class {
         User: Auth.user().data
       })
         .then((created) => {
-          console.log(created)
           if (!created) {
             return
           }
-            var draftSaved = new CustomEvent('draftSaved',
+            var draftStatus = new CustomEvent('draftStatus',
               {
                 'detail': {'data': created, 'text': 'Draft Saved'}
               }
             )
-            document.dispatchEvent(draftSaved)
+            document.dispatchEvent(draftStatus)
 
             if (formSubmission._id) {
               if (formSubmission.redirect === true) {

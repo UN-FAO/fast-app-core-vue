@@ -7,7 +7,8 @@
 
                 <q-tabs inverted>
                     <!-- Tabs - notice slot="title" -->
-                    <q-tab default slot="title" name="tab-1" icon="person" label="P1" />
+                    <q-tab default slot="title" name="tab-1" icon="person" label="P1"
+                     :color="saved ? 'primary' : 'red'" />
                     <!-- Targets -->
                     <q-tab-pane name="tab-1">
                         <!-- Tabs -->
@@ -75,6 +76,12 @@ export default {
     this.form = form
     next()
   },
+  mounted () {
+    document.addEventListener('draftStatus', this.draftStatusChanged)
+  },
+  beforeDestroy() {
+    document.removeEventListener('draftStatus', this.draftStatusChanged)
+  },
   computed: {
     formTitle () {
       let title = ''
@@ -91,11 +98,19 @@ export default {
       submission: undefined,
       people: [{name: 'P1'}],
       formioToken: Auth.user().x_jwt_token,
-      LOCAL_DRAFT_ENABLED: LOCAL_DRAFT_ENABLED
+      LOCAL_DRAFT_ENABLED: LOCAL_DRAFT_ENABLED,
+      saved: false
     }
   },
   methods: {
     ...mapActions(['getResources']),
+    draftStatusChanged (e) {
+      if (e.detail.data === false) {
+        this.saved = false
+      } else {
+        this.saved = true
+      }
+    },
     addSurvey () {
       let self = this
       this.$swal({

@@ -283,6 +283,12 @@ export default {
           this.formIO.on('change', (change) => {
             if (this.localDraft) {
               this.saved = false
+              var draftStatus = new CustomEvent('draftStatus',
+              {
+                'detail': {'data': false, 'text': 'Draft not Saved'}
+              }
+            )
+            document.dispatchEvent(draftStatus)
               // AutoSave functionality
               // If a timer was already started, clear it.
               if (timeoutId) clearTimeout(timeoutId)
