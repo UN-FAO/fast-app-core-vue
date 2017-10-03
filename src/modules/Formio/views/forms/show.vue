@@ -99,6 +99,7 @@ import moment from 'moment'
 import jsonexport from 'jsonexport'
 import Auth from 'modules/Auth/api/Auth'
 import { QCard, QCardTitle, QCardSeparator, QCardMain, QFab, QFabAction, QFixedPosition, QPullToRefresh } from 'quasar'
+// import Formio from 'formiojs'
 locale.use(lang)
 
 export default {
@@ -157,46 +158,25 @@ export default {
           {
             name: '',
             handler: () => {
-              let self = this
-              var download = function(content, fileName, mimeType) {
-                var a = document.createElement('a')
-                mimeType = mimeType || 'application/octet-stream'
-
-                if (navigator.msSaveBlob) { // IE10
-                  navigator.msSaveBlob(new Blob([
-                    content
-                  ], {
-                    type: mimeType
-                  }), fileName)
-                } else if (URL && 'download' in a) { // html5 A[download]
-                  a.href = URL.createObjectURL(new Blob([
-                    content
-                  ], {
-                    type: mimeType
-                  }))
-                  a.setAttribute('download', fileName)
-                  document.body.appendChild(a)
-                  a.click()
-                  document.body.removeChild(a)
-                } else {
-                  location.href = 'data:application/octet-stream,' + encodeURIComponent(content) // only this mime type is supported
-                }
-              }
-
-              jsonexport(this.submissions, function(err, csv) {
+              jsonexport(this.submissions, (err, csv) => {
                 if (err) {
                   return console.log(err)
                 }
-
                 // If browser we have to export it like this
-                download(csv, 'backup.csv', 'text/csv;encoding:utf-8')
-
+                this.download(csv, 'backup.csv', 'text/csv;encoding:utf-8')
                 // If its cordova, we have to export like this
                 // self.DATA2FILE('backup.csv', csv, function (FILE) {
                 //  console.log(FILE)
                 // })
-                self.$message('Data Exported')
+                this.$message('Data Exported')
               })
+            },
+            icon: 'document'
+          },
+          {
+            name: 'JSON',
+            handler: () => {
+              this.download(JSON.stringify(this.submissions), 'backup.json', 'text/json;encoding:utf-8')
             },
             icon: 'document'
           }
@@ -205,6 +185,30 @@ export default {
     }
   },
   methods: {
+    download: function(content, fileName, mimeType) {
+      var a = document.createElement('a')
+      mimeType = mimeType || 'application/octet-stream'
+
+      if (navigator.msSaveBlob) { // IE10
+        navigator.msSaveBlob(new Blob([
+          content
+        ], {
+          type: mimeType
+        }), fileName)
+      } else if (URL && 'download' in a) { // html5 A[download]
+        a.href = URL.createObjectURL(new Blob([
+          content
+        ], {
+          type: mimeType
+        }))
+        a.setAttribute('download', fileName)
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
+      } else {
+        location.href = 'data:application/octet-stream,' + encodeURIComponent(content) // only this mime type is supported
+      }
+    },
     getIconColor: function (row) {
       if (row.draft)
         {
@@ -340,6 +344,24 @@ export default {
             },
             icon: 'edit'
           },
+          /* TODO
+          Uncomment this and finish when CORS are available
+          to have PDF export of the submission
+          {
+            type: 'text',
+            handler(submission) {
+              let id = submission.id_submision
+              var formio = new Formio('https://dghnmpjfioshlsx.form.io/welcome/submission/' + id + '?token=ASUiwa0aEMZI7LZNBPlfXiMG3ub5TO')
+              formio.getDownloadUrl().then(function(url) {
+                var link = document.createElement('a')
+                link.href = url
+                link.download = url.substr(url.lastIndexOf('/') + 1)
+                link.click()
+              })
+            },
+            icon: 'document'
+          },
+          */
           {
             async handler(submission) {
               let db = await Database.get()
