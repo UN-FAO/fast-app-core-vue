@@ -287,17 +287,17 @@ export default {
           })
           .$
           .subscribe(submissions => {
-            console.log('Initial submissions', submissions)
             submissions = _.map(submissions, function(submission) {
               submission = _.clone(submission)
-              submission.data.data = {}
-              submission.data.data.created = submission.data.created
-              submission.data.data.Humancreated = self.humanizeDate(submission.data.created)
-              submission.data.data.id_submision = submission.data._id ? submission.data._id : submission._id
-              submission.data.data.local = !submission.data._id
-              submission.data.data.id_submision_state = submission.data.sync ? submission.data.data.id_submision : submission.data.data.id_submision + '(Offline)'
-              submission.data.data.status = submission.data.sync === false ? 'offline' : 'online'
-              submission.data.data.draft = submission.data.draft
+              submission.data.data = {
+                created: submission.data.created,
+                Humancreated: self.humanizeDate(submission.data.created),
+                id_submision: submission.data._id ? submission.data._id : submission._id,
+                local: !submission.data._id,
+                id_submision_state: submission.data.sync ? submission.data.data.id_submision : submission.data.data.id_submision + '(Offline)',
+                status: submission.data.sync === false ? 'offline' : 'online',
+                draft: submission.data.draft
+              }
               return submission.data
             })
 
