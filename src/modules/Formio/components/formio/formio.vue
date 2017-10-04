@@ -187,6 +187,14 @@ export default {
       }
       this.save(formSubmission)
     },
+    removeDuplicatedPagination() {
+      let x = document.getElementsByClassName('pagination');
+      [].forEach.call(x, function (el, index) {
+        if (index !== x.length - 1) {
+          el.remove()
+        }
+      })
+    },
     /**
      * [createLocalDraft description]
      * @return {[type]} [description]
@@ -281,6 +289,7 @@ export default {
         // Add error event listener only if we do not have it
         if (events.filter(e => e.type === 'formio.change').length < 1) {
           this.formIO.on('change', (change) => {
+            this.removeDuplicatedPagination()
             if (this.localDraft) {
               this.saved = false
               var draftStatus = new CustomEvent('draftStatus',
