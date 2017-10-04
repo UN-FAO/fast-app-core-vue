@@ -78,9 +78,20 @@ export default {
   },
   mounted () {
     document.addEventListener('draftStatus', this.draftStatusChanged)
+    this.$eventHub.$on('formio.error', (error) => {
+      console.log(error)
+      this.$swal({
+          type: 'error',
+          title: 'Error',
+          html: 'You have errors in the submission'
+        }).then(() => {
+          window.scrollTo(0, 0)
+        })
+    })
   },
   beforeDestroy() {
     document.removeEventListener('draftStatus', this.draftStatusChanged)
+    this.$eventHub.$off('formio.error')
   },
   computed: {
     formTitle () {
