@@ -64,7 +64,7 @@
 <script>
 import {mapMutations, mapState, mapActions} from 'vuex'
 import Auth from 'modules/Auth/api/Auth'
-import * as Database from 'database/Database'
+import LocalForm from 'database/collections/scopes/LocalForm'
 import {QScrollArea, QSideLink, QItemTile, QItemSide, QItemMain, QListHeader, QCollapsible, QBtn, QIcon, QTooltip, QList, QItem, QItemSeparator} from 'quasar'
 import layoutStore from './layout-store'
 
@@ -73,13 +73,12 @@ export default {
     QScrollArea, QSideLink, QItemTile, QItemSide, QItemMain, QListHeader, QCollapsible, QBtn, QIcon, QTooltip, QList, QItem, QItemSeparator
   },
   mounted: async function () {
-    this.subscribeToForms()
+    LocalForm.sAll(this, 'forms')
   },
   data () {
     return {
-      form: {},
       forms: [],
-      subs: [],
+      subscriptions: [],
       layoutStore
     }
   },
@@ -111,18 +110,6 @@ export default {
       Auth.logOut()
       this.setLayoutNeeded(false)
       this.setIsLoginPage(true)
-    },
-    async subscribeToForms () {
-      this.subs.forEach(sub => sub.unsubscribe())
-      const db = await Database.get()
-      this.subs.push(
-        db.forms
-          .find()
-          .$
-          .subscribe(forms => {
-            this.forms = forms
-          })
-      )
     }
   }
 }

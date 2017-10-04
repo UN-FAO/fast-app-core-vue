@@ -23,5 +23,18 @@ const LocalForm = class {
  		return formRequestPath.data
  	}
   }
+
+  static async sAll (vm, holder) {
+  	vm.subscriptions.forEach(sub => sub.unsubscribe())
+      const db = await Database.get()
+      vm.subscriptions.push(
+        db.forms
+          .find()
+          .$
+          .subscribe(forms => {
+            vm[holder] = forms
+          })
+      )
+  }
 }
 export default LocalForm

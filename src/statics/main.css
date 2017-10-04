@@ -64,9 +64,7 @@ input.form-control {
     border: 1px solid rgb(185,185,185) !important;
 }
 
-button.choices__button {
-    position: unset !important;
-}
+
 .choices__list {
     color: black;
 }
@@ -102,4 +100,15 @@ legend {
 
 button.btn.btn-default.btn-wizard-nav-cancel {
     display: none;
+}
+
+.score-panel {
+    display: none;
+}
+p {
+    color: black;
+}
+
+.panel {
+    color: black;
 }
