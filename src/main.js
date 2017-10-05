@@ -91,7 +91,7 @@ Quasar.start(async () => {
       appTranslations = appTranslations.data
     }
   }
-
+  console.log(appTranslations)
   const i18n = new VueI18n({
     locale: 'en', // set locale
     messages: appTranslations // set locale messages

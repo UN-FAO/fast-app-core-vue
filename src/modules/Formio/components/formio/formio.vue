@@ -22,6 +22,7 @@ import _ from 'lodash'
 import Formio from 'formiojs'
 import FormioForm from 'formiojs/form'
 import FormioWizard from 'formiojs/wizard'
+import FormioUtils from 'formiojs/utils'
 import OFFLINE_PLUGIN from './src/offlinePlugin'
 import {QSpinner, QSpinnerGears} from 'quasar'
 import GPS from './src/gps'
@@ -139,6 +140,14 @@ export default {
          * @param {[type]} Components [description]
          */
     setTranslations (Components) {
+      let comps = FormioUtils.findComponents(Components, {
+        'tag': 'p'
+      })
+      _.map(comps, (comp) => {
+        if (this.$t('translations["' + comp.content + '"]') !== 'translations["' + comp.content + '"]') {
+          comp.content = this.$t('translations["' + comp.content + '"]')
+        }
+      })
       return Components
     },
     getCurrentForm () {
