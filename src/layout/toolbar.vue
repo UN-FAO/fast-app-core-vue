@@ -11,15 +11,23 @@
       </q-toolbar-title>
       <localization/>
       <wifiDisplay/>
+      <!--
       <q-btn flat @click="openRightDrawer()">
         <q-icon name="menu" />
       </q-btn>
+    -->
+    <q-btn flat @click="handleLogout()">
+        <q-icon name="ion-log-out" />
+    </q-btn>
+
     </q-toolbar>
 </template>
 <script>
 import Localization from 'modules/Localization/components/selector'
 import wifiDisplay from 'modules/Connection/components/display'
 import {QToolbar, QToolbarTitle, QAjaxBar, QBtn, QIcon} from 'quasar'
+import Auth from 'modules/Auth/api/Auth'
+import {mapMutations} from 'vuex'
 export default {
   components: {
     Localization,
@@ -31,11 +39,19 @@ export default {
     wifiDisplay
   },
   methods: {
+    ...mapMutations(['setLayoutNeeded', 'setIsLoginPage']),
     openLeftDrawer () {
       this.$eventHub.$emit('openLeftDrawer')
     },
     openRightDrawer () {
       this.$eventHub.$emit('openRightDrawer')
+    },
+    handleLogout () {
+      // this.$eventHub.$emit('openLeftDrawer')
+      this.$store.dispatch('clearAuthUser')
+      Auth.logOut()
+      this.setLayoutNeeded(false)
+      this.setIsLoginPage(true)
     }
   }
 }

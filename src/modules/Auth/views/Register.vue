@@ -6,14 +6,9 @@
   <div class="row justify-center">
     <q-card class="col-md-6 col-sm-8 col-lg-5 text-white"
             id="login"
-            key="login-container">
-      <q-card-title class="card-title bg-primary text-center">
-        <div class="row"
-             style="display: block">
-          <img src="statics/fao-logo-white.png"
-               style="width: 60%; height: 50%">
-        </div>
-        <h4 style="color:white; text-transform: uppercase;">FAST POC</h4>
+            key="login-container" flat>
+      <q-card-title class="card-title text-center">
+        <h4 style="color:black; text-transform: uppercase;">REGISTER</h4>
       </q-card-title>
       <q-card-main>
         <formio :formioURL="formioURL"

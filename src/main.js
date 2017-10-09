@@ -28,6 +28,8 @@ import EventHub from 'vue-event-hub'
 import AsyncComputed from 'vue-async-computed'
 import * as Database from 'database/Database'
 import messages from './i18n/translations'
+import 'quasar-extras/ionicons'
+import 'quasar-extras/fontawesome'
 
 Vue.use(VueSweetAlert)
 Vue.use(ElementUI)
