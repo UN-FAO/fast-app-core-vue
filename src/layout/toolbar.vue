@@ -7,8 +7,9 @@
       </q-btn>
       <q-toolbar-title>
        <img src="statics/2000px-FAO_logo_reverse.png" style="max-height: 40px; max-width: 40px;"></img>  {{ $t("App.title") }}
-      <span slot="subtitle">Proof of Concept for FAST</span>
+      <span slot="subtitle">Self-evaluation and Holistic Assessment of climate resilence of Farmers and Pastoralists</span>
       </q-toolbar-title>
+      {{User.data.email}}
       <localization/>
       <wifiDisplay/>
       <!--
@@ -37,6 +38,11 @@ export default {
     QBtn,
     QIcon,
     wifiDisplay
+  },
+  data () {
+    return {
+      User: Auth.user()
+    }
   },
   methods: {
     ...mapMutations(['setLayoutNeeded', 'setIsLoginPage']),

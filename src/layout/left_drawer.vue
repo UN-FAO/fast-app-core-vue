@@ -32,22 +32,22 @@
       
 
         <q-side-link multiline highlight separator item
-          :to="{name: 'few', params: { idForm: 'idform'}}"
-          :key="Survey">
+          :to="{name: 'newSurvey'}"
+          :key="newSurvey">
           <q-item-side icon="fa-plus-square-o" />
           <q-item-main label="Start a new Survey" />
         </q-side-link>
 
 
         <q-side-link multiline highlight separator item
-          :to="{name: 'few', params: { idForm: 'idform'}}"
+          :to="{name: 'a', params: { idForm: 'idform'}}"
           :key="Data">
           <q-item-side icon="fa-database" />
           <q-item-main label="Data Collected"  />
         </q-side-link>
 
          <q-side-link multiline highlight separator item
-          :to="{name: 'few', params: { idForm: 'idform'}}"
+          :to="{name: 'b', params: { idForm: 'idform'}}"
           :key="Setting">
           <q-item-side icon="fa-cog" />
           <q-item-main label="Application Settings"  />
@@ -55,7 +55,7 @@
 
 
          <q-side-link multiline highlight separator item
-          :to="{name: 'few', params: { idForm: 'idform'}}"
+          :to="{name: 'c', params: { idForm: 'idform'}}"
           :key="about">
           <q-item-side icon="fa-mobile" />
           <q-item-main label="About Sharp"  />
@@ -63,8 +63,8 @@
 
 
          <q-side-link multiline highlight separator item
-          :to="{name: 'few', params: { idForm: 'idform'}}"
-          :key="key">
+          :to="{name: 'd', params: { idForm: 'idform'}}"
+          :key="lenguage">
           <q-item-side icon="language" />
           <q-item-main label="Language Settings"  />
         </q-side-link>
@@ -72,37 +72,34 @@
         <q-item-separator />
 
          <q-side-link multiline highlight separator item
-          :to="{name: 'few', params: { idForm: 'idform'}}"
-          :key="key">
+          :to="{name: 'e', params: { idForm: 'idform'}}"
+          :key="mysurvey">
           <q-item-side icon="fa-list" />
           <q-item-main label="My Survey"  />
         </q-side-link>
 
         <q-side-link multiline highlight separator item
-          :to="{name: 'few', params: { idForm: 'idform'}}"
-          :key="key">
+          :to="{name: 'f', params: { idForm: 'idform'}}"
+          :key="mysummary">
           <q-item-side icon="fa-line-chart" />
           <q-item-main label="My Summary"  />
         </q-side-link>
 
         <q-side-link multiline highlight separator item
-          :to="{name: 'few', params: { idForm: 'idform'}}"
-          :key="key">
+          :to="{name: 'g', params: { idForm: 'idform'}}"
+          :key="editprofile">
           <q-item-side icon="fa-pencil" />
           <q-item-main label="Edit your profile"  />
         </q-side-link>
 
-        <q-side-link multiline highlight separator item
-          :to="{name: 'few', params: { idForm: 'idform'}}"
-          :key="key">
+        <q-item @click="handleLogout" style="cursor: pointer">
           <q-item-side icon="ion-log-out" />
           <q-item-main label="Logout"  />
-        </q-side-link>
+        </q-item>
 
         <div class="fixed-bottom text-center light text-italic">
           v.0.1.0
         </div>
-
     </q-scroll-area>
 </template>
 <script>

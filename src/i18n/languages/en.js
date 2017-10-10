@@ -2,7 +2,7 @@ const en = {
   App: {
     submissions_for: 'Submissions for',
     new_submission_for: 'New Submission for:',
-    title: 'FAST POC',
+    title: 'SHARP+',
     form: 'Form',
     submission_id: 'Submission Id',
     created_at: 'Created at',

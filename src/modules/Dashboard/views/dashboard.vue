@@ -9,14 +9,14 @@
         <q-icon name="fa-plus-square-o fa-5x" />
   
       <h1>New Survey</h1>
-       <q-btn @click="toggleFlip(0)" round color="grey" flat class="fixed-bottom-right">
+       <q-btn @click="toggleFlip(0)" round color="grey" flat >
         <q-icon name="fa-plus-square" />
       </q-btn>
       
     </div>
     <div class="back">
 
-        <q-btn @click="toggleFlip(0)" style="z-index: 1;" round color="grey"  flat class="fixed-top-right">
+        <q-btn @click="toggleFlip(0)" style="z-index: 1;" round color="grey"  flat>
           <q-icon name="fa-times" />
         </q-btn>
      
@@ -63,19 +63,28 @@
     <div class="front">
       <q-icon name="fa-database fa-5x" />
       <h1>Data Collected</h1>
-       <q-btn @click="toggleFlip(1)" round color="grey" flat class="fixed-bottom-right">
+       <q-btn @click="toggleFlip(1)" round color="grey" flat >
         <q-icon name="fa-plus-square" />
       </q-btn>
       
     </div>
     <div class="back">
-      <q-btn @click="toggleFlip(1)" style="z-index: 1;" round color="grey"  flat class="fixed-top-right">
+      <q-btn @click="toggleFlip(1)" style="z-index: 1;" round color="grey"  flat>
         <q-icon name="fa-times" />
       </q-btn>
       <h1>Survey list</h1>
       <div class="row centered">
          <h3>Data</h3>
       <table style="display: block; height:200px; overflow-y: scroll;">
+
+        <tr>
+          <td class="col-lg-1"><q-icon name="fa-database" /></td>
+          <td>
+          <router-link :to="{name: 'formio_form_submission', params: { idForm: 'few'}}"><h3>ALL DATA</h3></router-link>
+          </td>
+
+        </tr>
+
         <tr v-for="(form, index) in forms" :key="form.data._id" v-if="form.data.display === 'wizard'">
           <td class="col-lg-1"><q-icon name="fa-database" /></td>
           <td class="col-lg-10">
@@ -119,13 +128,13 @@
     <div class="front">
       <q-icon name="fa-cog fa-5x" />
       <h1>Application Settings</h1>
-       <q-btn @click="toggleFlip(2)" round color="grey" flat class="fixed-bottom-right">
+       <q-btn @click="toggleFlip(2)" round color="grey" flat >
         <q-icon name="fa-plus-square" />
       </q-btn>
       
     </div>
     <div class="back">
-      <q-btn @click="toggleFlip(2)" round color="grey"  flat class="fixed-top-right">
+      <q-btn @click="toggleFlip(2)" round color="grey"  flat>
         <q-icon name="fa-times" />
       </q-btn>
       <h1>Survey list</h1>
@@ -140,13 +149,13 @@
     <div class="front">
       <q-icon name="fa-mobile fa-5x" />
       <h1>About Sharp+</h1>
-       <q-btn @click="toggleFlip(3)" round color="grey" flat class="fixed-bottom-right">
+       <q-btn @click="toggleFlip(3)" round color="grey" flat >
         <q-icon name="fa-plus-square" />
       </q-btn>
       
     </div>
     <div class="back">
-      <q-btn @click="toggleFlip(3)" round color="grey"  flat class="fixed-top-right">
+      <q-btn @click="toggleFlip(3)" round color="grey"  flat>
         <q-icon name="fa-times" />
       </q-btn>
       <h1>Survey list</h1>
@@ -155,6 +164,7 @@
   </div>
 </section>
 </div>
+
 </div>
 
 </template>
@@ -204,10 +214,10 @@ tr:nth-child(even){background-color: #f2f2f2}
 .card {
     width: 100%;
     height: 100%;
-    -webkit-transition: -webkit-transform 1s;
-    -moz-transition: -moz-transform 1s;
-    -o-transition: -o-transform 1s;
-    transition: transform 1s;
+    -webkit-transition: -webkit-transform 0.5s;
+    -moz-transition: -moz-transform 0.5s;
+    -o-transition: -o-transform 0.5s;
+    transition: transform 0.5s;
     -webkit-transform-style: preserve-3d;
     -moz-transform-style: preserve-3d;
     -o-transform-style: preserve-3d;
