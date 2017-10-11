@@ -13,14 +13,16 @@
   </template>
     
     
-    <router-view />
+    <router-view :key="$route.path" />
 
  
   </q-layout>
 </template>
 <script>
 /* eslint no-use-before-define: 0 */
-
+import 'bootstrap/dist/css/bootstrap.css'
+import 'src/statics/formio.full.min.css'
+import 'bootstrap-rtl-ondemand/dist/css/bootstrap-rtl.min.css'
 import toolbar from 'layout/toolbar'
 import leftdrawer from 'layout/left_drawer'
 import rigthdrawer from 'layout/right_drawer'
@@ -53,8 +55,7 @@ export default {
   name: 'app',
   mounted () {
     this.getResources({
-      appName: this.$store.state.authStore.appName,
-      isOnline: this.$root.VueOnline// this.$store.getters.isOnline
+      appName: this.$store.state.authStore.appName
     })
     this.$eventHub.on('lenguageSelection', (lenguage) => {
       this.toggleRtl(lenguage)

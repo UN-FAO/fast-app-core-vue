@@ -7,21 +7,28 @@
       </q-btn>
       <q-toolbar-title>
        <img src="statics/2000px-FAO_logo_reverse.png" style="max-height: 40px; max-width: 40px;"></img>  {{ $t("App.title") }}
-      <span slot="subtitle">Optional subtitle</span>
+      <span slot="subtitle">Self-evaluation and Holistic Assessment of climate resilence of Farmers and Pastoralists</span>
       </q-toolbar-title>
-      <q-btn class="within-iframe-hide" flat @click="$router.replace('/showcase')" style="margin-right: 15px">
-        <q-icon name="keyboard_arrow_left" />
-        Go back
-      </q-btn>
-      <localization></localization>
+      {{User.data.email}}
+      <localization/>
+      <wifiDisplay/>
+      <!--
       <q-btn flat @click="openRightDrawer()">
         <q-icon name="menu" />
       </q-btn>
+    -->
+    <q-btn flat @click="handleLogout()">
+        <q-icon name="ion-log-out" />
+    </q-btn>
+
     </q-toolbar>
 </template>
 <script>
 import Localization from 'modules/Localization/components/selector'
+import wifiDisplay from 'modules/Connection/components/display'
 import {QToolbar, QToolbarTitle, QAjaxBar, QBtn, QIcon} from 'quasar'
+import Auth from 'modules/Auth/api/Auth'
+import {mapMutations} from 'vuex'
 export default {
   components: {
     Localization,
@@ -29,14 +36,28 @@ export default {
     QToolbarTitle,
     QAjaxBar,
     QBtn,
-    QIcon
+    QIcon,
+    wifiDisplay
+  },
+  data () {
+    return {
+      User: Auth.user()
+    }
   },
   methods: {
+    ...mapMutations(['setLayoutNeeded', 'setIsLoginPage']),
     openLeftDrawer () {
       this.$eventHub.$emit('openLeftDrawer')
     },
     openRightDrawer () {
       this.$eventHub.$emit('openRightDrawer')
+    },
+    handleLogout () {
+      // this.$eventHub.$emit('openLeftDrawer')
+      this.$store.dispatch('clearAuthUser')
+      Auth.logOut()
+      this.setLayoutNeeded(false)
+      this.setIsLoginPage(true)
     }
   }
 }

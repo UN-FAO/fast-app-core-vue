@@ -1,11 +1,41 @@
 <template>
   <q-tabs>
         <!-- Tabs - notice slot="title" -->
-        <q-tab default  slot="title" name="tab-1" icon="assessment" label="Score" />
-        <q-tab :count="Unsynced.length"  slot="title" name="tab-2" icon="signal_wifi_off" label="Unsync" />
+        <!-- This tab should render only when we have Wizards -->
+        <q-tab v-if="_isWizard"  slot="title" name="tab-wizard" icon="signal_wifi_off" label="Sections"/>
+        <q-tab v-if="scorePanels.length > 0"  slot="title" name="tab-1" icon="assessment" label="Score" />
+        <q-tab default :count="Unsynced.length"  slot="title" name="tab-2" icon="signal_wifi_off" label="Unsync" />
 
         <!-- Targets -->
-        <q-tab-pane name="tab-1">Tab One</q-tab-pane>
+        <!-- This should be extracted to its own component -->
+        <q-tab-pane v-if="_isWizard" name="tab-wizard">
+        </q-tab-pane>
+        <!-- //////////////////////////// -->
+
+        <q-tab-pane name="tab-1">
+            <q-list separator>
+          <!-- collapsible to hide sub-level menu entries -->
+          <q-collapsible v-for="(panel, index) in scorePanels"  separator :key="panel.key" icon="apps" :label="panel.title" >
+           
+            <q-item multiline icon="favorite" v-for="(component, cIndex) in panel.components" :label="component.label" :key="component.key">
+            <q-item-side icon="school" />
+            <q-item-main
+              :label="component.label"
+              label-lines="3"
+            />
+            <q-item-side right :stamp="component.value" />
+          </q-item>
+
+
+          </q-collapsible>
+        </q-list>
+
+
+
+
+        </q-tab-pane>
+
+
         <q-tab-pane name="tab-2">
   
        <q-list-header>{{ $t("App.unsynced_actions") }}
@@ -20,18 +50,30 @@
 
 
   <q-item v-for="(submission, index) in Unsynced"  separator :key="submission._id">
-    <q-item-side icon="input">
-      {{index + 1}}
-    </q-item-side>
+    <q-item-side icon="assignmente" />
     <q-item-main>
       <q-item-tile label>
-        {{submission.data.formName}}
-      </q-item-tile>
-      <q-item-tile sublabel>
-        {{humanizeDate(submission.data.created)}}
+        {{submission.data.formio.formId}}
       </q-item-tile>
 
     </q-item-main>
+
+    <q-item-side right icon="more_vert">
+    <q-item-tile stamp>{{humanizeDate(submission.data.created)}}</q-item-tile>
+            <q-popover ref="popover">
+              <q-list link>
+                <q-item @click="$refs.popover.close()">
+                  <q-item-main label="Reply" />
+                </q-item>
+                <q-item @click="$refs.popover.close()">
+                  <q-item-main label="Forward" />
+                </q-item>
+                <q-item @click="$refs.popover.close()">
+                  <q-item-main label="Delete" />
+                </q-item>
+              </q-list>
+            </q-popover>
+          </q-item-side>
   </q-item>
 
 
@@ -45,17 +87,28 @@ import layoutStore from './layout-store'
 import * as Database from 'database/Database'
 import moment from 'moment'
 import Auth from 'modules/Auth/api/Auth'
-import {QTabs, QTab, QTabPane, QScrollArea, QSideLink, QItemTile, QItemSide, QItemMain, QListHeader, QCollapsible, QBtn, QIcon, QTooltip, QList, QItem, QItemSeparator} from 'quasar'
+import FormioUtils from 'formiojs/utils'
+import {QTabs, QTab, QTabPane, QScrollArea, QSideLink, QItemTile, QItemSide, QItemMain, QListHeader, QCollapsible, QBtn, QIcon, QTooltip, QList, QItem, QItemSeparator, QPopover} from 'quasar'
 export default {
   components: {
-    QTabs, QTab, QTabPane, QScrollArea, QSideLink, QItemTile, QItemSide, QItemMain, QListHeader, QCollapsible, QBtn, QIcon, QTooltip, QList, QItem, QItemSeparator
+    QTabs, QTab, QTabPane, QScrollArea, QSideLink, QItemTile, QItemSide, QItemMain, QListHeader, QCollapsible, QBtn, QIcon, QTooltip, QList, QItem, QItemSeparator, QPopover
   },
   data () {
     return {
       Unsynced: [],
       allSubmissionSubs: [],
-      layoutStore
+      layoutStore,
+      isWizard: false,
+      scorePanels: []
     }
+  },
+  computed: {
+    _isWizard () {
+      return this.isWizard
+    }
+  },
+  beforeDestroy: function () {
+    this.allSubmissionSubs.forEach(sub => sub.unsubscribe())
   },
   /**
      * [beforeRouteUpdate description]
@@ -65,14 +118,44 @@ export default {
      * @return {[type]}        [description]
      */
   mounted: async function () {
+    this.$eventHub.on('formio.render', (data) => {
+      this.isWizard = !!(data.formio.wizard)
+    })
+
+    this.$eventHub.on('formio.change', (data) => {
+      let scorePanels = []
+      // This should only be called if this is a Wizard
+      // Search all of the Score components in different pages
+      _.forEach(data.formio.pages, (page) => {
+          let panels = FormioUtils.findComponents(page.components, {
+          'type': 'panel'
+        })
+          if (panels.length > 0) {
+            _.forEach(panels, (panel, index) => {
+              // Make sure that the panel contains Score
+              if (panel.key.indexOf('score') !== -1) {
+                _.forEach(panel.components, (component, cindex) => {
+                  // Search the current value of the Score and add it
+                  component.value = data.formio.data[component.key]
+                })
+                scorePanels.push(panel)
+              }
+            })
+          }
+      })
+        this.scorePanels = scorePanels
+    })
+
     const db = await Database.get()
-    _.isEmpty(Auth.user())
-    return
+    if (_.isEmpty(Auth.user())) {
+      return
+    }
     
     this.allSubmissionSubs.push(
       db.submissions
         .find({
           'data.sync': false,
+          'data.draft': false,
           'data.user_email': {
             $exists: true,
             $eq: Auth.user().data.email || Auth.user().email
@@ -89,15 +172,6 @@ export default {
           this.Unsynced = filter
         })
     )
-  },
-  computed: {
-    /**
-       * [isOnline description]
-       * @return {Boolean} [description]
-       */
-    isOnline () {
-      return this.$root.VueOnline
-    }
   },
   methods: {
     humanizeDate (givenDate) {

@@ -1,66 +1,54 @@
 <template>
     <q-pull-to-refresh :handler="refreshSubmissions">
-      <q-card>
-        <q-card-title class="bg-primary text-white">
-         {{ $t("App.new_submission_for") }}
-        </q-card-title>
-        <q-card-separator />
-        <q-card-main>
+      <div class="row">       
+        <q-card color="white" class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1" >
+            
+            <q-card-main>
 
-          <q-tabs inverted>
-        <!-- Tabs - notice slot="title" -->
-        <q-tab default  slot="title" name="tab-1" icon="person" label="P1" />
+                <q-tabs inverted>
+                    <!-- Tabs - notice slot="title" -->
+                    <q-tab default slot="title" name="tab-1" icon="person" label="P1"
+                     :color="saved ? 'primary' : 'red'" />
+                    <!-- Targets -->
+                    <q-tab-pane name="tab-1">
+                        <!-- Tabs -->
+                        <formio
+                          :formioURL="formioURL" 
+                          :submission="submission"
+                          :formioToken="formioToken"
+                          :localDraft="LOCAL_DRAFT_ENABLED"
+                        />
+                    </q-tab-pane>
 
+                </q-tabs>
 
-        <!-- Targets -->
-        <q-tab-pane name="tab-1">
-          
-          <!-- Tabs -->
-          <formio 
-        :formioURL="formioURL"
-        :localJsonForm="form"
-        :submission="submission"
-        ></formio>
-        </q-tab-pane>
+                <q-fixed-position corner="top-right" :offset="[18, 18]">
+                    <q-fab color="red" icon="add" direction="left" push>
+                        <q-fab-action color="secondary" @click="refreshForm()" icon="autorenew"></q-fab-action>
 
-      </q-tabs>
+                        <q-fab-action color="primary" @click="getForms()" icon="cloud_download"></q-fab-action>
 
+                        <q-fab-action color="amber" @click="addSurvey()" icon="person_add"></q-fab-action>
 
-           <q-fixed-position corner="top-right" :offset="[18, 18]">
-         <q-fab
-              color="red"
-              icon="add"
-              direction="left"
-              push
-            >
-              <q-fab-action
-                color="primary"
-                @click="refreshForm()"
-                icon="autorenew"
-              ></q-fab-action>
+                    </q-fab>
+                </q-fixed-position>
 
-              <q-fab-action
-                color="black"
-                @click="addSurvey()"
-                icon="person_add"
-              ></q-fab-action>
-
-            </q-fab>
-        </q-fixed-position>
-
-        </q-card-main>
-      </q-card>
+            </q-card-main>
+        </q-card>
+      </div>
     </q-pull-to-refresh>
 </template>
 
-
 <script>
 import _ from 'lodash'
-import formio from 'modules/Formio/components/formio'
-import LocalForm from 'database/collections/Scopes/LocalForm'
-import LocalSubmission from 'database/collections/Scopes/LocalSubmission'
-import {APP_URL} from 'config/env'
+import {mapActions} from 'vuex'
+import Auth from 'modules/Auth/api/Auth'
+import formio from 'modules/Formio/components/formio/formio'
+import LocalForm from 'database/collections/scopes/LocalForm'
+import LocalSubmission from 'database/collections/scopes/LocalSubmission'
+import {APP_URL, LOCAL_DRAFT_ENABLED} from 'config/env'
 import {QCard, QCardTitle, QCardSeparator, QCardMain, QFab, QFabAction, QFixedPosition, QPullToRefresh, QTabs, QTab, QTabPane, QCollapsible, QBtn, QIcon, QTooltip, QList, QItem, QItemSeparator} from 'quasar'
+
 
 export default {
   components: {
@@ -70,39 +58,74 @@ export default {
     // Load the form and submission before entering the route
     let form = await LocalForm.get(to.params.idForm)
     if (to.params.idSubmission) {
-      var submission = this.$route.params.idSubmission ? await LocalSubmission.get(this.$route.params.idSubmission) : undefined
+      var submission = to.params.idSubmission ? await LocalSubmission.get(to.params.idSubmission) : undefined
     }
     next(vm => {
       // Load the form and submission before entering the route
       vm.form = form
       if (to.params.idSubmission) {
-        vm.submission = (!_.isEmpty(submission)) ? submission.data.data : undefined
+        vm.submission = (!_.isEmpty(submission)) ? submission : undefined
       }
     })
   },
   async beforeRouteUpdate (to, from, next) {
-    this.submission = undefined
-    this.form = null
+    let form = await LocalForm.get(to.params.idForm)
     if (to.params.idSubmission) {
       this.getSubmission()
     }
-    let form = await LocalForm.get(this.$route.params.idForm)
     this.form = form
     next()
+  },
+  mounted () {
+    document.addEventListener('draftStatus', this.draftStatusChanged)
+    this.$eventHub.$on('formio.error', (error) => {
+      console.log(error)
+      this.$swal({
+          type: 'error',
+          title: 'Error',
+          html: 'You have errors in the submission'
+        }).then(() => {
+          window.scrollTo(0, 0)
+        })
+    })
+  },
+  beforeDestroy() {
+    document.removeEventListener('draftStatus', this.draftStatusChanged)
+    this.$eventHub.$off('formio.error')
+  },
+  computed: {
+    formTitle () {
+      let title = ''
+      if (this.form) {
+        title = this.form ? this.form.title : ''
+      }
+      return title
+    }
   },
   data: function () {
     return {
       form: null,
-      formioURL: APP_URL + '/' + this.$route.query.formPath,
+      formioURL: APP_URL + '/' + this.$route.params.idForm,
       submission: undefined,
-      people: [{name: 'P1'}]
+      people: [{name: 'P1'}],
+      formioToken: Auth.user().x_jwt_token,
+      LOCAL_DRAFT_ENABLED: LOCAL_DRAFT_ENABLED,
+      saved: false
     }
   },
   methods: {
+    ...mapActions(['getResources']),
+    draftStatusChanged (e) {
+      if (e.detail.data === false) {
+        this.saved = false
+      } else {
+        this.saved = true
+      }
+    },
     addSurvey () {
       let self = this
       this.$swal({
-        title: 'Enter short name to add',
+        title: 'Give her a name',
         input: 'text',
         showCancelButton: true,
         confirmButtonText: 'Add',
@@ -116,9 +139,13 @@ export default {
         })
       })
     },
+    getForms () {
+      this.getResources({
+        appName: this.$store.state.authStore.appName
+      })
+    },
     // Refresh when pulled Down
     async refreshForm (done) {
-      // this.getLocalForm()
       let form = await LocalForm.get(this.$route.params.idForm)
       this.form = form
       this.getSubmission()
@@ -131,7 +158,7 @@ export default {
     // Get Submission if we are Updating
     async getSubmission () {
       let submission = this.$route.params.idSubmission ? await LocalSubmission.get(this.$route.params.idSubmission) : undefined
-      this.submission = (!_.isEmpty(submission)) ? submission.data.data : undefined
+      this.submission = (!_.isEmpty(submission)) ? submission : undefined
     }
   }
 }

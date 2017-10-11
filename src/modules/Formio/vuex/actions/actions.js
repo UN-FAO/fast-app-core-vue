@@ -6,24 +6,35 @@ import _ from 'lodash'
 import moment from 'moment'
 import Auth from 'modules/Auth/api/Auth'
 import Connection from 'modules/Wrappers/Connection'
+import LocalSubmission from 'database/collections/scopes/LocalSubmission'
+import FormioJS from 'formiojs'
+import deep from 'deep-diff'
 
 const actions = {
 
   async updateLocalResource ({ collection, label, data }) {
-    console.log('updateing', data)
+    // let offlinePlugin = FormioJS.getPlugin('offline')
+    var formio = new FormioJS('https://' + data.appName + '.form.io')
     let isOnline = Connection.isOnline()
-
     const DB = await Database.get()
-    let localResources = await DB[collection].find().exec()
 
-    let remoteResources = isOnline ? await Formio[collection](data.appName) : []
+    let localResources = await DB[collection].find().exec()
+    let remoteResources = (isOnline && collection !== 'forms') ? await Formio[collection](data.appName) : []
+
+    if (collection === 'forms') {
+      if (isOnline) {
+        FormioJS.clearCache()
+      }
+      remoteResources = isOnline ? await formio.loadForms({params: {limit: '100'}}) : []
+    }
+
     let sync = SyncHelper.offlineOnlineSync({
       collection,
       LocalResults: localResources,
       OnlineResults: remoteResources,
       isOnline: isOnline
     })
-    // await DB.forms.remove();
+
     // For every new or updated entry
     _.forEach(sync, async function (res, key) {
       let localRes = await DB[collection].find().where('data._id').eq(res._id).exec()
@@ -95,43 +106,24 @@ const actions = {
    * @param  {[type]} projectName    [description]
    * @return {[type]}                [description]
    */
-  async getSubmissions ({ commit }, { currentForm, isOnline, User }) {
+  async getSubmissions ({ commit }, { currentForm, User }) {
+    FormioJS.setToken(Auth.user().x_jwt_token)
     const DB = await Database.get()
+    let isOnline = Connection.isOnline()
+    
+    let formUrl = 'https://' + currentForm.data.machineName.substring(0, currentForm.data.machineName.indexOf(':')) + '.form.io/' + currentForm.data.name
+    
+    let formio = new FormioJS(formUrl)
 
-    let remoteSubmissions = isOnline ? await
-    Formio.getSubmissions(
-      currentForm.data.machineName,
-      currentForm.data.path
-    ) : []
+    let localUnSyncSubmissions = LocalSubmission.offline(User.id, currentForm.data.name)
 
-    let localSubmissions = await DB.submissions
-      .find({
-        // Only include this filter if we dont share data
-        // between users
-        'data.owner': {
-          $exists: true,
-          $eq: User.id
-        },
-        'data.form': {
-          $exists: true,
-          $eq: currentForm.data._id
-        }
-      }).exec()
+    let remoteSubmissions = (isOnline && localUnSyncSubmissions.length === 0) ? await formio.loadSubmissions() : []
 
-    let localUnSyncSubmissions = await DB.submissions
-      .find({
-        // Only include this filter if we dont share data
-        // between users
-        'data.owner': {
-          $exists: true,
-          $eq: User.id
-        },
-        'data.form': {
-          $exists: true,
-          $eq: currentForm.data._id
-        },
-        'data.sync': false
-      }).exec()
+    _.map(remoteSubmissions, function (o) {
+      o.formio = formio
+    })
+ 
+    let localSubmissions = LocalSubmission.stored(User.id, currentForm.data.name)
 
     var Localresult = _.unionBy(localSubmissions, localUnSyncSubmissions, '_id')
     let sync = SyncHelper.offlineOnlineSync({
@@ -142,7 +134,7 @@ const actions = {
     // await DB.submissions.remove();
     // For every new or updated entry
     _.forEach(sync, async function (submission, key) {
-      let localSubmissions = await DB.submissions.find().where('data.data._id').eq(submission._id).exec()
+      let localSubmissions = await DB.submissions.find().where('data._id').eq(submission._id).exec()
       // remove local duplicated or updated entries
       _.forEach(localSubmissions, function (local) {
         local.remove()
@@ -163,20 +155,45 @@ const actions = {
    * @param {[type]} options.commit [description]
    * @param {[type]} currentForm    [description]
    */
-  async addSubmission ({ commit }, { currentForm, isOnline, formId, User }) {
+  async addSubmission ({ commit }, { formSubmission, formio, User }) {
+    console.log('Adding a submission')
     const DB = await Database.get()
-    let submission = currentForm.submission
+    
+    let submission = formSubmission
     submission.sync = false
     submission.user_email = User.email
-    submission.form = formId
-    submission.formName = currentForm.formio.formUrl.split('/').pop()
+    submission.formio = formio
     submission.created = moment().format()
-    submission.formio = {}
-    submission.formio.formUrl = currentForm.formio.formUrl
     submission = SyncHelper.deleteNulls(submission)
-    await DB.submissions.insert({
-      data: submission
-    })
+
+    console.log('This is the submission about to been added', submission)
+
+    // If we are updating the submission
+    if (formSubmission._id || formSubmission.trigger !== 'createLocalDraft') {
+      submission.type = 'update'
+      let localSubmission = await LocalSubmission.get(formSubmission._id)
+      let differences = deep.diff(SyncHelper.deleteNulls(localSubmission.data.data), SyncHelper.deleteNulls(submission.data))
+      
+
+      console.log('Local submission', localSubmission.data.draft)
+      // If there are differences between the
+      // Stored and the new data.
+      if (differences || submission.draft === false || (localSubmission.data.draft === false && submission.draft === true)) {
+        console.log('Updating the submission because there are changes')
+          await localSubmission.update({
+          $set: {
+            data: submission
+          }
+        })
+      }
+      return localSubmission
+      // If we are creating a new draft from scratch
+    } else if (formSubmission.trigger === 'createLocalDraft') {
+      let newSubmission = await DB.submissions.insert({
+        data: submission
+      })
+      return newSubmission
+    }
   },
 
   /**
@@ -185,19 +202,41 @@ const actions = {
    * @param  {[type]} offlineSubmissions [description]
    * @return {[type]}                    [description]
    */
-  async sendOfflineData ({ commit }, { offlineSubmissions, isOnline }) {
+  async sendOfflineData ({ commit }, { offlineSubmissions }) {
+    let isOnline = Connection.isOnline()
+
     if (isOnline) {
+      let offlinePlugin = FormioJS.getPlugin('offline')
       let syncedSubmissions = 0
       _.forEach(offlineSubmissions, async function (offlineSubmission) {
-        let FormIOinsertedData = await Formio.createSubmission(offlineSubmission.data)
+        // Create FormIOJS plugin instace (Manipulation)
+        let formio = new FormioJS(offlineSubmission.data.formio.formUrl)
+        let postData = {
+          data: offlineSubmission.data.data
+        }
 
-        if (FormIOinsertedData) {
-          // If it was inserted, then update the local submission
+        // If it has an ID and the Id its not local (doesnt contain ":")
+        if (offlineSubmission.data._id && offlineSubmission.data._id.indexOf(':') === -1) {
+          postData._id = offlineSubmission.data._id
+        }
+
+        FormioJS.deregisterPlugin('offline')
+
+        try {
+          let FormIOinsertedData = await formio.saveSubmission(postData)
+          FormIOinsertedData.formio = formio
+
           await offlineSubmission.update({
             $set: {
-              data: FormIOinsertedData.data
+              data: FormIOinsertedData
             }
           })
+          syncedSubmissions = syncedSubmissions + 1
+          FormioJS.registerPlugin(offlinePlugin, 'offline')
+        }
+        catch (e) {
+          console.log('The submission cannot be synced ', e)
+          FormioJS.registerPlugin(offlinePlugin, 'offline')
         }
       })
       if (syncedSubmissions > 0) {

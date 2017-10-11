@@ -1,0 +1,199 @@
+[
+    {
+        "id": "334a78d7.72a6f8",
+        "type": "tab",
+        "label": "FAST-ELASTIC-CONNECTOR",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "c5f4309a.1f7b2",
+        "type": "tab",
+        "label": "Storage",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "6e2cb3ec.3177ac",
+        "type": "tab",
+        "label": "Push Notifications",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "f6b9b2d9.f7919",
+        "type": "formio",
+        "z": "",
+        "project": "https://swgxzpjusiyswjy.form.io",
+        "apikey": "ASUiwa0aEMZI7LZNBPlfXiMG3ub5TO"
+    },
+    {
+        "id": "8d67aa24.92a118",
+        "type": "form_io in",
+        "z": "334a78d7.72a6f8",
+        "formio": "f6b9b2d9.f7919",
+        "path": "FAST-NODERED-CONNECTOR",
+        "method": "post",
+        "x": 233,
+        "y": 46,
+        "wires": [
+            [
+                "85dca522.11f628",
+                "e636639a.f6718"
+            ]
+        ]
+    },
+    {
+        "id": "cd7ff320.8fc8f",
+        "type": "http request",
+        "z": "c5f4309a.1f7b2",
+        "name": "Elastic Data Input",
+        "method": "POST",
+        "ret": "txt",
+        "url": "https://f23f1a927de8776397431c4b3c0d4342.us-east-1.aws.found.io:9243/{{{payload.data.projectName}}}/submission",
+        "tls": "",
+        "x": 590,
+        "y": 82,
+        "wires": [
+            [
+                "19765d1c.7829b3"
+            ]
+        ]
+    },
+    {
+        "id": "19765d1c.7829b3",
+        "type": "debug",
+        "z": "c5f4309a.1f7b2",
+        "name": "c",
+        "active": false,
+        "console": "false",
+        "complete": "payload",
+        "x": 613,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "41daac19.e620d4",
+        "type": "function",
+        "z": "c5f4309a.1f7b2",
+        "name": "Remove Id of the object",
+        "func": "delete msg.payload._id\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 307,
+        "y": 60,
+        "wires": [
+            [
+                "cd7ff320.8fc8f",
+                "19765d1c.7829b3"
+            ]
+        ]
+    },
+    {
+        "id": "85dca522.11f628",
+        "type": "link out",
+        "z": "334a78d7.72a6f8",
+        "name": "Storage OUT 1",
+        "links": [
+            "499902b8.7b3f9c",
+            "d00edfe5.d5fa4"
+        ],
+        "x": 419.5,
+        "y": 132,
+        "wires": []
+    },
+    {
+        "id": "d00edfe5.d5fa4",
+        "type": "link in",
+        "z": "c5f4309a.1f7b2",
+        "name": "Storage IN",
+        "links": [
+            "85dca522.11f628"
+        ],
+        "x": 113.5,
+        "y": 45,
+        "wires": [
+            [
+                "41daac19.e620d4",
+                "39af90e6.0d785"
+            ]
+        ]
+    },
+    {
+        "id": "89ed5eb2.ae29d",
+        "type": "http in",
+        "z": "334a78d7.72a6f8",
+        "name": "Post Listener",
+        "url": "/FAST-NODERED-CONNECTOR",
+        "method": "post",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 133,
+        "y": 133,
+        "wires": [
+            [
+                "85dca522.11f628",
+                "e636639a.f6718"
+            ]
+        ]
+    },
+    {
+        "id": "e636639a.f6718",
+        "type": "debug",
+        "z": "334a78d7.72a6f8",
+        "name": "c",
+        "active": false,
+        "console": "false",
+        "complete": "payload",
+        "x": 333,
+        "y": 189,
+        "wires": []
+    },
+    {
+        "id": "499902b8.7b3f9c",
+        "type": "link in",
+        "z": "6e2cb3ec.3177ac",
+        "name": "Storage IN",
+        "links": [
+            "85dca522.11f628"
+        ],
+        "x": 191,
+        "y": 71,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "1a4d5d48.b1d253",
+        "type": "http request",
+        "z": "c5f4309a.1f7b2",
+        "name": "Elastic Index Creation",
+        "method": "POST",
+        "ret": "obj",
+        "url": "https://f23f1a927de8776397431c4b3c0d4342.us-east-1.aws.found.io:9243/.kibana/index-pattern/{{{payload.data.projectName}}}",
+        "tls": "",
+        "x": 214,
+        "y": 278,
+        "wires": [
+            [
+                "19765d1c.7829b3"
+            ]
+        ]
+    },
+    {
+        "id": "39af90e6.0d785",
+        "type": "function",
+        "z": "c5f4309a.1f7b2",
+        "name": "Format index Payload",
+        "func": "msg.payload._id = msg.payload.projectName\nmsg.payload.title = msg.payload.projectName\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 159.5,
+        "y": 164,
+        "wires": [
+            [
+                "1a4d5d48.b1d253"
+            ]
+        ]
+    }
+]

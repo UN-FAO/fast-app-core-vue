@@ -1,30 +1,28 @@
 <template>
-
-  <div class="alert alert-success" v-if="isNotLoginSection && isNotAuth && isOnline()"
-  > Back on line! To login and sync you data  <strong @click="handleLogout()"> CLICK HERE</strong> 
-  </div>
-
+<div class="alert alert-success"
+     v-if="isNotLoginSection && isNotAuth && isOnline()"> Back on line! To login and sync you data <strong @click="handleLogout()"> CLICK HERE</strong>
+</div>
 
 </template>
 
 <script>
-import Connection from 'modules/Wrappers/Connection'
-import Auth from 'modules/Auth/api/Auth'
-import {mapMutations, mapGetters} from 'vuex'
+import Connection from 'modules/Wrappers/Connection';
+import Auth from 'modules/Auth/api/Auth';
+import { mapMutations, mapGetters } from 'vuex';
 
 export default {
   name: 'connection-alert',
 
-  beforeRouteEnter (to, from, next) {
+  beforeRouteEnter(to, from, next) {
     next(vm => {
       vm.$forceUpdate()
     })
   },
-  beforeRouteUpdate (to, from, next) {
+  beforeRouteUpdate(to, from, next) {
     this.$forceUpdate()
     next()
   },
-  mounted: function () {
+  mounted: function() {
     this.$eventHub.on('connectionStatusChanged', (status) => {
       this.$forceUpdate()
     })
@@ -34,11 +32,16 @@ export default {
     /**
        * Map layout methods for the theme
        */
-    ...mapMutations(['setLayoutNeeded', 'setIsLoginPage']),
+    ...mapMutations([
+          'setLayoutNeeded',
+          'setIsLoginPage'
+    ]),
 
-    ...mapGetters(['getIsLoginPage']),
+    ...mapGetters([
+          'getIsLoginPage'
+    ]),
 
-    handleLogout () {
+    handleLogout() {
       this.$store.dispatch('clearAuthUser')
       Auth.logOut()
       this.setLayoutNeeded(false)
@@ -47,17 +50,18 @@ export default {
   },
 
   computed: {
-    isOnline () {
+    isOnline() {
       console.log(1, Connection.isOnline())
       return Connection.isOnline()
     },
-    isNotAuth () {
+    isNotAuth() {
       console.log(2, !Auth.check())
       return !Auth.check()
     },
-    isNotLoginSection () {
+    isNotLoginSection() {
       return !this.getIsLoginPage()
     }
   }
 }
+
 </script>

@@ -22,7 +22,7 @@ RxDB.plugin(require('pouchdb-adapter-idb'))
 RxDB.plugin(require('pouchdb-replication')) // enable syncing
 RxDB.plugin(require('pouchdb-adapter-http')) // enable syncing over http
 RxDB.plugin(require('pouchdb-adapter-cordova-sqlite'))
-
+RxDB.plugin(require('pouchdb-adapter-localstorage'))
 // const syncURL = SYNC_URL
 let dbPromise = null
 
@@ -45,7 +45,17 @@ const _create = async function () {
     name: store.getters.getMachineUrl,
     password: LOCAL_DB_PASSWORD
   }
-  database.adapter = Platform.is.cordova ? 'idb' : 'idb'
+  if (Platform.is.mobile) {
+    database.adapter = 'localstorage'
+  } else if (Platform.is.cordova) {
+    database.adapter = 'cordova-sqlite'
+  } else {
+    database.adapter = 'idb'
+  }
+ 
+  console.log('#########################')
+  console.log('We are using', database.adapter)
+  console.log('#########################')
   // database.multiInstance = Platform.is.desktop ? false : false
   database.multiInstance = false
   const db = await RxDB.create(database)
@@ -81,19 +91,21 @@ const syncSubmissions = async ({ db, isOnline }) => {
 
   if (usersAreSync) {
     let filter = await db.submissions.find().exec()
-
     // updated incomplete submission
     filter = _.filter(filter, function (o) {
-      return (o.data.sync === false)
+      return (o.data.sync === false && o.data.draft === false)
     })
 
     filter = _.orderBy(filter, ['data.created'], ['asc'])
 
     if (filter.length > 0) {
+      console.log('there are offline submissions', filter)
       store.dispatch('sendOfflineData', { offlineSubmissions: filter, isOnline })
     }
   }
 }
+
+const DsyncSubmissions = _.debounce(syncSubmissions, 1000)
 
 /**
  * [description]
@@ -129,6 +141,8 @@ const syncUsers = async ({ db, isOnline }) => {
   }
 }
 
+const DsyncUsers = _.debounce(syncUsers, 1000)
+
 /**
  * [description]
  * @param  {[type]} vm [description]
@@ -139,10 +153,10 @@ export const sync = async function (vm) {
   const isOnline = await Connection.heartBeat(vm)
 
   if (Auth.check() && isOnline) {
-    await syncSubmissions({ db, isOnline })
+    await DsyncSubmissions({ db, isOnline })
   }
 
   if (isOnline) {
-    await syncUsers({ db, isOnline })
+    await DsyncUsers({ db, isOnline })
   }
 }

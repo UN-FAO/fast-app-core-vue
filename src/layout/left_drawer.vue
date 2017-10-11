@@ -6,16 +6,8 @@
       FAO
       </center>
       </q-list-header>
-
-
       <q-list>
 
-  <q-item @click="handleLogout()">
-    <q-item-side icon="input" />
-    <q-item-main>
-      <q-item-tile label>Logout</q-item-tile>
-    </q-item-main>
-  </q-item>
   <q-item-separator inset />
 
 </q-list>
@@ -39,34 +31,81 @@
        </q-list-header>
       
 
-      <q-side-link multiline highlight separator item
-          v-for="(form, index) in forms"
-          v-if="
-            form.data.type!=='resource' &&
-            form.data.name!=='admin' &&
-            form.data.name!=='translations'&&
-            form.data.name!=='user' &&
-            form.data.name!=='userLogin' &&
-            form.data.name!=='userRegister' &&
-            form.data.name!=='adminLogin'"
-          :to="{name: 'formio_form_show', params: { idForm: form.data._id},
-            query: { formPath: form.data.path}}"
-          :key="form.data._id">
-          <q-item-side icon="assignmente" />
-           <q-item-main :label="form.data.title" sublabel="Learn more about it" />
+        <q-side-link multiline highlight separator item
+          :to="{name: 'newSurvey'}"
+          :key="newSurvey">
+          <q-item-side icon="fa-plus-square-o" />
+          <q-item-main label="Start a new Survey" />
         </q-side-link>
 
+
+        <q-side-link multiline highlight separator item
+          :to="{name: 'a', params: { idForm: 'idform'}}"
+          :key="Data">
+          <q-item-side icon="fa-database" />
+          <q-item-main label="Data Collected"  />
+        </q-side-link>
+
+         <q-side-link multiline highlight separator item
+          :to="{name: 'b', params: { idForm: 'idform'}}"
+          :key="Setting">
+          <q-item-side icon="fa-cog" />
+          <q-item-main label="Application Settings"  />
+        </q-side-link>
+
+
+         <q-side-link multiline highlight separator item
+          :to="{name: 'c', params: { idForm: 'idform'}}"
+          :key="about">
+          <q-item-side icon="fa-mobile" />
+          <q-item-main label="About Sharp"  />
+        </q-side-link>
+
+
+         <q-side-link multiline highlight separator item
+          :to="{name: 'd', params: { idForm: 'idform'}}"
+          :key="lenguage">
+          <q-item-side icon="language" />
+          <q-item-main label="Language Settings"  />
+        </q-side-link>
+
+        <q-item-separator />
+
+         <q-side-link multiline highlight separator item
+          :to="{name: 'e', params: { idForm: 'idform'}}"
+          :key="mysurvey">
+          <q-item-side icon="fa-list" />
+          <q-item-main label="My Survey"  />
+        </q-side-link>
+
+        <q-side-link multiline highlight separator item
+          :to="{name: 'f', params: { idForm: 'idform'}}"
+          :key="mysummary">
+          <q-item-side icon="fa-line-chart" />
+          <q-item-main label="My Summary"  />
+        </q-side-link>
+
+        <q-side-link multiline highlight separator item
+          :to="{name: 'g', params: { idForm: 'idform'}}"
+          :key="editprofile">
+          <q-item-side icon="fa-pencil" />
+          <q-item-main label="Edit your profile"  />
+        </q-side-link>
+
+        <q-item @click="handleLogout" style="cursor: pointer">
+          <q-item-side icon="ion-log-out" />
+          <q-item-main label="Logout"  />
+        </q-item>
+
         <div class="fixed-bottom text-center light text-italic">
-          v.0.0.1
-
+          v.0.1.0
         </div>
-
     </q-scroll-area>
 </template>
 <script>
 import {mapMutations, mapState, mapActions} from 'vuex'
 import Auth from 'modules/Auth/api/Auth'
-import * as Database from 'database/Database'
+import LocalForm from 'database/collections/scopes/LocalForm'
 import {QScrollArea, QSideLink, QItemTile, QItemSide, QItemMain, QListHeader, QCollapsible, QBtn, QIcon, QTooltip, QList, QItem, QItemSeparator} from 'quasar'
 import layoutStore from './layout-store'
 
@@ -75,13 +114,12 @@ export default {
     QScrollArea, QSideLink, QItemTile, QItemSide, QItemMain, QListHeader, QCollapsible, QBtn, QIcon, QTooltip, QList, QItem, QItemSeparator
   },
   mounted: async function () {
-    this.subscribeToForms()
+    LocalForm.sAll(this, 'forms')
   },
   data () {
     return {
-      form: {},
       forms: [],
-      subs: [],
+      subscriptions: [],
       layoutStore
     }
   },
@@ -113,18 +151,6 @@ export default {
       Auth.logOut()
       this.setLayoutNeeded(false)
       this.setIsLoginPage(true)
-    },
-    async subscribeToForms () {
-      this.subs.forEach(sub => sub.unsubscribe())
-      const db = await Database.get()
-      this.subs.push(
-        db.forms
-          .find()
-          .$
-          .subscribe(forms => {
-            this.forms = forms
-          })
-      )
     }
   }
 }

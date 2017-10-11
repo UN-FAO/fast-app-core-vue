@@ -68,7 +68,7 @@ router.beforeEach((to, from, next) => {
     next(false)
     router.push({ path: '/login' })
   } else if (Auth.user() && (to.name === 'login' || to.name === 'login_redirect')) {
-    // router.push({ name: 'dashboard' })
+    router.push({ name: 'dashboard' })
   } else {
     window.scrollTo(0, 0)
     next()
