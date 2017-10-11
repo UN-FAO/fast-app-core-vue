@@ -156,6 +156,7 @@ const actions = {
    * @param {[type]} currentForm    [description]
    */
   async addSubmission ({ commit }, { formSubmission, formio, User }) {
+    console.log('Adding a submission')
     const DB = await Database.get()
     
     let submission = formSubmission
@@ -167,27 +168,30 @@ const actions = {
 
     console.log('This is the submission about to been added', submission)
 
+    // If we are updating the submission
     if (formSubmission._id || formSubmission.trigger !== 'createLocalDraft') {
       submission.type = 'update'
       let localSubmission = await LocalSubmission.get(formSubmission._id)
       let differences = deep.diff(SyncHelper.deleteNulls(localSubmission.data.data), SyncHelper.deleteNulls(submission.data))
-      console.log(localSubmission.data.data, submission.data)
-      if (differences || submission.draft === false) {
+      
+
+      console.log('Local submission', localSubmission.data.draft)
+      // If there are differences between the
+      // Stored and the new data.
+      if (differences || submission.draft === false || (localSubmission.data.draft === false && submission.draft === true)) {
         console.log('Updating the submission because there are changes')
           await localSubmission.update({
           $set: {
             data: submission
           }
         })
-      } else {
-        console.log('There are no changes')
       }
       return localSubmission
+      // If we are creating a new draft from scratch
     } else if (formSubmission.trigger === 'createLocalDraft') {
       let newSubmission = await DB.submissions.insert({
-      data: submission
-       })
-      console.log('creating new submission', newSubmission)
+        data: submission
+      })
       return newSubmission
     }
   },
@@ -217,18 +221,23 @@ const actions = {
         }
 
         FormioJS.deregisterPlugin('offline')
-        let FormIOinsertedData = await formio.saveSubmission(postData)
 
-        FormIOinsertedData.formio = formio
+        try {
+          let FormIOinsertedData = await formio.saveSubmission(postData)
+          FormIOinsertedData.formio = formio
 
-        await offlineSubmission.update({
-          $set: {
-            data: FormIOinsertedData
-          }
-        })
-        syncedSubmissions = syncedSubmissions + 1
-        FormioJS.deregisterPlugin('offline')
-        FormioJS.registerPlugin(offlinePlugin, 'offline')
+          await offlineSubmission.update({
+            $set: {
+              data: FormIOinsertedData
+            }
+          })
+          syncedSubmissions = syncedSubmissions + 1
+          FormioJS.registerPlugin(offlinePlugin, 'offline')
+        }
+        catch (e) {
+          console.log('The submission cannot be synced ', e)
+          FormioJS.registerPlugin(offlinePlugin, 'offline')
+        }
       })
       if (syncedSubmissions > 0) {
         Toast.create.positive({ html: syncedSubmissions + 'SUBMISSIONS SYNCED' })
