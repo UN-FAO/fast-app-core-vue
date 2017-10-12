@@ -12,11 +12,11 @@
       {{User.data.email}}
       <localization/>
       <wifiDisplay/>
-      <!--
+    
       <q-btn flat @click="openRightDrawer()">
         <q-icon name="menu" />
       </q-btn>
-    -->
+    
     <q-btn flat @click="handleLogout()">
         <q-icon name="ion-log-out" />
     </q-btn>

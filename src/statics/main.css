@@ -132,13 +132,12 @@ ul.list-inline {
     z-index: 99;
     width: 100%;
     min-height: 63px;
-    background: whitesmoke;
 }
 
 button.btn.btn-primary.btn-wizard-nav-next,
 button.btn.btn-primary.btn-wizard-nav-previous{
     color: #337ab7;
-    background-color: transparent;
+    background-color:  whitesmoke;
     border-color: #337ab7;
     height: 60px;
     width: 200px;
@@ -153,7 +152,7 @@ button.btn.btn-primary.btn-wizard-nav-previous:active {
 
 button.btn.btn-primary.btn-wizard-nav-submit {
     color: #3c8d41;
-    background-color: transparent;
+    background-color:  whitesmoke;
     border-color: #3c8d41;
     height: 60px;
     width: 200px;

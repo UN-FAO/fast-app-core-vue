@@ -127,6 +127,7 @@ export default {
       // This should only be called if this is a Wizard
       // Search all of the Score components in different pages
       _.forEach(data.formio.pages, (page) => {
+          this.validateRequired(page, data)
           let panels = FormioUtils.findComponents(page.components, {
           'type': 'panel'
         })
@@ -178,6 +179,13 @@ export default {
       let start = moment(givenDate)
       let end = moment()
       return end.to(start)
+    },
+    validateRequired (page, data) {
+      FormioUtils.eachComponent(page.components, (component) => {
+        if (component.input === true && component.validate && component.validate.required) {
+          console.log('The component is', component, component.checkConditions())
+        }
+      })
     }
   }
 }
