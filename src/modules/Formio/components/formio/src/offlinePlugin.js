@@ -24,7 +24,6 @@ const OFFLINE_PLUGIN = class {
 	 */
   static storeForm (formSubmission, formio, redirect, hashField, formId, eventHub) {
     console.log('Trying to store something', formSubmission)
-    return
     if ((typeof hashField !== 'undefined')) {
       formSubmission.data.hashedPassword = md5(formSubmission.data.password, MD5_KEY)
       store.dispatch('storeUserLocally', {data: formSubmission.data, sync: false, formio: formio})
