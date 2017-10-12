@@ -161,4 +161,15 @@ button.btn.btn-primary.btn-wizard-nav-submit:hover {
     background-color: #3c8d41;
     color: white;
 }
+
+button.btn.btn-default.saveAsDraft {
+    position: inherit !important;
+    bottom: 0px;
+    color: green;
+    background-color: whitesmoke;
+    border-color: green;
+    height: 60px;
+    width: 200px;
+    z-index: 999;
+}
    
