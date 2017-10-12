@@ -6,16 +6,12 @@
     :right-breakpoint="layoutStore.rightBreakpoint"
     :reveal="layoutStore.reveal"
   >
-  <template v-if="getLayoutNeeded">
+  <template v-if="$route.name !== 'login' && $route.name !== 'register' && $route.name !== 'login_redirect'  ">
     <toolbar slot="header"></toolbar>
     <leftdrawer slot="left"></leftdrawer>
     <rigthdrawer slot="right"></rigthdrawer>
-  </template>
-    
-    
+  </template> 
     <router-view :key="$route.path" />
-
- 
   </q-layout>
 </template>
 <script>

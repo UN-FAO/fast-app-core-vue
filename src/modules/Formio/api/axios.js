@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { LocalStorage } from 'quasar'
+import { LocalStorage, Loading } from 'quasar'
 
 /**
  * Sets the default URL for API Calls
@@ -42,7 +42,7 @@ axiosInstance.interceptors.response.use(function (response) {
   // Loading.hide()
   return response
 }, function (error) {
-  // Loading.hide()
+  Loading.hide()
   return Promise.reject(error)
 })
 

@@ -8,6 +8,7 @@ import Auth from 'modules/Auth/api/Auth'
 import AuthRoutes from 'modules/Auth/routes'
 import DashboardRoutes from 'modules/Dashboard/routes'
 import FormioRoutes from 'modules/Formio/routes'
+
 Vue.use(VueRouter)
 /*
  |--------------------------------------------------------------------------

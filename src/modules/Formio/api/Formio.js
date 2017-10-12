@@ -19,6 +19,7 @@ const Formio = class {
           Loading.hide()
         })
         .catch((error) => {
+          Loading.hide()
           reject(error)
         })
     })
@@ -40,6 +41,7 @@ const Formio = class {
           Loading.hide()
         })
         .catch((error) => {
+          Loading.hide()
           reject(error)
         })
     })
@@ -61,6 +63,7 @@ const Formio = class {
           Loading.hide()
         })
         .catch((error) => {
+          Loading.hide()
           reject(error)
         })
     })
@@ -88,6 +91,7 @@ const Formio = class {
           Loading.hide()
         })
         .catch((error) => {
+          Loading.hide()
           reject(error)
         })
     })
@@ -163,6 +167,7 @@ const Formio = class {
           Loading.hide()
         })
         .catch((error) => {
+          Loading.hide()
           reject(error)
         })
     })
@@ -239,10 +244,12 @@ const Formio = class {
               resolve(proyect)
             })
             .catch((error) => {
+              Loading.hide()
               reject(error)
             })
         })
         .catch((error) => {
+          Loading.hide()
           reject(error)
         })
     })
@@ -264,6 +271,7 @@ const Formio = class {
           Loading.hide()
         })
         .catch((error) => {
+          Loading.hide()
           reject(error)
         })
     })
@@ -292,6 +300,7 @@ const Formio = class {
             Loading.hide()
           })
           .catch((error) => {
+            Loading.hide()
             reject(error)
           })
       })
@@ -381,11 +390,13 @@ const Formio = class {
                   Loading.hide()
                 })
                 .catch((error) => {
+                  Loading.hide()
                   reject(error)
                 })
             })
         })
         .catch((error) => {
+          Loading.hide()
           reject(error)
         })
     })
@@ -442,6 +453,7 @@ const Formio = class {
             Loading.hide()
           })
           .catch((error) => {
+            Loading.hide()
             reject(error)
           })
       })
@@ -490,6 +502,7 @@ const Formio = class {
           resolve(response)
         })
         .catch((error) => {
+          Loading.hide()
           reject(error)
         })
     })
@@ -525,6 +538,7 @@ const Formio = class {
           resolve(response)
         })
         .catch((error) => {
+          Loading.hide()
           reject(error)
         })
     })
@@ -550,6 +564,7 @@ const Formio = class {
           resolve(response)
         })
         .catch((error) => {
+          Loading.hide()
           reject(error)
         })
     })
@@ -597,6 +612,7 @@ const Formio = class {
           Loading.hide()
         })
         .catch((error) => {
+          Loading.hide()
           reject(error)
         })
     })

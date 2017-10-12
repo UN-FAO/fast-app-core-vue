@@ -30,6 +30,7 @@ import * as Database from 'database/Database'
 import messages from './i18n/translations'
 import 'quasar-extras/ionicons'
 import 'quasar-extras/fontawesome'
+import Auth from 'modules/Auth/api/Auth'
 
 Vue.use(VueSweetAlert)
 Vue.use(ElementUI)
@@ -68,29 +69,34 @@ Quasar.start(async () => {
   }
 
   if (navigator.onLine) {
-    // Fetch the Translation that are online
-    let translations = await getTranslation()
-    // Foreach of the local lenguages, set the 
-    _.forEach(messages, (lenguage, lenguageCode) => {
-      lenguage.translations = {}
-      _.forEach(translations, (translation, index) => {
-        if (translation.data[lenguageCode]) {
-          lenguage.translations[translation.data.en] = translation.data[lenguageCode]
-        }
+    try {
+         // Fetch the Translation that are online
+      let translations = await getTranslation()
+      // Foreach of the local lenguages, set the 
+      _.forEach(messages, (lenguage, lenguageCode) => {
+        lenguage.translations = {}
+        _.forEach(translations, (translation, index) => {
+          if (translation.data[lenguageCode]) {
+            lenguage.translations[translation.data.en] = translation.data[lenguageCode]
+          }
+        })
       })
-    })
-    if (localTranslations[0] && localTranslations[0].data) {
-      await localTranslations[0].update({
-        $set: {
+      if (localTranslations[0] && localTranslations[0].data) {
+        await localTranslations[0].update({
+          $set: {
+            data: messages
+          }
+        })
+        appTranslations = localTranslations[0].data
+      } else if (localTranslations.length === 0) {
+        appTranslations = await DB.translations.insert({
           data: messages
-        }
-      })
-      appTranslations = localTranslations[0].data
-    } else if (localTranslations.length === 0) {
-      appTranslations = await DB.translations.insert({
-        data: messages
-      })
-      appTranslations = appTranslations.data
+        })
+        appTranslations = appTranslations.data
+      }
+    } catch (error) {
+      console.log('Error while getting translations')
+      Auth.logOut()
     }
   }
   console.log(appTranslations)
