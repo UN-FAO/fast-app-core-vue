@@ -183,7 +183,6 @@ export default {
     validateRequired (page, data) {
       FormioUtils.eachComponent(page.components, (component) => {
         if (component.input === true && component.validate && component.validate.required) {
-          console.log('The component is', component, component.checkConditions())
         }
       })
     }

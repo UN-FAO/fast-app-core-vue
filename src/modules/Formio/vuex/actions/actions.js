@@ -173,7 +173,11 @@ const actions = {
       submission.type = 'update'
       let localSubmission = await LocalSubmission.get(formSubmission._id)
       let differences = deep.diff(SyncHelper.deleteNulls(localSubmission.data.data), SyncHelper.deleteNulls(submission.data))
-      
+      if (localSubmission.data.draft === false && submission.trigger === 'autoSaveAsDraft')
+      {
+        console.log('Avoiding autosaveOver Submission')
+        return
+      }
 
       console.log('Local submission', localSubmission.data.draft)
       // If there are differences between the

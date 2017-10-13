@@ -125,7 +125,7 @@ const OFFLINE_PLUGIN = class {
           let formioURL = 'https://' + form.machineName.split(':')[0] + '.form.io/' + form.path
      
           let formio = new Formio(formioURL)
-          let dStoreForm = _.debounce(this.storeForm, 300)
+          let dStoreForm = _.debounce(this.storeForm, 1000)
           dStoreForm(args.data, formio, redirect, hashField, formId, eventHub)
           return args.data
         }
