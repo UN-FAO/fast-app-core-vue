@@ -25,8 +25,7 @@ import rigthdrawer from 'layout/right_drawer'
 /*
 import contentHeader from 'layout/content-header.vue'
 */
-import {mapMutations, mapGetters, mapActions} from 'vuex'
-import Auth from 'modules/Auth/api/Auth'
+import {mapActions} from 'vuex'
 import {sync} from 'database/Database'
 import Connection from 'modules/Wrappers/Connection'
 import { SYNC_INTERVAL } from 'config/env'
@@ -70,15 +69,8 @@ export default {
 
     Connection.initEventListeners(this)
     this.setSyncInterval()
-    this.setLayoutNeeded(true)
-    this.setIsLoginPage(false)
-    if (!Auth.check()) {
-      this.setLayoutNeeded(false)
-      this.setIsLoginPage(true)
-    }
   },
   methods: {
-    ...mapMutations(['setLayoutNeeded', 'setIsLoginPage']),
     ...mapActions(['sendOfflineData', 'getResources']),
     toggleRtl: function (lenguageDirecction) {
       this.ltr = lenguageDirecction === 'ltr'
@@ -116,9 +108,6 @@ export default {
       ltr: true,
       layoutStore
     }
-  },
-  computed: {
-    ...mapGetters(['getLayoutNeeded'])
   },
   components: {
     QLayout,

@@ -3,6 +3,7 @@ import { Loading } from 'quasar'
 import _ from 'lodash'
 import FormioUtils from 'formiojs/utils'
 import FormioForm from 'formiojs/form'
+import AXIOS from 'axios'
 
 const Formio = class {
   /**
@@ -531,8 +532,7 @@ const Formio = class {
         message: 'Login user in...'
       })
       let url = baseUrl + '/user/login'
-      console.log('login in to', url)
-      axios.post(url, { data: { email: credentials.username, password: credentials.password } })
+      AXIOS.post(url, { data: { email: credentials.username, password: credentials.password } })
         .then(response => {
           Loading.hide()
           resolve(response)

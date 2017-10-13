@@ -28,7 +28,6 @@ axiosInstance.interceptors.request.use(function (config) {
   if (hasToken) {
     config.headers['x-jwt-token'] = authUser.x_jwt_token
   }
-
   return config
 })
 

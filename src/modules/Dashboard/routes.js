@@ -7,7 +7,6 @@ const Survey = r =>
 let DashboardRoutes = [
   { path: '/dashboard', component: Dashboard, name: 'dashboard', meta: { requiresAuth: true } },
   { path: '/survey', component: Survey, name: 'newSurvey', meta: { requiresAuth: true } }
-
 ]
 
 export default DashboardRoutes

@@ -117,7 +117,7 @@ body, html {
                     <h1><!-- react-text: 28 --><!-- /react-text --><!-- react-text: 29 -->Sharp+<!-- /react-text --></h1>
                     <h4>Self-evaluation and Holistic Assessment of climate resilence of Farmers and Pastoralists</h4>
                     <br>
-                    <form>
+          
                         <div class="form-group">
                            <q-field icon="person" style="text-align: -webkit-auto;">
                             <q-input v-model="credentials.username"
@@ -137,10 +137,8 @@ body, html {
                              @click="handleLogin">
                         Login
                         <span slot="loading">Loading...</span>
-                      </q-btn>
-                    </form>
+                      </q-btn>      
                     <br>
-
                     <p class="text-center"><router-link :to="{ path: 'register' }">New user?</router-link></p>
                 </div>
             </div>
@@ -175,17 +173,6 @@ export default {
     QInput,
     QBtn,
     QCardActions
-  },
-  mounted() {},
-  beforeRouteEnter(to, from, next) {
-    next(vm => {
-      vm.setLayoutNeeded(false)
-      vm.setIsLoginPage(true)
-    })
-  },
-  beforeRouteUpdate(to, from, next) {
-    this.setLayoutNeeded(false)
-    this.setIsLoginPage(true)
   },
   /**
    * Computed Properties for
@@ -234,13 +221,6 @@ export default {
    */
   methods: {
     /**
-     * Map layout methods for the theme
-     */
-    ...mapMutations([
-          'setLayoutNeeded',
-          'setIsLoginPage'
-    ]),
-    /**
      * Response to the login method
      * sets the layout for the App ON.
      * @return {[type]} [description]
@@ -250,8 +230,6 @@ export default {
       // Try to authenticate the User
       Auth.attempt(this.credentials, this.$store.state.authStore.appURL)
         .then((User) => {
-          this.setLayoutNeeded(true)
-          this.setIsLoginPage(false)
           this.$store.dispatch('setUserObject', User)
           done()
           this.$router.push({

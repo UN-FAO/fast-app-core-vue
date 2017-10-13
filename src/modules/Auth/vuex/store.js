@@ -14,22 +14,6 @@ const state = {
 
 const mutations = {
   /**
-   * [setLayoutNeeded description]
-   * @param {[type]} state [description]
-   * @param {[type]} value [description]
-   */
-  setLayoutNeeded(state, value) {
-    state.layoutNeeded = value
-  },
-  /**
-   * [setIsLoginPage description]
-   * @param {[type]} state [description]
-   * @param {[type]} value [description]
-   */
-  setIsLoginPage(state, value) {
-    state.isLoginPage = value
-  },
-  /**
    * [SET_AUTH_USER description]
    * @param {[type]} state [description]
    * @param {[type]} User  [description]
@@ -51,13 +35,6 @@ const mutations = {
 }
 
 const getters = {
-  /**
-   * [getLayoutNeeded description]
-   * @return {[type]} [description]
-   */
-  getLayoutNeeded() {
-    return state.layoutNeeded
-  },
   /**
    * [getIsLoginPage description]
    * @return {[type]} [description]

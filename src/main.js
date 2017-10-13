@@ -30,7 +30,7 @@ import * as Database from 'database/Database'
 import messages from './i18n/translations'
 import 'quasar-extras/ionicons'
 import 'quasar-extras/fontawesome'
-import Auth from 'modules/Auth/api/Auth'
+// import Auth from 'modules/Auth/api/Auth'
 
 Vue.use(VueSweetAlert)
 Vue.use(ElementUI)
@@ -96,7 +96,6 @@ Quasar.start(async () => {
       }
     } catch (error) {
       console.log('Error while getting translations')
-      Auth.logOut()
     }
   }
   console.log(appTranslations)

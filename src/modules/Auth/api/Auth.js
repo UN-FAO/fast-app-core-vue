@@ -33,6 +33,8 @@ const Auth = class {
   static logOut() {
     LocalStorage.remove('authUser')
     LocalStorage.remove('id_token')
+    LocalStorage.remove('formioToken')
+    LocalStorage.remove('formioUser')
     router.push({ path: '/login' })
   }
 
@@ -42,12 +44,13 @@ const Auth = class {
    * @return {Promise}   callback    [description]
    */
   static attempt(credentials, baseUrl) {
+    console.log('Attempting to login')
     return new Promise((resolve, reject) => {
       this.authenticate(credentials, baseUrl)
         // If credentials are OK
         .then((response) => {
           Loading.hide()
-
+          console.log('User logged in!')
           let headers = response.headers || {}
           let user = response.data
           user.x_jwt_token = headers['x-jwt-token']
@@ -60,6 +63,7 @@ const Auth = class {
         // If there are errors
         .catch((error) => {
           Loading.hide()
+          console.log('There was an error over here!')
           reject(error)
         })
     })
@@ -72,14 +76,15 @@ const Auth = class {
    */
   static authenticate(credentials, baseUrl) {
     let isOnline = Connection.isOnline()
-
+    console.log('Inside authenticate')
     if (isOnline) {
       return this.remoteAuthenticate(credentials, baseUrl)
         .catch(() => {
+          console.log('Remote Auth failed, trying locally')
           return this.localAuthenticate(credentials, baseUrl)
         })
     }
-
+    console.log('!isOnline')
     return this.localAuthenticate(credentials, baseUrl)
   }
 
@@ -96,10 +101,14 @@ const Auth = class {
 
     return Formio.userAuth(credentials, baseUrl)
       .then((response) => {
+        console.log('remoteAuthenticate')
         // Store locally the user for future offline login
         let user = response.data
         store.dispatch('storeUserLocally', user)
         return response
+      })
+      .catch((error) => {
+        console.log('Error from remote auth', error)
       })
   }
 
