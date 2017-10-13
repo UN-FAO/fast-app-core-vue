@@ -111,19 +111,19 @@ const actions = {
     const DB = await Database.get()
     let isOnline = Connection.isOnline()
     
-    let formUrl = 'https://' + currentForm.data.machineName.substring(0, currentForm.data.machineName.indexOf(':')) + '.form.io/' + currentForm.data.name
+    let formUrl = 'https://' + currentForm.data.machineName.substring(0, currentForm.data.machineName.indexOf(':')) + '.form.io/' + currentForm.data.path
     
     let formio = new FormioJS(formUrl)
 
-    let localUnSyncSubmissions = LocalSubmission.offline(User.id, currentForm.data.name)
-
-    let remoteSubmissions = (isOnline && localUnSyncSubmissions.length === 0) ? await formio.loadSubmissions() : []
-
+    let localUnSyncSubmissions = await LocalSubmission.offline(User.id, currentForm.data.path)
+ 
+    let remoteSubmissions = (isOnline && localUnSyncSubmissions.length === 0) ? await formio.loadSubmissions({params: {limit: '100'}}) : []
+    console.log('remoteSubmissions', remoteSubmissions)
     _.map(remoteSubmissions, function (o) {
       o.formio = formio
     })
  
-    let localSubmissions = LocalSubmission.stored(User.id, currentForm.data.name)
+    let localSubmissions = LocalSubmission.stored(User.id, currentForm.data.path)
 
     var Localresult = _.unionBy(localSubmissions, localUnSyncSubmissions, '_id')
     let sync = SyncHelper.offlineOnlineSync({
@@ -144,11 +144,13 @@ const actions = {
         data: submission
       })
     })
+    /*
     if (sync.length > 0) {
       Toast.create.positive({ html: sync.length + ' Submissions were updated' })
     } else {
       // Toast.create.info({html: 'Submissions are up to date'})
     }
+    */
   },
   /**
    * [addSubmission description]

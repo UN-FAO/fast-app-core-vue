@@ -181,6 +181,11 @@ export default {
         trigger: 'saveAsLocalDraft'
       }
       this.save(formSubmission)
+      this.$swal(
+       'Draft Saved!',
+       'Your submission has been saved! You can continue editing later',
+       'success'
+      )
     },
     /**
      * [autoSaveAsDraft description]
@@ -345,13 +350,27 @@ export default {
            * @return {[type]}             [description]
            */
           this.formIO.on('submit', (submission) => {
-            let formSubmission = {
-              data: submission.data
-            }
-            formSubmission.draft = false
-            formSubmission.redirect = true
-            console.log('We are submiting', formSubmission)
-            this.save(formSubmission)
+            this.$swal({
+                title: 'Are you sure?',
+                text: 'Submission will be sent when Online. The previous data collected for this submission will be updated',
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, send it!'
+              }).then(async () => {
+                  let formSubmission = {
+                    data: submission.data
+                  }
+                  formSubmission.draft = false
+                  formSubmission.redirect = true
+                  this.save(formSubmission)
+                  this.$swal(
+                    'Sent!',
+                    'Your submission has been sent!',
+                    'success'
+                  )
+              })
             })
         }
       })

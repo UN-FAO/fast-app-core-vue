@@ -406,7 +406,7 @@ export default {
       let db = await Database.get()
 
       this.currentForm = await db.forms.findOne()
-        .where('data.name').eq(this.$route.params.idForm).exec()
+        .where('data.path').eq(this.$route.params.idForm).exec()
       this.$store.dispatch('getSubmissions',
         {
           currentForm: this.currentForm,
