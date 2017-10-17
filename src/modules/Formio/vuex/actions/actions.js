@@ -145,7 +145,9 @@ const actions = {
           local.remove()
         }
       })
-       if (!(localSubmission.data.sync === false || localSubmission.data.draft === false)) {
+      let isRepleaceble = localSubmission.data && !(localSubmission.data.sync === false || localSubmission.data.draft === false)
+      let isNotLocal = typeof localSubmission.data === 'undefined'
+      if (isRepleaceble || isNotLocal) {
             // Inser the new or updated entry
             DB.submissions.insert({
               data: submission

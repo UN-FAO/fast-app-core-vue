@@ -176,7 +176,13 @@ export default {
           {
             name: 'JSON',
             handler: () => {
-              this.download(JSON.stringify(this.submissions), 'backup.json', 'text/json;encoding:utf-8')
+              let json = []
+               _.forEach(this.submissions, function (submission) {
+                  let record = submission.fullSubmission
+                  record.id = submission.id_submision
+                  json.push(submission.fullSubmission)
+              })
+              this.download(JSON.stringify(json), 'backup.json', 'text/json;encoding:utf-8')
             },
             icon: 'document'
           }
@@ -288,6 +294,7 @@ export default {
           .$
           .subscribe(submissions => {
             submissions = _.map(submissions, function(submission) {
+              let data = submission.data.data
               submission = _.clone(submission)
               submission.data.data = {
                 created: submission.data.created,
@@ -296,7 +303,8 @@ export default {
                 local: !submission.data._id,
                 id_submision_state: submission.data.sync ? submission.data.data.id_submision : submission.data.data.id_submision + '(Offline)',
                 status: submission.data.sync === false ? 'offline' : 'online',
-                draft: submission.data.draft
+                draft: submission.data.draft,
+                fullSubmission: data
               }
               return submission.data
             })
