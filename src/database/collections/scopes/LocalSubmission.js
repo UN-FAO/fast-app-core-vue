@@ -27,7 +27,7 @@ const LocalSubmission = class {
     let filter = await db.submissions.find().exec()
     // updated incomplete submission
     filter = _.filter(filter, function (o) {
-      return (o.data.sync === false && o.data.draft === false)
+      return (o.data.sync === false || o.data.draft === false)
     })
     filter = _.orderBy(filter, ['data.created'], ['asc'])
     return filter

@@ -116,11 +116,11 @@ const actions = {
     let formio = new FormioJS(formUrl)
 
     let localUnSyncSubmissions = await LocalSubmission.offline(User.id, currentForm.data.path)
-    console.log('localUnSyncSubmissions => ', localUnSyncSubmissions)
+
     FormioJS.clearCache()
-    
-    let remoteSubmissions = (isOnline && localUnSyncSubmissions.length === 0) ? await formio.loadSubmissions({params: {limit: '100'}}) : []
-    console.log('remoteSubmissions', remoteSubmissions)
+
+    let remoteSubmissions = (isOnline) ? await formio.loadSubmissions({params: {limit: '100'}}) : []
+  
     _.map(remoteSubmissions, function (o) {
       o.formio = formio
     })
@@ -137,14 +137,20 @@ const actions = {
     // For every new or updated entry
     _.forEach(sync, async function (submission, key) {
       let localSubmissions = await DB.submissions.find().where('data._id').eq(submission._id).exec()
+      let localSubmission = {}
       // remove local duplicated or updated entries
       _.forEach(localSubmissions, function (local) {
-        local.remove()
+        localSubmission = local
+        if (!(localSubmission.data.sync === false || localSubmission.data.draft === false)) {
+          local.remove()
+        }
       })
-      // Inser the new or updated entry
-      DB.submissions.insert({
-        data: submission
-      })
+       if (!(localSubmission.data.sync === false || localSubmission.data.draft === false)) {
+            // Inser the new or updated entry
+            DB.submissions.insert({
+              data: submission
+            })
+        }
     })
     /*
     if (sync.length > 0) {
