@@ -116,7 +116,9 @@ const actions = {
     let formio = new FormioJS(formUrl)
 
     let localUnSyncSubmissions = await LocalSubmission.offline(User.id, currentForm.data.path)
- 
+    console.log('localUnSyncSubmissions => ', localUnSyncSubmissions)
+    FormioJS.clearCache()
+    
     let remoteSubmissions = (isOnline && localUnSyncSubmissions.length === 0) ? await formio.loadSubmissions({params: {limit: '100'}}) : []
     console.log('remoteSubmissions', remoteSubmissions)
     _.map(remoteSubmissions, function (o) {
@@ -185,7 +187,7 @@ const actions = {
       // If there are differences between the
       // Stored and the new data.
       if (differences || submission.draft === false || (localSubmission.data.draft === false && submission.draft === true)) {
-        console.log('Updating the submission because there are changes')
+        console.log('We are updating the submission')
           await localSubmission.update({
           $set: {
             data: submission
@@ -225,7 +227,7 @@ const actions = {
         if (offlineSubmission.data._id && offlineSubmission.data._id.indexOf(':') === -1) {
           postData._id = offlineSubmission.data._id
         }
-
+        console.log('Sending the information to FORMIO', postData)
         FormioJS.deregisterPlugin('offline')
 
         try {

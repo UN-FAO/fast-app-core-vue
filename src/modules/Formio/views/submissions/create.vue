@@ -4,13 +4,19 @@
         <q-card color="white" class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1" >
             
             <q-card-main>
-
                 <q-tabs inverted>
                     <!-- Tabs - notice slot="title" -->
                     <q-tab default slot="title" name="tab-1" icon="person" label="P1"
                      :color="saved ? 'primary' : 'red'" />
                     <!-- Targets -->
                     <q-tab-pane name="tab-1">
+                      <q-list v-if="errors.count > 0">
+                        <q-collapsible icon="fa-exclamation-circle" :label="'Peding Fields ( ' + errors.count + ' )'">
+                          <div>
+                            Validation
+                          </div>
+                        </q-collapsible>
+                      </q-list>
                         <!-- Tabs -->
                         <formio
                           :formioURL="formioURL" 
@@ -38,6 +44,11 @@
       </div>
     </q-pull-to-refresh>
 </template>
+<style>
+.q-item-label {
+    color: black;
+}
+</style>
 
 <script>
 import _ from 'lodash'
@@ -88,10 +99,15 @@ export default {
           window.scrollTo(0, 0)
         })
     })
+    this.$eventHub.on('VALIDATION_ERRORS', (data) => {
+      this.errors = data
+      console.log(this.errors.count)
+    })
   },
   beforeDestroy() {
     document.removeEventListener('draftStatus', this.draftStatusChanged)
     this.$eventHub.$off('formio.error')
+    this.$eventHub.$off('VALIDATION_ERRORS')
   },
   computed: {
     formTitle () {
@@ -110,7 +126,8 @@ export default {
       people: [{name: 'P1'}],
       formioToken: Auth.user().x_jwt_token,
       LOCAL_DRAFT_ENABLED: LOCAL_DRAFT_ENABLED,
-      saved: false
+      saved: false,
+      errors: {}
     }
   },
   methods: {

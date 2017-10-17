@@ -1,5 +1,5 @@
 import * as Database from 'database/Database'
-
+import _ from 'lodash'
 const LocalSubmission = class {
   /**
    * [get description]
@@ -24,20 +24,13 @@ const LocalSubmission = class {
 
   static async offline (userId, formId) {
     let db = await Database.get()
-    return db.submissions
-      .find({
-        // Only include this filter if we dont share data
-        // between users
-        'data.owner': {
-          $exists: true,
-          $eq: userId
-        },
-        'data.formio.formId': {
-          $exists: true,
-          $eq: formId
-        },
-        'data.sync': false
-      }).exec()
+    let filter = await db.submissions.find().exec()
+    // updated incomplete submission
+    filter = _.filter(filter, function (o) {
+      return (o.data.sync === false && o.data.draft === false)
+    })
+    filter = _.orderBy(filter, ['data.created'], ['asc'])
+    return filter
   }
 
   static async stored (userId, formId) {

@@ -95,9 +95,8 @@ const syncSubmissions = async ({ db, isOnline }) => {
     filter = _.filter(filter, function (o) {
       return (o.data.sync === false && o.data.draft === false)
     })
-
     filter = _.orderBy(filter, ['data.created'], ['asc'])
-
+    console.log('filter syncSubmissions => ', filter)
     if (filter.length > 0) {
       console.log('there are offline submissions', filter)
       store.dispatch('sendOfflineData', { offlineSubmissions: filter, isOnline })

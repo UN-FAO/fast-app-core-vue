@@ -156,7 +156,7 @@ export default {
         },
         def: [
           {
-            name: '',
+            name: 'CSV',
             handler: () => {
               jsonexport(this.submissions, (err, csv) => {
                 if (err) {
