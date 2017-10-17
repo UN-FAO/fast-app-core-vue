@@ -158,7 +158,13 @@ export default {
           {
             name: 'CSV',
             handler: () => {
-              jsonexport(this.submissions, (err, csv) => {
+              let json = []
+               _.forEach(this.submissions, function (submission) {
+                  let record = submission.fullSubmission
+                  record.id = submission.id_submision
+                  json.push(submission.fullSubmission)
+              })
+              jsonexport(json, (err, csv) => {
                 if (err) {
                   return console.log(err)
                 }
