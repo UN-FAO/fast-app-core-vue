@@ -17,6 +17,7 @@
                           </div>
                         </q-collapsible>
                       </q-list>
+                      
                         <!-- Tabs -->
                         <formio
                           :formioURL="formioURL" 
@@ -101,6 +102,14 @@ export default {
     })
     this.$eventHub.on('VALIDATION_ERRORS', (data) => {
       this.errors = data
+      let submitButton = document.querySelector('.btn-wizard-nav-submit')
+      if (submitButton && this.errors.count > 0) {
+        submitButton.disabled = true
+      } else {
+        if (submitButton) {
+          submitButton.disabled = false
+        }
+      }
       console.log(this.errors.count)
     })
   },

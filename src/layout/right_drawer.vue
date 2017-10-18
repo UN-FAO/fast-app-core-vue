@@ -2,13 +2,22 @@
   <q-tabs>
         <!-- Tabs - notice slot="title" -->
         <!-- This tab should render only when we have Wizards -->
-        <q-tab v-if="_isWizard"  slot="title" name="tab-wizard" icon="signal_wifi_off" label="Sections"/>
+        <q-tab default  slot="title" name="tab-wizard" icon="signal_wifi_off" label="Modules"/>
         <q-tab v-if="scorePanels.length > 0"  slot="title" name="tab-1" icon="assessment" label="Score" />
-        <q-tab default :count="Unsynced.length"  slot="title" name="tab-2" icon="signal_wifi_off" label="Unsync" />
+        <q-tab  :count="Unsynced.length"  slot="title" name="tab-2" icon="signal_wifi_off" label="Unsync" />
 
         <!-- Targets -->
         <!-- This should be extracted to its own component -->
         <q-tab-pane v-if="_isWizard" name="tab-wizard">
+           <q-list separator>
+          <!-- collapsible to hide sub-level menu entries -->    
+            <q-item multiline  link color="green" icon="favorite" v-for="(page, index) in pages" :label="page.title" :key="page.title" @click="goToPage(index)" :ref="'page-'+ index">
+            <q-item-main
+              :label="page.title"
+              label-lines="3"
+            />      
+          </q-item>
+        </q-list>
         </q-tab-pane>
         <!-- //////////////////////////// -->
 
@@ -29,9 +38,6 @@
 
           </q-collapsible>
         </q-list>
-
-
-
 
         </q-tab-pane>
 
@@ -99,7 +105,9 @@ export default {
       allSubmissionSubs: [],
       layoutStore,
       isWizard: false,
-      scorePanels: []
+      scorePanels: [],
+      pages: [],
+      currentPage: 0
     }
   },
   computed: {
@@ -118,6 +126,21 @@ export default {
      * @return {[type]}        [description]
      */
   mounted: async function () {
+    this.$eventHub.on('formio.mounted', (formio) => {
+      console.log('component mounted', formio)
+      this.pages = formio.pages ? formio.pages : []
+    })
+    this.$eventHub.on('formio.nextPage', (data) => {
+      console.log('formio.nextPage', data)
+      this.currentPage = data.nextPage.page
+      this.changeSelectedPage()
+    })
+    this.$eventHub.on('formio.prevPage', (data) => {
+      console.log('formio.prevPage', data)
+      this.currentPage = data.prevPage.page
+      this.changeSelectedPage()
+    })
+    
     this.$eventHub.on('formio.render', (data) => {
       this.isWizard = !!(data.formio.wizard)
     })
@@ -175,6 +198,17 @@ export default {
     )
   },
   methods: {
+    goToPage (index) {
+      let pageNumber = index + 1
+      let page = document.querySelectorAll('ul li:nth-of-type(' + pageNumber + ')')[0]
+      page.click()
+    },
+    changeSelectedPage () {
+      console.log('page should be', this.currentPage)
+      let ref = 'page-' + this.currentPage
+      let listPage = this.$refs[ref]
+      console.log(listPage)
+    },
     humanizeDate (givenDate) {
       let start = moment(givenDate)
       let end = moment()
@@ -194,14 +228,6 @@ export default {
           }
         })
       })
-      let submitButton = document.querySelector('.btn-wizard-nav-submit')
-      if (submitButton && errorCount > 0) {
-        submitButton.style.display = 'none'
-      } else {
-        if (submitButton) {
-          submitButton.style.display = ''
-        }
-      }
       this.$eventHub.emit('VALIDATION_ERRORS', {count: errorCount, components: errors})
     }
   }

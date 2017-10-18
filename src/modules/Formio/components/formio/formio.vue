@@ -11,7 +11,7 @@
 <template>
     <div>
         <div v-if="loading">
-          <q-spinner-gears color="primary" :size="100" />
+        
         </div>
         <div ref="formIO" class="formContainer">
         </div>
@@ -52,6 +52,21 @@ export default {
     }
   },
   mounted () {
+          // Select your stepper element.  
+      var stepperElement = document.querySelector('ul.mdl-stepper')
+      var Stepper
+
+      // Check if MDL Component Handler is loaded.
+      if (typeof componentHandler !== 'undefined') {
+        // Get the MaterialStepper instance of element to control it.          
+        Stepper = stepperElement.MaterialStepper
+        // Moves the stepper to the next step for test.
+        Stepper.next()
+      } else {
+        // Material Design Lite javascript is not loaded or for another  
+        // reason MDL Component Handler is not available globally and
+        // you can't use (register and upgrade) Stepper component at this point.
+      }
     Formio.setToken(this.formioToken)
     Lenguage.listen(this)
     GPS.listen(this)
@@ -282,7 +297,8 @@ export default {
         } else {
           this.formIO.submission = savedSubmission ? {data: savedSubmission.data} : this.formIO.submission
         }
-
+        this.$eventHub.$emit('formio.mounted', this.formIO)
+        
         let events = this.formIO.eventListeners
 
         // Add error event listener only if we do not have it

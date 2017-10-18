@@ -165,11 +165,15 @@ button.btn.btn-primary.btn-wizard-nav-submit:hover {
 button.btn.btn-default.saveAsDraft {
     position: inherit !important;
     bottom: 0px;
-    color: green;
+    color: #20a0ff;
     background-color: whitesmoke;
-    border-color: green;
+    border-color: #20a0ff;
     height: 60px;
     width: 200px;
     z-index: 999;
+}
+
+ul.pagination {
+    display: none;
 }
    

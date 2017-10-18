@@ -1,36 +1,20 @@
 <template>
 
 <div class="row">
-<div class="col-lg-5 col-lg-offset-3" style="margin-top: 30px">
-<q-card>
-  <q-list>
-    <q-item>
-      <q-item-side>
-        <q-item-tile color="primary" icon="local bar" />
-      </q-item-side>
-      <q-item-main>
-        <q-item-tile label><h2>Bar XYZz</h2></q-item-tile>
-      </q-item-main>
-    </q-item>
-    <q-item>
-      <q-item-side>
-        <q-item-tile color="red" icon="local gas station" />
-      </q-item-side>
-      <q-item-main>
-        <q-item-tile label>Gas Station</q-item-tile>
-      </q-item-main>
-    </q-item>
-    <q-item>
-      <q-item-side>
-        <q-item-tile color="amber" icon="local movies" />
-      </q-item-side>
-      <q-item-main>
-        <q-item-tile label>Cinema XYZ</q-item-tile>
-      </q-item-main>
-    </q-item>
-  </q-list>
+<q-card class="col-lg-5 col-md-5 shadow-2" style="margin-top: 30px; margin-left: 30px" v-for="(form, index) in forms" :key="form.data._id" v-if="form.data.display === 'wizard'">
+  <q-card-title>
+    <h3>
+   {{form.data.title.toUpperCase()}}
+ </h3>
+    <q-rating slot="subtitle" v-model="stars" :max="5" />
+  </q-card-title>
+  <q-card-separator />
+  <q-card-actions>
+    <q-btn flat round small @click="goTo({name: 'formio_form_show', params: { idForm: form.data.path}})"><q-icon name="fa-database" />DATA</q-btn>
+    
+    <q-btn flat round small @click="goTo({name: 'formio_form_submission', params: { idForm: form.data.path}})"><q-icon name="fa-plus-square-o" />START</q-btn>
+  </q-card-actions>
 </q-card>
-</div>
 </div>
 
 </template>
@@ -53,6 +37,9 @@ export default {
     }
   },
   methods: {
+    goTo(route) {
+      this.$router.push(route)
+    }
   }
 }
 

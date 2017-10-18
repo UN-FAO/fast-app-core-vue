@@ -35,22 +35,7 @@
           <router-link :to="{name: 'formio_form_submission', params: { idForm: 'few'}}"><h3>SHARP UGANDA VERSION</h3></router-link>
           </td>
 
-        </tr>
-         <tr>
-          <td class="col-lg-1"><q-icon name="fa-file-o" /></td>
-          <td>
-          <router-link :to="{name: 'formio_form_submission', params: { idForm: 'few'}}"><h3>SHARP UGANDA VERSION</h3></router-link>
-          </td>
-          
-        </tr>
-         <tr>
-          <td class="col-lg-1"><q-icon name="fa-file-o" /></td>
-          <td>
-          <router-link :to="{name: 'formio_form_submission', params: { idForm: 'few'}}"><h3>SHARP UGANDA VERSION</h3></router-link>
-          </td>
-          
-        </tr>
-      
+        </tr> 
       </table>
        </div>
     </div>
