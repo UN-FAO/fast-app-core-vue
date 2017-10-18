@@ -144,55 +144,83 @@ const DsyncUsers = _.debounce(syncUsers, 1000)
  * @param  {[type]} vm [description]
  * @return {[type]}    [description]
  */
-var focus
-window.TAB = {
-  // Function to use for the `focus` event.
-  onFocus: function () {
-    focus = true
-  },
-  // Function to use for the `blur` event.
-  onBlur: function () {
-    // Append message to the `body` element.
-    focus = false
-  }
-}
+var tabVisible
+var vis = (function() {
+    var stateKey,
+        eventKey,
+        keys = {
+                hidden: 'visibilitychange',
+                webkitHidden: 'webkitvisibilitychange',
+                mozHidden: 'mozvisibilitychange',
+                msHidden: 'msvisibilitychange'
+    }
+    for (stateKey in keys) {
+        if (stateKey in document) {
+            eventKey = keys[stateKey]
+            break
+        }
+    }
+    return function(c) {
+        if (c) document.addEventListener(eventKey, c)
+        return !document[stateKey]
+    }
+})()
 
-/* Detect if the browser supports `addEventListener`
-  Complies with DOM Event specification. */
-if (window.addEventListener) {
-  // Handle window's `load` event.
-  window.addEventListener('load', function () {
-    // Wire up the `focus` and `blur` event handlers.
-    window.addEventListener('focus', window.TAB.onFocus)
-    window.addEventListener('blur', window.TAB.onBlur)
-  })
-}
-/* Detect if the browser supports `attachEvent`
-  Only Internet Explorer browsers support that. */
-else if (window.attachEvent) {
-  // Handle window's `load` event.
-  window.attachEvent('onload', function () {
-    // Wire up the `focus` and `blur` event handlers.
-    window.attachEvent('onfocus', window.TAB.onFocus)
-    window.attachEvent('onblur', window.TAB.onBlur)
-  })
-}
-/* If neither event handler function exists, then overwrite 
-the built-in event handers. With this technique any previous event
-handlers are lost. */
-else {
-  // Handle window's `load` event.
-  window.onload = function () {
-    // Wire up the `focus` and `blur` event handlers.
-    window.onfocus = window.TAB.onFocus
-    window.onblur = window.TAB.onBlur
-  }
+vis(function() {
+    if (vis()) {
+      setTimeout(function() {
+            tabVisible = true
+        }, 300)
+    } else {
+        tabVisible = false
+    }
+})
+
+var notIE = (document.documentMode === undefined),
+    isChromium = window.chrome
+      
+if (notIE && !isChromium) {
+    // checks for Firefox and other  NON IE Chrome versions
+    window.on('focusin', function () {
+        setTimeout(function() {
+            tabVisible = true
+        }, 300)
+    }).on('focusout', function () {
+        tabVisible = false
+    })
+} else {
+    // checks for IE and Chromium versions
+    if (window.addEventListener) {
+        // bind focus event
+        window.addEventListener('focus', function (event) {
+            // tween resume() code goes here
+            setTimeout(function() {
+                 tabVisible = true
+            }, 300)
+        }, false)
+
+        // bind blur event
+        window.addEventListener('blur', function (event) {
+             tabVisible = false
+        }, false)
+    } else {
+        window.attachEvent('focus', function (event) {
+            // tween resume() code goes here
+            setTimeout(function() {
+                 tabVisible = true
+            }, 300)
+        })
+
+        // bind focus event
+        window.attachEvent('blur', function (event) {
+            tabVisible = false
+        })
+    }
 }
 
 export const sync = async function (vm) {
   const db = await Database.get()
-
-  const isOnline = focus ? await Connection.heartBeat(vm) : Connection.isOnline()
+  const isOnline = tabVisible ? await Connection.heartBeat(vm) : Connection.isOnline()
 
   if (Auth.check() && isOnline) {
     await DsyncSubmissions({ db, isOnline })

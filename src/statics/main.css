@@ -176,4 +176,16 @@ button.btn.btn-default.saveAsDraft {
 ul.pagination {
     display: none;
 }
+
+table.table.datagrid-table.table-bordered.form-group.formio-data-grid.table-striped.table-bordered {
+    color: black;
+}
+
+div.formio-component-datagrid {
+    overflow-x: auto;
+}
+
+input.form-control {
+    min-width: 150px;
+}
    
