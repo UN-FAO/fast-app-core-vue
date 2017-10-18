@@ -146,8 +146,7 @@ const DsyncUsers = _.debounce(syncUsers, 1000)
  */
 export const sync = async function (vm) {
   const db = await Database.get()
-  let dHeartBeat = _.debounce(Connection.heartBeat, 3000)
-  const isOnline = await dHeartBeat(vm)
+  const isOnline = await Connection.heartBeat(vm)
 
   if (Auth.check() && isOnline) {
     await DsyncSubmissions({ db, isOnline })
