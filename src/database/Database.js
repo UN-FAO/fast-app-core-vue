@@ -19,7 +19,6 @@ import { LOCAL_DB_PASSWORD } from 'config/env'
 |
 */
 RxDB.plugin(require('pouchdb-adapter-idb'))
-RxDB.plugin(require('pouchdb-replication')) // enable syncing
 RxDB.plugin(require('pouchdb-adapter-http')) // enable syncing over http
 RxDB.plugin(require('pouchdb-adapter-cordova-sqlite'))
 RxDB.plugin(require('pouchdb-adapter-localstorage'))
@@ -147,7 +146,8 @@ const DsyncUsers = _.debounce(syncUsers, 1000)
  */
 export const sync = async function (vm) {
   const db = await Database.get()
-  const isOnline = await Connection.heartBeat(vm)
+  let dHeartBeat = _.debounce(Connection.heartBeat, 3000)
+  const isOnline = await dHeartBeat(vm)
 
   if (Auth.check() && isOnline) {
     await DsyncSubmissions({ db, isOnline })
