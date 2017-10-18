@@ -144,9 +144,55 @@ const DsyncUsers = _.debounce(syncUsers, 1000)
  * @param  {[type]} vm [description]
  * @return {[type]}    [description]
  */
+var focus
+window.TAB = {
+  // Function to use for the `focus` event.
+  onFocus: function () {
+    focus = true
+  },
+  // Function to use for the `blur` event.
+  onBlur: function () {
+    // Append message to the `body` element.
+    focus = false
+  }
+}
+
+/* Detect if the browser supports `addEventListener`
+  Complies with DOM Event specification. */
+if (window.addEventListener) {
+  // Handle window's `load` event.
+  window.addEventListener('load', function () {
+    // Wire up the `focus` and `blur` event handlers.
+    window.addEventListener('focus', window.TAB.onFocus)
+    window.addEventListener('blur', window.TAB.onBlur)
+  })
+}
+/* Detect if the browser supports `attachEvent`
+  Only Internet Explorer browsers support that. */
+else if (window.attachEvent) {
+  // Handle window's `load` event.
+  window.attachEvent('onload', function () {
+    // Wire up the `focus` and `blur` event handlers.
+    window.attachEvent('onfocus', window.TAB.onFocus)
+    window.attachEvent('onblur', window.TAB.onBlur)
+  })
+}
+/* If neither event handler function exists, then overwrite 
+the built-in event handers. With this technique any previous event
+handlers are lost. */
+else {
+  // Handle window's `load` event.
+  window.onload = function () {
+    // Wire up the `focus` and `blur` event handlers.
+    window.onfocus = window.TAB.onFocus
+    window.onblur = window.TAB.onBlur
+  }
+}
+
 export const sync = async function (vm) {
   const db = await Database.get()
-  const isOnline = await Connection.heartBeat(vm)
+
+  const isOnline = focus ? await Connection.heartBeat(vm) : Connection.isOnline()
 
   if (Auth.check() && isOnline) {
     await DsyncSubmissions({ db, isOnline })
