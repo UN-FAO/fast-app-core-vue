@@ -9,7 +9,9 @@
                     <q-tab default slot="title" name="tab-1" icon="person" label="P1"
                      :color="saved ? 'primary' : 'red'" />
                     <!-- Targets -->
-                    <q-tab-pane name="tab-1">
+
+                    <q-tab-pane name="tab-1" ref="tab1">
+                      <q-btn @click="exportPDF"> t34t34t34</q-btn>
                       <q-list v-if="errors.count > 0">
                         <q-collapsible icon="fa-exclamation-circle" :label="'Peding Fields ( ' + errors.count + ' )'">
                           <div>
@@ -17,7 +19,7 @@
                           </div>
                         </q-collapsible>
                       </q-list>
-                      
+
                         <!-- Tabs -->
                         <formio
                           :formioURL="formioURL" 
@@ -60,7 +62,6 @@ import LocalForm from 'database/collections/scopes/LocalForm'
 import LocalSubmission from 'database/collections/scopes/LocalSubmission'
 import {APP_URL, LOCAL_DRAFT_ENABLED} from 'config/env'
 import {QCard, QCardTitle, QCardSeparator, QCardMain, QFab, QFabAction, QFixedPosition, QPullToRefresh, QTabs, QTab, QTabPane, QCollapsible, QBtn, QIcon, QTooltip, QList, QItem, QItemSeparator} from 'quasar'
-
 
 export default {
   components: {
@@ -141,6 +142,9 @@ export default {
   },
   methods: {
     ...mapActions(['getResources']),
+    exportPDF () {
+    
+    },
     draftStatusChanged (e) {
       if (e.detail.data === false) {
         this.saved = false

@@ -43,7 +43,7 @@
           :to="{name: 'a', params: { idForm: 'idform'}}"
           :key="Data">
           <q-item-side icon="fa-database" />
-          <q-item-main label="Data Collected"  />
+          <q-item-main label="Collected Data"  />
         </q-side-link>
 
          <q-side-link multiline highlight separator item
@@ -70,28 +70,28 @@
         </q-side-link>
 
         <q-item-separator />
-
+        <!--
          <q-side-link multiline highlight separator item
           :to="{name: 'e', params: { idForm: 'idform'}}"
           :key="mysurvey">
           <q-item-side icon="fa-list" />
           <q-item-main label="My Survey"  />
         </q-side-link>
-
+        
         <q-side-link multiline highlight separator item
           :to="{name: 'f', params: { idForm: 'idform'}}"
           :key="mysummary">
           <q-item-side icon="fa-line-chart" />
           <q-item-main label="My Summary"  />
         </q-side-link>
-
+   
         <q-side-link multiline highlight separator item
           :to="{name: 'g', params: { idForm: 'idform'}}"
           :key="editprofile">
           <q-item-side icon="fa-pencil" />
           <q-item-main label="Edit your profile"  />
         </q-side-link>
-
+          -->
         <q-item @click="handleLogout" style="cursor: pointer">
           <q-item-side icon="ion-log-out" />
           <q-item-main label="Logout"  />

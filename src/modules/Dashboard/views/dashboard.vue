@@ -23,19 +23,12 @@
       <div class="row centered">
          <h3>Surveys</h3>
       <table style="display: block; height:200px; overflow-y: scroll;">
-        <tr v-for="(form, index) in forms" :key="form.data._id" v-if="form.data.display === 'wizard'">
+        <tr v-for="(form, index) in forms" :key="form.data._id" v-if="form.data.tags.indexOf('visible') > -1" >
           <td class="col-lg-1"><q-icon name="fa-file-o" /></td>
           <td class="col-lg-10">
           <router-link :to="{name: 'formio_form_submission', params: { idForm: form.data.path}}"><h3>{{form.data.title.toUpperCase()}}</h3></router-link>
         </td>
         </tr>
-        <tr>
-          <td class="col-lg-1"><q-icon name="fa-file-o" /></td>
-          <td>
-          <router-link :to="{name: 'formio_form_submission', params: { idForm: 'few'}}"><h3>SHARP UGANDA VERSION</h3></router-link>
-          </td>
-
-        </tr> 
       </table>
        </div>
     </div>
@@ -70,34 +63,12 @@
 
         </tr>
 
-        <tr v-for="(form, index) in forms" :key="form.data._id" v-if="form.data.display === 'wizard'">
+        <tr v-for="(form, index) in forms" :key="form.data._id" v-if="form.data.tags.indexOf('visible') > -1">
           <td class="col-lg-1"><q-icon name="fa-database" /></td>
           <td class="col-lg-10">
           <router-link :to="{name: 'formio_form_show', params: { idForm: form.data.path}}"><h3>{{form.data.title.toUpperCase()}}</h3></router-link>
         </td>
         </tr>
-        <tr>
-          <td class="col-lg-1"><q-icon name="fa-database" /></td>
-          <td>
-          <router-link :to="{name: 'formio_form_submission', params: { idForm: 'few'}}"><h3>SHARP UGANDA VERSION</h3></router-link>
-          </td>
-
-        </tr>
-         <tr>
-          <td class="col-lg-1"><q-icon name="fa-database" /></td>
-          <td>
-          <router-link :to="{name: 'formio_form_submission', params: { idForm: 'few'}}"><h3>SHARP UGANDA VERSION</h3></router-link>
-          </td>
-          
-        </tr>
-         <tr>
-          <td class="col-lg-1"><q-icon name="fa-database" /></td>
-          <td>
-          <router-link :to="{name: 'formio_form_submission', params: { idForm: 'few'}}"><h3>SHARP UGANDA VERSION</h3></router-link>
-          </td>
-          
-        </tr>
-      
       </table>
        </div>
        
