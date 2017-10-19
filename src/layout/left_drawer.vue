@@ -40,7 +40,7 @@
 
 
         <q-side-link multiline highlight separator item
-          :to="{name: 'a', params: { idForm: 'idform'}}"
+          :to="{name: 'formio_form_show', params: { idForm: '*'}}"
           :key="Data">
           <q-item-side icon="fa-database" />
           <q-item-main label="Collected Data"  />

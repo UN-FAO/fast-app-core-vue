@@ -4,7 +4,6 @@
 <q-card class="col-lg-5 col-md-5 shadow-2" style="margin-top: 30px; margin-left: 30px" v-for="(form, index) in forms" :key="form.data._id" v-if="form.data.tags.indexOf('visible') > -1" >
   <q-card-title>
     <h3>
-
    {{form.data.title}}
  </h3>
     <q-rating slot="subtitle" v-model="stars" :max="5" />

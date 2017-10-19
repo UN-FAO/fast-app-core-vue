@@ -110,7 +110,6 @@ const actions = {
     FormioJS.setToken(Auth.user().x_jwt_token)
     const DB = await Database.get()
     let isOnline = Connection.isOnline()
-    
     let formUrl = 'https://' + currentForm.data.machineName.substring(0, currentForm.data.machineName.indexOf(':')) + '.form.io/' + currentForm.data.path
     
     let formio = new FormioJS(formUrl)

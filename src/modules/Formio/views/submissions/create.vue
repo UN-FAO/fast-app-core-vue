@@ -61,11 +61,11 @@ import formio from 'modules/Formio/components/formio/formio'
 import LocalForm from 'database/collections/scopes/LocalForm'
 import LocalSubmission from 'database/collections/scopes/LocalSubmission'
 import {APP_URL, LOCAL_DRAFT_ENABLED} from 'config/env'
-import {QCard, QCardTitle, QCardSeparator, QCardMain, QFab, QFabAction, QFixedPosition, QPullToRefresh, QTabs, QTab, QTabPane, QCollapsible, QBtn, QIcon, QTooltip, QList, QItem, QItemSeparator} from 'quasar'
+import {QCard, QCardTitle, QCardSeparator, QCardMain, QFab, QFabAction, QFixedPosition, QPullToRefresh, QTabs, QTab, QTabPane, QCollapsible, QBtn, QIcon, QTooltip, QList, QItem, QItemSeparator, Loading} from 'quasar'
 
 export default {
   components: {
-    formio, QCard, QCardTitle, QCardSeparator, QCardMain, QFab, QFabAction, QFixedPosition, QPullToRefresh, QTabs, QTab, QTabPane, QCollapsible, QBtn, QIcon, QTooltip, QList, QItem, QItemSeparator
+    formio, QCard, QCardTitle, QCardSeparator, QCardMain, QFab, QFabAction, QFixedPosition, QPullToRefresh, QTabs, QTab, QTabPane, QCollapsible, QBtn, QIcon, QTooltip, QList, QItem, QItemSeparator, Loading
   },
   async beforeRouteEnter (to, from, next) {
     // Load the form and submission before entering the route
@@ -90,6 +90,7 @@ export default {
     next()
   },
   mounted () {
+    Loading.hide()
     document.addEventListener('draftStatus', this.draftStatusChanged)
     this.$eventHub.$on('formio.error', (error) => {
       console.log(error)

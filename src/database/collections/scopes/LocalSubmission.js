@@ -1,5 +1,6 @@
 import * as Database from 'database/Database'
 import _ from 'lodash'
+import Auth from 'modules/Auth/api/Auth'
 const LocalSubmission = class {
   /**
    * [get description]
@@ -48,6 +49,52 @@ const LocalSubmission = class {
           $eq: formId
         }
       }).exec()
+  }
+
+    static async sFind (vm, holder, filter) {
+    vm.subscriptions.forEach(sub => sub.unsubscribe())
+      const db = await Database.get()
+      vm.subscriptions.push(
+        db.submissions
+          // .select('-projectId')
+          .find(filter)
+          .$
+          .subscribe(submissions => {
+            submissions = _.map(submissions, function(submission) {
+              let data = submission.data.data
+              let formio = submission.data.formio
+              submission = _.clone(submission)
+              submission.data.data = {
+                created: submission.data.created,
+                Humancreated: vm.humanizeDate(submission.data.created),
+                id_submision: submission.data._id ? submission.data._id : submission._id,
+                local: !submission.data._id,
+                id_submision_state: submission.data.sync ? submission.data.data.id_submision : submission.data.data.id_submision + '(Offline)',
+                status: submission.data.sync === false ? 'offline' : 'online',
+                draft: submission.data.draft,
+                fullSubmission: data,
+                formio: formio
+              }
+              return submission.data
+            })
+
+            let userEmail = Auth.user().data.email || Auth.user().email
+       
+            submissions = _.filter(submissions, function(o) {
+              return (
+                (o.owner && o.owner === Auth.user()._id) ||
+                (o.user_email && o.user_email === userEmail)
+              )
+            })
+            submissions = _.map(submissions, 'data')
+            submissions = _.orderBy(submissions, [
+              'created'
+            ], [
+              'desc'
+            ])
+            vm[holder] = submissions
+          })
+      )
   }
 }
 export default LocalSubmission

@@ -67,7 +67,7 @@
                         </template>
                     </el-table-column>
 
-                    <el-table-column :label="$t('App.submission_id')" prop="id_submision" sortable>
+                    <el-table-column :label="$t('App.submission_id')" prop="formio.formId" sortable>
                     </el-table-column>
 
                     <el-table-column :label="$t('App.created_at')" prop="Humancreated" sortable>
@@ -97,9 +97,8 @@ import locale from 'element-ui/lib/locale'
 import * as Database from 'database/Database'
 import moment from 'moment'
 import jsonexport from 'jsonexport'
-import Auth from 'modules/Auth/api/Auth'
-import { QCard, QCardTitle, QCardSeparator, QCardMain, QFab, QFabAction, QFixedPosition, QPullToRefresh } from 'quasar'
-// import Formio from 'formiojs'
+import { Loading, QCard, QCardTitle, QCardSeparator, QCardMain, QFab, QFabAction, QFixedPosition, QPullToRefresh } from 'quasar'
+import LocalSubmission from 'database/collections/scopes/LocalSubmission'
 locale.use(lang)
 
 export default {
@@ -128,23 +127,23 @@ export default {
     next(vm => {
       vm.pullSubmissions()
       vm.subscribeToSubmissions()
-    // vm.$forceUpdate();
     })
   },
   beforeRouteUpdate(to, from, next) {
     this.pullSubmissions()
     this.subscribeToSubmissions()
-    // this.$forceUpdate();
     next()
   },
   beforeDestroy: function() {
-    this.subs.forEach(sub => sub.unsubscribe())
+    if (this.subscriptions) {
+      this.subscriptions.forEach(sub => sub.unsubscribe())
+    }
   },
   data() {
     return {
       currentForm: {},
       submissions: [],
-      subs: [],
+      subscriptions: [],
       searchDef: {
         colProps: {
           span: 9
@@ -288,71 +287,32 @@ export default {
       })
     },
     async subscribeToSubmissions() {
-      this.subs.forEach(sub => sub.unsubscribe())
-      let self = this
-      const db = await Database.get()
-      this.subs.push(
-        db.submissions
-          // .select('-projectId')
-          .find({
+      if (this.$route.params.idForm === '*') {
+        LocalSubmission.sFind(this, 'submissions', {}
+        )
+      } else {
+        LocalSubmission.sFind(this, 'submissions',
+          {
             'data.formio.formId': this.$route.params.idForm
-          })
-          .$
-          .subscribe(submissions => {
-            submissions = _.map(submissions, function(submission) {
-              let data = submission.data.data
-              submission = _.clone(submission)
-              submission.data.data = {
-                created: submission.data.created,
-                Humancreated: self.humanizeDate(submission.data.created),
-                id_submision: submission.data._id ? submission.data._id : submission._id,
-                local: !submission.data._id,
-                id_submision_state: submission.data.sync ? submission.data.data.id_submision : submission.data.data.id_submision + '(Offline)',
-                status: submission.data.sync === false ? 'offline' : 'online',
-                draft: submission.data.draft,
-                fullSubmission: data
-              }
-              return submission.data
-            })
-
-            let userEmail = Auth.user().data.email || Auth.user().email
-       
-            submissions = _.filter(submissions, function(o) {
-              return (
-                (o.owner && o.owner === Auth.user()._id) ||
-                (o.user_email && o.user_email === userEmail)
-              )
-            })
-            submissions = _.map(submissions, 'data')
-            submissions = _.orderBy(submissions, [
-              'created'
-            ], [
-              'desc'
-            ])
-            this.submissions = submissions
-          })
+          }
       )
+      }
     },
     getRowActionsDef() {
       let self = this
-      let idForm = this.$route.params.idForm
-      let formPath = this.$route.query.formPath
-
       return {
         label: self.$t('App.actions'),
         def: [
           {
             type: 'text',
             handler(submission) {
+              Loading.show()
               self.$router.push(
                 {
                   name: 'formio_submission_update',
                   params: {
-                    idForm: idForm,
+                    idForm: submission.formio.formId,
                     idSubmission: submission.id_submision
-                  },
-                  query: {
-                    formPath: formPath
                   }
                 })
             },
@@ -378,20 +338,6 @@ export default {
           */
           {
             async handler(submission) {
-              let db = await Database.get()
-
-              let online = await db.submissions
-                .findOne().where('data._id')
-                .eq(submission.id_submision).exec()
-              let offline = await db.submissions
-                .findOne().where('_id')
-                .eq(submission.id_submision).exec()
-
-              let deleteSubmission = offline
-              if (online) {
-                deleteSubmission = online
-              }
-
               self.$swal({
                 title: 'Are you sure?',
                 text: 'You won\'t be able to revert this!',
@@ -401,6 +347,18 @@ export default {
                 cancelButtonColor: '#d33',
                 confirmButtonText: 'Yes, delete it!'
               }).then(async () => {
+                let db = await Database.get()
+                let online = await db.submissions
+                  .findOne().where('data._id')
+                  .eq(submission.id_submision).exec()
+                let offline = await db.submissions
+                  .findOne().where('_id')
+                  .eq(submission.id_submision).exec()
+
+                let deleteSubmission = offline
+                if (online) {
+                  deleteSubmission = online
+                }
                 await deleteSubmission.remove()
                 self.$swal(
                   'Deleted!',
