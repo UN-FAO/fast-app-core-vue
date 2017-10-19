@@ -2,7 +2,7 @@ const en = {
   App: {
     submissions_for: 'Registros de',
     new_submission_for: 'Nuevo registro:',
-    title: 'SHARP+',
+    title: 'PAT',
     form: 'Formulario',
     submission_id: 'Id del Registro',
     created_at: 'Creado el',

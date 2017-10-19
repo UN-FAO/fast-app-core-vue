@@ -8,7 +8,7 @@
      
         <q-icon name="fa-plus-square-o fa-5x" />
   
-      <h1>New Survey</h1>
+      <h1>Modules</h1>
        <q-btn @click="toggleFlip(0)" round color="grey" flat >
         <q-icon name="fa-plus-square" />
       </q-btn>
@@ -21,9 +21,9 @@
         </q-btn>
      
       <div class="row centered">
-         <h3>Surveys</h3>
+         <h3>Modules</h3>
       <table style="display: block; height:200px; overflow-y: scroll;">
-        <tr v-for="(form, index) in forms" :key="form.data._id" v-if="form.data.tags.indexOf('visible') > -1" >
+        <tr v-for="(form, index) in orderedForms" :key="form.data._id" v-if="form.data.tags.indexOf('visible') > -1" >
           <td class="col-lg-1"><q-icon name="fa-file-o" /></td>
           <td class="col-lg-10">
           <router-link :to="{name: 'formio_form_submission', params: { idForm: form.data.path}}"><h3>{{form.data.title.toUpperCase()}}</h3></router-link>
@@ -62,7 +62,7 @@
           </td>
 
         </tr>
-        <tr v-for="(form, index) in forms" :key="form.data._id" v-if="form.data.tags.indexOf('visible') > -1">
+        <tr v-for="(form, index) in orderedForms" :key="form.data._id" v-if="form.data.tags.indexOf('visible') > -1">
           <td class="col-lg-1"><q-icon name="fa-database" /></td>
           <td class="col-lg-10">
           <router-link :to="{name: 'formio_form_show', params: { idForm: form.data.path}}"><h3>{{form.data.title.toUpperCase()}}</h3></router-link>
@@ -103,7 +103,7 @@
   <div ref="card" :class="flipped3">
     <div class="front">
       <q-icon name="fa-mobile fa-5x" />
-      <h1>About Sharp+</h1>
+      <h1>About PAT</h1>
        <q-btn @click="toggleFlip(3)" round color="grey" flat >
         <q-icon name="fa-plus-square" />
       </q-btn>
@@ -212,6 +212,7 @@ tr:nth-child(even){background-color: #f2f2f2}
 <script>
 import {QIcon, QBtn, QList, QItem, QItemSide, QItemTile} from 'quasar'
 import LocalForm from 'database/collections/scopes/LocalForm'
+import _ from 'lodash'
 export default {
   name: 'card',
   mounted: async function () {
@@ -237,6 +238,18 @@ export default {
         this['flipped' + n] = 'card flipped'
       } else {
         this['flipped' + n] = 'card'
+      }
+    }
+  },
+  computed: {
+    // a computed getter
+    orderedForms: function () {
+      let ordered = []
+      if (this.forms.length === 0) {
+        return []
+      } else {
+        ordered = _.sortBy(this.forms, 'data.title')
+        return ordered
       }
     }
   }

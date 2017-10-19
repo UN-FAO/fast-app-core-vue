@@ -35,7 +35,7 @@
           :to="{name: 'newSurvey'}"
           :key="newSurvey">
           <q-item-side icon="fa-plus-square-o" />
-          <q-item-main label="Start a new Survey" />
+          <q-item-main label="Start a new Module" />
         </q-side-link>
 
 
@@ -58,7 +58,7 @@
           :to="{name: 'c', params: { idForm: 'idform'}}"
           :key="about">
           <q-item-side icon="fa-mobile" />
-          <q-item-main label="About Sharp"  />
+          <q-item-main label="About PAT"  />
         </q-side-link>
 
 

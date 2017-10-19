@@ -93,13 +93,16 @@ export default {
     document.addEventListener('draftStatus', this.draftStatusChanged)
     this.$eventHub.$on('formio.error', (error) => {
       console.log(error)
-      this.$swal({
+      if (error.error.message === "Cannot read property 'notice' of null") {
+      } else {
+        this.$swal({
           type: 'error',
           title: 'Error',
           html: 'You have errors in the submission'
         }).then(() => {
           window.scrollTo(0, 0)
         })
+      }
     })
     this.$eventHub.on('VALIDATION_ERRORS', (data) => {
       this.errors = data

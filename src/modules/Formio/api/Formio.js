@@ -174,6 +174,29 @@ const Formio = class {
     })
   }
 
+    /**
+   * [getSubmissions description]
+   * @param  {[type]} formPath [description]
+   * @return {[type]}          [description]
+   */
+  static getSubmissionsURL (url) {
+    return new Promise((resolve, reject) => {
+      Loading.show({
+        message: 'Loading form submissions..'
+      })
+      axios.get(url)
+        .then(response => {
+          let submissions = response.data
+          resolve(submissions)
+          Loading.hide()
+        })
+        .catch((error) => {
+          Loading.hide()
+          reject(error)
+        })
+    })
+  }
+
   /**
    * [loadConfigProject description]
    * @param  {[type]} container [description]

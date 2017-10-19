@@ -57,6 +57,8 @@ const Auth = class {
 
           // Save auth user
           LocalStorage.set('authUser', JSON.stringify(user))
+          LocalStorage.set('formioToken', headers['x-jwt-token'])
+          LocalStorage.set('formioUser', JSON.stringify(user))
           LocalStorage.set('id_token', headers['x-jwt-token'])
           resolve(user)
         })
