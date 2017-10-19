@@ -98,7 +98,6 @@ Quasar.start(async () => {
       console.log('Error while getting translations')
     }
   }
-  console.log(appTranslations)
   const i18n = new VueI18n({
     locale: 'en', // set locale
     messages: appTranslations // set locale messages

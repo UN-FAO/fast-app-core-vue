@@ -17,7 +17,7 @@
 <script>
 /* eslint no-use-before-define: 0 */
 import 'bootstrap/dist/css/bootstrap.css'
-import 'src/statics/formio.full.min.css'
+import 'formiojs/dist/formio.full.min.css'
 import 'bootstrap-rtl-ondemand/dist/css/bootstrap-rtl.min.css'
 import toolbar from 'layout/toolbar'
 import leftdrawer from 'layout/left_drawer'

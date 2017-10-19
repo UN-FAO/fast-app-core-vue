@@ -104,7 +104,6 @@ locale.use(lang)
 export default {
   computed: {
     formTitle() {
-      console.log('this.currentForm.title => ', this.currentForm)
       let title = ''
       if (this.currentForm) {
         title = this.currentForm.data ? this.currentForm.data.title : ''
@@ -254,7 +253,6 @@ export default {
       // Write file content
       function gotFileWriter(writer) {
         writer.onwriteend = function(evt) {
-          console.log('finished writing')
           if (callback !== undefined) {
             callback(writer)
           }
@@ -270,7 +268,6 @@ export default {
       return end.to(start)
     },
     scrollToEnd: function(ID) {
-      // console.log("scroling to", ID)
       var container = this.$el.querySelector('#container')
       container.scrollTop = container.scrollHeight
     },

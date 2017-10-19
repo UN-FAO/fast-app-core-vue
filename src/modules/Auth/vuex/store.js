@@ -80,18 +80,12 @@ const actions = {
    * @return {[type]}                [description]
    */
   storeUserLocally: async({ commit }, formIoUser) => {
-    console.log('Store user locally', formIoUser)
     let DB = await Database.get()
     let user = await DB.users.findOne().where('data.data.email').eq(formIoUser.data.email).exec()
     formIoUser = SyncHelper.deleteNulls(formIoUser)
     let isUserAlreadyStored = !!user
-    console.log('User already present in local store?', isUserAlreadyStored)
-
     //  check if user is already present in local storage
     if (isUserAlreadyStored) {
-      console.log('Update user')
-      console.log(formIoUser)
-
       //  update the user with the updated information
       user.update({
         $set: {
@@ -100,8 +94,6 @@ const actions = {
       })
       Toast.create.positive({ html: 'USER UPDATED' })
     } else {
-      console.log('Create user')
-      console.log(formIoUser)
       //  Insert the new user
       DB.users.insert({
         data: formIoUser

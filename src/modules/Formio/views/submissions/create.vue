@@ -4,14 +4,13 @@
         <q-card color="white" class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1" >
             
             <q-card-main>
-                <q-tabs inverted>
+                <q-tabs inverted id="contentForm">
                     <!-- Tabs - notice slot="title" -->
                     <q-tab default slot="title" name="tab-1" icon="person" label="P1"
                      :color="saved ? 'primary' : 'red'" />
                     <!-- Targets -->
 
                     <q-tab-pane name="tab-1" ref="tab1">
-                      <q-btn @click="exportPDF"> t34t34t34</q-btn>
                       <q-list v-if="errors.count > 0">
                         <q-collapsible icon="fa-exclamation-circle" :label="'Peding Fields ( ' + errors.count + ' )'">
                           <div>
@@ -33,7 +32,7 @@
 
                 <q-fixed-position corner="top-right" :offset="[18, 18]">
                     <q-fab color="red" icon="add" direction="left" push>
-                        <q-fab-action color="secondary" @click="refreshForm()" icon="autorenew"></q-fab-action>
+                        <q-fab-action color="secondary" @click="exportPDF" icon="print"></q-fab-action>
 
                         <q-fab-action color="primary" @click="getForms()" icon="cloud_download"></q-fab-action>
 
@@ -112,7 +111,6 @@ export default {
           submitButton.disabled = false
         }
       }
-      console.log(this.errors.count)
     })
   },
   beforeDestroy() {
@@ -144,7 +142,28 @@ export default {
   methods: {
     ...mapActions(['getResources']),
     exportPDF () {
-    
+      let body = document.body
+      let html = document.documentElement
+      let height = Math.max(body.scrollHeight, body.offsetHeight,
+                       html.clientHeight, html.scrollHeight, html.offsetHeight)
+      let element = document.querySelector('#contentForm')
+      let heightCM = height / 35.35
+      /*
+      function myCallback(pdf) {
+        console.log('The pdf was generated!!', pdf)
+      }
+      */
+      html2pdf(element, {
+        margin: 1,
+        filename: 'export.pdf',
+        // pdfCallback: myCallback,
+        html2canvas: { dpi: 192, letterRendering: true },
+        jsPDF: {
+            orientation: 'portrait',
+            unit: 'cm',
+            format: [heightCM, 65]
+          }
+      })
     },
     draftStatusChanged (e) {
       if (e.detail.data === false) {

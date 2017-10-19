@@ -50,7 +50,7 @@
       <q-btn @click="toggleFlip(1)" style="z-index: 1;" round color="grey"  flat>
         <q-icon name="fa-times" />
       </q-btn>
-      <h1>Survey list</h1>
+      <h1></h1>
       <div class="row centered">
          <h3>Data</h3>
       <table style="display: block; height:200px; overflow-y: scroll;">
@@ -58,11 +58,10 @@
         <tr>
           <td class="col-lg-1"><q-icon name="fa-database" /></td>
           <td>
-          <router-link :to="{name: 'formio_form_submission', params: { idForm: 'few'}}"><h3>ALL DATA</h3></router-link>
+          <router-link :to="{name: 'formio_form_show', params: { idForm: '*'}}"><h3>ALL DATA</h3></router-link>
           </td>
 
         </tr>
-
         <tr v-for="(form, index) in forms" :key="form.data._id" v-if="form.data.tags.indexOf('visible') > -1">
           <td class="col-lg-1"><q-icon name="fa-database" /></td>
           <td class="col-lg-10">

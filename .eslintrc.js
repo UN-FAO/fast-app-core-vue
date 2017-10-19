@@ -19,6 +19,7 @@ module.exports = {
   globals: {
     'LocalFileSystem': true,
     'cordova': true,
+    'html2pdf': true,
     'DEV': true,
     'PROD': true,
     '__THEME': true,

@@ -127,16 +127,13 @@ export default {
      */
   mounted: async function () {
     this.$eventHub.on('formio.mounted', (formio) => {
-      console.log('component mounted', formio)
       this.pages = formio.pages ? formio.pages : []
     })
     this.$eventHub.on('formio.nextPage', (data) => {
-      console.log('formio.nextPage', data)
       this.currentPage = data.nextPage.page
       this.changeSelectedPage()
     })
     this.$eventHub.on('formio.prevPage', (data) => {
-      console.log('formio.prevPage', data)
       this.currentPage = data.prevPage.page
       this.changeSelectedPage()
     })
@@ -204,10 +201,8 @@ export default {
       page.click()
     },
     changeSelectedPage () {
-      console.log('page should be', this.currentPage)
-      let ref = 'page-' + this.currentPage
-      let listPage = this.$refs[ref]
-      console.log(listPage)
+      // let ref = 'page-' + this.currentPage
+      // let listPage = this.$refs[ref]
     },
     humanizeDate (givenDate) {
       let start = moment(givenDate)

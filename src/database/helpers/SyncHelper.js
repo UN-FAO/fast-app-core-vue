@@ -30,8 +30,10 @@ class SyncHelper {
       _.forEach(OnlineResults, function (OnlineResult) {
         if (LocalResult._id === OnlineResult._id) {
           let differences = false
+          // If we are comparing forms
           if (LocalResult.components) {
-            differences = differences = deep.diff(self.deleteNulls(LocalResult.components), self.deleteNulls(OnlineResult.components))
+            differences = differences = deep.diff(self.deleteNulls(LocalResult), self.deleteNulls(OnlineResult))
+          // If we are comparing submissions
           } else if (LocalResult.data) {
             differences = differences = deep.diff(self.deleteNulls(LocalResult.data), self.deleteNulls(OnlineResult.data))
           }

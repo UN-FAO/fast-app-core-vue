@@ -35,6 +35,9 @@ const actions = {
       isOnline: isOnline
     })
 
+    console.log('remoteResources', remoteResources)
+    console.log('sync => ', sync)
+
     // For every new or updated entry
     _.forEach(sync, async function (res, key) {
       let localRes = await DB[collection].find().where('data._id').eq(res._id).exec()
@@ -167,7 +170,6 @@ const actions = {
    * @param {[type]} currentForm    [description]
    */
   async addSubmission ({ commit }, { formSubmission, formio, User }) {
-    console.log('Adding a submission')
     const DB = await Database.get()
     
     let submission = formSubmission
@@ -177,8 +179,6 @@ const actions = {
     submission.created = moment().format()
     submission = SyncHelper.deleteNulls(submission)
 
-    console.log('This is the submission about to been added', submission)
-
     // If we are updating the submission
     if (formSubmission._id || formSubmission.trigger !== 'createLocalDraft') {
       submission.type = 'update'
@@ -186,15 +186,12 @@ const actions = {
       let differences = deep.diff(SyncHelper.deleteNulls(localSubmission.data.data), SyncHelper.deleteNulls(submission.data))
       if (localSubmission.data.draft === false && submission.trigger === 'autoSaveAsDraft')
       {
-        console.log('Avoiding autosaveOver Submission')
         return
       }
 
-      console.log('Local submission', localSubmission.data.draft)
       // If there are differences between the
       // Stored and the new data.
       if (differences || submission.draft === false || (localSubmission.data.draft === false && submission.draft === true)) {
-        console.log('We are updating the submission')
           await localSubmission.update({
           $set: {
             data: submission
@@ -234,7 +231,6 @@ const actions = {
         if (offlineSubmission.data._id && offlineSubmission.data._id.indexOf(':') === -1) {
           postData._id = offlineSubmission.data._id
         }
-        console.log('Sending the information to FORMIO', postData)
         FormioJS.deregisterPlugin('offline')
 
         try {
@@ -259,7 +255,6 @@ const actions = {
       }
     }
   }
-
 }
 
 export default actions
