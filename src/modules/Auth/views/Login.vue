@@ -233,10 +233,7 @@ export default {
           this.$store.dispatch('setUserObject', User)
           done()
           this.$router.push({
-            name: 'dashboard',
-            params: {
-              id: User.email
-            }
+            name: 'dashboard'
           })
         })
         .catch((error) => {

@@ -1,67 +1,55 @@
 <template>
-<div class="alert alert-success"
-     v-if="isNotLoginSection && isNotAuth && isOnline()"> Back on line! To login and sync you data <strong @click="handleLogout()"> CLICK HERE</strong>
-</div>
-
 </template>
 
 <script>
-import Connection from 'modules/Wrappers/Connection';
-import Auth from 'modules/Auth/api/Auth';
-import { mapMutations, mapGetters } from 'vuex';
-
+import Connection from 'modules/Wrappers/Connection'
+import Auth from 'modules/Auth/api/Auth'
+import { Alert } from 'quasar'
+import 'quasar-extras/animate/bounceInRight.css'
+import 'quasar-extras/animate/bounceOutRight.css'
+import _ from 'lodash'
 export default {
-  name: 'connection-alert',
-
-  beforeRouteEnter(to, from, next) {
-    next(vm => {
-      vm.$forceUpdate()
-    })
-  },
-  beforeRouteUpdate(to, from, next) {
-    this.$forceUpdate()
-    next()
-  },
+  name: 'connectionAlert',
   mounted: function() {
-    this.$eventHub.on('connectionStatusChanged', (status) => {
-      this.$forceUpdate()
-    })
+    this.showPopUp = _.debounce(this.showPopUp, 3000)
+    this.$eventHub.on('connectionStatusChanged', this.showPopUp)
   },
-
+  beforeDestroy() {
+    this.$eventHub.off('connectionStatusChanged', this.showPopUp)
+  },
   methods: {
-    /**
-       * Map layout methods for the theme
-       */
-    ...mapMutations([
-          'setLayoutNeeded',
-          'setIsLoginPage'
-    ]),
-
-    ...mapGetters([
-          'getIsLoginPage'
-    ]),
-
     handleLogout() {
       this.$store.dispatch('clearAuthUser')
       Auth.logOut()
-      this.setLayoutNeeded(false)
-      this.setIsLoginPage(true)
-    }
-  },
-
-  computed: {
-    isOnline() {
-      console.log(1, Connection.isOnline())
-      return Connection.isOnline()
     },
-    isNotAuth() {
-      console.log(2, !Auth.check())
-      return !Auth.check()
-    },
-    isNotLoginSection() {
-      return !this.getIsLoginPage()
+    showPopUp() {
+       let self = this
+         if (this.$route.name !== 'login' && this.$route.name !== 'register' && this.$route.name !== 'login_redirect' && !Auth.check() && Connection.isOnline()) {
+           Alert.create({
+              enter: 'bounceInRight',
+              leave: 'bounceOutRight',
+              color: 'positive',
+              icon: 'wifi',
+              html: `You have connection now! It's time to login and sync you data`,
+              position: 'top-right',
+              actions: [
+                {
+                  label: 'Snooze',
+                  handler () {
+                    console.log('acting')
+                  }
+                },
+                {
+                  label: 'Go to Login',
+                  handler () {
+                    self.handleLogout()
+                  }
+                }
+              ]
+            })
+        }
     }
-  }
+ }
 }
 
 </script>

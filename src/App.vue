@@ -6,11 +6,12 @@
     :right-breakpoint="layoutStore.rightBreakpoint"
     :reveal="layoutStore.reveal"
   >
+  <toolbar slot="header"></toolbar>
   <template v-if="$route.name !== 'login' && $route.name !== 'register' && $route.name !== 'login_redirect'  ">
-    <toolbar slot="header"></toolbar>
     <leftdrawer slot="left"></leftdrawer>
     <rigthdrawer slot="right"></rigthdrawer>
   </template> 
+  <connection-alert></connection-alert>
     <router-view :key="$route.path" />
   </q-layout>
 </template>
@@ -22,6 +23,7 @@ import 'bootstrap-rtl-ondemand/dist/css/bootstrap-rtl.min.css'
 import toolbar from 'layout/toolbar'
 import leftdrawer from 'layout/left_drawer'
 import rigthdrawer from 'layout/right_drawer'
+import connectionAlert from 'modules/Connection/components/alert'
 /*
 import contentHeader from 'layout/content-header.vue'
 */
@@ -125,7 +127,8 @@ export default {
     QScrollArea,
     toolbar,
     leftdrawer,
-    rigthdrawer
+    rigthdrawer,
+    connectionAlert
   }
 }
 </script>

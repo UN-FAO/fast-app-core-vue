@@ -150,7 +150,8 @@ button.btn.btn-primary.btn-wizard-nav-previous:active {
     color: white;
 }
 
-button.btn.btn-primary.btn-wizard-nav-submit {
+button.btn.btn-primary.btn-wizard-nav-submit,
+button.btn.btn-primary.submitForm {
     color: #3c8d41;
     background-color:  whitesmoke;
     border-color: #3c8d41;

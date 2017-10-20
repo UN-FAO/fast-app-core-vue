@@ -9,7 +9,7 @@
        <img src="statics/2000px-FAO_logo_reverse.png" style="max-height: 40px; max-width: 40px;"></img>  {{ $t("App.title") }}
       <span slot="subtitle">PLANT BREEDING CAPACITY ANALYSIS</span>
       </q-toolbar-title>
-      {{User.data.email}}
+      {{User ? User.data.email : '' }}
       <localization/>
       <wifiDisplay/>
       

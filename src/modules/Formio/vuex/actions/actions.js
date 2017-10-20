@@ -34,10 +34,6 @@ const actions = {
       OnlineResults: remoteResources,
       isOnline: isOnline
     })
-
-    console.log('remoteResources', remoteResources)
-    console.log('sync => ', sync)
-
     // For every new or updated entry
     _.forEach(sync, async function (res, key) {
       let localRes = await DB[collection].find().where('data._id').eq(res._id).exec()

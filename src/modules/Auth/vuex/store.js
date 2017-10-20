@@ -1,4 +1,3 @@
-import { Toast } from 'quasar'
 import * as Database from 'database/Database'
 import SyncHelper from 'database/helpers/SyncHelper'
 import { APP_URL, APP_NAME } from 'config/env'
@@ -92,13 +91,11 @@ const actions = {
           data: formIoUser
         }
       })
-      Toast.create.positive({ html: 'USER UPDATED' })
     } else {
       //  Insert the new user
       DB.users.insert({
         data: formIoUser
       })
-      Toast.create.positive({ html: 'NEW USER CREATED' })
     }
   }
 }
