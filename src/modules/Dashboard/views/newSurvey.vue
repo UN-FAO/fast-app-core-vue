@@ -1,7 +1,8 @@
 <template>
 
 <div class="row">
-<q-collapsible class="col-lg-12" :label="'Module ' + indexForms" v-for="(forms, indexForms) in groupedSurveys" :key="indexForms" v-if="indexForms !== 0">
+<q-card class="col-lg-8 col-lg-offset-2 shadow-2" style="margin-top: 30px; background: white;">
+  <q-collapsible class="col-lg-12" :label="'Module ' + indexForms" v-for="(forms, indexForms) in groupedSurveys" :key="indexForms" v-if="indexForms !== 0">
  
 <q-card class="col-lg-12 col-md-12 shadow-2" style="margin-top: 30px; margin-left: 30px" v-for="(form, index) in forms" :key="index">
   <q-card-title>
@@ -18,6 +19,8 @@
   </q-card-actions>
 </q-card>
  </q-collapsible>
+</q-card>
+
 </div>
 
 </template>
@@ -63,6 +66,9 @@ export default {
               grouped[module].push(form)
             }
           }
+        })
+        _.forEach(grouped, (group, index) => {
+          grouped[index] = _.sortBy(group, 'data.title')
         })
         return grouped
       }
