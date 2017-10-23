@@ -15,51 +15,12 @@
       <div class="row">
         <q-card color="white" class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 centered">
             <q-card-main>
-                <data-tables :data="submissions" :search-def="searchDef" :action-col-def="getRowActionsDef()" action-col-label="Actions" :actions-def="actionsDef">
-                    <el-table-column type="expand">
-
-                        <template scope="props">
-                            <p class="caption" id="Fields">Fields</p>
-                            <div class="list striped">
-                                <div class="item" v-for="(value, key, index) in props.row">
-                                    <!--This is the row of the table -->
-                                    <div v-if="!Array.isArray(value)" class="item-content">
-                                        <strong>{{key}}</strong> : <span class="label bg-primary text-white">{{value}}</span>
-                                    </div>
-                                    <div v-else class="item-content">
-                                        <strong>{{key}}</strong> : <a @click="scrollToEnd(key)"><span
-                          class="label  bg-secondary text-white">Multiple values, will be displayed down</span> </a>
-                                    </div>
-
-                                </div>
-                            </div>
-                            <!--This is the table inside the table (When elements are arrays) -->
-                            <div v-for="(value, key, index) in props.row">
-                                <p></p>
-                                <div v-if="Array.isArray(value)">
-                                    <a @click="scrollToEnd('Fields')">
-                                        <p class="caption" :id="key">{{key}}</p>
-                                    </a>
-                                    <div class="list striped" v-for="(gridValue, gridKey) in value">
-                                        <div class="item">
-
-                                            <strong>{{key}}</strong> : <span class="label  bg-secondary text-white">{{gridKey + 1}}</span>
-                                        </div>
-
-                                        <div class="item" v-for="(rowValue, rowKey) in gridValue">
-                                            <strong>{{rowKey}}</strong> : <span class="label bg-primary text-white">{{rowValue}}</span>
-                                        </div>
-
-                                    </div>
-
-                                </div>
-                            </div>
-
-                        </template>
+                <data-tables :data="submissions" :search-def="searchDef" :action-col-def="getRowActionsDef()" action-col-label="Actions" :actions-def="actionsDef" max-height="250" height="250">
+                    <el-table-column type="selection">
 
                     </el-table-column>
 
-                    <el-table-column label="status" prop="status" width="90" sortable>
+                    <el-table-column label="status" prop="Status" width="90" sortable fixed="left">
                         <template scope="scope">
                             <el-tag :type="getIconColor(scope.row)" close-transition>
                             <i class="material-icons">{{scope.row.status === 'offline' ? 'cloud_off' : 'cloud_done'}}</i>
@@ -67,10 +28,25 @@
                         </template>
                     </el-table-column>
 
-                    <el-table-column :label="$t('App.submission_id')" prop="formio.formId" sortable>
+                    
+                    <el-table-column :label="column.label" sortable v-for="column in visibleColumns" :key="column.key" min-width="180">
+                        <template scope="scope">
+                           {{typeof scope.row.fullSubmission[column.key] === 'object' ? '' : scope.row.fullSubmission[column.key] }} 
+                        </template>
+
                     </el-table-column>
 
-                    <el-table-column :label="$t('App.created_at')" prop="Humancreated" sortable>
+                    <el-table-column :label="$t('App.created_at')" prop="Humancreated" sortable fixed="left" width="120">
+                    </el-table-column>
+
+                     <el-table-column
+                      fixed="right"
+                      label="Actions"
+                      width="120">
+                      <template scope="scope">
+                        <el-button @click="handleEdit(scope)" type="text" >Edit</el-button>
+                        <el-button @click="handleDelete(scope)" type="text">Delete</el-button>
+                      </template>
                     </el-table-column>
 
                 </data-tables>
@@ -99,6 +75,7 @@ import moment from 'moment'
 import jsonexport from 'jsonexport'
 import { Loading, QCard, QCardTitle, QCardSeparator, QCardMain, QFab, QFabAction, QFixedPosition, QPullToRefresh } from 'quasar'
 import LocalSubmission from 'database/collections/scopes/LocalSubmission'
+import FormioUtils from 'formiojs/utils'
 locale.use(lang)
 
 export default {
@@ -143,6 +120,7 @@ export default {
       currentForm: {},
       submissions: [],
       subscriptions: [],
+      visibleColumns: [],
       searchDef: {
         colProps: {
           span: 9
@@ -195,6 +173,51 @@ export default {
     }
   },
   methods: {
+    handleEdit (data) {
+       let self = this
+       let submission = data.row
+       Loading.show()
+        self.$router.push(
+        {
+            name: 'formio_submission_update',
+            params: {
+              idForm: submission.formio.formId,
+              idSubmission: submission.id_submision
+            }
+        })
+     },
+    handleDelete (data) {
+       let self = this
+       let submission = data.row
+       self.$swal({
+                title: 'Are you sure?',
+                text: 'You won\'t be able to revert this!',
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+              }).then(async () => {
+                let db = await Database.get()
+                let online = await db.submissions
+                  .findOne().where('data._id')
+                  .eq(submission.id_submision).exec()
+                let offline = await db.submissions
+                  .findOne().where('_id')
+                  .eq(submission.id_submision).exec()
+
+                let deleteSubmission = offline
+                if (online) {
+                  deleteSubmission = online
+                }
+                await deleteSubmission.remove()
+                self.$swal(
+                  'Deleted!',
+                  'Your submission has been deleted.',
+                  'success'
+                )
+              })
+    },
     download: function(content, fileName, mimeType) {
       var a = document.createElement('a')
       mimeType = mimeType || 'application/octet-stream'
@@ -300,21 +323,6 @@ export default {
       return {
         label: self.$t('App.actions'),
         def: [
-          {
-            type: 'text',
-            handler(submission) {
-              Loading.show()
-              self.$router.push(
-                {
-                  name: 'formio_submission_update',
-                  params: {
-                    idForm: submission.formio.formId,
-                    idSubmission: submission.id_submision
-                  }
-                })
-            },
-            icon: 'edit'
-          },
           /* TODO
           Uncomment this and finish when CORS are available
           to have PDF export of the submission
@@ -333,49 +341,18 @@ export default {
             icon: 'document'
           },
           */
-          {
-            async handler(submission) {
-              self.$swal({
-                title: 'Are you sure?',
-                text: 'You won\'t be able to revert this!',
-                type: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
-              }).then(async () => {
-                let db = await Database.get()
-                let online = await db.submissions
-                  .findOne().where('data._id')
-                  .eq(submission.id_submision).exec()
-                let offline = await db.submissions
-                  .findOne().where('_id')
-                  .eq(submission.id_submision).exec()
-
-                let deleteSubmission = offline
-                if (online) {
-                  deleteSubmission = online
-                }
-                await deleteSubmission.remove()
-                self.$swal(
-                  'Deleted!',
-                  'Your submission has been deleted.',
-                  'success'
-                )
-              })
-            },
-            type: 'text',
-            icon: 'delete2'
-
-          }
         ]
       }
     },
     async pullSubmissions() {
       let db = await Database.get()
-
       this.currentForm = await db.forms.findOne()
         .where('data.path').eq(this.$route.params.idForm).exec()
+
+      this.visibleColumns = FormioUtils.findComponents(this.currentForm.data.components, {
+        'input': true,
+        'tableView': true
+      })
       this.$store.dispatch('getSubmissions',
         {
           currentForm: this.currentForm,

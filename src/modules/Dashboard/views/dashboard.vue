@@ -1,28 +1,16 @@
 <template>
 <div>
+
 <div class="row">
-
-<section class="container col-lg-5 col-md-6">
-  <div ref="card" :class="flipped0">
-    <div class="front">
-     
-        <q-icon name="fa-plus-square-o fa-5x" />
-  
+  <q-card  class="col-lg-5 col-lg-offset-1" flat>
+ 
+  <q-card-main>
+      <q-icon name="fa-plus-square-o fa-5x" />
       <h1>Modules</h1>
-       <q-btn @click="toggleFlip(0)" round color="grey" flat >
-        <q-icon name="fa-plus-square" />
-      </q-btn>
-      
-    </div>
-    <div class="back">
-
-        <q-btn @click="toggleFlip(0)" style="z-index: 1;" round color="grey"  flat>
-          <q-icon name="fa-times" />
-        </q-btn>
-     
-      <div class="row centered">
-         <h3>Modules</h3>
-      <table style="display: block; height:200px; overflow-y: scroll;">
+       <q-list style="border: none; padding: 0;">
+      <q-collapsible>
+        <div>
+         <table style="display: block; height:200px; overflow-y: scroll;">
         <tr v-for="(form, index) in orderedForms" :key="form.data._id" v-if="form.data.tags.indexOf('visible') > -1" >
           <td class="col-lg-1"><q-icon name="fa-file-o" /></td>
           <td class="col-lg-10">
@@ -30,30 +18,23 @@
         </td>
         </tr>
       </table>
-       </div>
-    </div>
-  </div>
+        </div>
+      </q-collapsible>
+    </q-list>
+       
+  </q-card-main>
+</q-card>
 
-</section>
-
-<section class="container col-lg-5 col-md-6">
-  <div ref="card" :class="flipped1">
-    <div class="front">
-      <q-icon name="fa-database fa-5x" />
+<q-card  class="col-lg-5" flat>
+ 
+  <q-card-main>
+     <q-icon name="fa-database fa-5x" />
       <h1>Data Collected</h1>
-       <q-btn @click="toggleFlip(1)" round color="grey" flat >
-        <q-icon name="fa-plus-square" />
-      </q-btn>
-      
-    </div>
-    <div class="back">
-      <q-btn @click="toggleFlip(1)" style="z-index: 1;" round color="grey"  flat>
-        <q-icon name="fa-times" />
-      </q-btn>
-      <h1></h1>
-      <div class="row centered">
-         <h3>Data</h3>
-      <table style="display: block; height:200px; overflow-y: scroll;">
+
+      <q-list style="border: none; padding: 0;">
+      <q-collapsible>
+        <div>
+           <table style="display: block; height:200px; overflow-y: scroll;">
 
         <tr>
           <td class="col-lg-1"><q-icon name="fa-database" /></td>
@@ -69,55 +50,34 @@
         </td>
         </tr>
       </table>
-       </div>
-       
-    </div>
-  </div>
-</section>
+        </div>
+      </q-collapsible>
+    </q-list>
+  </q-card-main>
+</q-card>
+
 </div>
 
-<div class="row">
 
-<section class="container col-lg-5 col-md-6">
-  <div ref="card" :class="flipped2">
-    <div class="front">
+
+<div class="row">
+  <q-card  class="col-lg-5 col-lg-offset-1" flat>
+
+  <q-card-main>
       <q-icon name="fa-cog fa-5x" />
       <h1>Application Settings</h1>
-       <q-btn @click="toggleFlip(2)" round color="grey" flat >
-        <q-icon name="fa-plus-square" />
-      </q-btn>
-      
-    </div>
-    <div class="back">
-      <q-btn @click="toggleFlip(2)" round color="grey"  flat>
-        <q-icon name="fa-times" />
-      </q-btn>
-      <h1>Survey list</h1>
-       
-    </div>
-  </div>
-
-</section>
-
-<section class="container col-lg-5 col-md-6">
-  <div ref="card" :class="flipped3">
-    <div class="front">
-      <q-icon name="fa-mobile fa-5x" />
-      <h1>About PAT</h1>
        <q-btn @click="toggleFlip(3)" round color="grey" flat >
-        <q-icon name="fa-plus-square" />
       </q-btn>
-      
-    </div>
-    <div class="back">
-      <q-btn @click="toggleFlip(3)" round color="grey"  flat>
-        <q-icon name="fa-times" />
-      </q-btn>
-      <h1>Survey list</h1>
-       
-    </div>
-  </div>
-</section>
+  </q-card-main>
+</q-card>
+
+<q-card  class="col-lg-5" flat>
+  <q-card-main>
+     <q-icon name="fa-mobile fa-5x" />
+      <h1>About PAT</h1>
+  </q-card-main>
+</q-card>
+
 </div>
 
 </div>
@@ -157,60 +117,10 @@ tr:nth-child(odd) td { background: #FEFEFE; }
 
 tr:nth-child(even){background-color: #f2f2f2}
 
-.container {
-  margin-top: 30px;
-    min-height: 260px;
-    position: relative;
-    -webkit-perspective: 800px;
-    -moz-perspective: 800px;
-    -o-perspective: 800px;
-    perspective: 800px;
-}
-.card {
-    width: 100%;
-    height: 100%;
-    -webkit-transition: -webkit-transform 0.5s;
-    -moz-transition: -moz-transform 0.5s;
-    -o-transition: -o-transform 0.5s;
-    transition: transform 0.5s;
-    -webkit-transform-style: preserve-3d;
-    -moz-transform-style: preserve-3d;
-    -o-transform-style: preserve-3d;
-    transform-style: preserve-3d;
-    -webkit-transform-origin: 50% 50%;
-    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
-}
-.card div {
-    display: grid;
-    height: 100%;
-    width: 100%;
-    text-align: center;
-    font-weight: bold;
-    position: absolute;
-    -webkit-backface-visibility: hidden;
-    -moz-backface-visibility: hidden;
-    -o-backface-visibility: hidden;
-    backface-visibility: hidden;
-}
-.card .front {
-  background: white;
-}
-.card .back {
-   background: white;
-    -webkit-transform: rotateY( 180deg );
-    -moz-transform: rotateY( 180deg );
-    -o-transform: rotateY( 180deg );
-    transform: rotateY( 180deg );
-}
-.card.flipped {
-    -webkit-transform: rotateY( 180deg );
-    -moz-transform: rotateY( 180deg );
-    -o-transform: rotateY( 180deg );
-    transform: rotateY( 180deg );
-}
+
 </style>
 <script>
-import {QIcon, QBtn, QList, QItem, QItemSide, QItemTile} from 'quasar'
+import {QCard, QCardTitle, QCardSeparator, QCardMain, QFab, QFabAction, QFixedPosition, QPullToRefresh, QTabs, QTab, QTabPane, QCollapsible, QBtn, QIcon, QTooltip, QList, QItem, QItemSeparator, Loading} from 'quasar'
 import LocalForm from 'database/collections/scopes/LocalForm'
 import _ from 'lodash'
 export default {
@@ -219,7 +129,7 @@ export default {
     LocalForm.sAll(this, 'forms')
   },
   components: {
-    QIcon, QBtn, QList, QItem, QItemSide, QItemTile
+    QCard, QCardTitle, QCardSeparator, QCardMain, QFab, QFabAction, QFixedPosition, QPullToRefresh, QTabs, QTab, QTabPane, QCollapsible, QBtn, QIcon, QTooltip, QList, QItem, QItemSeparator, Loading
   },
   data: () => {
     return {

@@ -4,19 +4,19 @@
   <!-- Direct child of target -->
   <q-popover ref="popover">
     <q-list item-separator link>
-      <q-item @click="setLanguage({code: 'en', direction: 'ltr'}), $refs.popover.close()">
-      en
-      </q-item>
-      <q-item @click="setLanguage({code: 'fr', direction: 'ltr'}), $refs.popover.close()">
-        fr
-      </q-item>
-      <q-item @click="setLanguage({code: 'es', direction: 'rtl'}), $refs.popover.close()">
-       es
+      <q-item v-bind:class="{ active: isActive(lenguage.code)}"  @click="setLanguage({code: lenguage.code, direction: lenguage.direction}), $refs.popover.close()" v-for="lenguage in lenguages" :key="lenguage.code">
+      {{lenguage.label}}
       </q-item>
     </q-list>
   </q-popover>
 </q-btn>
 </template>
+<style scoped>
+  .active {
+    background: #0e6da5;
+    color: white;
+  }
+</style>
 
 <script>
 import {
@@ -51,9 +51,23 @@ export default {
     QChip,
     QFixedPosition
   },
+   data: function () {
+    return {
+      lenguage: localStorage.getItem('defaultLenguage') ? localStorage.getItem('defaultLenguage') : 'en',
+      lenguages: [{code: 'en', direction: 'ltr', label: 'English'},
+                  {code: 'es', direction: 'ltr', label: 'Español'},
+                  {code: 'fr', direction: 'ltr', label: 'Francais'}
+                ]
+    }
+  },
   methods: {
+    isActive (code) {
+      return !!(this.lenguage === code)
+    },
     setLanguage (lenguage) {
       this.$i18n.locale = lenguage.code
+      this.lenguage = lenguage.code
+      localStorage.setItem('defaultLenguage', lenguage.code)
       this.$eventHub.$emit('lenguageSelection', lenguage)
     }
   }

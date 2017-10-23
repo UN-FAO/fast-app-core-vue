@@ -180,14 +180,14 @@ const actions = {
       submission.type = 'update'
       let localSubmission = await LocalSubmission.get(formSubmission._id)
       let differences = deep.diff(SyncHelper.deleteNulls(localSubmission.data.data), SyncHelper.deleteNulls(submission.data))
-      if (localSubmission.data.draft === false && submission.trigger === 'autoSaveAsDraft')
-      {
-        return
-      }
-
+      let submitting = submission.draft === false
+      let localDraft = localSubmission.data.draft === false
+      let submissionNotDraft = submission.draft === true
+      let autoSave = submission.trigger === 'autoSaveAsDraft'
       // If there are differences between the
       // Stored and the new data.
-      if (differences || submission.draft === false || (localSubmission.data.draft === false && submission.draft === true)) {
+      if (((differences || submitting || (localDraft && submissionNotDraft)) && !autoSave) || (differences && autoSave)) {
+          console.log('We are going to update', (differences && autoSave), differences)
           await localSubmission.update({
           $set: {
             data: submission

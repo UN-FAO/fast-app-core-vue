@@ -92,6 +92,7 @@ const LocalSubmission = class {
             ], [
               'desc'
             ])
+            console.log(submissions)
             vm[holder] = submissions
           })
       )

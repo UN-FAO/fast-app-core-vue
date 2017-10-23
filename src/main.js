@@ -98,8 +98,11 @@ Quasar.start(async () => {
       console.log('Error while getting translations')
     }
   }
+
+  let defaultLenguage = localStorage.getItem('defaultLenguage') ? localStorage.getItem('defaultLenguage') : 'en'
+
   const i18n = new VueI18n({
-    locale: 'en', // set locale
+    locale: defaultLenguage, // set locale
     messages: appTranslations // set locale messages
   })
 
