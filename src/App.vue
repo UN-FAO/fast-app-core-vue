@@ -70,6 +70,7 @@ export default {
     })
 
     Connection.initEventListeners(this)
+    Connection.listenPageInUse()
     this.setSyncInterval()
   },
   methods: {
@@ -99,8 +100,11 @@ export default {
           }
         }
       }
-
-      rInterval(() => sync(this), SYNC_INTERVAL)
+      rInterval(() => {
+        if (Connection.isTabInUse()) {
+          return sync(this)
+        }
+      }, SYNC_INTERVAL)
     }
   },
   data () {
