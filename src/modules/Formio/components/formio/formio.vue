@@ -49,24 +49,12 @@ export default {
     },
     localDraft: {
       required: false
+    },
+    readOnly: {
+      required: false
     }
   },
   mounted () {
-          // Select your stepper element.  
-      var stepperElement = document.querySelector('ul.mdl-stepper')
-      var Stepper
-
-      // Check if MDL Component Handler is loaded.
-      if (typeof componentHandler !== 'undefined') {
-        // Get the MaterialStepper instance of element to control it.          
-        Stepper = stepperElement.MaterialStepper
-        // Moves the stepper to the next step for test.
-        Stepper.next()
-      } else {
-        // Material Design Lite javascript is not loaded or for another  
-        // reason MDL Component Handler is not available globally and
-        // you can't use (register and upgrade) Stepper component at this point.
-      }
     Formio.setToken(this.formioToken)
     Lenguage.listen(this)
     GPS.listen(this)
@@ -88,7 +76,8 @@ export default {
       jsonSubmission: undefined,
       offlineModePlugin: null,
       loading: true,
-      saved: false
+      saved: false,
+      removedValues: []
     }
   },
   watch: {
@@ -165,9 +154,17 @@ export default {
       })
       return Components
     },
+    /**
+     * [getCurrentForm description]
+     * @return {[type]} [description]
+     */
     getCurrentForm () {
       return this.jsonForm
     },
+    /**
+     * [reRenderForm description]
+     * @return {[type]} [description]
+     */
     reRenderForm () {
       this.formIO.render()
     },
@@ -190,7 +187,7 @@ export default {
      */
     saveAsLocalDraft (e) {
       let formSubmission = {
-        data: this.formIO.data,
+        data: this.getCurrentData(),
         redirect: true,
         draft: true,
         trigger: 'saveAsLocalDraft'
@@ -202,6 +199,17 @@ export default {
        'success'
       )
     },
+    getCurrentData () {
+      let currentDataClone = _.cloneDeep(this.formIO.data)
+      _.forEach(this.removedValues, function(removedValue) {
+         let currentValue = currentDataClone[removedValue.path]
+         let oldValue = removedValue.value
+         if (typeof currentValue === 'undefined') {
+            currentDataClone[removedValue.path] = oldValue
+         }
+      })
+      return currentDataClone
+    },
     /**
      * [autoSaveAsDraft description]
      * @param  {[type]} e [description]
@@ -209,13 +217,17 @@ export default {
      */
     autoSaveAsDraft () {
       let formSubmission = {
-        data: this.formIO.data,
+        data: this.getCurrentData(),
         redirect: false,
         draft: true,
         trigger: 'autoSaveAsDraft'
       }
       this.save(formSubmission)
     },
+    /**
+     * [removeDuplicatedPagination description]
+     * @return {[type]} [description]
+     */
     removeDuplicatedPagination() {
       let x = document.getElementsByClassName('pagination');
       [].forEach.call(x, function (el, index) {
@@ -230,7 +242,7 @@ export default {
      */
     createLocalDraft() {
       let formSubmission = {
-        data: this.formIO.data,
+        data: this.getCurrentData(),
         redirect: 'Update',
         draft: true,
         trigger: 'createLocalDraft'
@@ -250,6 +262,72 @@ export default {
       formio.saveSubmission(formSubmission)
     },
     /**
+     * [setSubmission description]
+     * @param {[type]} savedSubmission [description]
+     */
+    setSubmission (onlineJsonForm, savedSubmission) {
+        // Clone the original object to avoid changes
+        let cloneJsonSubmission = _.cloneDeep(this.jsonSubmission.data.data)
+   
+        let selectComponents = FormioUtils.findComponents(onlineJsonForm.components, {
+            'type': 'select'
+        })
+        
+        let resourceComponents = FormioUtils.findComponents(onlineJsonForm.components, {
+            'type': 'resource'
+        })
+         _.map(resourceComponents, (select) => {
+          let keyValue = select.key
+          if (cloneJsonSubmission[keyValue]) {
+            this.removedValues.push({key: keyValue, value: cloneJsonSubmission[keyValue], path: select.path})
+            let show = select.tags[0]
+            select.placeholder = cloneJsonSubmission[keyValue].data[show]
+            delete cloneJsonSubmission[keyValue]
+          }
+        })
+
+        _.map(selectComponents, (select) => {
+          let key = select.key
+          if (cloneJsonSubmission[key]) {
+            this.removedValues.push({key: select.key, value: cloneJsonSubmission[key], path: select.path})
+            select.placeholder = cloneJsonSubmission[key]
+            delete cloneJsonSubmission[select.key]
+          }
+        })
+
+        this.removedValues = _.uniqBy(this.removedValues, 'path')
+      
+        this.formIO.submission = !_.isEmpty(this.jsonSubmission) ? {data: cloneJsonSubmission} : {data: {}}
+        // If we are creating a wizard
+        if (onlineJsonForm.display === 'wizard') {
+          this.formIO.data = !_.isEmpty(this.jsonSubmission) ? cloneJsonSubmission : {}
+        } else {
+          // If we have a savedSubmission (Staying on the same page after submit)
+          this.formIO.submission = savedSubmission ? {data: savedSubmission.data} : this.formIO.submission
+        }
+    },
+    /**
+     * [createFormioInstance description]
+     * @param  {[type]} onlineJsonForm [description]
+     * @param  {[type]} translations   [description]
+     * @return {[type]}                [description]
+     */
+    createFormioInstance (onlineJsonForm, translations) {
+      let readOnly = this.readOnly
+      // Create the formIOForm Instance (Renderer)
+        if (onlineJsonForm.display === 'wizard') {
+          if (_.isEmpty(this.formIO)) {
+            translations.readOnly = readOnly
+            this.formIO = new FormioWizard(this.$refs.formIO, translations)
+          }
+        } else {
+          if (_.isEmpty(this.formIO)) {
+            translations.readOnly = readOnly
+            this.formIO = new FormioForm(this.$refs.formIO, translations)
+          }
+        }
+    },
+    /**
       * [mountFormIOForm description]
       * @return {[type]} [description]
       */
@@ -263,20 +341,19 @@ export default {
 
       formio.loadForm().then(async onlineJsonForm => {
         let translations = await OFFLINE_PLUGIN.getLocalTranslations()
-        // Create the formIOForm Instance (Renderer)
-        if (onlineJsonForm.display === 'wizard') {
-          if (_.isEmpty(this.formIO)) {
-            this.formIO = new FormioWizard(this.$refs.formIO, translations)
-          }
-        } else {
-          if (_.isEmpty(this.formIO)) {
-            this.formIO = new FormioForm(this.$refs.formIO, translations)
-          }
-        }
+
+        this.createFormioInstance(onlineJsonForm, translations)
+
+        // If we are creating a new record triggers the creation
+        // to go directly to edit (an have autosave functionality)
         if (_.isEmpty(this.jsonSubmission) && this.$route.name === 'formio_form_submission') {
           this.createLocalDraft()
           return
         }
+
+         // Set Submission if we are Updating
+        this.setSubmission(onlineJsonForm, savedSubmission)
+
         // Clone the original object to avoid changes
         let cloneJsonForm = _.cloneDeep(onlineJsonForm)
 
@@ -289,18 +366,12 @@ export default {
         // Define the form to display
         this.formIO.setForm(cloneJsonForm)
 
-        // Set Submission if we are Updating
-        this.formIO.submission = !_.isEmpty(this.jsonSubmission) ? {data: this.jsonSubmission.data.data} : {data: {}}
-
-        if (onlineJsonForm.display === 'wizard') {
-          this.formIO.data = !_.isEmpty(this.jsonSubmission) ? this.jsonSubmission.data.data : {}
-        } else {
-          this.formIO.submission = savedSubmission ? {data: savedSubmission.data} : this.formIO.submission
-        }
+        // When the submission has been added the form is mounted
         this.$eventHub.$emit('formio.mounted', this.formIO)
         
+        // Define all the Listeners for the different FORM.io Events
         let events = this.formIO.eventListeners
-
+        console.log('Events', events)
         // Add error event listener only if we do not have it
         if (events.filter(e => e.type === 'formio.render').length < 1) {
           this.formIO.on('render', (render) => {
@@ -316,8 +387,7 @@ export default {
           })
         }
         let timeoutId
-        // Add error event listener only if we do not have it
-        if (events.filter(e => e.type === 'formio.change').length < 1) {
+
           this.formIO.on('change', (change) => {
             this.removeDuplicatedPagination()
             if (this.localDraft) {
@@ -336,11 +406,10 @@ export default {
               timeoutId = setTimeout(() => {
                 this.autoSaveAsDraft()
                 this.saved = true
-              }, 750)
+              }, 5000)
             }
             this.$eventHub.$emit('formio.change', {change: change, formio: this.formIO})
           })
-        }
 
         // Add error event listener only if we do not have it
         if (events.filter(e => e.type === 'formio.nextPage').length < 1) {
@@ -376,10 +445,11 @@ export default {
                 confirmButtonText: 'Yes, send it!'
               }).then(async () => {
                   let formSubmission = {
-                    data: submission.data
+                    data: this.getCurrentData()
                   }
                   formSubmission.draft = false
                   formSubmission.redirect = true
+                  formSubmission.trigger = 'formioSubmit'
                   this.save(formSubmission)
                   this.$swal(
                     'Sent!',

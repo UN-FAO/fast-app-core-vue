@@ -1,7 +1,8 @@
 <template>
     <q-pull-to-refresh :handler="refreshSubmissions">
       <div class="row">       
-        <q-card color="white" class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1" >
+        <q-card color="white" class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1"
+        v-bind:class="!saved ? 'saving'  : '' " >
             
             <q-card-main>
                 <q-tabs inverted id="contentForm">
@@ -25,7 +26,9 @@
                           :submission="submission"
                           :formioToken="formioToken"
                           :localDraft="LOCAL_DRAFT_ENABLED"
+                          :readOnly="false"
                         />
+
                     </q-tab-pane>
 
                 </q-tabs>
@@ -49,6 +52,10 @@
 <style>
 .q-item-label {
     color: black;
+}
+
+.saving {
+  box-shadow: 1px 5px 2px 2px rgba(222, 15, 15, 0.88) !important;
 }
 </style>
 
@@ -145,13 +152,15 @@ export default {
   methods: {
     ...mapActions(['getResources']),
     exportPDF () {
+      let element = document.querySelector('#contentForm')
+       /*
       let body = document.body
       let html = document.documentElement
       let height = Math.max(body.scrollHeight, body.offsetHeight,
                        html.clientHeight, html.scrollHeight, html.offsetHeight)
-      let element = document.querySelector('#contentForm')
+      
       let heightCM = height / 35.35
-      /*
+     
       function myCallback(pdf) {
         console.log('The pdf was generated!!', pdf)
       }
@@ -164,7 +173,7 @@ export default {
         jsPDF: {
             orientation: 'portrait',
             unit: 'cm',
-            format: [heightCM, 65]
+            format: 'letter'
           }
       })
     },

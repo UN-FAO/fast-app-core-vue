@@ -48,6 +48,7 @@ module.exports = {
     "no-trailing-spaces": [2, { "skipBlankLines": true }],
     "indent": 0,
     "no-multiple-empty-lines": 0,
-    "brace-style":0
+    "brace-style":0,
+    "no-useless-return":0
   }
 }

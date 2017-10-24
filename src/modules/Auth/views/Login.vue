@@ -146,7 +146,7 @@ body, html {
             <p>
                 <!-- react-text: 44 -->Version
                 <!-- /react-text -->
-                <!-- react-text: 45 -->0.1.0
+                <!-- react-text: 45 -->0.1.2
                 <!-- /react-text -->
             </p>
         </div>

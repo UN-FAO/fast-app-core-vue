@@ -7,6 +7,11 @@
 .pl {
   padding-left: 20px;
 }
+.el-table__body-wrapper {
+    overflow: scroll !important;
+    position: relative !important;
+    -webkit-overflow-scrolling: touch !important;
+}
 </style>
 
 <template>

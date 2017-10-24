@@ -166,6 +166,7 @@ const actions = {
    * @param {[type]} currentForm    [description]
    */
   async addSubmission ({ commit }, { formSubmission, formio, User }) {
+    console.log('Inside adding submission', formSubmission, formio, User)
     const DB = await Database.get()
     
     let submission = formSubmission
@@ -176,7 +177,7 @@ const actions = {
     submission = SyncHelper.deleteNulls(submission)
 
     // If we are updating the submission
-    if (formSubmission._id || formSubmission.trigger !== 'createLocalDraft') {
+    if (formSubmission._id || (formSubmission.trigger !== 'createLocalDraft' && formSubmission.trigger !== 'resourceCreation')) {
       submission.type = 'update'
       let localSubmission = await LocalSubmission.get(formSubmission._id)
       let differences = deep.diff(SyncHelper.deleteNulls(localSubmission.data.data), SyncHelper.deleteNulls(submission.data))
@@ -196,10 +197,14 @@ const actions = {
       }
       return localSubmission
       // If we are creating a new draft from scratch
-    } else if (formSubmission.trigger === 'createLocalDraft') {
+    } else if (formSubmission.trigger === 'createLocalDraft' || formSubmission.trigger === 'resourceCreation') {
       let newSubmission = await DB.submissions.insert({
         data: submission
       })
+      if (formSubmission.trigger === 'resourceCreation') {
+        newSubmission.trigger = 'resourceCreation'
+      }
+      console.log('We are in this case trying to insert the element locally', newSubmission)
       return newSubmission
     }
   },
