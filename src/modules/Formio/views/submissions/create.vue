@@ -100,12 +100,7 @@ input[type=radio] {
     margin:10px;
 }
 
-/*
-  Change the look'n'feel of labels (which are adjacent to radiobuttons).
-  Add some margin, padding to label
-*/
-input[type=radio] + span {
-    display: inline-block;
+input[type=radio] + span, input[type=checkbox] + span {
     margin: -2px;
     padding: 4px 12px;
     background-color: rgba(231, 231, 231, 0.38);
@@ -114,39 +109,15 @@ input[type=radio] + span {
     min-height: 50px;
     text-align: center;
     text-transform: uppercase;
-}
-/*
- Change background color for label next to checked radio button
- to make it look like highlighted button
-*/
-input[type=radio]:checked + span { 
-   background-image: none;
-    background-color: #0e6da5;
-    color: white;
-    cursor: pointer;
-    padding: 2px 12px 3px 12px;
-    text-decoration: none;
-    display: inline-block;
-    border-radius: 5px;
-    text-align: center;
-    font-size: 20px;
-}
-
-input[type=checkbox] + span {
-    display: inline-block;
-    margin: -2px;
-    padding: 4px 12px;
-    background-color: rgba(231, 231, 231, 0.38);
-    border-radius: 5px;
-    min-width: 250px;
-    min-height: 50px;
-    text-align: center;
-    text-transform: uppercase;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    flex-direction: column;
     margin-bottom: 10px;
     margin-top: 10px;
 }
 
-input[type=checkbox]:checked + span { 
+input[type=radio]:checked + span, input[type=checkbox]:checked + span { 
    background-image: none;
     background-color: #0e6da5;
     color: white;
@@ -156,7 +127,10 @@ input[type=checkbox]:checked + span {
     display: inline-block;
     border-radius: 5px;
     text-align: center;
-    font-size: 20px;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    flex-direction: column;
     margin-bottom: 10px;
     margin-top: 10px;
 }
