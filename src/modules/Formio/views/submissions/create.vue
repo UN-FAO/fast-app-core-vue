@@ -1,10 +1,24 @@
 <template>
     <q-pull-to-refresh :handler="refreshSubmissions">
-      <div class="row">       
-        <q-card color="white" class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1"
-        v-bind:class="!saved ? 'saving'  : '' " >
-            
+      <div class="row">     
+
+        <q-card  flat color="transparent"  class="col-lg-3  col-md-3 col-sm-3" v-if="_isWizard && showPages"> 
+          <q-card-main>
+              <q-list separator style="border: none !important">
+            <!-- collapsible to hide sub-level menu entries -->    
+              <q-item multiline style="text-align: left; text-transform: uppercase; min-height: 60px; border-radius: 5px;"  link  v-for="(page, index) in pages" :label="page.title" :key="page.title" @click="goToPage(index)" :ref="'page-'+ index">
+              <q-item-main style=" margin-top: auto;  margin-bottom: auto;"
+                :label="page.title"
+                label-lines="3"
+              />      
+            </q-item>
+          </q-list>
+          </q-card-main>
+        </q-card> 
+
+        <q-card color="white" v-bind:class="getFormClass" >
             <q-card-main>
+              <q-btn flat @click="togglePages" icon="menu" style="color:black;"></q-btn>
                 <q-tabs inverted id="contentForm">
                     <!-- Tabs - notice slot="title" -->
                     <q-tab default slot="title" name="tab-1" icon="person" label="P1"
@@ -52,26 +66,117 @@
 <style>
 .q-item-label {
     color: black;
+    font-weight: 300;
 }
 
 .saving {
-  box-shadow: 1px 5px 2px 2px rgba(222, 15, 15, 0.88) !important;
+  box-shadow: 1px 1px 1px 1px rgba(222, 15, 15, 0.88) !important;
 }
+
+.q-collapsible.q-item-division.relative-position {
+    color: black;
+}
+
+.form-control {
+    min-height: 45px !important;
+    height: auto;
+    font-size: 20px !important;
+}
+
+label.control-label {
+    color: #666;
+    font-size: medium !important;
+}
+
+.radio, .checkbox {
+    position: relative !important;
+    display: block !important;
+    margin-top: 20px !important;
+    margin-bottom: 20px !important;
+}
+
+input[type=radio] {
+    display:none; 
+    margin:10px;
+}
+
+/*
+  Change the look'n'feel of labels (which are adjacent to radiobuttons).
+  Add some margin, padding to label
+*/
+input[type=radio] + span {
+    display: inline-block;
+    margin: -2px;
+    padding: 4px 12px;
+    background-color: rgba(231, 231, 231, 0.38);
+    border-radius: 5px;
+    min-width: 250px;
+    min-height: 50px;
+    text-align: center;
+    text-transform: uppercase;
+}
+/*
+ Change background color for label next to checked radio button
+ to make it look like highlighted button
+*/
+input[type=radio]:checked + span { 
+   background-image: none;
+    background-color: #0e6da5;
+    color: white;
+    cursor: pointer;
+    padding: 2px 12px 3px 12px;
+    text-decoration: none;
+    display: inline-block;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 20px;
+}
+
+input[type=checkbox] + span {
+    display: inline-block;
+    margin: -2px;
+    padding: 4px 12px;
+    background-color: rgba(231, 231, 231, 0.38);
+    border-radius: 5px;
+    min-width: 250px;
+    min-height: 50px;
+    text-align: center;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+input[type=checkbox]:checked + span { 
+   background-image: none;
+    background-color: #0e6da5;
+    color: white;
+    cursor: pointer;
+    padding: 2px 12px 3px 12px;
+    text-decoration: none;
+    display: inline-block;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 20px;
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
 </style>
 
 <script>
 import _ from 'lodash'
+import FormioUtils from 'formiojs/utils'
 import {mapActions} from 'vuex'
 import Auth from 'modules/Auth/api/Auth'
 import formio from 'modules/Formio/components/formio/formio'
 import LocalForm from 'database/collections/scopes/LocalForm'
 import LocalSubmission from 'database/collections/scopes/LocalSubmission'
 import {APP_URL, LOCAL_DRAFT_ENABLED} from 'config/env'
-import {QCard, QCardTitle, QCardSeparator, QCardMain, QFab, QFabAction, QFixedPosition, QPullToRefresh, QTabs, QTab, QTabPane, QCollapsible, QBtn, QIcon, QTooltip, QList, QItem, QItemSeparator, Loading} from 'quasar'
+import {QCard, QCardTitle, QCardSeparator, QCardMain, QFab, QFabAction, QFixedPosition, QPullToRefresh, QTabs, QTab, QTabPane, QCollapsible, QBtn, QIcon, QTooltip, QList, QItem, QItemSeparator, Loading, QItemMain} from 'quasar'
 
 export default {
   components: {
-    formio, QCard, QCardTitle, QCardSeparator, QCardMain, QFab, QFabAction, QFixedPosition, QPullToRefresh, QTabs, QTab, QTabPane, QCollapsible, QBtn, QIcon, QTooltip, QList, QItem, QItemSeparator, Loading
+    formio, QCard, QCardTitle, QCardSeparator, QCardMain, QFab, QFabAction, QFixedPosition, QPullToRefresh, QTabs, QTab, QTabPane, QCollapsible, QBtn, QIcon, QTooltip, QList, QItem, QItemSeparator, Loading, QItemMain
   },
   async beforeRouteEnter (to, from, next) {
     // Load the form and submission before entering the route
@@ -97,6 +202,47 @@ export default {
   },
   mounted () {
     Loading.hide()
+    this.$eventHub.on('formio.mounted', (formio) => {
+      this.pages = formio.pages ? formio.pages : []
+    })
+    this.$eventHub.on('formio.nextPage', (data) => {
+      this.currentPage = data.nextPage.page
+      this.changeSelectedPage()
+    })
+    this.$eventHub.on('formio.prevPage', (data) => {
+      this.currentPage = data.prevPage.page
+      this.changeSelectedPage()
+    })
+    
+    this.$eventHub.on('formio.render', (data) => {
+      this.isWizard = !!(data.formio.wizard)
+    })
+
+    this.$eventHub.on('formio.change', (data) => {
+      let scorePanels = []
+      this.validateRequired(data.formio.pages, data)
+      // This should only be called if this is a Wizard
+      // Search all of the Score components in different pages
+      _.forEach(data.formio.pages, (page) => {
+          let panels = FormioUtils.findComponents(page.components, {
+          'type': 'panel'
+        })
+          if (panels.length > 0) {
+            _.forEach(panels, (panel, index) => {
+              // Make sure that the panel contains Score
+              if (panel.key.indexOf('score') !== -1) {
+                _.forEach(panel.components, (component, cindex) => {
+                  // Search the current value of the Score and add it
+                  component.value = data.formio.data[component.key]
+                })
+                scorePanels.push(panel)
+              }
+            })
+          }
+      })
+        this.scorePanels = scorePanels
+    })
+
     document.addEventListener('draftStatus', this.draftStatusChanged)
     this.$eventHub.$on('formio.error', (error) => {
       console.log(error)
@@ -135,6 +281,21 @@ export default {
         title = this.form ? this.form.title : ''
       }
       return title
+    },
+    _isWizard () {
+      return this.isWizard
+    },
+    getFormClass () {
+      let className = ''
+      if (this.showPages) {
+        className = 'col-lg-8  col-md-8 col-sm-8'
+      } else {
+        className = 'col-lg-10  col-md-10 col-sm-10 col-lg-offset-1 col-md-offset-1'
+      }
+      if (!this.saved) {
+        className = className + ' saving'
+      }
+      return className
     }
   },
   data: function () {
@@ -146,11 +307,23 @@ export default {
       formioToken: Auth.user().x_jwt_token,
       LOCAL_DRAFT_ENABLED: LOCAL_DRAFT_ENABLED,
       saved: false,
-      errors: {}
+      errors: {},
+      isWizard: false,
+      pages: [],
+      currentPage: 0,
+      showPages: true
     }
   },
   methods: {
     ...mapActions(['getResources']),
+    goToPage (index) {
+      let pageNumber = index + 1
+      let page = document.querySelectorAll('ul li:nth-of-type(' + pageNumber + ')')[0]
+      page.click()
+    },
+    togglePages () {
+      this.showPages = !this.showPages
+    },
     exportPDF () {
       let element = document.querySelector('#contentForm')
        /*
@@ -221,6 +394,22 @@ export default {
     async getSubmission () {
       let submission = this.$route.params.idSubmission ? await LocalSubmission.get(this.$route.params.idSubmission) : undefined
       this.submission = (!_.isEmpty(submission)) ? submission : undefined
+    },
+    validateRequired (pages, data) {
+      let errorCount = 0
+      let errors = []
+      _.forEach(pages, (page) => {
+        FormioUtils.eachComponent(page.components, (component) => {
+        if (component.input === true && component.validate && component.validate.required) {
+          let value = data.formio.data[component.key]
+          if (typeof value === 'undefined' || value === '') {
+             errorCount = errorCount + 1
+             errors.push(component)
+            }
+          }
+        })
+      })
+      this.$eventHub.emit('VALIDATION_ERRORS', {count: errorCount, components: errors})
     }
   }
 }

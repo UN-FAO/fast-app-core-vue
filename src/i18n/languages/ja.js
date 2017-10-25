@@ -2,7 +2,7 @@ const ja = {
   App: {
     submissions_for: 'こんにちは、世界',
     new_submission_for: 'ちは、世界',
-    title: 'PAT',
+    title: 'SHARP+',
     form: '形',
     submission_id: '提出ID',
     created_at: '作成日',

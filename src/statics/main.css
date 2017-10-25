@@ -121,11 +121,6 @@ position:inherit;
 max-height:200px;
 }
 
-.form-control {
-height:auto!important;
-min-height:34px!important;
-}
-
 ul.list-inline { 
     position: sticky;
     bottom: -63px;
@@ -189,4 +184,3 @@ div.formio-component-datagrid {
 input.form-control {
     min-width: 150px;
 }
-   

@@ -42,11 +42,15 @@ const Connection = class {
     }
   }
 
+  static isTabInUse () {
+    return tabVisible
+  }
+
   static isOnline () {
     return isOnline
   }
 
-  static isTabInUse () {
+  static tabInUse () {
     return tabVisible
   }
 

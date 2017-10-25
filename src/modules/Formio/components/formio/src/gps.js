@@ -31,7 +31,7 @@ const GPS = class {
 
     document.addEventListener('gpsSucceeded', (e) => {
       Loading.hide()
-      vm.renderForm()
+      // vm.renderForm()
       vm.$swal(
         'GPS Registered!',
         'Your GPS position was detected',

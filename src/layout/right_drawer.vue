@@ -1,24 +1,9 @@
 <template>
   <q-tabs>
         <!-- Tabs - notice slot="title" -->
-        <!-- This tab should render only when we have Wizards -->
-        <q-tab default  slot="title" name="tab-wizard" icon="signal_wifi_off" label="Modules"/>
         <q-tab v-if="scorePanels.length > 0"  slot="title" name="tab-1" icon="assessment" label="Score" />
-        <q-tab  :count="Unsynced.length"  slot="title" name="tab-2" icon="signal_wifi_off" label="Unsync" />
+        <q-tab  default :count="Unsynced.length"  slot="title" name="tab-2" icon="signal_wifi_off" label="Unsync" />
 
-        <!-- Targets -->
-        <!-- This should be extracted to its own component -->
-        <q-tab-pane v-if="_isWizard" name="tab-wizard">
-           <q-list separator>
-          <!-- collapsible to hide sub-level menu entries -->    
-            <q-item multiline  link color="green" icon="favorite" v-for="(page, index) in pages" :label="page.title" :key="page.title" @click="goToPage(index)" :ref="'page-'+ index">
-            <q-item-main
-              :label="page.title"
-              label-lines="3"
-            />      
-          </q-item>
-        </q-list>
-        </q-tab-pane>
         <!-- //////////////////////////// -->
 
         <q-tab-pane name="tab-1">
@@ -89,7 +74,6 @@
 </template>
 <script>
 import _ from 'lodash'
-import layoutStore from './layout-store'
 import * as Database from 'database/Database'
 import moment from 'moment'
 import Auth from 'modules/Auth/api/Auth'
@@ -103,16 +87,7 @@ export default {
     return {
       Unsynced: [],
       allSubmissionSubs: [],
-      layoutStore,
-      isWizard: false,
-      scorePanels: [],
-      pages: [],
-      currentPage: 0
-    }
-  },
-  computed: {
-    _isWizard () {
-      return this.isWizard
+      scorePanels: []
     }
   },
   beforeDestroy: function () {
@@ -126,22 +101,6 @@ export default {
      * @return {[type]}        [description]
      */
   mounted: async function () {
-    this.$eventHub.on('formio.mounted', (formio) => {
-      this.pages = formio.pages ? formio.pages : []
-    })
-    this.$eventHub.on('formio.nextPage', (data) => {
-      this.currentPage = data.nextPage.page
-      this.changeSelectedPage()
-    })
-    this.$eventHub.on('formio.prevPage', (data) => {
-      this.currentPage = data.prevPage.page
-      this.changeSelectedPage()
-    })
-    
-    this.$eventHub.on('formio.render', (data) => {
-      this.isWizard = !!(data.formio.wizard)
-    })
-
     this.$eventHub.on('formio.change', (data) => {
       let scorePanels = []
       this.validateRequired(data.formio.pages, data)
@@ -195,11 +154,6 @@ export default {
     )
   },
   methods: {
-    goToPage (index) {
-      let pageNumber = index + 1
-      let page = document.querySelectorAll('ul li:nth-of-type(' + pageNumber + ')')[0]
-      page.click()
-    },
     changeSelectedPage () {
       // let ref = 'page-' + this.currentPage
       // let listPage = this.$refs[ref]

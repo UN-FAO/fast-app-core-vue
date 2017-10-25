@@ -81,6 +81,7 @@ export default {
     /**
        * [setSyncInterval description]
        */
+    
     setSyncInterval: function () {
       let rInterval = function (callback, delay) {
         let dateNow = Date.now,

@@ -49,6 +49,9 @@ module.exports = {
     "indent": 0,
     "no-multiple-empty-lines": 0,
     "brace-style":0,
-    "no-useless-return":0
+    "no-useless-return":0,
+    "no-unexpected-multiline":0,
+    "func-call-spacing":0
+
   }
 }
