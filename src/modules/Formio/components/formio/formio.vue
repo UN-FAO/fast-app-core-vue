@@ -267,8 +267,9 @@ export default {
      */
     setSubmission (onlineJsonForm, savedSubmission) {
         // Clone the original object to avoid changes
-        let cloneJsonSubmission = _.cloneDeep(this.jsonSubmission.data.data)
-   
+        let cloneJsonSubmission = !_.isEmpty(this.jsonSubmission) ? _.cloneDeep(this.jsonSubmission.data.data) : []
+
+        if (!_.isEmpty(this.jsonSubmission)) {
         let selectComponents = FormioUtils.findComponents(onlineJsonForm.components, {
             'type': 'select'
         })
@@ -296,7 +297,8 @@ export default {
         })
 
         this.removedValues = _.uniqBy(this.removedValues, 'path')
-      
+        }
+    
         this.formIO.submission = !_.isEmpty(this.jsonSubmission) ? {data: cloneJsonSubmission} : {data: {}}
         // If we are creating a wizard
         if (onlineJsonForm.display === 'wizard') {
