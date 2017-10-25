@@ -88,13 +88,6 @@ label.control-label {
     font-size: medium !important;
 }
 
-.radio, .checkbox {
-    position: relative !important;
-    display: block !important;
-    margin-top: 20px !important;
-    margin-bottom: 20px !important;
-}
-
 input[type=radio] {
     display:none; 
     margin:10px;
