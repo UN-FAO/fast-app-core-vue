@@ -6,7 +6,7 @@
           <q-card-main>
               <q-list separator style="border: none !important">
             <!-- collapsible to hide sub-level menu entries -->    
-              <q-item multiline style="text-align: left; text-transform: uppercase; min-height: 60px; border-radius: 5px;"  link  v-for="(page, index) in pages" :label="page.title" :key="page.title" @click="goToPage(index)" :ref="'page-'+ index">
+              <q-item  multiline style="text-align: left; text-transform: uppercase; min-height: 60px; border-radius: 5px;"  link  v-for="(page, index) in pages" :label="page.title" :key="page.title" @click="goToPage(index)" :ref="'page-'+ index" v-bind:class="currentPage === index ? 'activePage' : ''">
               <q-item-main style=" margin-top: auto;  margin-bottom: auto;"
                 :label="page.title"
                 label-lines="3"
@@ -96,7 +96,7 @@ input[type=radio] {
 input[type=radio] + span, input[type=checkbox] + span {
     margin: -2px;
     padding: 4px 12px;
-    background-color: rgba(231, 231, 231, 0.38);
+    background-color: rgb(231, 231, 231);
     border-radius: 5px;
     min-width: 250px;
     min-height: 50px;
@@ -128,6 +128,24 @@ input[type=radio]:checked + span, input[type=checkbox]:checked + span {
     margin-top: 10px;
 }
 
+.alert-danger {
+    color: #a94442;
+    background-color: rgba(255, 255, 255, 0.52) !important;
+    border-color: #ebccd1;
+}
+
+.activePage {
+  background-color:#0e6da5;
+  color: white;
+}
+.activePage .q-item-main .q-item-label  {
+  background-color:#0e6da5;
+  color: white !important;
+  font-weight: 400;
+}
+.activePage.q-item.q-item-division.relative-position.q-item-multiline.q-item-link:hover {
+    background: #0e6da5;
+}
 </style>
 
 <script>
@@ -287,6 +305,7 @@ export default {
       let pageNumber = index + 1
       let page = document.querySelectorAll('ul li:nth-of-type(' + pageNumber + ')')[0]
       page.click()
+      this.currentPage = index
     },
     togglePages () {
       this.showPages = !this.showPages
