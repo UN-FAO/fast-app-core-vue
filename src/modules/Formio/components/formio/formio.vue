@@ -373,7 +373,7 @@ export default {
         
         // Define all the Listeners for the different FORM.io Events
         let events = this.formIO.eventListeners
-        console.log('Events', events)
+        
         // Add error event listener only if we do not have it
         if (events.filter(e => e.type === 'formio.render').length < 1) {
           this.formIO.on('render', (render) => {

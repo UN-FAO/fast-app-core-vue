@@ -103,7 +103,6 @@ export default {
   mounted: async function () {
     this.$eventHub.on('formio.change', (data) => {
       let scorePanels = []
-      this.validateRequired(data.formio.pages, data)
       // This should only be called if this is a Wizard
       // Search all of the Score components in different pages
       _.forEach(data.formio.pages, (page) => {
@@ -162,22 +161,6 @@ export default {
       let start = moment(givenDate)
       let end = moment()
       return end.to(start)
-    },
-    validateRequired (pages, data) {
-      let errorCount = 0
-      let errors = []
-      _.forEach(pages, (page) => {
-        FormioUtils.eachComponent(page.components, (component) => {
-        if (component.input === true && component.validate && component.validate.required) {
-          let value = data.formio.data[component.key]
-          if (typeof value === 'undefined' || value === '') {
-             errorCount = errorCount + 1
-             errors.push(component)
-            }
-          }
-        })
-      })
-      this.$eventHub.emit('VALIDATION_ERRORS', {count: errorCount, components: errors})
     }
   }
 }

@@ -6,11 +6,11 @@
           <q-card-main>
               <q-list separator style="border: none !important">
             <!-- collapsible to hide sub-level menu entries -->    
-              <q-item  multiline style="text-align: left; text-transform: uppercase; min-height: 60px; border-radius: 5px;"  link  v-for="(page, index) in pages" :label="page.title" :key="page.title" @click="goToPage(index)" :ref="'page-'+ index" v-bind:class="currentPage === index ? 'activePage' : ''">
+              <q-item  multiline style="text-align: left; text-transform: uppercase; min-height: 60px; border-radius: 5px;"  link  v-for="(page, index) in pages"  :key="page.title" @click="goToPage(index)" :ref="'page-'+ index" v-bind:class="currentPage === index ? 'activePage' : ''">
               <q-item-main style=" margin-top: auto;  margin-bottom: auto;"
-                :label="page.title"
+                :label="getLabelForPage(page)"
                 label-lines="3"
-              />      
+              />    
             </q-item>
           </q-list>
           </q-card-main>
@@ -85,7 +85,7 @@
 
 label.control-label {
     color: #666;
-    font-size: medium !important;
+    font-size: large !important;
 }
 
 input[type=radio] {
@@ -146,6 +146,12 @@ input[type=radio]:checked + span, input[type=checkbox]:checked + span {
 .activePage.q-item.q-item-division.relative-position.q-item-multiline.q-item-link:hover {
     background: #0e6da5;
 }
+
+.field-required:after {
+    content: " *";
+    color: red;
+    font-size: x-large;
+}
 </style>
 
 <script>
@@ -192,11 +198,11 @@ export default {
     })
     this.$eventHub.on('formio.nextPage', (data) => {
       this.currentPage = data.nextPage.page
-      this.changeSelectedPage()
+      window.scrollTo(0, 0)
     })
     this.$eventHub.on('formio.prevPage', (data) => {
       this.currentPage = data.prevPage.page
-      this.changeSelectedPage()
+      window.scrollTo(0, 0)
     })
     
     this.$eventHub.on('formio.render', (data) => {
@@ -306,6 +312,7 @@ export default {
       let page = document.querySelectorAll('ul li:nth-of-type(' + pageNumber + ')')[0]
       page.click()
       this.currentPage = index
+      window.scrollTo(0, 0)
     },
     togglePages () {
       this.showPages = !this.showPages
@@ -381,9 +388,17 @@ export default {
       let submission = this.$route.params.idSubmission ? await LocalSubmission.get(this.$route.params.idSubmission) : undefined
       this.submission = (!_.isEmpty(submission)) ? submission : undefined
     },
+    getLabelForPage (page) {
+      let key = page.key
+      let errorCount = this.errors.errorsByPage[key] ? this.errors.errorsByPage[key].length : ''
+
+      let label = errorCount !== '' ? page.title + '<span style="color: red;"> ( ' + errorCount + ' )</span>' : page.title
+      return label
+    },
     validateRequired (pages, data) {
       let errorCount = 0
       let errors = []
+      let errorsByPage = []
       _.forEach(pages, (page) => {
         FormioUtils.eachComponent(page.components, (component) => {
         if (component.input === true && component.validate && component.validate.required) {
@@ -391,11 +406,13 @@ export default {
           if (typeof value === 'undefined' || value === '') {
              errorCount = errorCount + 1
              errors.push(component)
+             errorsByPage.push({page: page, component: component, pageKey: page.key})
             }
           }
         })
       })
-      this.$eventHub.emit('VALIDATION_ERRORS', {count: errorCount, components: errors})
+      let groupedErrors = _.groupBy(errorsByPage, function(b) { return b.pageKey })
+      this.$eventHub.emit('VALIDATION_ERRORS', {count: errorCount, components: errors, errorsByPage: groupedErrors})
     }
   }
 }

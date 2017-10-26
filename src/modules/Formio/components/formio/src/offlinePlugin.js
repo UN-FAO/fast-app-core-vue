@@ -45,7 +45,6 @@ const OFFLINE_PLUGIN = class {
           }
 
           if (created.trigger && created.trigger === 'resourceCreation') {
-            console.log('The resource was created')
             return
           }
             var draftStatus = new CustomEvent('draftStatus',
@@ -127,10 +126,8 @@ const OFFLINE_PLUGIN = class {
         return jsonSubmissions
       },
       request: async (args) => {
-        console.log('makign request', args)
         // If we are making a request to a external API (NOT)
         if (args.url.indexOf('form.io') === -1 && args.method === 'GET') {
-          console.log('making an external call')
           // let a = {'count': 811, 'previous': null, 'results': [{'url': 'https://pokeapi.co/api/v2/pokemon/1/', 'name': 'aaa'}, {'url': 'https://pokeapi.co/api/v2/pokemon/2/', 'name': 'ivysaur'}, {'url': 'https://pokeapi.co/api/v2/pokemon/3/', 'name': 'venusaur'}, {'url': 'https://pokeapi.co/api/v2/pokemon/4/', 'name': 'charmander'}, {'url': 'https://pokeapi.co/api/v2/pokemon/5/', 'name': 'charmeleon'}, {'url': 'https://pokeapi.co/api/v2/pokemon/6/', 'name': 'charizard'}, {'url': 'https://pokeapi.co/api/v2/pokemon/7/', 'name': 'squirtle'}, {'url': 'https://pokeapi.co/api/v2/pokemon/8/', 'name': 'wartortle'}, {'url': 'https://pokeapi.co/api/v2/pokemon/9/', 'name': 'blastoise'}, {'url': 'https://pokeapi.co/api/v2/pokemon/10/', 'name': 'caterpie'}, {'url': 'https://pokeapi.co/api/v2/pokemon/11/', 'name': 'metapod'}, {'url': 'https://pokeapi.co/api/v2/pokemon/12/', 'name': 'butterfree'}, {'url': 'https://pokeapi.co/api/v2/pokemon/13/', 'name': 'weedle'}, {'url': 'https://pokeapi.co/api/v2/pokemon/14/', 'name': 'kakuna'}, {'url': 'https://pokeapi.co/api/v2/pokemon/15/', 'name': 'beedrill'}, {'url': 'https://pokeapi.co/api/v2/pokemon/16/', 'name': 'pidgey'}, {'url': 'https://pokeapi.co/api/v2/pokemon/17/', 'name': 'pidgeotto'}, {'url': 'https://pokeapi.co/api/v2/pokemon/18/', 'name': 'pidgeot'}, {'url': 'https://pokeapi.co/api/v2/pokemon/19/', 'name': 'rattata'}, {'url': 'https://pokeapi.co/api/v2/pokemon/20/', 'name': 'raticate'}], 'next': 'https://pokeapi.co/api/v2/pokemon/?offset=20'}
           return null
         }
@@ -143,7 +140,7 @@ const OFFLINE_PLUGIN = class {
         // If we are trying to get submissions from that form
         if ((args.method === 'POST' || args.method === 'PUT') && args.type === 'submission') {
         	let form = await LocalForm.get(args.formio.formId)
-          console.log('trying to submit locally', args.data)
+     
           let formioURL = 'https://' + form.machineName.split(':')[0] + '.form.io/' + form.path
      
           let formio = new Formio(formioURL)
@@ -165,7 +162,6 @@ const OFFLINE_PLUGIN = class {
 
           // If we are calling internally to formio
          if (args.url.indexOf('form.io') !== -1 && args.method === 'GET') {
-            console.log('making internal', args)
             return FORMIOAPI.getSubmissionsURL(args.url)
         }
       }

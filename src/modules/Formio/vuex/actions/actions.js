@@ -166,7 +166,6 @@ const actions = {
    * @param {[type]} currentForm    [description]
    */
   async addSubmission ({ commit }, { formSubmission, formio, User }) {
-    console.log('Inside adding submission', formSubmission, formio, User)
     const DB = await Database.get()
     
     let submission = formSubmission
@@ -188,7 +187,6 @@ const actions = {
       // If there are differences between the
       // Stored and the new data.
       if (((differences || submitting || (localDraft && submissionNotDraft)) && !autoSave) || (differences && autoSave)) {
-          console.log('We are going to update', (differences && autoSave), differences)
           await localSubmission.update({
           $set: {
             data: submission
@@ -204,7 +202,6 @@ const actions = {
       if (formSubmission.trigger === 'resourceCreation') {
         newSubmission.trigger = 'resourceCreation'
       }
-      console.log('We are in this case trying to insert the element locally', newSubmission)
       return newSubmission
     }
   },

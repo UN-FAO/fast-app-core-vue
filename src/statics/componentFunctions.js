@@ -12,7 +12,7 @@
  * @param  {String} longitudField [API name of the field in FORM.io]
  * @return {[type]}               [description]
  */
-var gpsPositions = function (data, latitudField, longitudField) {
+var getGpsPosition = function (data, latitudField, longitudField) {
   // Create the events
   var requestedEvent = new CustomEvent('gpsRequested',
     {
@@ -46,6 +46,8 @@ var gpsPositions = function (data, latitudField, longitudField) {
     function showPosition (position) {
       data[longitudField] = position.coords.longitude
       data[latitudField] = position.coords.latitude
+      document.getElementsByName('data['+ longitudField +']')[0].value = position.coords.longitude
+      document.getElementsByName('data['+ latitudField +']')[0].value = position.coords.latitude
       // Dispatch/Trigger/Fire the event
       document.dispatchEvent(doneEvent)
     }
