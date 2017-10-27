@@ -26,13 +26,7 @@
                     <!-- Targets -->
 
                     <q-tab-pane name="tab-1" ref="tab1">
-                      <q-list v-if="errors.count > 0">
-                        <q-collapsible icon="fa-exclamation-circle" :label="'Peding Fields ( ' + errors.count + ' )'">
-                          <div>
-                            Validation
-                          </div>
-                        </q-collapsible>
-                      </q-list>
+                     
 
                         <!-- Tabs -->
                         <formio
@@ -86,6 +80,7 @@
 label.control-label {
     color: #666;
     font-size: large !important;
+    font-weight: 400;
 }
 
 input[type=radio] {
@@ -392,7 +387,7 @@ export default {
       let key = page.key
       let errorCount = this.errors.errorsByPage && this.errors.errorsByPage[key] ? this.errors.errorsByPage[key].length : ''
 
-      let label = errorCount !== '' ? page.title + '<span style="color: red;"> ( ' + errorCount + ' )</span>' : page.title
+      let label = errorCount !== '' ? page.title + '<span style="color: red;     font-weight: 500; font-size: larger; font-family: monospace;"> (' + errorCount + ')</span>' : page.title
       return label
     },
     validateRequired (pages, data) {

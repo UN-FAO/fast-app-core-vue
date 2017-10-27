@@ -184,9 +184,10 @@ const actions = {
       let localDraft = localSubmission.data.draft === false
       let submissionNotDraft = submission.draft === true
       let autoSave = submission.trigger === 'autoSaveAsDraft'
+      let isSynced = !!(localSubmission.data.access && Array.isArray(localSubmission.data.access))
       // If there are differences between the
       // Stored and the new data.
-      if (((differences || submitting || (localDraft && submissionNotDraft)) && !autoSave) || (differences && autoSave)) {
+      if (((differences || submitting || (localDraft && submissionNotDraft)) && !autoSave) || (!isSynced && differences && autoSave)) {
           await localSubmission.update({
           $set: {
             data: submission

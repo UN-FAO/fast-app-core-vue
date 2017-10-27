@@ -282,7 +282,7 @@ export default {
           if (cloneJsonSubmission[keyValue]) {
             this.removedValues.push({key: keyValue, value: cloneJsonSubmission[keyValue], path: select.path})
             let show = select.tags[0]
-            select.placeholder = cloneJsonSubmission[keyValue].data[show]
+            select.defaultValue = cloneJsonSubmission[keyValue].data[show]
             delete cloneJsonSubmission[keyValue]
           }
         })
@@ -291,7 +291,7 @@ export default {
           let key = select.key
           if (cloneJsonSubmission[key]) {
             this.removedValues.push({key: select.key, value: cloneJsonSubmission[key], path: select.path})
-            select.placeholder = cloneJsonSubmission[key]
+            select.defaultValue = cloneJsonSubmission[key]
             delete cloneJsonSubmission[select.key]
           }
         })
