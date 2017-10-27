@@ -57,7 +57,7 @@
       </div>
     </q-pull-to-refresh>
 </template>
-<style>
+<style scoped>
 .q-item-label {
     color: black;
     font-weight: 300;
@@ -69,64 +69,6 @@
 
 .q-collapsible.q-item-division.relative-position {
     color: black;
-}
-
-.form-control {
-    min-height: 45px !important;
-    height: auto;
-    font-size: 20px !important;
-}
-
-label.control-label {
-    color: #666;
-    font-size: large !important;
-    font-weight: 400;
-}
-
-input[type=radio] {
-    display:none; 
-    margin:10px;
-}
-
-input[type=radio] + span, input[type=checkbox] + span {
-    margin: -2px;
-    padding: 4px 12px;
-    background-color: rgb(231, 231, 231);
-    border-radius: 5px;
-    min-width: 250px;
-    min-height: 50px;
-    text-align: center;
-    text-transform: uppercase;
-    display: flex;
-    justify-content: center;
-    align-content: center;
-    flex-direction: column;
-    margin-bottom: 10px;
-    margin-top: 10px;
-}
-
-input[type=radio]:checked + span, input[type=checkbox]:checked + span { 
-   background-image: none;
-    background-color: #0e6da5;
-    color: white;
-    cursor: pointer;
-    padding: 2px 12px 3px 12px;
-    text-decoration: none;
-    display: inline-block;
-    border-radius: 5px;
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    align-content: center;
-    flex-direction: column;
-    margin-bottom: 10px;
-    margin-top: 10px;
-}
-
-.alert-danger {
-    color: #a94442;
-    background-color: rgba(255, 255, 255, 0.52) !important;
-    border-color: #ebccd1;
 }
 
 .activePage {

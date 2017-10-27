@@ -35,7 +35,7 @@
           :to="{name: 'newSurvey'}"
           :key="newSurvey">
           <q-item-side icon="playlist_add" />
-          <q-item-main label="Start a new Module" />
+          <q-item-main label="Start new Collection" />
         </q-side-link>
 
 
@@ -43,7 +43,7 @@
           :to="{name: 'formio_form_show', params: { idForm: '*'}}"
           :key="Data">
           <q-item-side icon="storage" />
-          <q-item-main label="Collected Data"  />
+          <q-item-main label="All Collected Data"  />
         </q-side-link>
 
          <q-side-link multiline highlight separator item
@@ -165,10 +165,9 @@ export default {
 .q-list-separator > .q-item-division + .q-item-division, 
 .q-item-division + .q-item-separator {border-top: none !important;}
 
-.q-list-highlight > .q-item:hover, 
-.q-item-highlight:hover, 
-.q-list-link > .q-item:hover, 
-.q-item-link:hover {background: rgb(0, 82, 132) !important;}
+.router-link-exact-active.router-link-active {
+    background-color: rgb(0, 82, 132) !important;
+}
 
 .layout-aside-left .q-list-header {line-height: 60px;}
 .layout-aside-left .q-list-header center {font-size: 1.8em;}

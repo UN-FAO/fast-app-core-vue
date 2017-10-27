@@ -1,4 +1,4 @@
-<style>
+<style scoped>
 #follow-up-main {
     height: 100%;
     overflow-x: hidden;
@@ -97,7 +97,7 @@
     
 ._new-user a {border-bottom: 1px solid #c3c7ca; padding: 0px 10px 5px; font-size: 0.95em;}
     
-    .form-group {width: 50%; margin: 0 auto;}
+    .form-group {width: 80%; margin: 0 auto;}
     
     
     

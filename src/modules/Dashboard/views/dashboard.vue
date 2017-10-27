@@ -8,7 +8,7 @@
   <q-card-main>
       <!--<q-icon name="fa-plus-square-o fa-5x" />-->
       <q-icon class="material-icons">playlist_add</q-icon>
-      <h1>Modules</h1>
+      <h1>Surveys</h1>
 
       <q-list style="border: none; padding: 0;">
       <q-collapsible>
