@@ -398,7 +398,7 @@ export default {
         FormioUtils.eachComponent(page.components, (component) => {
         if (component.input === true && component.validate && component.validate.required) {
           let value = data.formio.data[component.key]
-          if (typeof value === 'undefined' || value === '') {
+          if (typeof value === 'undefined' || value === null || value === '') {
              errorCount = errorCount + 1
              errors.push(component)
              errorsByPage.push({page: page, component: component, pageKey: page.key})
