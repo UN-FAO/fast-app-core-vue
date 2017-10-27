@@ -1,3 +1,15 @@
+@import url(http://fonts.googleapis.com/css?family=Open+Sans);
+@import url(https://fonts.googleapis.com/icon?family=Material+Icons);
+
+
+.bg-primary {background:#0574a9 !important;} /* not working */
+
+.q-toolbar-title {font-size: 26px !important;}
+.q-toolbar-title img {display: none;}
+
+.q-toolbar-subtitle {font-size: 13px; margin-top: -4px; padding-bottom: 4px;}
+
+
 html {
 font-size:inherit!important;
 line-height:inherit!important;
@@ -10,7 +22,10 @@ color:#000!important;
 body {
 line-height:inherit!important;
 background-color:#f4f4f4!important;
+font-family: 'Open Sans', sans-serif !important;
 }
+
+.layout-page {background:#ffffff;}
 
 label.control-label.field-required {
 color:#666;

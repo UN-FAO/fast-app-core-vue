@@ -1,26 +1,103 @@
 <template>
 
 <div class="row">
-<q-card class="col-lg-8 col-lg-offset-2 shadow-2" style="margin-top: 30px; background: white;">
-  <q-collapsible  group="modules" class="col-lg-12" :label="'Module ' + indexForms" v-for="(forms, indexForms) in groupedSurveys" :key="indexForms" v-if="indexForms !== 0">
- 
-<q-card class="col-lg-12 col-md-12 shadow-2" style="margin-top: 30px; margin-left: 30px" v-for="(form, index) in forms" :key="index">
-  <q-card-title>
-    <h3>
-   {{form.data.title}}
- </h3>
-    <q-rating slot="subtitle" v-model="stars" :max="5" />
-  </q-card-title>
-  <q-card-separator />
-  <q-card-actions>
-    <q-btn flat round small @click="goTo({name: 'formio_form_show', params: { idForm: form.data.path}})"><q-icon name="fa-database" />DATA</q-btn>
     
-    <q-btn flat round small @click="goTo({name: 'formio_form_submission', params: { idForm: form.data.path}})"><q-icon name="fa-plus-square-o" />START</q-btn>
-  </q-card-actions>
-</q-card>
- </q-collapsible>
+<q-card class="col-lg-4 col-md-4 shadow-2" style="margin-top: 30px; margin-left: 30px;">
+    <q-card-title>
+        <h3>Title of the Survey</h3>
+        <q-rating slot="subtitle" v-model="stars" :max="5" />
+    </q-card-title>
+    <q-card-separator />
+    <q-card-actions right>
+        <q-btn flat round small><q-icon name="fa-database" />DATA</q-btn>
+        <q-btn flat round small><q-icon name="fa-plus-square-o" />START</q-btn>
+    </q-card-actions>
 </q-card>
 
+<q-card class="col-lg-4 col-md-4 shadow-2" style="margin-top: 30px; margin-left: 30px;">
+    <q-card-title>
+        <h3>Title of the Survey</h3>
+        <q-rating slot="subtitle" v-model="stars" :max="5" />
+    </q-card-title>
+    <q-card-separator />
+    <q-card-actions>
+        <q-btn flat round small><q-icon name="fa-database" />DATA</q-btn>
+        <q-btn flat round small><q-icon name="fa-plus-square-o" />START</q-btn>
+    </q-card-actions>
+</q-card>
+    
+<q-card class="col-lg-4 col-md-4 shadow-2" style="margin-top: 30px; margin-left: 30px;">
+    <q-card-title>
+        <h3>Title of the Survey</h3>
+        <q-rating slot="subtitle" v-model="stars" :max="5" />
+    </q-card-title>
+    <q-card-separator />
+    <q-card-actions>
+        <q-btn flat round small><q-icon name="fa-database" />DATA</q-btn>
+        <q-btn flat round small><q-icon name="fa-plus-square-o" />START</q-btn>
+    </q-card-actions>
+</q-card>
+    
+<q-card class="col-lg-4 col-md-4 shadow-2" style="margin-top: 30px; margin-left: 30px;">
+    <q-card-title>
+        <h3>Title of the Survey</h3>
+        <q-rating slot="subtitle" v-model="stars" :max="5" />
+    </q-card-title>
+    <q-card-separator />
+    <q-card-actions>
+        <q-btn flat round small><q-icon name="fa-database" />DATA</q-btn>
+        <q-btn flat round small><q-icon name="fa-plus-square-o" />START</q-btn>
+    </q-card-actions>
+</q-card>
+    
+<q-card class="col-lg-4 col-md-4 shadow-2" style="margin-top: 30px; margin-left: 30px;">
+    <q-card-title>
+        <h3>Title of the Survey</h3>
+        <q-rating slot="subtitle" v-model="stars" :max="5" />
+    </q-card-title>
+    <q-card-separator />
+    <q-card-actions>
+        <q-btn flat round small><q-icon name="fa-database" />DATA</q-btn>
+        <q-btn flat round small><q-icon name="fa-plus-square-o" />START</q-btn>
+    </q-card-actions>
+</q-card>
+    
+<q-card class="col-lg-4 col-md-4 shadow-2" style="margin-top: 30px; margin-left: 30px;">
+    <q-card-title>
+        <h3>Title of the Survey</h3>
+        <q-rating slot="subtitle" v-model="stars" :max="5" />
+    </q-card-title>
+    <q-card-separator />
+    <q-card-actions>
+        <q-btn flat round small><q-icon name="fa-database" />DATA</q-btn>
+        <q-btn flat round small><q-icon name="fa-plus-square-o" />START</q-btn>
+    </q-card-actions>
+</q-card>
+    
+<q-card class="col-lg-4 col-md-4 shadow-2" style="margin-top: 30px; margin-left: 30px;">
+    <q-card-title>
+        <h3>Title of the Survey</h3>
+        <q-rating slot="subtitle" v-model="stars" :max="5" />
+    </q-card-title>
+    <q-card-separator />
+    <q-card-actions>
+        <q-btn flat round small><q-icon name="fa-database" />DATA</q-btn>
+        <q-btn flat round small><q-icon name="fa-plus-square-o" />START</q-btn>
+    </q-card-actions>
+</q-card>
+    
+<q-card class="col-lg-4 col-md-4 shadow-2" style="margin-top: 30px; margin-left: 30px;">
+    <q-card-title>
+        <h3>Title of the Survey</h3>
+        <q-rating slot="subtitle" v-model="stars" :max="5" />
+    </q-card-title>
+    <q-card-separator />
+    <q-card-actions>
+        <q-btn flat round small><q-icon name="fa-database" />DATA</q-btn>
+        <q-btn flat round small><q-icon name="fa-plus-square-o" />START</q-btn>
+    </q-card-actions>
+</q-card>
+    
 </div>
 
 </template>

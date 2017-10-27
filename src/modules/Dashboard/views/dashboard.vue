@@ -2,12 +2,15 @@
 <div>
 
 <div class="row">
-  <q-card  class="col-lg-5 col-lg-offset-1" flat>
+  <q-card class="col-lg-3 col-lg-offset-3" style="margin-top: 30px;">
+      
  
   <q-card-main>
-      <q-icon name="fa-plus-square-o fa-5x" />
+      <!--<q-icon name="fa-plus-square-o fa-5x" />-->
+      <q-icon class="material-icons">playlist_add</q-icon>
       <h1>Modules</h1>
-       <q-list style="border: none; padding: 0;">
+
+      <q-list style="border: none; padding: 0;">
       <q-collapsible>
         <div>
          <table style="display: block; height:200px; overflow-y: scroll;">
@@ -21,15 +24,16 @@
         </div>
       </q-collapsible>
     </q-list>
-       
+     
   </q-card-main>
 </q-card>
 
-<q-card  class="col-lg-5" flat>
+<q-card  class="col-lg-3 col-lg-offset-0" style="margin-top: 30px; margin-left: 30px;">
  
   <q-card-main>
-     <q-icon name="fa-database fa-5x" />
-      <h1>Data Collected</h1>
+      <!--<q-icon name="fa-database fa-5x" />-->
+      <q-icon class="material-icons">storage</q-icon>
+      <h1>Data<br>Collected</h1>
 
       <q-list style="border: none; padding: 0;">
       <q-collapsible>
@@ -61,20 +65,22 @@
 
 
 <div class="row">
-  <q-card  class="col-lg-5 col-lg-offset-1" flat>
+  <q-card  class="col-lg-3 col-lg-offset-3" style="margin-top: 30px;">
 
   <q-card-main>
-      <q-icon name="fa-cog fa-5x" />
-      <h1>Application Settings</h1>
+      <!--<q-icon name="fa-cog fa-5x" />-->
+      <q-icon class="material-icons">settings</q-icon>
+      <h1>Application<br>Settings</h1>
        <q-btn @click="toggleFlip(3)" round color="grey" flat >
       </q-btn>
   </q-card-main>
 </q-card>
 
-<q-card  class="col-lg-5" flat>
+<q-card  class="col-lg-3 col-lg-offset-0" style="margin-top: 30px; margin-left: 30px;">
   <q-card-main>
-     <q-icon name="fa-mobile fa-5x" />
-      <h1>About PAT</h1>
+     <!--<q-icon name="fa-tablet fa-5x" />-->
+      <q-icon class="material-icons">tablet_mac</q-icon>
+      <h1>About<br> SHARP+</h1>
   </q-card-main>
 </q-card>
 
@@ -116,9 +122,20 @@ tr:nth-child(even) td { background: #F1F1F1; }
 tr:nth-child(odd) td { background: #FEFEFE; }  
 
 tr:nth-child(even){background-color: #f2f2f2}
-
+    
+.q-card {background-color:#f7f7f7;}
+    
+    .q-card-container {padding: 50px; padding-top: 65px; padding-bottom: 25px;}
+.q-card-main {text-align: center;}
+    .q-card-main h1 {}
+    .q-card-main .q-icon {color:#28536d; font-size:6em;}
+    
 
 </style>
+
+
+
+
 <script>
 import {QCard, QCardTitle, QCardSeparator, QCardMain, QFab, QFabAction, QFixedPosition, QPullToRefresh, QTabs, QTab, QTabPane, QCollapsible, QBtn, QIcon, QTooltip, QList, QItem, QItemSeparator, Loading} from 'quasar'
 import LocalForm from 'database/collections/scopes/LocalForm'

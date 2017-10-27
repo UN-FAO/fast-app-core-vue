@@ -4,16 +4,21 @@
               enter="fadeIn"
               leave="fadeOut">
   <div class="row justify-center">
-    <q-card class="col-md-6 col-sm-8 col-lg-5 text-white"
+    <q-card class="col-lg-6"
             id="login"
             key="login-container" flat>
       <q-card-title class="card-title text-center">
-        <h4 style="color:black; text-transform: uppercase;">REGISTER</h4>
+        <div class="login-form-holder">
+            <h1><!-- react-text: 28 --><!-- /react-text --><!-- react-text: 29 -->SHARP+<!-- /react-text --></h1>
+            <h4>Self-evaluation and Holistic Assessment of climate resilence of Farmers and Pastoralists</h4>
+            <br>
+            <h4 style="color:black;">Register</h4>
+        </div>
       </q-card-title>
       <q-card-main>
         <formio :formioURL="formioURL"
                 hashField="password" />
-        <div class="col-md-12 col-lg-12 justify-center">
+        <div class="col-md-12 col-lg-12 justify-center _backlink">
           <router-link :to="{ path: 'login' }">Back to login</router-link>
         </div>
       </q-card-main>
@@ -109,20 +114,23 @@ export default {
 
 </script>
 
-<style scoped="">
-.card {
-  margin-bottom: 0px;
-}
-
-.card-content {
-  min-height: 160px;
-}
-
-button {
-  margin-bottom: 4%;
-}
-
-h4 {
-  font-weight: 300;
-}
+<style scoped>
+    
+    .formio-form {text-align: center;}
+    
+    h1 {font-size: 3em; margin-bottom: 0.2em; color: #065276;}
+    h4 {font-size: 1.7em; color: #065276;}
+    
+    .q-card-main {width: 50%; margin: 0 auto;}
+    
+    .btn {box-shadow: none !important; border-radius: 0px; font-size: 15px; min-width: 150px;}
+    .btn-primary {margin-top: 20px;}
+    
+    .help-block {font-size:1em;}
+    
+    label {font-weight: normal;}
+    
+    ._backlink {text-align: center; margin-top: 2em;}
+    ._backlink a {border-bottom: 1px solid #c3c7ca; padding: 0px 10px 5px; font-size: 1em;}    
+    
 </style>

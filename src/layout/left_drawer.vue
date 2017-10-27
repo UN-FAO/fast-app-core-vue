@@ -2,8 +2,8 @@
 <q-scroll-area style="width: 100%; height: 100%">
       <q-list-header class="bg-primary text-white">
       <center>
-      <img src="statics/2000px-FAO_logo_reverse.png" style="max-height: 40px; max-width: 40px;"></img>
-      FAO
+      <img src="statics/2000px-FAO_logo_reverse.png" style="max-height: 40px; max-width: 40px;"/>
+      SHARP+          
       </center>
       </q-list-header>
       <q-list>
@@ -15,14 +15,14 @@
 
 
       <q-side-link item :to="{name: 'dashboard', exact: true}">
-        <q-item-side icon="home" />
+        <q-item-side icon="pin_drop" />
         <q-item-main :label="$t('App.home')"/>
       </q-side-link>
       <q-item-separator />
-       <q-list-header>{{ $t("App.available_forms") }}
+       <q-list-header class="text-white">{{ $t("App.available_forms") }}
         
           <q-btn flat  color="primary" @click="getForms()">
-          <q-icon name="cloud_download" />
+          <q-icon name="cloud_download" class="cloud-item text-white"/>
           <q-tooltip anchor="center right" self="center left" :offset="[10, 0]">
             <strong>{{ $t("App.sync_forms") }}</strong>
           </q-tooltip>
@@ -34,7 +34,7 @@
         <q-side-link multiline highlight separator item
           :to="{name: 'newSurvey'}"
           :key="newSurvey">
-          <q-item-side icon="fa-plus-square-o" />
+          <q-item-side icon="playlist_add" />
           <q-item-main label="Start a new Module" />
         </q-side-link>
 
@@ -42,7 +42,7 @@
         <q-side-link multiline highlight separator item
           :to="{name: 'formio_form_show', params: { idForm: '*'}}"
           :key="Data">
-          <q-item-side icon="fa-database" />
+          <q-item-side icon="storage" />
           <q-item-main label="Collected Data"  />
         </q-side-link>
 
@@ -57,7 +57,7 @@
          <q-side-link multiline highlight separator item
           :to="{name: 'c', params: { idForm: 'idform'}}"
           :key="about">
-          <q-item-side icon="fa-mobile" />
+          <q-item-side icon="tablet_mac" />
           <q-item-main label="About PAT"  />
         </q-side-link>
 
@@ -155,5 +155,27 @@ export default {
   }
 }
 </script>
+
 <style>
+    
+.layout-aside-left {background:#00283c !important; color:#ffffff; opacity:0.8;}
+.layout-aside-left .q-list {padding: 1px 0; border: none !important;}
+.layout-aside-left .q-item-side {color:#ffffff; text-align: center;}
+
+.q-list-separator > .q-item-division + .q-item-division, 
+.q-item-division + .q-item-separator {border-top: none !important;}
+
+.q-list-highlight > .q-item:hover, 
+.q-item-highlight:hover, 
+.q-list-link > .q-item:hover, 
+.q-item-link:hover {background: rgb(0, 82, 132) !important;}
+
+.layout-aside-left .q-list-header {line-height: 60px;}
+.layout-aside-left .q-list-header center {font-size: 1.8em;}
+.layout-aside-left .q-item {padding: 15px 16px;}
+.layout-aside-left .q-item-side {min-width: 40px;}
+
+.router-link-active {background: none !important;}
+    
+    
 </style>
