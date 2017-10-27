@@ -63,26 +63,29 @@
     background-size: contain;
     background-repeat: no-repeat;
 }
-.login-form-holder h1 {
-    font-size: 41px;
-    font-family: open_sanslight,sans-serif;
-    margin-bottom: 20px;
-}
+    
+.login-form-holder h1 {font-size: 5em; margin-bottom: 0.2em; color:#065276;}
+.login-form-holder h4 {font-size: 2.5em; color:#065276; margin-bottom: 1.5em;}    
+    
 .login-form-holder button {
-    width: 100%;
+    width: 20%;
     height: 45px;
+    margin-bottom: 2.5em;
+    margin-top: 1em;
 }
 .btn.btn-primary {
     background-color: #1976d3;
 }
 .q-btn {
     padding: 6px 10px;
-    font-size: 13px;
+    font-size: 15px;
     position: relative;
+    /*
     -webkit-border-radius: 25px;
     -moz-border-radius: 25px;
     -ms-border-radius: 25px;
     border-radius: 25px;
+    */
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;
@@ -91,8 +94,15 @@
     user-select: none;
     -webkit-tap-highlight-color: rgba(255,255,255,0);
 }
+    
+._new-user a {border-bottom: 1px solid #c3c7ca; padding: 0px 10px 5px; font-size: 0.95em;}
+    
+    .form-group {width: 50%; margin: 0 auto;}
+    
+    
+    
 body {
-    font-family: open_sansregular,sans-serif;
+    font-family: 'Open Sans', sans-serif !important;
     background-color: #f3f3f5;
     color: #333;
     overflow-x: hidden;
@@ -101,6 +111,13 @@ body, html {
     height: 100%;
 }
 </style>
+
+
+
+
+
+
+
 <template>
   <div id="follow-up-main" class="row justify-center">
     <q-card inline class="col-lg-6" style="
@@ -113,8 +130,8 @@ body, html {
         <div class="login-main-container">
             <div class="login-form-container">
                 <div class="login-form-holder">
-                    <div class="fao-logo-login"></div>
-                    <h1><!-- react-text: 28 --><!-- /react-text --><!-- react-text: 29 -->Sharp+<!-- /react-text --></h1>
+                    <!--<div class="fao-logo-login"></div>-->
+                    <h1><!-- react-text: 28 --><!-- /react-text --><!-- react-text: 29 -->SHARP+<!-- /react-text --></h1>
                     <h4>Self-evaluation and Holistic Assessment of climate resilence of Farmers and Pastoralists</h4>
                     <br>
           
@@ -139,7 +156,7 @@ body, html {
                         <span slot="loading">Loading...</span>
                       </q-btn>      
                     <br>
-                    <p class="text-center"><router-link :to="{ path: 'register' }">New user?</router-link></p>
+                    <p class="text-center _new-user"><router-link :to="{ path: 'register' }">New user ?</router-link></p>
                 </div>
             </div>
             <div class="big-logo"></div>

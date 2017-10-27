@@ -9,6 +9,7 @@
        <img src="statics/2000px-FAO_logo_reverse.png" style="max-height: 40px; max-width: 40px;"></img>  {{ $t("App.title") }}
       <span slot="subtitle">Self-evaluation and Holistic Assessment of climate resilence of Farmers and Pastoralists</span>
       </q-toolbar-title>
+    <div>FAO logo </div>
       {{User ? User.data.email : '' }}
       <localization/>
       <wifiDisplay/>
