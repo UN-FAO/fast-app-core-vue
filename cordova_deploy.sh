@@ -2,9 +2,11 @@
 rm -rf cordova
 quasar build
 quasar wrap cordova -Y
+rm -rf cordova/config.xml
+cp config.xml cordova/config.xml
 cd cordova && \
 	cordova plugin add cordova-plugin-battery-status && \
- 	cordova plugin add cordova-plugin-geolocation --variable GEOLOCATION_USAGE_DESCRIPTION="Get places close to you" && \
+ 	cordova plugin add cordova-plugin-geolocation --variable GEOLOCATION_USAGE_DESCRIPTION="Geolocate your submissions" && \
  	cordova plugin add cordova-plugin-contacts --variable CONTACTS_USAGE_DESCRIPTION="Connect to your friends" && \
  	cordova plugin add cordova-plugin-sqlite-2 && \
  	cordova plugin add cordova-plugin-network-information && \
