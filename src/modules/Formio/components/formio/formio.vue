@@ -25,6 +25,11 @@ input[type=radio] {
     margin:10px;
 }
 
+table input[type=radio] {
+    display:block; 
+    margin:10px;
+}
+
 input[type=radio] + span, input[type=checkbox] + span {
     margin: -2px;
     padding: 4px 12px;
@@ -64,6 +69,17 @@ input[type=radio]:checked + span, input[type=checkbox]:checked + span {
     color: #a94442;
     background-color: rgba(255, 255, 255, 0.52) !important;
     border-color: #ebccd1;
+}
+
+.form-group.formio-component {
+    margin: 3px 0px;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 40px;
+}
+table .form-group.formio-component {
+    margin: 0px !important;
+    border-bottom: none !important;
+    margin-bottom: 0px !important;
 }
 </style>
 <template>

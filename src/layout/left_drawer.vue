@@ -31,7 +31,7 @@
        </q-list-header>
       
 
-        <q-side-link multiline highlight separator item
+        <q-side-link multiline highlight  item
           :to="{name: 'newSurvey'}"
           :key="newSurvey">
           <q-item-side icon="playlist_add" />
@@ -39,14 +39,14 @@
         </q-side-link>
 
 
-        <q-side-link multiline highlight separator item
+        <q-side-link multiline highlight  item
           :to="{name: 'formio_form_show', params: { idForm: '*'}}"
           :key="Data">
           <q-item-side icon="storage" />
           <q-item-main label="All Collected Data"  />
         </q-side-link>
 
-         <q-side-link multiline highlight separator item
+         <q-side-link multiline highlight  item
           :to="{name: 'b', params: { idForm: 'idform'}}"
           :key="Setting">
           <q-item-side icon="fa-cog" />
@@ -54,7 +54,7 @@
         </q-side-link>
 
 
-         <q-side-link multiline highlight separator item
+         <q-side-link multiline highlight  item
           :to="{name: 'c', params: { idForm: 'idform'}}"
           :key="about">
           <q-item-side icon="tablet_mac" />
@@ -62,7 +62,7 @@
         </q-side-link>
 
 
-         <q-side-link multiline highlight separator item
+         <q-side-link multiline highlight  item
           :to="{name: 'd', params: { idForm: 'idform'}}"
           :key="lenguage">
           <q-item-side icon="language" />
@@ -161,9 +161,6 @@ export default {
 .layout-aside-left {background:#00283c !important; color:#ffffff; opacity:0.8;}
 .layout-aside-left .q-list {padding: 1px 0; border: none !important;}
 .layout-aside-left .q-item-side {color:#ffffff; text-align: center;}
-
-.q-list-separator > .q-item-division + .q-item-division, 
-.q-item-division + .q-item-separator {border-top: none !important;}
 
 .router-link-exact-active.router-link-active {
     background-color: rgb(0, 82, 132) !important;

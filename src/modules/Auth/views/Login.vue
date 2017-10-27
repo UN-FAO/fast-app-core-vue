@@ -1,4 +1,4 @@
-<style scoped>
+<style>
 #follow-up-main {
     height: 100%;
     overflow-x: hidden;
@@ -96,9 +96,10 @@
 }
     
 ._new-user a {border-bottom: 1px solid #c3c7ca; padding: 0px 10px 5px; font-size: 0.95em;}
-    
-    .form-group {width: 80%; margin: 0 auto;}
-    
+input.col.q-input-target.text-left:focus {
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
+}
     
     
 body {
