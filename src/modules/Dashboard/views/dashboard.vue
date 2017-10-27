@@ -2,7 +2,7 @@
 <div>
 
 <div class="row">
-  <q-card class="col-lg-3 col-lg-offset-3" style="margin-top: 30px;">
+  <q-card class="col-sm-offset-2 col-md-4 col-md-offset-2 col-lg-4 col-lg-offset-3 col-xl-3" style="margin-top: 30px;">
       
  
   <q-card-main>
@@ -28,7 +28,7 @@
   </q-card-main>
 </q-card>
 
-<q-card  class="col-lg-3 col-lg-offset-0" style="margin-top: 30px; margin-left: 30px;">
+<q-card  class="col-md-4 col-lg-4 col-xl-3" style="margin-top: 30px; margin-left: 30px;">
  
   <q-card-main>
       <!--<q-icon name="fa-database fa-5x" />-->
@@ -65,7 +65,7 @@
 
 
 <div class="row">
-  <q-card  class="col-lg-3 col-lg-offset-3" style="margin-top: 30px;">
+  <q-card  class="col-sm-offset-2 col-md-4 col-md-offset-2 col-lg-4 col-lg-offset-3 col-xl-3" style="margin-top: 30px;">
 
   <q-card-main>
       <!--<q-icon name="fa-cog fa-5x" />-->
@@ -76,7 +76,7 @@
   </q-card-main>
 </q-card>
 
-<q-card  class="col-lg-3 col-lg-offset-0" style="margin-top: 30px; margin-left: 30px;">
+<q-card  class="col-md-4 col-lg-4 col-xl-3" style="margin-top: 30px; margin-left: 30px;">
   <q-card-main>
      <!--<q-icon name="fa-tablet fa-5x" />-->
       <q-icon class="material-icons">tablet_mac</q-icon>
