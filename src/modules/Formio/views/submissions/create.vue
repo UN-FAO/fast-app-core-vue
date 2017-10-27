@@ -390,7 +390,7 @@ export default {
     },
     getLabelForPage (page) {
       let key = page.key
-      let errorCount = this.errors.errorsByPage[key] ? this.errors.errorsByPage[key].length : ''
+      let errorCount = this.errors.errorsByPage && this.errors.errorsByPage[key] ? this.errors.errorsByPage[key].length : ''
 
       let label = errorCount !== '' ? page.title + '<span style="color: red;"> ( ' + errorCount + ' )</span>' : page.title
       return label
