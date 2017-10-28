@@ -16,6 +16,8 @@ cd cordova && \
  	cordova plugin add cordova-plugin-camera && \
  	cordova plugin add cordova-plugin-file-transfer && \
  	cordova plugin add cordova-plugin-indexeddb-async && \
-	cordova platform add android #&& \
-	cordova emulate android
+	cordova platform add android && \
+	rm -rf ./platforms/android/platform_www/cordova.js
+	cp ../cordova.js ./platforms/android/platform_www/cordova.js
+	cordova build android #&& \
 	# cordova platform add https://github.com/apache/cordova-ios.git && cordova run --buildConfig=../build.json ios --device

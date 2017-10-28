@@ -135,7 +135,7 @@ export default {
     SMS.listen(this)
     document.addEventListener('saveAsDraft', this.saveAsLocalDraft)
     // CSS.format(this)
-    this.$eventHub.$on('formio.destroyComponent', this.triggerDestroy)
+    // this.$eventHub.$on('formio.destroyComponent', this.triggerDestroy)
     this.save = _.debounce(this.save, 100)
     this.renderForm()
   },
@@ -236,13 +236,6 @@ export default {
       return this.jsonForm
     },
     /**
-     * [reRenderForm description]
-     * @return {[type]} [description]
-     */
-    reRenderForm () {
-      this.formIO.render()
-    },
-    /**
       * [registerOfflinePlugin description]
       * @return {[type]} [description]
       */
@@ -274,15 +267,7 @@ export default {
       )
     },
     getCurrentData () {
-      let currentDataClone = _.cloneDeep(this.formIO.data)
-      _.forEach(this.removedValues, function(removedValue) {
-         let currentValue = currentDataClone[removedValue.path]
-         let oldValue = removedValue.value
-         if (typeof currentValue === 'undefined') {
-            currentDataClone[removedValue.path] = oldValue
-         }
-      })
-      return currentDataClone
+      return this.formIO.data
     },
     /**
      * [autoSaveAsDraft description]

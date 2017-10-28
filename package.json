@@ -21,7 +21,7 @@
     "element-ui": "^1.4.3",
     "eventemitter2": "^4.1.2",
     "flatpickr": "^4.0.6",
-    "formiojs": "2.21.0",
+    "formiojs": "^2.21.0",
     "html2canvas": "^0.5.0-beta4",
     "i18next": "^10.0.3",
     "jsonexport": "^2.0.10",

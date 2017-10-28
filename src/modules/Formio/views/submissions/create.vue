@@ -1,11 +1,11 @@
 <template>
-    <q-pull-to-refresh :handler="refreshSubmissions">
+    <q-pull-to-refresh :handler="reloadPage">
       <div class="row">     
-
+  
         <q-card  flat color="transparent"  class="col-lg-3  col-md-3 col-sm-3" v-if="_isWizard && showPages"> 
           <q-card-main>
               <q-list separator style="border: none !important">
-            <!-- collapsible to hide sub-level menu entries -->    
+      
               <q-item  multiline style="text-align: left; text-transform: uppercase; min-height: 60px; border-radius: 5px;"  link  v-for="(page, index) in pages"  :key="page.title" @click="goToPage(index)" :ref="'page-'+ index" v-bind:class="currentPage === index ? 'activePage' : ''">
               <q-item-main style=" margin-top: auto;  margin-bottom: auto;"
                 :label="getLabelForPage(page)"
@@ -15,7 +15,7 @@
           </q-list>
           </q-card-main>
         </q-card> 
-
+  
         <q-card color="white" v-bind:class="getFormClass" >
             <q-card-main>
               <q-btn flat @click="togglePages" icon="menu" style="color:black;"></q-btn>
@@ -28,7 +28,7 @@
                     <q-tab-pane name="tab-1" ref="tab1">
                      
 
-                        <!-- Tabs -->
+                      
                         <formio
                           :formioURL="formioURL" 
                           :submission="submission"
@@ -36,7 +36,7 @@
                           :localDraft="LOCAL_DRAFT_ENABLED"
                           :readOnly="false"
                         />
-
+                       
                     </q-tab-pane>
 
                 </q-tabs>
@@ -279,6 +279,19 @@ export default {
             format: 'letter'
           }
       })
+    },
+    reloadPage () {
+      this.$swal({
+                title: 'Are you sure?',
+                text: 'You will lost all unsaved Data',
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, reaload it!'
+              }).then(async () => {
+                  window.location.reload(true)
+              })
     },
     draftStatusChanged (e) {
       if (e.detail.data === false) {
