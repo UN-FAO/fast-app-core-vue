@@ -2,7 +2,7 @@
 
 <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 ">
   <div class="row">
-  <q-card class="col-lg-8 col-md-8 col-sm-12 shadow-2" style="margin-top: 30px; margin-left: 30px;">
+  <q-card class="col-lg-8 col-md-8 col-sm-12 shadow-2" style="margin-top: 30px; margin-left: 43px;">
     <q-card-title>
         <h3 style="text-transform: uppercase;">All Collected Data
           <div>
