@@ -18,10 +18,11 @@
       <q-btn flat @click="openRightDrawer()" v-if="$route.name !== 'login' && $route.name !== 'register' && $route.name !== 'login_redirect'  ">
         <q-icon name="menu" />
       </q-btn>
-    
+    <!--
     <q-btn flat @click="handleLogout()" v-if="$route.name !== 'login' && $route.name !== 'register' && $route.name !== 'login_redirect'  ">
         <q-icon name="ion-log-out" />
     </q-btn>
+  -->
 
     </q-toolbar>
 </template>

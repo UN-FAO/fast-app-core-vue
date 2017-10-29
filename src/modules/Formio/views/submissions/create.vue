@@ -18,7 +18,7 @@
   
         <q-card color="white" v-bind:class="getFormClass" >
             <q-card-main>
-              <q-btn flat @click="togglePages" icon="menu" style="color:black;"></q-btn>
+              <q-btn flat @click="togglePages" icon="menu" style="color:black;" v-if="_isWizard"></q-btn>
                 <q-tabs inverted id="contentForm">
                     <!-- Tabs - notice slot="title" -->
                     <q-tab default slot="title" name="tab-1" icon="person" label="P1"
@@ -41,7 +41,10 @@
 
                 </q-tabs>
 
-                <q-fixed-position corner="top-right" :offset="[18, 18]">
+            </q-card-main>
+        </q-card>
+
+         <q-fixed-position corner="top-right" :offset="[18, 18]">
                     <q-fab color="red" icon="add" direction="left" push>
                         <q-fab-action color="secondary" @click="exportPDF" icon="print"></q-fab-action>
 
@@ -52,8 +55,19 @@
                     </q-fab>
                 </q-fixed-position>
 
-            </q-card-main>
-        </q-card>
+                  <!--
+                  <q-fixed-position v-if="displayDown" style="margin: 18px;position: sticky;z-index: 100;width: 100%;min-height: 63px;" corner="bottom-right" :offset="[18, 18]">
+                  <q-btn round color="primary" @click="nextQuestion" class="pull-right">
+                    <q-icon name="fa-arrow-circle-down" />
+                  </q-btn>
+                </q-fixed-position>
+
+                  <q-fixed-position v-if="displayUp" style="margin: 18px;position: sticky;z-index: 99;width: 100%;min-height: 63px;    padding-bottom: 70px;" corner="bottom-right" :offset="[18, 18]">
+                  <q-btn round color="primary" @click="prevQuestion" class="pull-right">
+                    <q-icon name="fa-arrow-circle-up" />
+                  </q-btn>
+                </q-fixed-position>
+              -->
       </div>
     </q-pull-to-refresh>
 </template>
@@ -135,10 +149,12 @@ export default {
     })
     this.$eventHub.on('formio.nextPage', (data) => {
       this.currentPage = data.nextPage.page
+      this.currentQuestion = -1
       window.scrollTo(0, 0)
     })
     this.$eventHub.on('formio.prevPage', (data) => {
       this.currentPage = data.prevPage.page
+      this.currentQuestion = -1
       window.scrollTo(0, 0)
     })
     
@@ -215,7 +231,7 @@ export default {
     },
     getFormClass () {
       let className = ''
-      if (this.showPages) {
+      if (this.showPages && this._isWizard) {
         className = 'col-lg-8  col-md-8 col-sm-8'
       } else {
         className = 'col-lg-10  col-md-10 col-sm-10 col-lg-offset-1 col-md-offset-1'
@@ -239,7 +255,10 @@ export default {
       isWizard: false,
       pages: [],
       currentPage: 0,
-      showPages: true
+      showPages: true,
+      currentQuestion: -1,
+      displayUp: false,
+      displayDown: true
     }
   },
   methods: {
@@ -249,6 +268,7 @@ export default {
       let page = document.querySelectorAll('ul li:nth-of-type(' + pageNumber + ')')[0]
       page.click()
       this.currentPage = index
+      this.currentQuestion = -1
       window.scrollTo(0, 0)
     },
     togglePages () {
@@ -292,6 +312,20 @@ export default {
               }).then(async () => {
                   window.location.reload(true)
               })
+    },
+    nextQuestion () {
+      let elements = document.getElementsByClassName('form-group')
+      this.currentQuestion = this.currentQuestion + 1 >= elements.length ? elements.length : this.currentQuestion + 1
+      this.displayDown = !(this.currentQuestion + 1 >= elements.length)
+      elements[this.currentQuestion].scrollIntoView(true)
+      this.displayUp = true
+    },
+    prevQuestion () {
+      let elements = document.getElementsByClassName('form-group')
+      this.currentQuestion = this.currentQuestion - 1 <= 0 ? 0 : this.currentQuestion - 1
+      elements[this.currentQuestion].scrollIntoView(true)
+      this.displayUp = !(this.currentQuestion <= 0)
+      this.displayDown = true
     },
     draftStatusChanged (e) {
       if (e.detail.data === false) {

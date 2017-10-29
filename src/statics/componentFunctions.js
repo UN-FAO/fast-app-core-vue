@@ -92,6 +92,29 @@ var addIfNotEmpty = function (data, elements) {
 }
 
 /**
+ * [notEmptyIfComponentGreaterThanZero description]
+ * @param  {[type]} data          [description]
+ * @param  {[type]} componentName [description]
+ * @param  {[type]} input         [description]
+ * @return {[type]}               [description]
+ */
+var notEmptyIfComponentGreaterThanZero = function(data, componentName, input) {
+
+    if (typeof data[componentName] !== 'undefined' && data[componentName] !== null &&
+        data[componentName] !== '' && !isNaN(data[componentName]) && data[componentName] > 0) {
+
+        if (typeof input !== 'undefined' && input !== null && input !== '') {
+            return true
+        } else {
+            return 'This field should not be empty';
+        }
+    } else {
+        return true;
+    }
+
+}
+
+/**
  * [sendSMS description]
  * @param  {[type]} data [description]
  * @return {[type]}      [description]
