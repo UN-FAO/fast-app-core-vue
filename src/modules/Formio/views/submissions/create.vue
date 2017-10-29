@@ -255,7 +255,7 @@ export default {
       isWizard: false,
       pages: [],
       currentPage: 0,
-      showPages: true,
+      showPages: false,
       currentQuestion: -1,
       displayUp: false,
       displayDown: true

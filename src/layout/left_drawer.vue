@@ -40,7 +40,7 @@
 
 
         <q-side-link multiline highlight  item
-          :to="{name: 'formio_form_show', params: { idForm: '*'}}"
+          :to="{name: 'newSurvey'}"
           :key="Data">
           <q-item-side icon="storage" />
           <q-item-main label="All Collected Data"  />
