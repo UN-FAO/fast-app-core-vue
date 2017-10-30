@@ -14,7 +14,7 @@
    
 </q-card>
 </div>
-<div class="row" v-if="forms.length === 0">
+<div class="row" v-if="typeof forms === 'undefined'">
   <q-card flat class="col-lg-8 col-md-8 col-sm-12" style="margin-top: 30px; margin-left: 43px; align-items: center;justify-content: center;display: flex;">
     <q-card-title>
               <q-spinner-audio color="primary" :size="50"/>
@@ -53,13 +53,14 @@ export default {
   name: 'card',
   mounted: async function () {
     this.forms = await LocalForm.sAll()
+    console.log('this.forms => ', this.forms)
   },
   components: {
     QIcon, QBtn, QList, QItem, QItemSide, QItemTile, QItemMain, QCollapsible, QSpinnerAudio
   },
   data: () => {
     return {
-      forms: []
+      forms: undefined
     }
   },
   methods: {

@@ -28,8 +28,9 @@
       <div class="row" v-if="typeof submissions !== 'undefined'">
         <q-card color="white" class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 centered">
             <q-card-main>
-                <data-tables :data="submissions" :search-def="searchDef" :action-col-def="getRowActionsDef()" action-col-label="Actions" :actions-def="actionsDef" max-height="250" height="250">
-                    <el-table-column type="selection">
+             
+                <data-tables :data="submissions" :search-def="searchDef" :action-col-def="getRowActionsDef()" action-col-label="Actions" :actions-def="actionsDef" max-height="250" height="250"
+                >
 
                     </el-table-column>
 
