@@ -51,51 +51,44 @@ const LocalSubmission = class {
       }).exec()
   }
 
-    static async sFind (vm, holder, filter) {
-    vm.subscriptions.forEach(sub => sub.unsubscribe())
-      const db = await Database.get()
-      vm.subscriptions.push(
-        db.submissions
-          // .select('-projectId')
-          .find(filter)
-          .$
-          .subscribe(submissions => {
-            submissions = _.map(submissions, function(submission) {
-              let data = submission.data.data
-              let formio = submission.data.formio
-              submission = _.clone(submission)
-              submission.data.data = {
-                created: submission.data.created,
-                Humancreated: vm.humanizeDate(submission.data.created),
-                id_submision: submission.data._id ? submission.data._id : submission._id,
-                local: !submission.data._id,
-                id_submision_state: submission.data.sync ? submission.data.data.id_submision : submission.data.data.id_submision + '(Offline)',
-                status: submission.data.sync === false ? 'offline' : 'online',
-                draft: submission.data.draft,
-                fullSubmission: data,
-                formio: formio
-              }
-              return submission.data
-            })
+    static async sFind (vm, filter) {
+    let userEmail = Auth.user().data.email || Auth.user().email
+    const db = await Database.get()
 
-            let userEmail = Auth.user().data.email || Auth.user().email
-       
-            submissions = _.filter(submissions, function(o) {
-              return (
-                (o.owner && o.owner === Auth.user()._id) ||
-                (o.user_email && o.user_email === userEmail)
-              )
-            })
-            submissions = _.map(submissions, 'data')
-            submissions = _.orderBy(submissions, [
+    let submissions = await db.submissions.find(filter).exec()
+    submissions = _.filter(submissions, function(o) {
+      return (
+          (o.data.owner && o.data.owner === Auth.user()._id) ||
+          (o.data.user_email && o.data.user_email === userEmail)
+        )
+    })
+
+    submissions = _.map(submissions, function(submission) {
+        let data = submission.data.data
+        let formio = submission.data.formio
+        submission = _.clone(submission)
+        submission.data.data = {
+        created: submission.data.created,
+        Humancreated: vm.humanizeDate(submission.data.created),
+        id_submision: submission.data._id ? submission.data._id : submission._id,
+        local: !submission.data._id,
+        id_submision_state: submission.data.sync ? submission.data.data.id_submision : submission.data.data.id_submision + '(Offline)',
+        status: submission.data.sync === false ? 'offline' : 'online',
+        draft: submission.data.draft,
+        fullSubmission: data,
+        formio: formio
+      }
+      return submission
+    })
+
+    submissions = _.map(submissions, 'data')
+    submissions = _.map(submissions, 'data')
+    submissions = _.orderBy(submissions, [
               'created'
             ], [
               'desc'
-            ])
-            console.log(submissions)
-            vm[holder] = submissions
-          })
-      )
+    ])
+    return submissions
   }
 }
 export default LocalSubmission

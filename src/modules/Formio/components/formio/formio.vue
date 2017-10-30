@@ -9,7 +9,7 @@
   }
 
 .form-control {
-    min-height: 45px !important;
+    min-height: 35px !important;
     height: auto;
     font-size: 20px !important;
 }
@@ -36,15 +36,15 @@ input[type=radio] + span, input[type=checkbox] + span {
     background-color: rgb(231, 231, 231);
     border-radius: 5px;
     min-width: 250px;
-    min-height: 50px;
+    min-height: 30px;
     text-align: center;
     text-transform: uppercase;
     display: flex;
     justify-content: center;
     align-content: center;
     flex-direction: column;
-    margin-bottom: 10px;
-    margin-top: 10px;
+    margin-bottom: 5px;
+    margin-top: 5px;
 }
 
 input[type=radio]:checked + span, input[type=checkbox]:checked + span { 
@@ -61,8 +61,8 @@ input[type=radio]:checked + span, input[type=checkbox]:checked + span {
     justify-content: center;
     align-content: center;
     flex-direction: column;
-    margin-bottom: 10px;
-    margin-top: 10px;
+    margin-bottom: 5px;
+    margin-top: 5px;
 }
 
 .alert-danger {
@@ -74,7 +74,7 @@ input[type=radio]:checked + span, input[type=checkbox]:checked + span {
 .form-group.formio-component {
     margin: 3px 0px;
     border-bottom: 1px solid #eee;
-    margin-bottom: 40px;
+    margin-bottom: 20px;
 }
 table .form-group.formio-component {
     margin: 0px !important;

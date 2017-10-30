@@ -1,5 +1,4 @@
 import * as Database from 'database/Database'
-
 const LocalForm = class {
   /**
    * [get description]
@@ -13,28 +12,21 @@ const LocalForm = class {
  	let formRequestID = await db.forms.findOne().where('data._id').eq(id).exec()
  	let formRequestPath = await db.forms.findOne().where('data.path').eq(id).exec()
  	
- 	if (formRequest) {
- 		return formRequest.data
- 	}
- 	if (formRequestID) {
- 		return formRequestID.data
- 	}
- 	if (formRequestPath) {
- 		return formRequestPath.data
- 	}
+   	if (formRequest) {
+   		return formRequest.data
+   	}
+   	if (formRequestID) {
+   		return formRequestID.data
+   	}
+   	if (formRequestPath) {
+   		return formRequestPath.data
+   	}
   }
 
-  static async sAll (vm, holder) {
-  	vm.subscriptions.forEach(sub => sub.unsubscribe())
+  static async sAll () {
       const db = await Database.get()
-      vm.subscriptions.push(
-        db.forms
-          .find()
-          .$
-          .subscribe(forms => {
-            vm[holder] = forms
-          })
-      )
+      let allForms = await db.forms.find().exec()
+      return allForms
   }
 }
 export default LocalForm

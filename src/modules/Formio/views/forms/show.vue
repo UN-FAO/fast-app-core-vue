@@ -17,7 +17,15 @@
 <template>
   <div>
     <q-pull-to-refresh :handler="refreshSubmissions">
-      <div class="row">
+      <div class="row" v-if="submissions.length === 0">
+        <q-card flat class="col-lg-8 col-md-8 col-sm-12" style="margin-top: 30px; margin-left: 43px; align-items: center;justify-content: center;display: flex;">
+          <q-card-title>
+                    <q-spinner-audio color="primary" :size="50"/>
+                    <h4>Loading Submissions...</h4>
+          </q-card-title>
+      </q-card>  
+      </div>
+      <div class="row" v-if="submissions.length !== 0">
         <q-card color="white" class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 centered">
             <q-card-main>
                 <data-tables :data="submissions" :search-def="searchDef" :action-col-def="getRowActionsDef()" action-col-label="Actions" :actions-def="actionsDef" max-height="250" height="250">
@@ -81,12 +89,21 @@ import locale from 'element-ui/lib/locale'
 import * as Database from 'database/Database'
 import moment from 'moment'
 import jsonexport from 'jsonexport'
-import { Loading, QCard, QCardTitle, QCardSeparator, QCardMain, QFab, QFabAction, QFixedPosition, QPullToRefresh } from 'quasar'
+import { Loading, QCard, QCardTitle, QCardSeparator, QCardMain, QFab, QFabAction, QFixedPosition, QPullToRefresh, QSpinnerAudio } from 'quasar'
 import LocalSubmission from 'database/collections/scopes/LocalSubmission'
 import FormioUtils from 'formiojs/utils'
 locale.use(lang)
 
 export default {
+  async mounted () {
+      if (this.$route.params.idForm === '*') {
+        this.submissions = await LocalSubmission.sFind(this, {})
+      } else {
+         this.submissions = await LocalSubmission.sFind(this, {
+            'data.formio.formId': this.$route.params.idForm
+          })
+      }
+  },
   computed: {
     formTitle() {
       let title = ''
@@ -105,29 +122,22 @@ export default {
     QFab,
     QFabAction,
     QFixedPosition,
-    QPullToRefresh
+    QPullToRefresh,
+    QSpinnerAudio
   },
   beforeRouteEnter(to, from, next) {
     next(vm => {
       vm.pullSubmissions()
-      vm.subscribeToSubmissions()
     })
   },
   beforeRouteUpdate(to, from, next) {
     this.pullSubmissions()
-    this.subscribeToSubmissions()
     next()
-  },
-  beforeDestroy: function() {
-    if (this.subscriptions) {
-      this.subscriptions.forEach(sub => sub.unsubscribe())
-    }
   },
   data() {
     return {
       currentForm: {},
       submissions: [],
-      subscriptions: [],
       visibleColumns: [],
       searchDef: {
         colProps: {
@@ -314,18 +324,6 @@ export default {
         }
       })
     },
-    async subscribeToSubmissions() {
-      if (this.$route.params.idForm === '*') {
-        LocalSubmission.sFind(this, 'submissions', {}
-        )
-      } else {
-        LocalSubmission.sFind(this, 'submissions',
-          {
-            'data.formio.formId': this.$route.params.idForm
-          }
-      )
-      }
-    },
     getRowActionsDef() {
       let self = this
       return {
@@ -361,6 +359,8 @@ export default {
         'input': true,
         'tableView': true
       })
+
+      this.visibleColumns = this.visibleColumns.slice(0, 20)
       this.$store.dispatch('getSubmissions',
         {
           currentForm: this.currentForm,

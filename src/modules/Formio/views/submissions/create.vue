@@ -161,30 +161,11 @@ export default {
     this.$eventHub.on('formio.render', (data) => {
       this.isWizard = !!(data.formio.wizard)
     })
-
+    this.validateRequired = _.debounce(this.validateRequired, 400)
+    this.createScorePanels = _.debounce(this.createScorePanels, 400)
     this.$eventHub.on('formio.change', (data) => {
-      let scorePanels = []
-      this.validateRequired(data.formio.pages, data)
-      // This should only be called if this is a Wizard
-      // Search all of the Score components in different pages
-      _.forEach(data.formio.pages, (page) => {
-          let panels = FormioUtils.findComponents(page.components, {
-          'type': 'panel'
-        })
-          if (panels.length > 0) {
-            _.forEach(panels, (panel, index) => {
-              // Make sure that the panel contains Score
-              if (panel.key.indexOf('score') !== -1) {
-                _.forEach(panel.components, (component, cindex) => {
-                  // Search the current value of the Score and add it
-                  component.value = data.formio.data[component.key]
-                })
-                scorePanels.push(panel)
-              }
-            })
-          }
-      })
-        this.scorePanels = scorePanels
+      this.validateRequired(this.pages, data)
+      this.createScorePanels(this.pages, data)
     })
 
     document.addEventListener('draftStatus', this.draftStatusChanged)
@@ -263,6 +244,28 @@ export default {
   },
   methods: {
     ...mapActions(['getResources']),
+    createScorePanels(pages, data) {
+       // Search all of the Score components in different pages
+      let scorePanels = []
+      _.forEach(pages, (page) => {
+          let panels = FormioUtils.findComponents(page.components, {
+          'type': 'panel'
+        })
+          if (panels.length > 0) {
+            _.forEach(panels, (panel, index) => {
+              // Make sure that the panel contains Score
+              if (panel.key.indexOf('score') !== -1) {
+                _.forEach(panel.components, (component, cindex) => {
+                  // Search the current value of the Score and add it
+                  component.value = data.formio.data[component.key]
+                })
+                scorePanels.push(panel)
+              }
+            })
+          }
+      })
+      this.scorePanels = scorePanels
+    },
     goToPage (index) {
       let pageNumber = index + 1
       let page = document.querySelectorAll('ul li:nth-of-type(' + pageNumber + ')')[0]
@@ -373,10 +376,10 @@ export default {
       this.submission = (!_.isEmpty(submission)) ? submission : undefined
     },
     getLabelForPage (page) {
-      let key = page.key
-      let errorCount = this.errors.errorsByPage && this.errors.errorsByPage[key] ? this.errors.errorsByPage[key].length : ''
-
-      let label = errorCount !== '' ? page.title + '<span style="color: red;     font-weight: 500; font-size: larger; font-family: monospace;"> (' + errorCount + ')</span>' : page.title
+      // let key = page.key
+      // let errorCount = this.errors.errorsByPage && this.errors.errorsByPage[key] ? this.errors.errorsByPage[key].length : ''
+      // let label = errorCount !== '' ? page.title + '<span style="color: red;     font-weight: 500; font-size: larger; font-family: monospace;"> (' + errorCount + ')</span>' : page.title
+      let label = page.title
       return label
     },
     validateRequired (pages, data) {
@@ -385,7 +388,7 @@ export default {
       let errorsByPage = []
       _.forEach(pages, (page) => {
         FormioUtils.eachComponent(page.components, (component) => {
-        if (component.input === true && component.validate && component.validate.required) {
+        if (component.input === true && component.validate && component.validate.required && !component.hidden) {
           let value = data.formio.data[component.key]
           if (typeof value === 'undefined' || value === null || value === '') {
              errorCount = errorCount + 1

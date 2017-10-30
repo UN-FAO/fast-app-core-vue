@@ -10,11 +10,17 @@
         
           </div>
         </h3>
-       
-
     </q-card-title>
    
 </q-card>
+</div>
+<div class="row" v-if="forms.length === 0">
+  <q-card flat class="col-lg-8 col-md-8 col-sm-12" style="margin-top: 30px; margin-left: 43px; align-items: center;justify-content: center;display: flex;">
+    <q-card-title>
+              <q-spinner-audio color="primary" :size="50"/>
+              <h4>Loading Forms...</h4>
+    </q-card-title>
+</q-card>  
 </div>
 <div class="row">
 <q-card class="col-lg-4 col-md-4 col-sm-12 shadow-2" style="margin-top: 30px; margin-left: 30px;" v-for="(form, index) in forms" :key="index" v-if="form.data.tags.indexOf('visible') > -1">
@@ -39,21 +45,21 @@
 </template>
 
 <script>
-import {QIcon, QBtn, QList, QItem, QItemSide, QItemTile, QItemMain, QCollapsible} from 'quasar'
+import {QIcon, QBtn, QList, QItem, QItemSide, QItemTile, QItemMain, QCollapsible,
+QSpinnerAudio} from 'quasar'
 import LocalForm from 'database/collections/scopes/LocalForm'
 import _ from 'lodash'
 export default {
   name: 'card',
   mounted: async function () {
-    LocalForm.sAll(this, 'forms')
+    this.forms = await LocalForm.sAll()
   },
   components: {
-    QIcon, QBtn, QList, QItem, QItemSide, QItemTile, QItemMain, QCollapsible
+    QIcon, QBtn, QList, QItem, QItemSide, QItemTile, QItemMain, QCollapsible, QSpinnerAudio
   },
   data: () => {
     return {
-      forms: [],
-      subscriptions: []
+      forms: []
     }
   },
   methods: {
