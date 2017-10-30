@@ -164,7 +164,7 @@ body, html {
             <p>
                 <!-- react-text: 44 -->Version
                 <!-- /react-text -->
-                <!-- react-text: 45 -->0.1.2
+                <!-- react-text: 45 -->{{fastVersion}}
                 <!-- /react-text -->
             </p>
         </div>
@@ -181,7 +181,7 @@ import { mapMutations } from 'vuex'
 import Auth from 'modules/Auth/api/Auth'
 import { Platform, Loading, Toast, QCard, QCardTitle, QField, QCardMain, QInput, QBtn, QCardActions } from 'quasar'
 import { mapState } from 'vuex'
-
+import {FAST_VERSION} from 'config/env'
 export default {
   components: {
     QCard,
@@ -229,7 +229,8 @@ export default {
         password: ''
       },
       logingIn: false,
-      logInError: false
+      logInError: false,
+      fastVersion: FAST_VERSION
     }
   },
   /**

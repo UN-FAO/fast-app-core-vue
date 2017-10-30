@@ -17,7 +17,7 @@
 <template>
   <div>
     <q-pull-to-refresh :handler="refreshSubmissions">
-      <div class="row" v-if="submissions.length === 0">
+      <div class="row" v-if="typeof submissions === 'undefined'">
         <q-card flat class="col-lg-8 col-md-8 col-sm-12" style="margin-top: 30px; margin-left: 43px; align-items: center;justify-content: center;display: flex;">
           <q-card-title>
                     <q-spinner-audio color="primary" :size="50"/>
@@ -25,7 +25,7 @@
           </q-card-title>
       </q-card>  
       </div>
-      <div class="row" v-if="submissions.length !== 0">
+      <div class="row" v-if="typeof submissions !== 'undefined'">
         <q-card color="white" class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 centered">
             <q-card-main>
                 <data-tables :data="submissions" :search-def="searchDef" :action-col-def="getRowActionsDef()" action-col-label="Actions" :actions-def="actionsDef" max-height="250" height="250">
@@ -137,7 +137,7 @@ export default {
   data() {
     return {
       currentForm: {},
-      submissions: [],
+      submissions: undefined,
       visibleColumns: [],
       searchDef: {
         colProps: {

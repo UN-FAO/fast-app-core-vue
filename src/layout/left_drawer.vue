@@ -98,7 +98,7 @@
         </q-item>
 
         <div class="fixed-bottom text-center light text-italic">
-          v.0.1.0
+          v {{fastVersion}}
         </div>
     </q-scroll-area>
 </template>
@@ -108,7 +108,7 @@ import Auth from 'modules/Auth/api/Auth'
 import LocalForm from 'database/collections/scopes/LocalForm'
 import {QScrollArea, QSideLink, QItemTile, QItemSide, QItemMain, QListHeader, QCollapsible, QBtn, QIcon, QTooltip, QList, QItem, QItemSeparator} from 'quasar'
 import layoutStore from './layout-store'
-
+import {FAST_VERSION} from 'config/env'
 export default {
   components: {
     QScrollArea, QSideLink, QItemTile, QItemSide, QItemMain, QListHeader, QCollapsible, QBtn, QIcon, QTooltip, QList, QItem, QItemSeparator
@@ -120,7 +120,8 @@ export default {
     return {
       forms: [],
       subscriptions: [],
-      layoutStore
+      layoutStore,
+      fastVersion: FAST_VERSION
     }
   },
   computed: {

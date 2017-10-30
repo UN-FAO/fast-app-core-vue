@@ -1,5 +1,16 @@
 /*
 |--------------------------------------------------------------------------
+| APP VERSION
+|--------------------------------------------------------------------------
+|
+| Here you may specify the version of the APP that you are 
+| building. Managing versions will help you better
+| understand whats are your users looking at!
+|
+*/ 
+	export const FAST_VERSION = '0.1.3'
+/*
+|--------------------------------------------------------------------------
 | FORM.IO CONFIGURATION
 |--------------------------------------------------------------------------
 |
