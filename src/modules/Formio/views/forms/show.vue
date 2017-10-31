@@ -17,8 +17,8 @@
 <template>
   <div>
     <q-pull-to-refresh :handler="refreshSubmissions">
-      <div class="row">
-        <q-card color="white" class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 centered relative-position">
+      <div class="row" style="margin-right: 15px !important;">
+        <q-card color="white" class="col-lg-12 col-md-12 centered relative-position">
             <q-card-title style="color: black;">
               Collected Data
             </q-card-title>
