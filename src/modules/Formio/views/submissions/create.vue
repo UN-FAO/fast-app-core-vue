@@ -273,6 +273,7 @@ export default {
       this.currentPage = index
       this.currentQuestion = -1
       window.scrollTo(0, 0)
+      this.togglePages()
     },
     togglePages () {
       this.showPages = !this.showPages
