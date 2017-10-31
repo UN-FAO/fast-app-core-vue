@@ -27,6 +27,8 @@ import 'quasar-extras/ionicons'
 import 'quasar-extras/fontawesome'
 // import Auth from 'modules/Auth/api/Auth'
 import Localization from 'modules/Localization/Localization'
+import VueAsyncProperties from 'vue-async-properties'
+Vue.use(VueAsyncProperties)
 Vue.use(VueSweetAlert)
 Vue.use(ElementUI)
 Vue.use(DataTables)

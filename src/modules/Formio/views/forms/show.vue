@@ -94,7 +94,7 @@ import locale from 'element-ui/lib/locale'
 import * as Database from 'database/Database'
 import moment from 'moment'
 import jsonexport from 'jsonexport'
-import { Loading, QCard, QCardTitle, QCardSeparator, QCardMain, QFab, QFabAction, QFixedPosition, QPullToRefresh, QSpinnerAudio, QTransition, QInnerLoading } from 'quasar'
+import { QCard, QCardTitle, QCardSeparator, QCardMain, QFab, QFabAction, QFixedPosition, QPullToRefresh, QSpinnerAudio, QTransition, QInnerLoading } from 'quasar'
 import LocalSubmission from 'database/collections/scopes/LocalSubmission'
 import FormioUtils from 'formiojs/utils'
 locale.use(lang)
@@ -131,15 +131,6 @@ export default {
     QFixedPosition,
     QPullToRefresh,
     QSpinnerAudio
-  },
-  beforeRouteEnter(to, from, next) {
-    next(vm => {
-      vm.pullSubmissions()
-    })
-  },
-  beforeRouteUpdate(to, from, next) {
-    this.pullSubmissions()
-    next()
   },
   data() {
     return {
@@ -201,7 +192,6 @@ export default {
     handleEdit (data) {
        let self = this
        let submission = data.row
-       Loading.show()
         self.$router.push(
         {
             name: 'formio_submission_update',

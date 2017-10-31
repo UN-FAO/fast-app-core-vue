@@ -41,6 +41,7 @@
     "text-mask-all": "github:text-mask/text-mask",
     "vue": "~2.3.4",
     "vue-async-computed": "^3.3.0",
+    "vue-async-properties": "^0.2.3",
     "vue-data-tables": "^2.0.3",
     "vue-event-hub": "^1.0.1",
     "vue-events": "^3.0.1",

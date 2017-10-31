@@ -134,8 +134,6 @@ export default {
     GPS.listen(this)
     SMS.listen(this)
     document.addEventListener('saveAsDraft', this.saveAsLocalDraft)
-    // CSS.format(this)
-    // this.$eventHub.$on('formio.destroyComponent', this.triggerDestroy)
     this.save = _.debounce(this.save, 100)
     this.renderForm()
   },
@@ -187,11 +185,9 @@ export default {
          * @return {[type]} [description]
          */
     renderForm () {
-      let submissionNotLoaded = (typeof this.jsonSubmission !== 'undefined') && _.isEmpty(this.jsonSubmission)
-
+      let submissionNotLoaded = (typeof this.jsonSubmission === 'undefined')
       // Wait until submission is present (if needed)
       if (submissionNotLoaded) { return }
-
       // Offline plugin functionallity
       this.registerOfflinePlugin()
 
@@ -325,13 +321,10 @@ export default {
      * @param {[type]} savedSubmission [description]
      */
     setSubmission (onlineJsonForm, savedSubmission) {
-        // Clone the original object to avoid changes
-        let cloneJsonSubmission = !_.isEmpty(this.jsonSubmission) ? _.cloneDeep(this.jsonSubmission.data.data) : []
-  
-        this.formIO.submission = !_.isEmpty(this.jsonSubmission) ? {data: cloneJsonSubmission} : {data: {}}
+        this.formIO.submission = {data: this.jsonSubmission.data}
         // If we are creating a wizard
         if (onlineJsonForm.display === 'wizard') {
-          this.formIO.data = !_.isEmpty(this.jsonSubmission) ? cloneJsonSubmission : {}
+          this.formIO.data = this.jsonSubmission.data
         } else {
           // If we have a savedSubmission (Staying on the same page after submit)
           this.formIO.submission = savedSubmission ? {data: savedSubmission.data} : this.formIO.submission
@@ -399,7 +392,7 @@ export default {
 
         // When the submission has been added the form is mounted
         this.$eventHub.$emit('formio.mounted', this.formIO)
-        
+
         // Define all the Listeners for the different FORM.io Events
         let events = this.formIO.eventListeners
         

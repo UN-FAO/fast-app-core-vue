@@ -18,6 +18,7 @@
   
         <q-card color="white" v-bind:class="getFormClass" >
             <q-card-main>
+          
               <q-btn flat @click="togglePages" icon="menu" style="color:black;" v-if="_isWizard"></q-btn>
                 <q-tabs inverted id="contentForm">
                     <!-- Tabs - notice slot="title" -->
@@ -26,8 +27,6 @@
                     <!-- Targets -->
 
                     <q-tab-pane name="tab-1" ref="tab1">
-                     
-
                       
                         <formio
                           :formioURL="formioURL" 
@@ -36,12 +35,16 @@
                           :localDraft="LOCAL_DRAFT_ENABLED"
                           :readOnly="false"
                         />
-                       
                     </q-tab-pane>
 
                 </q-tabs>
 
             </q-card-main>
+            <!--
+            <q-inner-loading :visible="typeof submission === 'undefined'">
+              <q-spinner-audio size="50px" color="primary"></q-spinner-audio>
+            </q-inner-loading>
+          -->
         </q-card>
 
          <q-fixed-position corner="top-right" :offset="[18, 18]">
@@ -111,39 +114,15 @@ import FormioUtils from 'formiojs/utils'
 import {mapActions} from 'vuex'
 import Auth from 'modules/Auth/api/Auth'
 import formio from 'modules/Formio/components/formio/formio'
-import LocalForm from 'database/collections/scopes/LocalForm'
 import LocalSubmission from 'database/collections/scopes/LocalSubmission'
 import {APP_URL, LOCAL_DRAFT_ENABLED} from 'config/env'
-import {QCard, QCardTitle, QCardSeparator, QCardMain, QFab, QFabAction, QFixedPosition, QPullToRefresh, QTabs, QTab, QTabPane, QCollapsible, QBtn, QIcon, QTooltip, QList, QItem, QItemSeparator, Loading, QItemMain} from 'quasar'
-
+import {QCard, QCardTitle, QCardSeparator, QCardMain, QFab, QFabAction, QFixedPosition, QPullToRefresh, QTabs, QTab, QTabPane, QCollapsible, QBtn, QIcon, QTooltip, QList, QItem, QItemSeparator, Loading, QItemMain, QTransition,
+  QInnerLoading, QSpinnerAudio} from 'quasar'
 export default {
   components: {
-    formio, QCard, QCardTitle, QCardSeparator, QCardMain, QFab, QFabAction, QFixedPosition, QPullToRefresh, QTabs, QTab, QTabPane, QCollapsible, QBtn, QIcon, QTooltip, QList, QItem, QItemSeparator, Loading, QItemMain
+    formio, QCard, QCardTitle, QCardSeparator, QCardMain, QFab, QFabAction, QFixedPosition, QPullToRefresh, QTabs, QTab, QTabPane, QCollapsible, QBtn, QIcon, QTooltip, QList, QItem, QItemSeparator, Loading, QItemMain, QTransition, QInnerLoading, QSpinnerAudio
   },
-  async beforeRouteEnter (to, from, next) {
-    // Load the form and submission before entering the route
-    let form = await LocalForm.get(to.params.idForm)
-    if (to.params.idSubmission) {
-      var submission = to.params.idSubmission ? await LocalSubmission.get(to.params.idSubmission) : undefined
-    }
-    next(vm => {
-      // Load the form and submission before entering the route
-      vm.form = form
-      if (to.params.idSubmission) {
-        vm.submission = (!_.isEmpty(submission)) ? submission : undefined
-      }
-    })
-  },
-  async beforeRouteUpdate (to, from, next) {
-    let form = await LocalForm.get(to.params.idForm)
-    if (to.params.idSubmission) {
-      this.getSubmission()
-    }
-    this.form = form
-    next()
-  },
-  mounted () {
-    Loading.hide()
+  async mounted () {
     this.$eventHub.on('formio.mounted', (formio) => {
       this.pages = formio.pages ? formio.pages : []
     })
@@ -167,7 +146,6 @@ export default {
       this.validateRequired(this.pages, data)
       this.createScorePanels(this.pages, data)
     })
-
     document.addEventListener('draftStatus', this.draftStatusChanged)
     this.$eventHub.$on('formio.error', (error) => {
       console.log(error)
@@ -199,14 +177,14 @@ export default {
     this.$eventHub.$off('formio.error')
     this.$eventHub.$off('VALIDATION_ERRORS')
   },
-  computed: {
-    formTitle () {
-      let title = ''
-      if (this.form) {
-        title = this.form ? this.form.title : ''
+  asyncData: {
+    submission() {
+       if (this.$route.params.idSubmission) {
+         return LocalSubmission.get(this.$route.params.idSubmission)
       }
-      return title
-    },
+    }
+  },
+  computed: {
     _isWizard () {
       return this.isWizard
     },
@@ -227,7 +205,6 @@ export default {
     return {
       form: null,
       formioURL: APP_URL + '/' + this.$route.params.idForm,
-      submission: undefined,
       people: [{name: 'P1'}],
       formioToken: Auth.user().x_jwt_token,
       LOCAL_DRAFT_ENABLED: LOCAL_DRAFT_ENABLED,
@@ -359,22 +336,6 @@ export default {
       this.getResources({
         appName: this.$store.state.authStore.appName
       })
-    },
-    // Refresh when pulled Down
-    async refreshForm (done) {
-      let form = await LocalForm.get(this.$route.params.idForm)
-      this.form = form
-      this.getSubmission()
-      setTimeout(function () {
-        if (done) {
-          done()
-        }
-      }, 1200)
-    },
-    // Get Submission if we are Updating
-    async getSubmission () {
-      let submission = this.$route.params.idSubmission ? await LocalSubmission.get(this.$route.params.idSubmission) : undefined
-      this.submission = (!_.isEmpty(submission)) ? submission : undefined
     },
     getLabelForPage (page) {
       // let key = page.key
