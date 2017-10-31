@@ -269,6 +269,7 @@ export default {
      * @return {[type]}   [description]
      */
     autoSaveAsDraft () {
+      /*
       let formSubmission = {
         data: this.getCurrentData(),
         redirect: false,
@@ -276,6 +277,7 @@ export default {
         trigger: 'autoSaveAsDraft'
       }
       this.save(formSubmission)
+      */
     },
     /**
      * [removeDuplicatedPagination description]
@@ -319,6 +321,7 @@ export default {
      * @param {[type]} savedSubmission [description]
      */
     setSubmission (onlineJsonForm, savedSubmission) {
+        console.log('this is the data', this.jsonSubmission.data.data)
         this.formIO.submission = {data: this.jsonSubmission.data.data}
         // If we are creating a wizard
         if (onlineJsonForm.display === 'wizard') {
@@ -384,9 +387,19 @@ export default {
         // Translate the form
         cloneJsonForm.components = this.setTranslations(_.cloneDeep(onlineJsonForm.components))
 
+        let components = FormioUtils.findComponents(cloneJsonForm.components, {
+          'input': true,
+          'type': 'number'
+        })
+
+        _.map(components, function (c) {
+            c.defaultValue = 'hello'
+        })
+
         // Define the form to display
         this.formIO.setForm(cloneJsonForm)
 
+        console.log('The components are', components)
         // When the submission has been added the form is mounted
         this.$eventHub.$emit('formio.mounted', this.formIO)
 
