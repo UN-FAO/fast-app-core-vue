@@ -7,6 +7,10 @@
       <q-item v-bind:class="{ active: isActive(lenguage.code)}"  @click="setLanguage({code: lenguage.code, direction: lenguage.direction}), $refs.popover.close()" v-for="lenguage in lenguages" :key="lenguage.code">
       {{lenguage.label}}
       </q-item>
+       <q-item-separator />
+      <q-item v-bind:class="{ active: isActive(lenguage.code)}"  @click="$refs.popover.close()">
+     <q-icon name="fa-language" /> Sync
+      </q-item>
     </q-list>
   </q-popover>
 </q-btn>
@@ -32,11 +36,13 @@ import {
   QCardTitle,
   QCardMain,
   QChip,
-  QFixedPosition
+  QFixedPosition,
+  QItemSeparator
 } from 'quasar'
 export default {
   name: 'localization',
   components: {
+    QItemSeparator,
     Toast,
     QBtn,
     QPopover,
