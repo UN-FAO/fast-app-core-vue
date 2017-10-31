@@ -367,7 +367,8 @@ export default {
         this.createFormioInstance(onlineJsonForm, translations)
         // If we are creating a new record triggers the creation
         // to go directly to edit (an have autosave functionality)
-        if (this.jsonSubmission === false && this.$route.name === 'formio_form_submission') {
+        console.log('inside the create', this.jsonSubmission)
+        if (this.jsonSubmission.data === false && this.$route.name === 'formio_form_submission') {
           this.createLocalDraft()
           return
         }

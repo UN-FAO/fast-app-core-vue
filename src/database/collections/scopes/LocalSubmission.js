@@ -18,7 +18,6 @@ const LocalSubmission = class {
       return online
     }
     if (offline) {
-      console.log('Questo es offline', offline)
       return offline
     } else {
       return {data: false}
