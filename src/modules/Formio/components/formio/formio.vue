@@ -190,7 +190,6 @@ export default {
       if (submissionNotLoaded) { return }
       // Offline plugin functionallity
       this.registerOfflinePlugin()
-
       // Solving problem of multiple classes added to the element
       // YES! its a pork around
       let x = document.getElementsByClassName('formio-form');
@@ -198,7 +197,6 @@ export default {
         el.classList.remove('formio-form')
         el.classList.add('formio-form')
       })
-
       this.mountFormIOForm()
     },
     /**
@@ -321,10 +319,10 @@ export default {
      * @param {[type]} savedSubmission [description]
      */
     setSubmission (onlineJsonForm, savedSubmission) {
-        this.formIO.submission = {data: this.jsonSubmission.data}
+        this.formIO.submission = {data: this.jsonSubmission.data.data}
         // If we are creating a wizard
         if (onlineJsonForm.display === 'wizard') {
-          this.formIO.data = this.jsonSubmission.data
+          this.formIO.data = this.jsonSubmission.data.data
         } else {
           // If we have a savedSubmission (Staying on the same page after submit)
           this.formIO.submission = savedSubmission ? {data: savedSubmission.data} : this.formIO.submission
@@ -367,10 +365,9 @@ export default {
         let translations = await OFFLINE_PLUGIN.getLocalTranslations()
 
         this.createFormioInstance(onlineJsonForm, translations)
-
         // If we are creating a new record triggers the creation
         // to go directly to edit (an have autosave functionality)
-        if (_.isEmpty(this.jsonSubmission) && this.$route.name === 'formio_form_submission') {
+        if (this.jsonSubmission === false && this.$route.name === 'formio_form_submission') {
           this.createLocalDraft()
           return
         }

@@ -108,6 +108,16 @@ export default {
             'data.formio.formId': this.$route.params.idForm
           })
       }
+      let db = await Database.get()
+      this.currentForm = await db.forms.findOne()
+        .where('data.path').eq(this.$route.params.idForm).exec()
+
+      this.visibleColumns = FormioUtils.findComponents(this.currentForm.data.components, {
+        'input': true,
+        'tableView': true
+      })
+
+      this.visibleColumns = this.visibleColumns.slice(0, 20)
   },
   computed: {
     formTitle() {
@@ -348,16 +358,6 @@ export default {
       }
     },
     async pullSubmissions() {
-      let db = await Database.get()
-      this.currentForm = await db.forms.findOne()
-        .where('data.path').eq(this.$route.params.idForm).exec()
-
-      this.visibleColumns = FormioUtils.findComponents(this.currentForm.data.components, {
-        'input': true,
-        'tableView': true
-      })
-
-      this.visibleColumns = this.visibleColumns.slice(0, 20)
       this.$store.dispatch('getSubmissions',
         {
           currentForm: this.currentForm,

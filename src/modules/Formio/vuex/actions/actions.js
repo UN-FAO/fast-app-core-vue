@@ -174,7 +174,6 @@ const actions = {
     submission.formio = formio
     submission.created = moment().format()
     submission = SyncHelper.deleteNulls(submission)
-
     // If we are updating the submission
     if (formSubmission._id || (formSubmission.trigger !== 'createLocalDraft' && formSubmission.trigger !== 'resourceCreation')) {
       submission.type = 'update'

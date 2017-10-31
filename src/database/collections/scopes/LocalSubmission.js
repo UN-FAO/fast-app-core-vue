@@ -14,12 +14,14 @@ const LocalSubmission = class {
       .where('_id').eq(id).exec()
     let online = await db.submissions.findOne()
       .where('data._id').eq(id).exec()
-
     if (online) {
       return online
     }
     if (offline) {
+      console.log('Questo es offline', offline)
       return offline
+    } else {
+      return {data: false}
     }
   }
 

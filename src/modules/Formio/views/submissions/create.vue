@@ -178,9 +178,16 @@ export default {
     this.$eventHub.$off('VALIDATION_ERRORS')
   },
   asyncData: {
-    submission() {
-       if (this.$route.params.idSubmission) {
+    submission: {
+      get() {
+          if (this.$route.params.idSubmission) {
          return LocalSubmission.get(this.$route.params.idSubmission)
+          } else {
+            return LocalSubmission.get('ABCD')
+          }
+      },
+      transform(result) {
+         return result
       }
     }
   },
