@@ -3,7 +3,7 @@ import store from 'config/store'
 import _ from 'lodash'
 import messages from 'i18n/translations'
 import * as Database from 'database/Database'
-
+import {Loading} from 'quasar'
 const Localization = class {
   /**
    * [authenticate description]
@@ -36,6 +36,9 @@ const Localization = class {
       let appTranslations = []
 
       if (navigator.onLine) {
+        Loading.show({
+          message: 'Getting Translations'
+        })
         try {
              // Fetch the Translation that are online
           let translations = await Localization.getTranslation()
@@ -61,8 +64,10 @@ const Localization = class {
             })
             appTranslations = appTranslations.data
           }
+          Loading.hide()
           return appTranslations
         } catch (error) {
+          Loading.hide()
           return []
           console.log('Error while getting translations')
         }

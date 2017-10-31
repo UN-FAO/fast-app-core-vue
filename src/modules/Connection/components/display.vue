@@ -7,7 +7,6 @@
 
 <script>
 import { QIcon } from 'quasar'
-
 export default {
   name: 'wifiDisplay',
   components: {

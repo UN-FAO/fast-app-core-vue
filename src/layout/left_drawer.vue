@@ -150,8 +150,6 @@ export default {
       this.$eventHub.$emit('openLeftDrawer')
       this.$store.dispatch('clearAuthUser')
       Auth.logOut()
-      this.setLayoutNeeded(false)
-      this.setIsLoginPage(true)
     }
   }
 }

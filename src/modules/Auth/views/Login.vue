@@ -113,12 +113,6 @@ body, html {
 }
 </style>
 
-
-
-
-
-
-
 <template>
   <div id="follow-up-main" class="row justify-center">
     <q-card inline class="col-lg-6" style="
@@ -182,7 +176,25 @@ import Auth from 'modules/Auth/api/Auth'
 import { Platform, Loading, Toast, QCard, QCardTitle, QField, QCardMain, QInput, QBtn, QCardActions } from 'quasar'
 import { mapState } from 'vuex'
 import {FAST_VERSION} from 'config/env'
+import {mapActions} from 'vuex'
+
 export default {
+   async beforeRouteEnter (to, from, next) {
+
+    next(vm => {
+      console.log('Getting Resources beforeRouteEnter')
+      vm.getResources({
+      appName: vm.$store.state.authStore.appName
+       })
+    })
+  },
+  async beforeRouteUpdate (to, from, next) {
+    console.log('Getting Resources beforeRouteUpdate')
+    this.getResources({
+      appName: this.$store.state.authStore.appName
+    })
+    next()
+  },
   components: {
     QCard,
     QCardTitle,
@@ -239,6 +251,7 @@ export default {
    * @type {Object}
    */
   methods: {
+    ...mapActions(['sendOfflineData', 'getResources']),
     /**
      * Response to the login method
      * sets the layout for the App ON.

@@ -19,7 +19,7 @@
 /* eslint no-use-before-define: 0 */
 import 'bootstrap/dist/css/bootstrap.css'
 import 'formiojs/dist/formio.full.min.css'
-import 'bootstrap-rtl-ondemand/dist/css/bootstrap-rtl.min.css'
+// import 'bootstrap-rtl-ondemand/dist/css/bootstrap-rtl.min.css'
 import toolbar from 'layout/toolbar'
 import leftdrawer from 'layout/left_drawer'
 import rigthdrawer from 'layout/right_drawer'
@@ -28,9 +28,9 @@ import connectionAlert from 'modules/Connection/components/alert'
 import contentHeader from 'layout/content-header.vue'
 */
 import {mapActions} from 'vuex'
-// import {sync} from 'database/Database'
+import {sync} from 'database/Database'
 import Connection from 'modules/Wrappers/Connection'
-// import { SYNC_INTERVAL } from 'config/env'
+import { SYNC_INTERVAL } from 'config/env'
 import {
   QLayout,
   QToolbar,
@@ -51,9 +51,6 @@ import layoutStore from 'layout/layout-store'
 export default {
   name: 'app',
   mounted () {
-    this.getResources({
-      appName: this.$store.state.authStore.appName
-    })
     this.$eventHub.on('lenguageSelection', (lenguage) => {
       this.toggleRtl(lenguage)
     })
@@ -83,6 +80,29 @@ export default {
        */
     
     setSyncInterval: function () {
+      let rInterval = function (callback, delay) {
+        let dateNow = Date.now,
+          requestAnimation = window.requestAnimationFrame,
+          start = dateNow(),
+          stop,
+          intervalFunc = function () {
+            // eslint-disable-next-line no-use-before-define
+            dateNow() - start < delay || (start += delay, callback())
+            // eslint-disable-next-line no-use-before-define
+            stop || requestAnimation(intervalFunc)
+          }
+        requestAnimation(intervalFunc)
+        return {
+          clear: function () {
+            stop = 1
+          }
+        }
+      }
+      rInterval(() => {
+        if (Connection.isTabInUse()) {
+          return sync(this)
+        }
+      }, SYNC_INTERVAL)
     }
   },
   data () {

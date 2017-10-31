@@ -17,19 +17,19 @@
 <template>
   <div>
     <q-pull-to-refresh :handler="refreshSubmissions">
-      <div class="row" v-if="typeof submissions === 'undefined'">
-        <q-card flat class="col-lg-8 col-md-8 col-sm-12" style="margin-top: 30px; margin-left: 43px; align-items: center;justify-content: center;display: flex;">
-          <q-card-title>
-                    <q-spinner-audio color="primary" :size="50"/>
-                    <h4>Loading Submissions...</h4>
-          </q-card-title>
-      </q-card>  
-      </div>
-      <div class="row" v-if="typeof submissions !== 'undefined'">
-        <q-card color="white" class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 centered">
+      <div class="row">
+        <q-card color="white" class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 centered relative-position">
+            <q-card-title style="color: black;">
+              Collected Data
+            </q-card-title>
             <q-card-main>
+              <q-transition
+                appear
+                enter="fadeIn"
+                leave="fadeOut"
+              >
              
-                <data-tables :data="submissions" :search-def="searchDef" :action-col-def="getRowActionsDef()" action-col-label="Actions" :actions-def="actionsDef" max-height="250" height="250"
+                <data-tables :data="submissions" :search-def="searchDef" :action-col-def="getRowActionsDef()" action-col-label="Actions" :actions-def="actionsDef" max-height="250" height="250" v-if="typeof submissions !== 'undefined'"
                 >
 
                     </el-table-column>
@@ -66,8 +66,12 @@
                       </template>
                     </el-table-column>
 
-                </data-tables>
+                  </data-tables>
+                 </q-transition>
             </q-card-main>
+            <q-inner-loading :visible="typeof submissions === 'undefined'">
+              <q-spinner-audio size="50px" color="primary"></q-spinner-audio>
+            </q-inner-loading>
         </q-card>
       </div>
     </q-pull-to-refresh>
@@ -90,7 +94,7 @@ import locale from 'element-ui/lib/locale'
 import * as Database from 'database/Database'
 import moment from 'moment'
 import jsonexport from 'jsonexport'
-import { Loading, QCard, QCardTitle, QCardSeparator, QCardMain, QFab, QFabAction, QFixedPosition, QPullToRefresh, QSpinnerAudio } from 'quasar'
+import { Loading, QCard, QCardTitle, QCardSeparator, QCardMain, QFab, QFabAction, QFixedPosition, QPullToRefresh, QSpinnerAudio, QTransition, QInnerLoading } from 'quasar'
 import LocalSubmission from 'database/collections/scopes/LocalSubmission'
 import FormioUtils from 'formiojs/utils'
 locale.use(lang)
@@ -115,6 +119,8 @@ export default {
     }
   },
   components: {
+    QInnerLoading,
+    QTransition,
     DataTables,
     QCard,
     QCardTitle,

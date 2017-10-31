@@ -7,10 +7,12 @@
       <q-item v-bind:class="{ active: isActive(lenguage.code)}"  @click="setLanguage({code: lenguage.code, direction: lenguage.direction}), $refs.popover.close()" v-for="lenguage in lenguages" :key="lenguage.code">
       {{lenguage.label}}
       </q-item>
+
        <q-item-separator />
-      <q-item v-bind:class="{ active: isActive(lenguage.code)}"  @click="$refs.popover.close()">
-     <q-icon name="fa-language" /> Sync
+      <q-item  @click="getTranslations(), $refs.popover.close()">
+          <q-icon name="fa-language" /> Sync
       </q-item>
+
     </q-list>
   </q-popover>
 </q-btn>
@@ -39,6 +41,7 @@ import {
   QFixedPosition,
   QItemSeparator
 } from 'quasar'
+import Localization from '../Localization'
 export default {
   name: 'localization',
   components: {
@@ -67,6 +70,21 @@ export default {
     }
   },
   methods: {
+    async getTranslations () {
+       await Localization.getTranslations()
+       this.$swal({
+                title: 'Localizations Synced',
+                text: 'You need to reload the page to see them. Want to do it now?',
+                type: 'success',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, reaload it!',
+                cancelButtonText: 'No, Later'
+              }).then(async () => {
+                  window.location.reload(true)
+              })
+    },
     isActive (code) {
       return !!(this.lenguage === code)
     },
