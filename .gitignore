@@ -13,3 +13,5 @@ thumbs.db
 /.idea/
 *.iml
 cordova/
+electron/
+dist/

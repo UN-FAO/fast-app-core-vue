@@ -1,13 +1,19 @@
 {
-  "name": "quasar-app",
-  "version": "0.0.1",
-  "description": "A Quasar App",
-  "author": "Your Name",
+  "name": "FAST",
+  "version": "0.1.2",
+  "description": "A data collection application for FORM.io",
+  "author": "Ignacio Cabrera <ignacio.cabrera@fao.org>",
   "scripts": {
     "clean": "node build/script.clean.js",
     "dev": "node build/script.dev.js",
     "build": "node build/script.build.js",
-    "lint": "eslint --ext .js,.vue src"
+    "lint": "eslint --ext .js,.vue src",
+    "deploy:web": "sh deploys/web/web_deploy.sh",
+    "deploy:android": "sh deploys/cordova/deploy_android.sh",
+    "deploy:ios": "sh deploys/electron/electron_ios.sh",
+    "deploy:windows": "sh deploys/electron/electron_windows.sh",
+    "deploy:linux": "sh deploys/electron/electron_linux.sh",
+    "deploy:all": "sh deploys/deploy_all.sh"
   },
   "dependencies": {
     "async-debounce": "0.0.0",

@@ -45,14 +45,22 @@ const _create = async function () {
     name: store.getters.getMachineUrl,
     password: LOCAL_DB_PASSWORD
   }
-  if (Platform.is.mobile) {
+  var userAgent = navigator && navigator.userAgent && navigator.userAgent.toLowerCase()
+  // If running on Electron
+  if (userAgent && userAgent.indexOf(' electron/') > -1) {
+     database.adapter = 'websql'
+  }
+  // If running on Mobile Browser
+  else if (Platform.is.mobile) {
     database.adapter = 'localstorage'
-  } else if (Platform.is.cordova) {
+  }
+  // If running on Cordova App
+  else if (Platform.is.cordova) {
     database.adapter = 'idb'
   } else {
-    database.adapter = 'websql'
+    database.adapter = 'idb'
   }
-  database.adapter = 'idb'
+
   console.log('#########################')
   console.log('We are using', database.adapter)
   console.log('#########################')

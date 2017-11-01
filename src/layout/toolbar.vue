@@ -1,6 +1,6 @@
 <template>
 
-    <q-toolbar class="bg-primary">
+    <q-toolbar class="bg-primary" style="-webkit-app-region: drag; -webkit-user-select: none;">
     <q-ajax-bar color="#80cbc4"></q-ajax-bar>
       <q-btn flat @click="openLeftDrawer()" v-if="$route.name !== 'login' && $route.name !== 'register' && $route.name !== 'login_redirect'  ">
         <q-icon name="menu" />
