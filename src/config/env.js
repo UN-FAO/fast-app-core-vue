@@ -8,7 +8,7 @@
 | understand whats are your users looking at!
 |
 */ 
-	export const FAST_VERSION = '0.1.7'
+	export const FAST_VERSION = '0.1.11'
 /*
 |--------------------------------------------------------------------------
 | FORM.IO CONFIGURATION
@@ -58,8 +58,9 @@
 |
 */ 
 	export const HEARTBEAT_URL = 'https://dog.ceo/api/breeds/list/all'
-	export const SYNC_INTERVAL = 5000
-
+	// Not recomended to have the SYNC < 10000 milliseconds
+	// You could experience some duplication on the calls
+	export const SYNC_INTERVAL = 10000
 /*
 |--------------------------------------------------------------------------
 | MULTILANGUAGE

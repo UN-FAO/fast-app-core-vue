@@ -31,7 +31,7 @@
   
        <q-list-header>{{ $t("App.unsynced_actions") }}
         
-          <q-btn flat  color="primary" @click="getForms()">
+          <q-btn flat  color="primary" @click="syncSubmissions()">
           <q-icon name="cloud_upload" />
           <q-tooltip anchor="center right" self="center left" :offset="[10, 0]">
             {{ $t("App.sync_submissions") }}
@@ -161,6 +161,9 @@ export default {
       let start = moment(givenDate)
       let end = moment()
       return end.to(start)
+    },
+    syncSubmissions () {
+      Database.sync(this)
     }
   }
 }

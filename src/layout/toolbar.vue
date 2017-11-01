@@ -10,7 +10,7 @@
       <span slot="subtitle">Self-evaluation and Holistic Assessment of climate resilence of Farmers and Pastoralists</span>
       </q-toolbar-title>
       <div v-if="$route.name !== 'login' && $route.name !== 'register' && $route.name !== 'login_redirect'  ">
-      {{User ? User.data.email : '' }}
+      {{userEmail}}
      </div>
       <localization/>
       <wifiDisplay/>
@@ -41,6 +41,11 @@ export default {
     QBtn,
     QIcon,
     wifiDisplay
+  },
+  computed: {
+    userEmail () {
+      return this.User ? this.User.data.email : ''
+    }
   },
   data () {
     return {

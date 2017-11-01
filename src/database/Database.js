@@ -22,6 +22,7 @@ RxDB.plugin(require('pouchdb-adapter-idb'))
 RxDB.plugin(require('pouchdb-adapter-http')) // enable syncing over http
 RxDB.plugin(require('pouchdb-adapter-cordova-sqlite'))
 RxDB.plugin(require('pouchdb-adapter-localstorage'))
+RxDB.plugin(require('pouchdb-adapter-websql'))
 // const syncURL = SYNC_URL
 let dbPromise = null
 
@@ -47,11 +48,11 @@ const _create = async function () {
   if (Platform.is.mobile) {
     database.adapter = 'localstorage'
   } else if (Platform.is.cordova) {
-    database.adapter = 'cordova-sqlite'
-  } else {
     database.adapter = 'idb'
+  } else {
+    database.adapter = 'websql'
   }
- 
+  database.adapter = 'idb'
   console.log('#########################')
   console.log('We are using', database.adapter)
   console.log('#########################')
@@ -85,18 +86,19 @@ export function get () {
  * @param  {[type]} options.isOnline [description]
  * @return {[type]}                  [description]
  */
-const syncSubmissions = async ({ db, isOnline }) => {
+const syncSubmissions = async ({ db, vm }) => {
   let usersAreSync = await areUsersSynced()
-
+  let userEmail = Auth.user().data.email || Auth.user().email
   if (usersAreSync) {
     let filter = await db.submissions.find().exec()
     // updated incomplete submission
     filter = _.filter(filter, function (o) {
-      return (o.data.sync === false && o.data.draft === false)
+      return (o.data.sync === false && o.data.draft === false && o.data.user_email === userEmail)
     })
+    console.log('Offline submissions are', filter)
     filter = _.orderBy(filter, ['data.created'], ['asc'])
     if (filter.length > 0) {
-      store.dispatch('sendOfflineData', { offlineSubmissions: filter, isOnline })
+      store.dispatch('sendOfflineData', { offlineSubmissions: filter, vm: vm })
     }
   }
 }
@@ -147,9 +149,8 @@ const DsyncUsers = _.debounce(syncUsers, 1000)
 export const sync = async function (vm) {
   const db = await Database.get()
   const isOnline = Connection.isOnline() /*  Connection.isTabInUse() ? await Connection.heartBeat(vm) : Connection.isOnline() */
-
   if (Auth.check() && isOnline) {
-    await DsyncSubmissions({ db, isOnline })
+    await DsyncSubmissions({ db, vm })
   }
 
   if (isOnline) {

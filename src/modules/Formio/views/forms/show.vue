@@ -81,6 +81,7 @@
 
                         <q-fab-action color="amber" @click="pullSubmissions()" icon="cloud_download"></q-fab-action>
 
+                          <q-fab-action color="success" @click="updateLocalSubmissions()" icon="fa-refresh"></q-fab-action>
                     </q-fab>
                 </q-fixed-position>
 </div>
@@ -112,6 +113,9 @@ export default {
       this.currentForm = await db.forms.findOne()
         .where('data.path').eq(this.$route.params.idForm).exec()
 
+    this.$eventHub.on('FAST-DATA_SYNCED', (data) => {
+      this.updateLocalSubmissions()
+    })
       this.visibleColumns = FormioUtils.findComponents(this.currentForm.data.components, {
         'input': true,
         'tableView': true
@@ -236,6 +240,7 @@ export default {
                   deleteSubmission = online
                 }
                 await deleteSubmission.remove()
+                this.updateLocalSubmissions()
                 self.$swal(
                   'Deleted!',
                   'Your submission has been deleted.',
@@ -355,6 +360,15 @@ export default {
           },
           */
         ]
+      }
+    },
+    async updateLocalSubmissions() {
+       if (this.$route.params.idForm === '*') {
+        this.submissions = await LocalSubmission.sFind(this, {})
+      } else {
+         this.submissions = await LocalSubmission.sFind(this, {
+            'data.formio.formId': this.$route.params.idForm
+          })
       }
     },
     async pullSubmissions() {

@@ -17,7 +17,9 @@
       </q-card-title>
       <q-card-main>
         <formio :formioURL="formioURL"
-                hashField="password" />
+                hashField="password" 
+                :submission="submission"
+        />
         <div class="col-md-12 col-lg-12 justify-center _backlink">
           <router-link :to="{ path: 'login' }">Back to login</router-link>
         </div>
@@ -93,7 +95,8 @@ export default {
   data() {
     return {
       form: null,
-      formioURL: APP_URL + '/userregister'
+      formioURL: APP_URL + '/userregister',
+      submission: {data: 'register'}
     }
   },
   /**

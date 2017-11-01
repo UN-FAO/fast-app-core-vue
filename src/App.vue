@@ -44,10 +44,10 @@ import {
   QItemMain,
   QSideLink,
   QListHeader,
-  QScrollArea
+  QScrollArea,
+  Toast
 } from 'quasar'
 import layoutStore from 'layout/layout-store'
-
 export default {
   name: 'app',
   mounted () {
@@ -66,19 +66,21 @@ export default {
       this.$refs.layout.toggleRight()
     })
 
+    this.$eventHub.on('FAST-DATA_SYNCED', (data) => {
+       Toast.create.positive({ html: data.count + ' SUBMISSION(s) SYNCED' })
+    })
+
     Connection.initEventListeners(this)
-    Connection.listenPageInUse()
     this.setSyncInterval()
   },
   methods: {
-    ...mapActions(['sendOfflineData', 'getResources']),
+    ...mapActions(['sendOfflineData']),
     toggleRtl: function (lenguageDirecction) {
       this.ltr = lenguageDirecction === 'ltr'
     },
     /**
        * [setSyncInterval description]
        */
-    
     setSyncInterval: function () {
       let rInterval = function (callback, delay) {
         let dateNow = Date.now,
@@ -99,9 +101,7 @@ export default {
         }
       }
       rInterval(() => {
-        if (Connection.isTabInUse()) {
-          return sync(this)
-        }
+        return sync(this)
       }, SYNC_INTERVAL)
     }
   },
@@ -130,7 +130,8 @@ export default {
     toolbar,
     leftdrawer,
     rigthdrawer,
-    connectionAlert
+    connectionAlert,
+    Toast
   }
 }
 </script>

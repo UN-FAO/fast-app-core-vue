@@ -185,7 +185,10 @@ export default {
          * @return {[type]} [description]
          */
     renderForm () {
-      let submissionNotLoaded = (typeof this.jsonSubmission === 'undefined')
+      if (this.submission && this.submission.data !== 'register') {
+        this.jsonSubmission = this.submission
+      }
+      let submissionNotLoaded = (this.jsonSubmission && typeof this.jsonSubmission === 'undefined' && this.jsonSubmission.data !== 'register')
       // Wait until submission is present (if needed)
       if (submissionNotLoaded) { return }
       // Offline plugin functionallity
@@ -269,7 +272,6 @@ export default {
      * @return {[type]}   [description]
      */
     autoSaveAsDraft () {
-      /*
       let formSubmission = {
         data: this.getCurrentData(),
         redirect: false,
@@ -277,7 +279,6 @@ export default {
         trigger: 'autoSaveAsDraft'
       }
       this.save(formSubmission)
-      */
     },
     /**
      * [removeDuplicatedPagination description]
@@ -321,11 +322,10 @@ export default {
      * @param {[type]} savedSubmission [description]
      */
     setSubmission (onlineJsonForm, savedSubmission) {
-        console.log('this is the data', this.jsonSubmission.data.data)
-        this.formIO.submission = {data: this.jsonSubmission.data.data}
+        this.formIO.submission = (this.jsonSubmission && this.jsonSubmission.data && this.jsonSubmission.data.data) ? {data: this.jsonSubmission.data.data} : {data: {}}
         // If we are creating a wizard
         if (onlineJsonForm.display === 'wizard') {
-          this.formIO.data = this.jsonSubmission.data.data
+          this.formIO.data = (this.jsonSubmission && this.jsonSubmission.data && this.jsonSubmission.data.data) ? this.jsonSubmission.data.data : {}
         } else {
           // If we have a savedSubmission (Staying on the same page after submit)
           this.formIO.submission = savedSubmission ? {data: savedSubmission.data} : this.formIO.submission
@@ -370,13 +370,12 @@ export default {
         this.createFormioInstance(onlineJsonForm, translations)
         // If we are creating a new record triggers the creation
         // to go directly to edit (an have autosave functionality)
-        if (this.jsonSubmission.data === false && this.$route.name === 'formio_form_submission') {
+        if (this.jsonSubmission && this.jsonSubmission.data === false && this.$route.name === 'formio_form_submission') {
           this.createLocalDraft()
           return
         }
-
-         // Set Submission if we are Updating
-        this.setSubmission(onlineJsonForm, savedSubmission)
+          // Set Submission if we are Updating
+          this.setSubmission(onlineJsonForm, savedSubmission)
 
         // Clone the original object to avoid changes
         let cloneJsonForm = _.cloneDeep(onlineJsonForm)

@@ -1,5 +1,4 @@
 import Formio from 'modules/Formio/api/Formio'
-import { Toast } from 'quasar'
 import * as Database from 'database/Database'
 import SyncHelper from 'database/helpers/SyncHelper'
 import _ from 'lodash'
@@ -9,7 +8,8 @@ import Connection from 'modules/Wrappers/Connection'
 import LocalSubmission from 'database/collections/scopes/LocalSubmission'
 import FormioJS from 'formiojs'
 import deep from 'deep-diff'
-
+import {Toast} from 'quasar'
+import Promise from 'bluebird'
 const actions = {
 
   async updateLocalResource ({ collection, label, data }) {
@@ -212,13 +212,15 @@ const actions = {
    * @param  {[type]} offlineSubmissions [description]
    * @return {[type]}                    [description]
    */
-  async sendOfflineData ({ commit }, { offlineSubmissions }) {
+  async sendOfflineData ({ commit }, data) {
+    let offlineSubmissions = data.offlineSubmissions
+    let vm = data.vm
     let isOnline = Connection.isOnline()
-
+    let syncedSubmissionsCount = 0
+    let syncedSubmissions = []
+    let offlinePlugin = FormioJS.getPlugin('offline')
     if (isOnline) {
-      let offlinePlugin = FormioJS.getPlugin('offline')
-      let syncedSubmissions = 0
-      _.forEach(offlineSubmissions, async function (offlineSubmission) {
+     Promise.each(offlineSubmissions, async function (offlineSubmission) {
         // Create FormIOJS plugin instace (Manipulation)
         let formio = new FormioJS(offlineSubmission.data.formio.formUrl)
         let postData = {
@@ -235,22 +237,29 @@ const actions = {
           let FormIOinsertedData = await formio.saveSubmission(postData)
           FormIOinsertedData.formio = formio
 
+          syncedSubmissionsCount = syncedSubmissionsCount + 1
+          syncedSubmissions.push(FormIOinsertedData)
+
           await offlineSubmission.update({
             $set: {
               data: FormIOinsertedData
             }
           })
-          syncedSubmissions = syncedSubmissions + 1
-          FormioJS.registerPlugin(offlinePlugin, 'offline')
+
+          if (offlinePlugin) {
+            FormioJS.registerPlugin(offlinePlugin, 'offline')
+          }
         }
         catch (e) {
           console.log('The submission cannot be synced ', e)
-          FormioJS.registerPlugin(offlinePlugin, 'offline')
+          if (offlinePlugin) {
+            FormioJS.registerPlugin(offlinePlugin, 'offline')
+          }
         }
+      }).then((result) => {
+          vm.$eventHub.emit('FAST-DATA_SYNCED', {count: syncedSubmissionsCount,
+            data: syncedSubmissions })
       })
-      if (syncedSubmissions > 0) {
-        Toast.create.positive({ html: syncedSubmissions + 'SUBMISSIONS SYNCED' })
-      }
     }
   }
 }
