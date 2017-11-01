@@ -14,3 +14,4 @@ thumbs.db
 *.iml
 cordova/
 electron/
+deploys/all/*
