@@ -15,3 +15,4 @@ thumbs.db
 cordova/
 electron/
 deploys/all/*
+cypress/screenshots/*
