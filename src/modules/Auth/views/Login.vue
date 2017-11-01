@@ -1,133 +1,15 @@
-<style>
-#follow-up-main {
-    height: 100%;
-    overflow-x: hidden;
-}
-  [data-reactroot].main-app-container {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-  }
-.login-main-container {
-    overflow: hidden;
-}
-
-.login-main-container {
-    overflow: hidden;
-}
-.login-main-container {
-    width: 100%;
-    height: 100%;
-    position: relative;
-    overflow: visible;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-.login-main-container {
-    flex-grow: 1;
-    flex-direction: column;
-    text-align: center;
-}
-.login-form-container {
-    flex-grow: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.login-main-container .big-logo {
-    opacity: .25;
-}
-.login-main-container .big-logo {
-    opacity: .15;
-    display: block;
-}
-.login-main-container .big-logo {
-    position: absolute;
-    height: 1124px;
-    width: 1124px;
-    background-image: url("../../../statics/big-logo.png");
-    display: none;
-    opacity: 0;
-    left: -562px;
-    z-index: -1;
-    text-align: center;
-}
-
-
-.fao-logo-login {
-    height: 59px;
-    width: 300px;
-    background-image: url("../../../statics/login-logo.svg");
-    background-size: contain;
-    background-repeat: no-repeat;
-}
-    
-.login-form-holder h1 {font-size: 5em; margin-bottom: 0.2em; color:#065276;}
-.login-form-holder h4 {font-size: 2.5em; color:#065276; margin-bottom: 1.5em;}    
-    
-.login-form-holder button {
-    width: 20%;
-    height: 45px;
-    margin-bottom: 2.5em;
-    margin-top: 1em;
-}
-.btn.btn-primary {
-    background-color: #1976d3;
-}
-.q-btn {
-    padding: 6px 10px;
-    font-size: 15px;
-    position: relative;
-    /*
-    -webkit-border-radius: 25px;
-    -moz-border-radius: 25px;
-    -ms-border-radius: 25px;
-    border-radius: 25px;
-    */
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    -webkit-tap-highlight-color: rgba(255,255,255,0);
-}
-    
-._new-user a {border-bottom: 1px solid #c3c7ca; padding: 0px 10px 5px; font-size: 0.95em;}
-input.col.q-input-target.text-left:focus {
-  -webkit-box-shadow: none !important;
-  box-shadow: none !important;
-}
-    
-    
-body {
-    font-family: 'Open Sans', sans-serif !important;
-    background-color: #f3f3f5;
-    color: #333;
-    overflow-x: hidden;
-}
-body, html {
-    height: 100%;
-}
-</style>
-
 <template>
   <div id="follow-up-main" class="row justify-center">
-    <q-card inline class="col-lg-6" style="
-       margin: auto; position: absolute;
-      top: 0;
-      left: 0;
-      bottom: 0;
-       right: 0;" flat>
+    <q-card inline class="col-lg-6 centered" flat>
     <div data-reactroot="" data-desktop="true" data-section="login" data-style="table" class="main-app-container container-fluid">
         <div class="login-main-container">
             <div class="login-form-container">
                 <div class="login-form-holder">
                     <!--<div class="fao-logo-login"></div>-->
+                    <div class="appTitleHolder">
                     <h1><!-- react-text: 28 --><!-- /react-text --><!-- react-text: 29 -->SHARP+<!-- /react-text --></h1>
                     <h4>Self-evaluation and Holistic Assessment of climate resilence of Farmers and Pastoralists</h4>
+                    </div>
                     <br>
           
                         <div class="form-group">
@@ -144,18 +26,20 @@ body, html {
                                        @keyup.enter="handleLogin" />
                             </q-field>
                         </div>
+                        <p class="text-center">
                         <q-btn loader
                              color="primary"
                              @click="handleLogin">
                         Login
                         <span slot="loading">Loading...</span>
-                      </q-btn>      
+                      </q-btn>
+                    </p>
                     <br>
                     <p class="text-center _new-user"><router-link :to="{ path: 'register' }">New user ?</router-link></p>
                 </div>
             </div>
-            <div class="big-logo"></div>
-            <p>
+            <br>
+            <p class="text-center">
                 <!-- react-text: 44 -->Version
                 <!-- /react-text -->
                 <!-- react-text: 45 -->{{fastVersion}}
@@ -282,9 +166,3 @@ export default {
 }
 
 </script>
-
-<style scoped="">
-h4 {
-  font-weight: 300;
-}
-</style>

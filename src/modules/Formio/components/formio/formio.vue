@@ -1,12 +1,5 @@
 
 <style>
- .desc {
-    margin-top: 20px;
-    margin-bottom: 40px;
-  }
-  .pl {
-    padding-left: 20px;
-  }
 
 .form-control {
     min-height: 35px !important;
@@ -16,8 +9,8 @@
 
 label.control-label {
     color: #666;
-    font-size: large !important;
-    font-weight: 400;
+    font-size: medium !important;
+    font-weight: 300;
 }
 
 input[type=radio] {
@@ -71,16 +64,6 @@ input[type=radio]:checked + span, input[type=checkbox]:checked + span {
     border-color: #ebccd1;
 }
 
-.form-group.formio-component {
-    margin: 3px 0px;
-    border-bottom: 1px solid #eee;
-    margin-bottom: 20px;
-}
-table .form-group.formio-component {
-    margin: 0px !important;
-    border-bottom: none !important;
-    margin-bottom: 0px !important;
-}
 </style>
 <template>
     <div>

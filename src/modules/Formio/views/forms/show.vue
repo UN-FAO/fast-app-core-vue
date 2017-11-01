@@ -1,24 +1,8 @@
-<style lang="css">
-.desc {
-  margin-top: 20px;
-  margin-bottom: 40px;
-}
-
-.pl {
-  padding-left: 20px;
-}
-.el-table__body-wrapper {
-    overflow: scroll !important;
-    position: relative !important;
-    -webkit-overflow-scrolling: touch !important;
-}
-</style>
-
 <template>
   <div>
     <q-pull-to-refresh :handler="refreshSubmissions">
       <div class="row" style="margin-right: 15px !important;">
-        <q-card color="white" class="col-lg-12 col-md-12 centered relative-position">
+        <q-card color="white" class="col-lg-10 col-lg-offset-1 col-md-offset-1 col-md-10 col-sm-10 col-sm-offset-1 col-xs-offset-0 col-xs-12  centered relative-position">
             <q-card-title style="color: black;">
               Collected Data
             </q-card-title>

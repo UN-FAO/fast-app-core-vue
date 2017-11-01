@@ -154,23 +154,3 @@ export default {
   }
 }
 </script>
-
-<style>
-    
-.layout-aside-left {background:#00283c !important; color:#ffffff; opacity:0.8;}
-.layout-aside-left .q-list {padding: 1px 0; border: none !important;}
-.layout-aside-left .q-item-side {color:#ffffff; text-align: center;}
-
-.router-link-exact-active.router-link-active {
-    background-color: rgb(0, 82, 132) !important;
-}
-
-.layout-aside-left .q-list-header {line-height: 60px;}
-.layout-aside-left .q-list-header center {font-size: 1.8em;}
-.layout-aside-left .q-item {padding: 15px 16px;}
-.layout-aside-left .q-item-side {min-width: 40px;}
-
-.router-link-active {background: none !important;}
-    
-    
-</style>

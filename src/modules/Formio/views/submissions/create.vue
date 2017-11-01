@@ -1,12 +1,12 @@
 <template>
     <q-pull-to-refresh :handler="reloadPage">
-      <div class="row">     
+      <div class="row FormioContainer">     
   
-        <q-card  flat color="transparent"  class="col-lg-3  col-md-3 col-sm-3" v-if="_isWizard && showPages"> 
+        <q-card color="transparent"  class="col-lg-3  col-md-3 col-sm-3" v-if="_isWizard && showPages"> 
           <q-card-main>
               <q-list separator style="border: none !important">
       
-              <q-item  multiline style="text-align: left; text-transform: uppercase; min-height: 60px; border-radius: 5px;"  link  v-for="(page, index) in pages"  :key="page.title" @click="goToPage(index)" :ref="'page-'+ index" v-bind:class="currentPage === index ? 'activePage' : ''">
+              <q-item class="formioPagination" multiline style="text-align: left; text-transform: uppercase; min-height: 60px; border-radius: 5px;"  link  v-for="(page, index) in pages"  :key="page.title" @click="goToPage(index)" :ref="'page-'+ index" v-bind:class="currentPage === index ? 'activePage' : ''">
               <q-item-main style=" margin-top: auto;  margin-bottom: auto;"
                 :label="getLabelForPage(page)"
                 label-lines="3"
@@ -74,40 +74,6 @@
       </div>
     </q-pull-to-refresh>
 </template>
-<style scoped>
-.q-item-label {
-    color: black;
-    font-weight: 300;
-}
-
-.saving {
-  box-shadow: 1px 1px 1px 1px rgba(222, 15, 15, 0.88) !important;
-}
-
-.q-collapsible.q-item-division.relative-position {
-    color: black;
-}
-
-.activePage {
-  background-color:#0e6da5;
-  color: white;
-}
-.activePage .q-item-main .q-item-label  {
-  background-color:#0e6da5;
-  color: white !important;
-  font-weight: 400;
-}
-.activePage.q-item.q-item-division.relative-position.q-item-multiline.q-item-link:hover {
-    background: #0e6da5;
-}
-
-.field-required:after {
-    content: " *";
-    color: red;
-    font-size: x-large;
-}
-</style>
-
 <script>
 import _ from 'lodash'
 import FormioUtils from 'formiojs/utils'
