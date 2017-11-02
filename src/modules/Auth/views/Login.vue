@@ -34,7 +34,7 @@
                              style="border: #0E6DA5 solid 1px;" 
                              @click="handleLogin"> 
                         Login 
-                        <span slot="loading">Loading...</span> 
+                        <span slot="loading">Load...</span> 
                       </q-btn> 
                     </p> 
                     <br> 
