@@ -2,7 +2,7 @@
     <q-pull-to-refresh :handler="reloadPage">
       <div class="row FormioContainer">     
   
-        <q-card color="transparent"  class="col-lg-3  col-md-3 col-sm-3" v-if="_isWizard && showPages"> 
+        <q-card style="background-color: white"  class="col-lg-3  col-md-3 col-sm-3" v-if="_isWizard && showPages"> 
           <q-card-main>
               <q-list separator style="border: none !important">
       
@@ -48,7 +48,7 @@
         </q-card>
 
          <q-fixed-position corner="top-right" :offset="[18, 18]">
-                    <q-fab color="red" icon="add" direction="left" push>
+                    <q-fab color="red" icon="add" direction="left">
                         <q-fab-action color="secondary" @click="exportPDF" icon="print"></q-fab-action>
 
                         <q-fab-action color="primary" @click="getForms()" icon="cloud_download"></q-fab-action>

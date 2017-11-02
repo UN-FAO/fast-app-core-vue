@@ -149,9 +149,6 @@ input.form-control {
     min-width: 150px;
 }
 
-.q-btn-round.q-btn-standard .q-icon, .q-btn-round.q-btn-standard .q-spinner {
-    padding-top: 13px !important;
-}
 
 .transition-generic {
     transition: all .1s !important;
@@ -296,7 +293,12 @@ body, html {
 label.control-label {
     color: #666;
     font-size: medium !important;
-    font-weight: 300;
+    font-weight: 300 !important;
+}
+
+.radio label {
+    font-weight: normal !important;
+    font-size: medium !important;
 }
 
 input[type=radio] {
@@ -314,7 +316,7 @@ input[type=radio] + span, input[type=checkbox] + span {
     padding: 4px 12px;
     background-color: rgb(231, 231, 231);
     border-radius: 5px;
-    min-width: 250px;
+    min-width: 230px;
     min-height: 30px;
     text-align: center;
     text-transform: uppercase;
@@ -322,8 +324,8 @@ input[type=radio] + span, input[type=checkbox] + span {
     justify-content: center;
     align-content: center;
     flex-direction: column;
-    margin-bottom: 5px;
-    margin-top: 5px;
+    margin-bottom: 1px !important;
+    margin-top: 1px !important;
 }
 
 input[type=radio]:checked + span, input[type=checkbox]:checked + span { 
@@ -340,8 +342,8 @@ input[type=radio]:checked + span, input[type=checkbox]:checked + span {
     justify-content: center;
     align-content: center;
     flex-direction: column;
-    margin-bottom: 5px;
-    margin-top: 5px;
+    margin-bottom: 1px !important;
+    margin-top: 1px !important;
 }
 
 .alert-danger {
@@ -425,3 +427,26 @@ input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
     transition: background-color 5000s ease-in-out 0s;
 }
+
+
+.layout-header {
+    box-shadow: none !important;
+}
+
+.form-group {
+    margin-bottom: 10px !important;
+}
+
+label {
+    margin-bottom: 0px !important;
+}
+
+.btn.btn-primary {
+    background-color: #337ab7;
+    border-radius: 0px !important;
+    border-color: transparent;
+}
+
+
+
+
