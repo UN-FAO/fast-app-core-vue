@@ -585,9 +585,14 @@ label {
 }
 
 .btn.btn-primary {
-    background-color: #337ab7;
-    border-radius: 0px !important;
-    border-color: transparent;
+ background-color: white;
+ border: #0E6DA5 solid 1px;
+}
+
+.btn.btn-primary:hover {
+ color:#0E6DA5;
+ background-color: #DBE9F2;
+ border: #0E6DA5 solid 1px;
 }
 
 .backgroundImage {

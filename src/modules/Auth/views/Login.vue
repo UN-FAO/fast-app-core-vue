@@ -30,7 +30,8 @@
                         </div> 
                         <p class="text-center"> 
                         <q-btn loader 
-                             color="primary" 
+                             color="white"
+                             style="border: #0E6DA5 solid 1px;" 
                              @click="handleLogin"> 
                         Login 
                         <span slot="loading">Loading...</span> 
@@ -39,15 +40,12 @@
                     <br> 
                     <p class="text-center _new-user"><router-link :to="{ path: 'register' }">New user ?</router-link></p> 
             <br> 
-            <p class="text-center"> 
+            <p class="text-center" style="color: grey !important"> 
                 <!-- react-text: 44 -->Version 
                 <!-- /react-text --> 
                 <!-- react-text: 45 -->{{fastVersion}} 
                 <!-- /react-text --> 
-            </p>     
-                    <br>
-
-                      <p class="text-center _new-user"><router-link :to="{ path: 'login' }">Back to login</router-link></p>
+            </p>
                </div>
             </div>
         </div>
