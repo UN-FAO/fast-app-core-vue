@@ -602,11 +602,6 @@ label {
   background-attachment: fixed !important;
   background-size:  cover !important;
   width: 100%;
-  -webkit-filter: blur(1px);
-  -moz-filter: blur(1px);
-  -o-filter: blur(1px);
-  -ms-filter: blur(1px);
-  filter: blur(1px);
   opacity: 0.75;
   filter: alpha(opacity=75);
   position: fixed;
