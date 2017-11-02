@@ -1,53 +1,59 @@
 <template>
-  <div id="follow-up-main" class="row justify-center">
-    <q-card inline class="col-lg-6 centered" flat>
+  <div>
+  <div class="backgroundImage">
+  </div>
+  <div id="follow-up-main">
+    <q-card  class="col-lg-4  col-lg-offset-7 col-md-4  col-md-offset-7 col-xs-10  col-xs-offset-1  col-sm-6  col-sm-offset-5 shadow-7" style="background-color: white; position: absolute; bottom: 50px; max-height: 600px; min-height: 600px">
     <div data-reactroot="" data-desktop="true" data-section="login" data-style="table" class="main-app-container container-fluid">
         <div class="login-main-container">
             <div class="login-form-container">
                 <div class="login-form-holder">
+                   <div class="appTitleHolder">
                     <!--<div class="fao-logo-login"></div>-->
-                    <div class="appTitleHolder">
-                    <h1><!-- react-text: 28 --><!-- /react-text --><!-- react-text: 29 -->SHARP+<!-- /react-text --></h1>
-                    <h4>Self-evaluation and Holistic Assessment of climate resilence of Farmers and Pastoralists</h4>
-                    </div>
+                    <h4><!-- react-text: 28 --><!-- /react-text --><!-- react-text: 29 -->SHARP+<!-- /react-text --></h4>
+                    <h5>Self-evaluation and Holistic Assessment of climate resilence of Farmers and Pastoralists</h5>
+                  </div>
                     <br>
-          
-                        <div class="form-group">
-                           <q-field icon="person" style="text-align: -webkit-auto;">
-                            <q-input v-model="credentials.username"
-                                     float-label="username" />
-                          </q-field>
-                        </div>
-                        <div class="form-group">
-                            <q-field icon="lock_outline" style="text-align: -webkit-auto;"> 
-                              <q-input v-model="credentials.password"
-                                       type="password"
-                                       float-label="password"
-                                       @keyup.enter="handleLogin" />
-                            </q-field>
-                        </div>
-                        <p class="text-center">
-                        <q-btn loader
-                             color="primary"
-                             @click="handleLogin">
-                        Login
-                        <span slot="loading">Loading...</span>
-                      </q-btn>
-                    </p>
+                         <div class="form-group">  
+            <q-field icon="person" style="text-align: -webkit-auto;">  
+               <q-input v-model="credentials.username"  
+                float-label="username" />  
+                </q-field>  
+    </div>  
+                        <div class="form-group"> 
+                            <q-field icon="lock_outline" style="text-align: -webkit-auto;">  
+                              <q-input v-model="credentials.password" 
+                                       type="password" 
+                                       float-label="password" 
+                                       @keyup.enter="handleLogin" /> 
+                            </q-field> 
+                        </div> 
+                        <p class="text-center"> 
+                        <q-btn loader 
+                             color="primary" 
+                             @click="handleLogin"> 
+                        Login 
+                        <span slot="loading">Loading...</span> 
+                      </q-btn> 
+                    </p> 
+                    <br> 
+                    <p class="text-center _new-user"><router-link :to="{ path: 'register' }">New user ?</router-link></p> 
+            <br> 
+            <p class="text-center"> 
+                <!-- react-text: 44 -->Version 
+                <!-- /react-text --> 
+                <!-- react-text: 45 -->{{fastVersion}} 
+                <!-- /react-text --> 
+            </p>     
                     <br>
-                    <p class="text-center _new-user"><router-link :to="{ path: 'register' }">New user ?</router-link></p>
-                </div>
+
+                      <p class="text-center _new-user"><router-link :to="{ path: 'login' }">Back to login</router-link></p>
+               </div>
             </div>
-            <br>
-            <p class="text-center">
-                <!-- react-text: 44 -->Version
-                <!-- /react-text -->
-                <!-- react-text: 45 -->{{fastVersion}}
-                <!-- /react-text -->
-            </p>
         </div>
     </div>
   </q-card>
+</div>
 </div>
 </template>
 

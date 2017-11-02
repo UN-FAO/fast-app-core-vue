@@ -1,13 +1,12 @@
 <template>
 
-    <q-toolbar class="bg-primary" style="-webkit-app-region: drag; -webkit-user-select: none;">
+    <q-toolbar style="-webkit-app-region: drag; -webkit-user-select: none; background-color: white">
     <q-ajax-bar color="#80cbc4"></q-ajax-bar>
       <q-btn flat @click="openLeftDrawer()" v-if="$route.name !== 'login' && $route.name !== 'register' && $route.name !== 'login_redirect'  ">
         <q-icon name="menu" />
       </q-btn>
       <q-toolbar-title>
-       <img src="statics/2000px-FAO_logo_reverse.png" style="max-height: 40px; max-width: 40px;"></img>  {{ $t("App.title") }}
-      <span slot="subtitle">Self-evaluation and Holistic Assessment of climate resilence of Farmers and Pastoralists</span>
+       {{ $t("App.title") }}
       </q-toolbar-title>
       <div v-if="$route.name !== 'login' && $route.name !== 'register' && $route.name !== 'login_redirect'  ">
       {{userEmail}}

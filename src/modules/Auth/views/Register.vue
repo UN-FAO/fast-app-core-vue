@@ -1,14 +1,17 @@
 <template>
-  <div id="follow-up-main" class="row justify-center">
-    <q-card inline class="col-lg-6 centered"  flat>
+  <div>
+    <div class="backgroundImage">
+    </div>
+  <div id="follow-up-main" class="row">
+    <q-card  class="col-lg-4  col-lg-offset-7 col-md-4  col-md-offset-7 col-xs-10  col-xs-offset-1  col-sm-6  col-sm-offset-5 shadow-7" style="background-color: white; position: absolute; bottom: 50px; max-height: 600px, min-height: 600px">
     <div data-reactroot="" data-desktop="true" data-section="login" data-style="table" class="main-app-container container-fluid">
         <div class="login-main-container">
             <div class="login-form-container">
                 <div class="login-form-holder">
                    <div class="appTitleHolder">
                     <!--<div class="fao-logo-login"></div>-->
-                    <h1><!-- react-text: 28 --><!-- /react-text --><!-- react-text: 29 -->SHARP+<!-- /react-text --></h1>
-                    <h4>Self-evaluation and Holistic Assessment of climate resilence of Farmers and Pastoralists</h4>
+                    <h4><!-- react-text: 28 --><!-- /react-text --><!-- react-text: 29 -->SHARP+<!-- /react-text --></h4>
+                    <h5>Self-evaluation and Holistic Assessment of climate resilence of Farmers and Pastoralists</h5>
                   </div>
                     <br>
                         <formio :formioURL="formioURL"
@@ -23,6 +26,7 @@
         </div>
     </div>
   </q-card>
+</div>
 </div>
 </template>
 

@@ -136,9 +136,22 @@ export default {
 }
 </script>
 <style>
-  html {
+
+*:not(i):not(.fa){
+  box-sizing: border-box;
+    cursor: default;
+    font-family: haptik,Helvetica Neue,Helvetica,sans-serif !important;
+    line-height: 1.5;
+    text-rendering: optimizeLegibility;
+    color: #0e6da5;
+}
+html {
 font-size:inherit!important;
 line-height:inherit!important;
+}
+
+.layout-page-container, .FormioContainer {
+    background: #F1F5F9;
 }
 
 .panel-primary>.panel-heading {
@@ -357,14 +370,12 @@ input.form-control {
     background-repeat: no-repeat;
 }
     
-.login-form-holder h1 {font-size: 5em; margin-bottom: 0.2em; color:#065276;}
-.login-form-holder h4 {font-size: 2.5em; color:#065276; margin-bottom: 1.5em;}    
+.login-form-holder h1 {font-size: 5em;  color:#065276;}
+.login-form-holder h4 {font-size: 2.5em; color:#065276;}    
     
 .login-form-holder button {
     width: 20%;
     height: 45px;
-    margin-bottom: 2.5em;
-    margin-top: 1em;
 }
 .btn.btn-primary {
     background-color: #1976d3;
@@ -546,12 +557,8 @@ input[type=radio]:checked + span, input[type=checkbox]:checked + span {
 .panel {
     border-color: transparent !important; 
 }
-.FormioContainer {
-    background: #F0F4F5;
-}
-.layout-page-container {
-    background: #F0F4F5;
-}
+
+
 
 input.form-control {
     background: transparent !important;
@@ -581,5 +588,25 @@ label {
     background-color: #337ab7;
     border-radius: 0px !important;
     border-color: transparent;
+}
+
+.backgroundImage {
+  background-image: url('/statics/videos/login.jpg') !important ;
+  background-position: center center !important;
+  background-repeat:  no-repeat !important;
+  background-attachment: fixed !important;
+  background-size:  cover !important;
+  width: 100%;
+  -webkit-filter: blur(1px);
+  -moz-filter: blur(1px);
+  -o-filter: blur(1px);
+  -ms-filter: blur(1px);
+  filter: blur(1px);
+  opacity: 0.75;
+  filter: alpha(opacity=75);
+  position: fixed;
+  left:0;
+  top: 0px !important;
+  min-height: calc(100vh);
 }
 </style>
