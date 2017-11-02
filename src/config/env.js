@@ -8,7 +8,7 @@
 | understand whats are your users looking at!
 |
 */ 
-	export const FAST_VERSION = '0.1.12'
+	export const FAST_VERSION = '0.2.0'
 /*
 |--------------------------------------------------------------------------
 | FORM.IO CONFIGURATION
