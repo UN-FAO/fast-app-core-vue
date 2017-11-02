@@ -24,7 +24,7 @@ module.exports = {
 
     // Remove unused CSS
     // Disable it if it has side-effects for your specific app
-    purifyCSS: true
+    //purifyCSS: true
   },
   dev: {
     env: require('./dev.env'),

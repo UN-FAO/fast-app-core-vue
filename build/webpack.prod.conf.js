@@ -19,15 +19,10 @@ module.exports = merge(baseWebpackConfig, {
   },
   devtool: config.build.productionSourceMap ? '#source-map' : false,
   plugins: [
-    /*
     new webpack.optimize.UglifyJsPlugin({
       sourceMap: config.build.productionSourceMap,
-      minimize: true,
-      compress: {
-        warnings: false
-      }
+      minimize: true
     }),
-    */
     // Compress extracted CSS. We are using this plugin so that possible
     // duplicated CSS from different components can be deduped.
     new OptimizeCSSPlugin({
@@ -46,7 +41,10 @@ module.exports = merge(baseWebpackConfig, {
       minify: {
         removeComments: true,
         collapseWhitespace: true,
-        removeAttributeQuotes: true
+        removeAttributeQuotes: true,
+        minifyCSS: true,
+        minifyJS: true,
+        minifyURLs: true
         // more options:
         // https://github.com/kangax/html-minifier#options-quick-reference
       },

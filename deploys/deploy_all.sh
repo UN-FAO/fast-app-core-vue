@@ -4,7 +4,7 @@
 ###################################################
 	APPNAME="FAST"
 	PRODUCTNAME="SHARP"
-	VERSION="0.2.0"
+	VERSION="0.2.2"
 	AUTHOR="Ignacio Cabrera <ignacio.cabrera@fao.org>"
 	DESCRIPTION="Collection application for Form.io"
 ###################################################

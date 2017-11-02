@@ -63,21 +63,10 @@ import {FAST_VERSION} from 'config/env'
 import {mapActions} from 'vuex'
 
 export default {
-   async beforeRouteEnter (to, from, next) {
-
-    next(vm => {
-      console.log('Getting Resources beforeRouteEnter')
-      vm.getResources({
-      appName: vm.$store.state.authStore.appName
-       })
-    })
-  },
-  async beforeRouteUpdate (to, from, next) {
-    console.log('Getting Resources beforeRouteUpdate')
+  mounted () {
     this.getResources({
       appName: this.$store.state.authStore.appName
     })
-    next()
   },
   components: {
     QCard,
