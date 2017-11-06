@@ -79,9 +79,6 @@ const Formio = class {
    */
   static getResource ({ projectName, resource, process }) {
     return new Promise((resolve, reject) => {
-      Loading.show({
-        message: 'Loading forms..'
-      })
       axios.get('https://' + projectName + '.form.io/' + resource)
         .then(response => {
           let forms = response.data

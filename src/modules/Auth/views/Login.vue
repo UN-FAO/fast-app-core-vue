@@ -11,27 +11,27 @@
                    <div class="appTitleHolder">
                     <!--<div class="fao-logo-login"></div>-->
                     <h4><!-- react-text: 28 --><!-- /react-text --><!-- react-text: 29 -->SHARP+<!-- /react-text --></h4>
-                    <h5>Self-evaluation and Holistic Assessment of climate resilence of Farmers and Pastoralists</h5>
+                    <h5 style="color: #0e6da5">Self-evaluation and Holistic Assessment of climate resilence of Farmers and Pastoralists</h5>
                   </div>
                     <br>
                          <div class="form-group">  
             <q-field icon="person" style="text-align: -webkit-auto;">  
                <q-input v-model="credentials.username"  
-                float-label="username" />  
+                stack-label="username" style="border-bottom: 1px solid;" />  
                 </q-field>  
     </div>  
                         <div class="form-group"> 
                             <q-field icon="lock_outline" style="text-align: -webkit-auto;">  
                               <q-input v-model="credentials.password" 
                                        type="password" 
-                                       float-label="password" 
-                                       @keyup.enter="handleLogin" /> 
+                                       stack-label="password" 
+                                       @keyup.enter="handleLogin" style="border-bottom: 1px solid;" /> 
                             </q-field> 
                         </div> 
                         <p class="text-center"> 
                         <q-btn loader 
                              color="white"
-                             style="border: #0E6DA5 solid 1px;" 
+                             style="border: #0E6DA5 solid 1px; color: #0e6da5 !important;" 
                              @click="handleLogin"> 
                         Login 
                         <span slot="loading">Load...</span> 

@@ -26,10 +26,11 @@ const LocalSubmission = class {
 
   static async offline (userId, formId) {
     let db = await Database.get()
+    let userEmail = Auth.user().data.email || Auth.user().email
     let filter = await db.submissions.find().exec()
     // updated incomplete submission
     filter = _.filter(filter, function (o) {
-      return (o.data.sync === false || o.data.draft === false)
+      return ((o.data.sync === false || o.data.draft === false) && o.data.user_email === userEmail)
     })
     filter = _.orderBy(filter, ['data.created'], ['asc'])
     return filter

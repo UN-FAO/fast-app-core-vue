@@ -308,13 +308,12 @@ export default {
         })
 
         _.map(components, function (c) {
-            c.defaultValue = 'hello'
+            c.defaultValue = 'default'
         })
 
         // Define the form to display
         this.formIO.setForm(cloneJsonForm)
 
-        console.log('The components are', components)
         // When the submission has been added the form is mounted
         this.$eventHub.$emit('formio.mounted', this.formIO)
 
@@ -355,7 +354,7 @@ export default {
               timeoutId = setTimeout(() => {
                 this.autoSaveAsDraft()
                 this.saved = true
-              }, 5000)
+              }, 700)
             }
             this.$eventHub.$emit('formio.change', {change: change, formio: this.formIO})
           })

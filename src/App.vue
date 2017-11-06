@@ -17,8 +17,6 @@
 </template>
 <script>
 /* eslint no-use-before-define: 0 */
-import 'bootstrap/dist/css/bootstrap.css'
-import 'formiojs/dist/formio.full.min.css'
 // import 'bootstrap-rtl-ondemand/dist/css/bootstrap-rtl.min.css'
 import toolbar from 'layout/toolbar'
 import leftdrawer from 'layout/left_drawer'
@@ -136,14 +134,14 @@ export default {
 }
 </script>
 <style>
-
+@import url('../node_modules/bootstrap/dist/css/bootstrap.min.css');
+@import url('../node_modules/formiojs/dist/formio.full.min.css');
 *:not(i):not(.fa){
-  box-sizing: border-box;
+    /* box-sizing: border-box; */
     cursor: default;
     font-family: haptik,Helvetica Neue,Helvetica,sans-serif !important;
     line-height: 1.5;
     text-rendering: optimizeLegibility;
-    color: #0e6da5;
 }
 html {
 font-size:inherit!important;
@@ -233,7 +231,6 @@ color:#000;
 
 .choices__list.choices__list--dropdown {
 position:inherit;
-max-height:200px;
 }
 
 ul.list-inline { 
@@ -434,7 +431,7 @@ body, html {
 .form-control {
     min-height: 35px !important;
     height: auto;
-    font-size: 20px !important;
+    /*font-size: 20px !important;*/
 }
 
 label.control-label {
@@ -561,7 +558,7 @@ input[type=radio]:checked + span, input[type=checkbox]:checked + span {
 
 
 input.form-control {
-    background: transparent !important;
+    background: white !important;
 } 
 
 input:-webkit-autofill,
@@ -587,6 +584,7 @@ label {
 .btn.btn-primary {
  background-color: white;
  border: #0E6DA5 solid 1px;
+ color: #0e6da5 !important;
 }
 
 .btn.btn-primary:hover {

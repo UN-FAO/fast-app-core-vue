@@ -1,11 +1,7 @@
 <template>
-  <div>
-    <q-pull-to-refresh :handler="refreshSubmissions">
-      <div class="row" style="margin-right: 15px !important;">
-        <q-card color="white" class="col-lg-10 col-lg-offset-1 col-md-offset-1 col-md-10 col-sm-10 col-sm-offset-1 col-xs-offset-0 col-xs-12  centered relative-position">
-            <q-card-title style="color: black;">
-              Collected Data
-            </q-card-title>
+  <div class="row" style="margin-top: 30px;">
+      <div>
+        <q-card color="white" style="bottom: unset;" class="col-lg-10 col-lg-offset-1 col-md-offset-1 col-md-10 col-sm-10 col-sm-offset-1 col-xs-offset-0 col-xs-12  centered relative-position">
             <q-card-main>
               <q-transition
                 appear
@@ -14,9 +10,15 @@
               >
              
                 <data-tables :data="submissions" :search-def="searchDef" :action-col-def="getRowActionsDef()" action-col-label="Actions" :actions-def="actionsDef" max-height="250" height="250" v-if="typeof submissions !== 'undefined'"
+                @selection-change="handleSelectionChange"
                 >
 
-                    </el-table-column>
+                  <el-table-column
+                  type="selection"
+                  width="55"
+                  fixed="left"
+                  >
+                  </el-table-column>
 
                     <el-table-column label="status" prop="Status" width="90" sortable fixed="left">
                         <template scope="scope">
@@ -46,7 +48,6 @@
                       width="120">
                       <template scope="scope">
                         <el-button @click="handleEdit(scope)" type="text" >Edit</el-button>
-                        <el-button @click="handleDelete(scope)" type="text">Delete</el-button>
                       </template>
                     </el-table-column>
 
@@ -58,7 +59,6 @@
             </q-inner-loading>
         </q-card>
       </div>
-    </q-pull-to-refresh>
     <q-fixed-position corner="top-right" :offset="[18, 18]">
                     <q-fab color="red" icon="add" direction="left" push>
                         <q-fab-action color="secondary" @click="createSubmission()" icon="add"></q-fab-action>
@@ -132,6 +132,7 @@ export default {
   },
   data() {
     return {
+      deleteRows: [],
       currentForm: {},
       submissions: undefined,
       visibleColumns: [],
@@ -181,6 +182,13 @@ export default {
               this.download(JSON.stringify(json), 'backup.json', 'text/json;encoding:utf-8')
             },
             icon: 'document'
+          },
+          {
+            name: 'DELETE',
+            handler: () => {
+              this.handleDelete(this.deleteRows)
+            },
+            icon: 'delete'
           }
         ]
       }
@@ -199,9 +207,25 @@ export default {
             }
         })
      },
-    handleDelete (data) {
-       let self = this
-       let submission = data.row
+    handleDelete (rows) {
+      let self = this
+      if (rows.length > 1) {
+        self.$swal({
+                title: 'Multiple rows selected',
+                text: 'You cannot delete more than one row',
+                type: 'error'
+              })
+        return
+      }
+      if (rows.length === 0) {
+        self.$swal({
+                title: 'No row selected',
+                text: 'You must select at least one row to delete',
+                type: 'error'
+              })
+        return
+      }
+       let submission = rows[0]
        self.$swal({
                 title: 'Are you sure?',
                 text: 'You won\'t be able to revert this!',
@@ -319,6 +343,9 @@ export default {
           formPath: this.$route.query.formPath
         }
       })
+    },
+    handleSelectionChange (rows) {
+      this.deleteRows = rows
     },
     getRowActionsDef() {
       let self = this

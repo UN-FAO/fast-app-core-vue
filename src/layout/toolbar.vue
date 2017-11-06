@@ -1,11 +1,11 @@
 <template>
 
-    <q-toolbar style="-webkit-app-region: drag; -webkit-user-select: none; background-color: white">
+    <q-toolbar style="-webkit-app-region: drag; -webkit-user-select: none; background-color: white; border-bottom: 1px solid #80808042;">
     <q-ajax-bar color="#80cbc4"></q-ajax-bar>
-      <q-btn flat @click="openLeftDrawer()" v-if="$route.name !== 'login' && $route.name !== 'register' && $route.name !== 'login_redirect'  ">
+      <q-btn flat @click="openLeftDrawer()" v-if="$route.name !== 'login' && $route.name !== 'register' && $route.name !== 'login_redirect'  " style="color: #0e6da5">
         <q-icon name="menu" />
       </q-btn>
-      <q-toolbar-title>
+      <q-toolbar-title style="color: #0e6da5">
        {{ $t("App.title") }}
       </q-toolbar-title>
       <div v-if="$route.name !== 'login' && $route.name !== 'register' && $route.name !== 'login_redirect'  ">
@@ -14,7 +14,7 @@
       <localization/>
       <wifiDisplay/>
       
-      <q-btn flat @click="openRightDrawer()" v-if="$route.name !== 'login' && $route.name !== 'register' && $route.name !== 'login_redirect'  ">
+      <q-btn flat @click="openRightDrawer()" v-if="$route.name !== 'login' && $route.name !== 'register' && $route.name !== 'login_redirect'  " style="color: #0e6da5">
         <q-icon name="menu" />
       </q-btn>
     <!--
