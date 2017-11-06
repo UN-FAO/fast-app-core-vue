@@ -96,40 +96,8 @@
 
 </template>
 <style scoped>
-
-table {  
-    color: #333;
-    font-family: Helvetica, Arial, sans-serif;
-    width: 100%; 
-    border-collapse: 
-    collapse; border-spacing: 0; 
-}
-
-td, th {  
-    border: 1px solid transparent; /* No more visible border */
-    height: 30px; 
-    transition: all 0.3s;  /* Simple transition for hover effect */
-}
-
-th {  
-    background: #DFDFDF;  /* Darken header a bit */
-    font-weight: bold;
-}
-
-td {  
-    background: #FAFAFA;
-    text-align: center;
-}
-
-/* Cells in even rows (2,4,6...) are one color */        
-tr:nth-child(even) td { background: #F1F1F1; }   
-
-/* Cells in odd rows (1,3,5...) are another (excludes header cells)  */        
-tr:nth-child(odd) td { background: #FEFEFE; }  
-
-tr:nth-child(even){background-color: #f2f2f2}
     
-.q-card {background-color:#f7f7f7;}
+.q-card {background-color:white;}
     
     .q-card-container {padding: 50px; padding-top: 65px; padding-bottom: 25px;}
 .q-card-main {text-align: center;}

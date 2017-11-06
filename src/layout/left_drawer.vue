@@ -61,14 +61,14 @@
           <q-item-main label="About PAT"  />
         </q-side-link>
 
-
+        <!--
          <q-side-link multiline highlight  item
           :to="{name: 'd', params: { idForm: 'idform'}}"
           :key="lenguage">
           <q-item-side icon="language" />
           <q-item-main label="Language Settings"  />
         </q-side-link>
-
+          -->
         <q-item-separator />
         <!--
          <q-side-link multiline highlight separator item
