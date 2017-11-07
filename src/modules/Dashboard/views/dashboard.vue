@@ -34,7 +34,7 @@
 
 <q-card  class="col-md-4 col-lg-4 col-xl-3" style="margin-top: 30px; margin-left: 30px;">
  
-  <q-card-main @click="$router.push({name: 'newSurvey'})" style="cursor: pointer;">
+  <q-card-main @click="$router.push({name: 'CollectedData'})" style="cursor: pointer;">
       <!--<q-icon name="fa-database fa-5x" />-->
       <q-icon class="material-icons">storage</q-icon>
       <h1 style="color: rgb(14, 109, 165)">Data<br>Collected</h1>

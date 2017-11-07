@@ -371,7 +371,6 @@ input.form-control {
 .login-form-holder h4 {font-size: 2.5em; color:#065276;}    
     
 .login-form-holder button {
-    width: 20%;
     height: 45px;
 }
 .btn.btn-primary {
@@ -452,6 +451,11 @@ input[type=radio] {
 
 table input[type=radio] {
     display:block; 
+    margin:10px;
+}
+
+.noCheckboxLabels table input[type=checkbox] {
+    display: none;
     margin:10px;
 }
 

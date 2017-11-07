@@ -40,10 +40,10 @@
 
 
         <q-side-link multiline highlight  item
-          :to="{name: 'newSurvey'}"
+          :to="{name: 'CollectedData'}"
           :key="Data">
           <q-item-side icon="storage" />
-          <q-item-main label="All Collected Data"  />
+          <q-item-main label="Collected Data"  />
         </q-side-link>
 
          <q-side-link multiline highlight  item

@@ -149,10 +149,6 @@ const Formio = class {
   static getSubmissions (idMachine, formPath) {
     let self = this
     return new Promise((resolve, reject) => {
-      Loading.show({
-        message: 'Loading form submissions..'
-      })
-
       let res = idMachine.substring(0, idMachine.indexOf(':'))
       let url = 'https://' + res + '.form.io/' + formPath + '/submission?limit=50000'
       axios.get(url)
@@ -178,9 +174,6 @@ const Formio = class {
    */
   static getSubmissionsURL (url) {
     return new Promise((resolve, reject) => {
-      Loading.show({
-        message: 'Loading form submissions..'
-      })
       axios.get(url)
         .then(response => {
           let submissions = response.data
@@ -620,10 +613,6 @@ const Formio = class {
    */
   static getTranslations (idMachine) {
     return new Promise((resolve, reject) => {
-      Loading.show({
-        message: 'Loading form submissions..'
-      })
-
       let url = 'https://' + idMachine + '.form.io/translations/submission?limit=50000'
       axios.get(url)
         .then(response => {

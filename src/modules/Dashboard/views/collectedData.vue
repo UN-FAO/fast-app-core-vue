@@ -14,11 +14,17 @@
             <div class="row">
 
             <div class="form-group has-feedback formio-component formio-component-radio" v-if="typeof forms !== 'undefined'">
-                <h3 class="control-label" style="color: #525f7f; font-weight: 300;">Please select the version that you want to use: </h3>
+                <h3 class="control-label" style="color: #525f7f; font-weight: 300;">Please select the version that you want to access: </h3>
+                <div class="input-group">
+                    <div class="radio">
+                        <label class="control-label" for="S0-info-headOfHousehold-you">
+                            <input name="selectedSurvey" type="radio" class="" lang="en"><span @click="goTo({name: 'formio_form_show', params: { idForm: '*'}})">All</span></label>
+                    </div>
+                </div>
                 <div class="input-group"  v-for="(form, index) in forms" :key="index" v-if="form.data.tags.indexOf('visible') > -1">
                     <div class="radio">
                         <label class="control-label" for="S0-info-headOfHousehold-you">
-                            <input name="selectedSurvey" type="radio" class="" lang="en" :value="form.data.title"><span @click="goTo({name: 'formio_form_submission', params: { idForm: form.data.path}})">{{form.data.title}}</span></label>
+                            <input name="selectedSurvey" type="radio" class="" lang="en" :value="form.data.title"><span @click="goTo({name: 'formio_form_show', params: { idForm: form.data.path}})">{{form.data.title}}</span></label>
                     </div>
                 </div>
             </div>
