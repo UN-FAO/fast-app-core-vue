@@ -2,7 +2,7 @@
   <div>
 <header class="post-header">
 </header>
-  <div class="post-body">
+  <div class="post-body col-xl-4 col-lg-4 col-md-5 col-sm-6 col-xs-12 pull-right">
       <div data-reactroot="" data-desktop="true" data-section="login" data-style="table" class="main-app-container container-fluid"> 
         <div class="login-main-container"> 
             <div class="login-form-container"> 
@@ -130,12 +130,12 @@ export default {
   methods: {
     ...mapActions(['sendOfflineData', 'getResources']),
     mountPicture(){
+     let loadStuff = function ()  {
       var win, doc, img, header, enhancedClass
       // Quit early if older browser (e.g. IE8).
       if (!('addEventListener' in window)) {
         return
       }
-
       win = window
       doc = win.document
       img = new Image()
@@ -163,7 +163,6 @@ export default {
               break
             }
           }
-          console.log('styles', bgStyle)
           // ...and return that text.
           return bgStyle
         }())
@@ -174,17 +173,15 @@ export default {
       }())
 
       // Assign an onLoad handler to the dummy image *before* assigning the src
-      
       header.className += ' ' + enhancedClass
-      
 
-      console.log(bigSrc)
       // Finally, trigger the whole preloading chain by giving the dummy
       // image its source.
       if (bigSrc) {
         img.src = bigSrc
       }
-
+    }
+      window.addEventListener('load', loadStuff(), false)
     },
     /**
      * Response to the login method
@@ -252,7 +249,7 @@ figure {
     max-width: 50em;
     /* width: 40vh; */
     font-size: 1.125em;
-    margin: -90vh 2vw 2em auto;
+    margin: -80vh 2vw 2em auto;
     padding: 5%;
     position: relative;
     background-color: #fff;
@@ -274,7 +271,7 @@ figure {
   display: -ms-flexbox;
   display: flex;
   width: 100%;
-  height: 100vh;
+  height: calc(100vh - 50px);
   margin: 0 auto;
   background-color: #567DA7;
   background-size: cover;
@@ -284,6 +281,8 @@ figure {
 
 .post-header-enhanced {
   background-image: url('/statics/videos/login.jpg');
+   -webkit-filter: opacity(.8);
+  filter: opacity(.8);
 }
 
 @supports (background-image: filter(url('i.jpg'), blur(1px))) {
