@@ -241,7 +241,7 @@ figure {
 }
 
 .post-header-enhanced {
-  background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/401949/largeimg.jpg);
+  background-image: url('/statics/videos/login.jpg');
 }
 
 @supports (background-image: filter(url('i.jpg'), blur(1px))) {
@@ -253,10 +253,10 @@ figure {
   }
   @keyframes sharpen {
     from {
-      background-image: filter(url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/401949/largeimg.jpg), blur(20px));
+      background-image: filter(url('/statics/videos/login.jpg'), blur(20px));
     }
     to {
-      background-image: filter(url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/401949/largeimg.jpg), blur(0px));
+      background-image: filter(url('/statics/videos/login.jpg'), blur(0px));
     }
   }
 }
