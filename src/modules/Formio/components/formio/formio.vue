@@ -17,7 +17,7 @@ import OFFLINE_PLUGIN from './src/offlinePlugin'
 import {QSpinner, QSpinnerGears} from 'quasar'
 import GPS from './src/gps'
 import Lenguage from './src/lenguage'
-import SMS from './src/sms'
+// import SMS from './src/sms'
 
 export default {
   name: 'formio',
@@ -48,7 +48,7 @@ export default {
     Formio.setToken(this.formioToken)
     Lenguage.listen(this)
     GPS.listen(this)
-    SMS.listen(this)
+    // SMS.listen(this)
     document.addEventListener('saveAsDraft', this.saveAsLocalDraft)
     this.save = _.debounce(this.save, 100)
     this.renderForm()

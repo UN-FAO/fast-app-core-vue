@@ -8,7 +8,7 @@
 | understand whats are your users looking at!
 |
 */ 
-	export const FAST_VERSION = '0.2.4'
+	export const FAST_VERSION = '0.2.6'
 /*
 |--------------------------------------------------------------------------
 | FORM.IO CONFIGURATION
@@ -21,6 +21,18 @@
 */ 
 	export const APP_URL = 'https://uiorzjzflxyccmo.form.io'
 	export const APP_NAME = 'uiorzjzflxyccmo'
+/*
+|--------------------------------------------------------------------------
+| APP CONFIGURATION
+|--------------------------------------------------------------------------
+|
+| Here you may specify the details of the app that you are building.
+| This will automatically replace the defaults placeholders
+| in the app.
+|
+*/ 
+	export const APP_FANTACY_NAME = 'SHARP+'
+	export const APP_PHRASE = 'Self-evaluation and Holistic Assessment of climate resilence of Farmers and Pastoralists'
 /*
 |--------------------------------------------------------------------------
 | MD5 KEY 

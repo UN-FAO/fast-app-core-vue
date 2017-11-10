@@ -1,5 +1,5 @@
 import * as Database from 'database/Database'
-import _ from 'lodash'
+import _forEach from 'lodash/forEach'
 
 const LocalTranslation = class {
   /**
@@ -13,7 +13,7 @@ const LocalTranslation = class {
     let localTranslations = await DB.translations.findOne().exec()
     localTranslations = localTranslations.data
 
-    _.forEach(localTranslations, (lenguage, index) => {
+    _forEach(localTranslations, (lenguage, index) => {
         if (index !== 'type') {
           formTranslations.i18n[index] = lenguage ? lenguage.translations : {}
         }

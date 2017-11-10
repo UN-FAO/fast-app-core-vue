@@ -1,5 +1,9 @@
-import _ from 'lodash'
+import _map from 'lodash/map'
+import _uniqBy from 'lodash/uniqBy'
+import _forEach from 'lodash/forEach'
+import _find from 'lodash/find'
 import deep from 'deep-diff'
+
 class SyncHelper {
   /**
    * [offlineOnlineSyc description]
@@ -9,9 +13,9 @@ class SyncHelper {
    */
   static offlineOnlineSync ({ LocalResults, OnlineResults, isOnline, collection }) {
     let Sync = []
-    LocalResults = _.map(LocalResults, 'data')
+    LocalResults = _map(LocalResults, 'data')
     Sync = !isOnline ? [] : this.compare(LocalResults, OnlineResults)
-    return _.uniqBy(Sync, '_id')
+    return _uniqBy(Sync, '_id')
   }
 
   /**
@@ -26,8 +30,8 @@ class SyncHelper {
     let result = []
     let self = this
     // Check for updates
-    _.forEach(LocalResults, function (LocalResult) {
-      _.forEach(OnlineResults, function (OnlineResult) {
+    _forEach(LocalResults, function (LocalResult) {
+      _forEach(OnlineResults, function (OnlineResult) {
         if (LocalResult._id === OnlineResult._id) {
           let differences = false
           // If we are comparing forms
@@ -46,15 +50,15 @@ class SyncHelper {
       })
     })
     // Check for new forms
-    _.forEach(OnlineResults, function (OnlineResult) {
-      if (!(_.find(LocalResults, { '_id': OnlineResult._id }))) {
+    _forEach(OnlineResults, function (OnlineResult) {
+      if (!(_find(LocalResults, { '_id': OnlineResult._id }))) {
         let form = self.deleteNulls(OnlineResult)
         result.push(form)
       }
     })
     // If the local Database is empty
     if (LocalResults.length === 0) {
-      _.forEach(OnlineResults, function (OnlineResult) {
+      _forEach(OnlineResults, function (OnlineResult) {
         let form = self.deleteNulls(OnlineResult)
         result.push(form)
       })

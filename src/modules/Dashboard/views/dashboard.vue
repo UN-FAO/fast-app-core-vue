@@ -86,7 +86,7 @@
   <q-card-main>
      <!--<q-icon name="fa-tablet fa-5x" />-->
       <q-icon class="material-icons">tablet_mac</q-icon>
-      <h1 style="color: rgb(14, 109, 165)">About<br> SHARP+</h1>
+      <h1 style="color: rgb(14, 109, 165)">About<br> {{appName}}</h1>
   </q-card-main>
 </q-card>
 
@@ -114,6 +114,7 @@
 import {QCard, QCardTitle, QCardSeparator, QCardMain, QFab, QFabAction, QFixedPosition, QPullToRefresh, QTabs, QTab, QTabPane, QCollapsible, QBtn, QIcon, QTooltip, QList, QItem, QItemSeparator, Loading} from 'quasar'
 // import LocalForm from 'database/collections/scopes/LocalForm'
 import _ from 'lodash'
+import {APP_FANTACY_NAME} from 'config/env'
 export default {
   name: 'card',
   mounted: async function () {
@@ -129,7 +130,8 @@ export default {
       flipped2: 'card',
       flipped3: 'card',
       forms: [],
-      subscriptions: []
+      subscriptions: [],
+      appName: APP_FANTACY_NAME
     }
   },
   methods: {

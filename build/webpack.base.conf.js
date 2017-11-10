@@ -87,6 +87,7 @@ module.exports = {
     ]
   },
   plugins: [
+    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
     new webpack.DefinePlugin({
       'process.env': config[env.prod ? 'build' : 'dev'].env,
       'DEV': env.dev,

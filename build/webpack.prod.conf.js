@@ -8,7 +8,9 @@ var
   ExtractTextPlugin = require('extract-text-webpack-plugin'),
   HtmlWebpackPlugin = require('html-webpack-plugin'),
   OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin'),
-  ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin')
+  ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin'),
+  CompressionPlugin = require("compression-webpack-plugin"),
+  UglifyJSPlugin = require('uglifyjs-webpack-plugin')
 
 module.exports = merge(baseWebpackConfig, {
   module: {
@@ -20,6 +22,27 @@ module.exports = merge(baseWebpackConfig, {
   },
   devtool: config.build.productionSourceMap ? '#source-map' : false,
   plugins: [
+    new UglifyJSPlugin({
+    uglifyOptions: {
+        ie8: true,
+        output: {
+          comments: true,
+          beautify: true,
+        },
+        warnings: false
+      }
+    }),
+    new webpack.NoErrorsPlugin(),
+    /*
+    new CompressionPlugin({
+      asset: "[path].gz[query]",
+      algorithm: "gzip",
+      test: /\.js$|\.css$|\.html$/,
+      threshold: 10240,
+      minRatio: 0,
+      deleteOriginalAssets: true
+    }),
+    */
     // Compress extracted CSS. We are using this plugin so that possible
     // duplicated CSS from different components can be deduped.
     new OptimizeCSSPlugin({
@@ -42,8 +65,6 @@ module.exports = merge(baseWebpackConfig, {
         minifyCSS: true,
         minifyJS: true,
         minifyURLs: true
-        // more options:
-        // https://github.com/kangax/html-minifier#options-quick-reference
       },
       // necessary to consistently work with multiple chunks via CommonsChunkPlugin
       chunksSortMode: 'dependency'

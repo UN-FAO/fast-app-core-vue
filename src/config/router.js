@@ -27,7 +27,7 @@ let routes = setRoutes([AuthRoutes, DashboardRoutes, FormioRoutes])
 
 // Default 404
 const Error404 = r =>
-  require.ensure([], () => r(require('../modules/Auth/views/Error404')), 'auth-module')
+  require.ensure([], () => r(require('../modules/Auth/views/Error404')), 'offline-module')
 routes.push({ path: '*', component: Error404, name: 'error404' })
 
 const router = new VueRouter({

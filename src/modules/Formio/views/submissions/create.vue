@@ -6,7 +6,7 @@
           <q-card-main>
               <q-list separator style="border: none !important">
       
-              <q-item class="formioPagination" multiline style="text-align: left; text-transform: uppercase; min-height: 60px; border-radius: 5px;"  link  v-for="(page, index) in pages"  :key="page.title" @click="goToPage(index)" :ref="'page-'+ index" v-bind:class="currentPage === index ? 'activePage' : ''">
+              <q-item class="formioPagination" multiline style="text-align: left; text-transform: uppercase; min-height: 60px; border-radius: 5px;"  link  v-for="(page, index) in _pages"  :key="page.title" @click="goToPage(index)" :ref="'page-'+ index" v-bind:class="currentPage === index ? 'activePage' : ''">
               <q-item-main style=" margin-top: auto;  margin-bottom: auto;"
                 :label="getLabelForPage(page)"
                 label-lines="3"
@@ -109,6 +109,7 @@ export default {
     this.validateRequired = _.debounce(this.validateRequired, 400)
     this.createScorePanels = _.debounce(this.createScorePanels, 400)
     this.$eventHub.on('formio.change', (data) => {
+      this.pages = data.formio.pages ? data.formio.pages : []
       this.validateRequired(this.pages, data)
       this.createScorePanels(this.pages, data)
     })
@@ -158,6 +159,9 @@ export default {
     }
   },
   computed: {
+    _pages () {
+      return this.pages
+    },
     _isWizard () {
       return this.isWizard
     },
@@ -166,7 +170,7 @@ export default {
       if (this.showPages && this._isWizard) {
         className = 'col-lg-8  col-md-8 col-sm-8'
       } else {
-        className = 'col-lg-10  col-md-10 col-sm-10 col-lg-offset-1 col-md-offset-1'
+        className = 'col-lg-10  col-md-12 col-sm-12 col-lg-offset-1'
       }
       if (!this.saved) {
         className = className + ' saving'

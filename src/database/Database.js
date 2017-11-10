@@ -1,9 +1,11 @@
 import 'babel-polyfill'
 import * as RxDB from 'rxdb'
 import collections from './collections/collections'
-import { Platform } from 'quasar'
+// import { Platform } from 'quasar'
 import Auth from 'modules/Auth/api/Auth'
-import _ from 'lodash'
+import _filter from 'lodash/filter'
+import _orderBy from 'lodash/orderBy'
+import _debounce from 'lodash/debounce'
 import * as Database from 'database/Database'
 import store from 'config/store'
 import Connection from 'modules/Wrappers/Connection'
@@ -45,6 +47,8 @@ const _create = async function () {
     name: store.getters.getMachineUrl,
     password: LOCAL_DB_PASSWORD
   }
+
+  /*
   var userAgent = navigator && navigator.userAgent && navigator.userAgent.toLowerCase()
   // If running on Electron
   if (userAgent && userAgent.indexOf(' electron/') > -1) {
@@ -56,11 +60,12 @@ const _create = async function () {
   }
   // If running on Cordova App
   else if (Platform.is.cordova) {
-    database.adapter = 'idb'
+    database.adapter = 'websql'
   } else {
-    database.adapter = 'idb'
+    database.adapter = 'websql'
   }
-
+  */
+  database.adapter = 'websql'
   console.log('#########################')
   console.log('We are using', database.adapter)
   console.log('#########################')
@@ -100,18 +105,18 @@ const syncSubmissions = async ({ db, vm }) => {
   if (usersAreSync) {
     let filter = await db.submissions.find().exec()
     // updated incomplete submission
-    filter = _.filter(filter, function (o) {
+    filter = _filter(filter, function (o) {
       return (o.data.sync === false && o.data.draft === false && o.data.user_email === userEmail)
     })
     console.log('Offline submissions are', filter)
-    filter = _.orderBy(filter, ['data.created'], ['asc'])
+    filter = _orderBy(filter, ['data.created'], ['asc'])
     if (filter.length > 0) {
       store.dispatch('sendOfflineData', { offlineSubmissions: filter, vm: vm })
     }
   }
 }
 
-const DsyncSubmissions = _.debounce(syncSubmissions, 1000)
+const DsyncSubmissions = _debounce(syncSubmissions, 1000)
 
 /**
  * [description]
@@ -120,7 +125,7 @@ const DsyncSubmissions = _.debounce(syncSubmissions, 1000)
 const getUsersToSync = async () => {
   const db = await Database.get()
   let filter = await db.users.find({ 'data.sync': false }).exec()
-  return _.filter(filter, function (o) {
+  return _filter(filter, function (o) {
     return (o.data.sync === false)
   })
 }
@@ -147,7 +152,7 @@ const syncUsers = async ({ db, isOnline }) => {
   }
 }
 
-const DsyncUsers = _.debounce(syncUsers, 1000)
+const DsyncUsers = _debounce(syncUsers, 1000)
 
 /**
  * [description]

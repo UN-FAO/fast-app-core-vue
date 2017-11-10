@@ -20,35 +20,23 @@
 // import 'bootstrap-rtl-ondemand/dist/css/bootstrap-rtl.min.css'
 import toolbar from 'layout/toolbar'
 import leftdrawer from 'layout/left_drawer'
-import rigthdrawer from 'layout/right_drawer'
+import rightdrawer from 'layout/right_drawer'
 import connectionAlert from 'modules/Connection/components/alert'
-/*
-import contentHeader from 'layout/content-header.vue'
-*/
 import {mapActions} from 'vuex'
 import {sync} from 'database/Database'
 import Connection from 'modules/Wrappers/Connection'
 import { SYNC_INTERVAL } from 'config/env'
-import {
-  QLayout,
-  QToolbar,
-  QToolbarTitle,
-  QSearch,
-  QTabs,
-  QRouteTab,
-  QBtn,
-  QIcon,
-  QItemSide,
-  QItemMain,
-  QSideLink,
-  QListHeader,
-  QScrollArea,
-  Toast
-} from 'quasar'
+import {QLayout, Toast} from 'quasar'
 import layoutStore from 'layout/layout-store'
+import FastClick from 'fastclick'
+
 export default {
   name: 'app',
   mounted () {
+    window.addEventListener('load', function() {
+        FastClick(document.body)
+    }, false)
+
     this.$eventHub.on('lenguageSelection', (lenguage) => {
       this.toggleRtl(lenguage)
     })
@@ -112,23 +100,11 @@ export default {
     }
   },
   components: {
-    QLayout,
-    QToolbar,
-    QToolbarTitle,
-    QSearch,
-    QTabs,
-    QRouteTab,
-    QBtn,
-    QIcon,
-    QItemSide,
-    QItemMain,
-    QSideLink,
-    QListHeader,
-    QScrollArea,
-    toolbar,
     leftdrawer,
-    rigthdrawer,
+    rightdrawer,
     connectionAlert,
+    toolbar,
+    QLayout,
     Toast
   }
 }
@@ -231,6 +207,7 @@ color:#000;
 
 .choices__list.choices__list--dropdown {
 position:inherit;
+width: max-content !important;
 }
 
 ul.list-inline { 
@@ -465,6 +442,7 @@ input[type=radio] + span, input[type=checkbox] + span {
     background-color: rgb(231, 231, 231);
     border-radius: 5px;
     min-width: 230px;
+    max-width: 230px;
     min-height: 30px;
     text-align: center;
     text-transform: uppercase;
@@ -610,5 +588,96 @@ label {
   left:0;
   top: 0px !important;
   min-height: calc(100vh);
+}
+
+.tableColumnTitle {
+  font-weight: 700;
+}
+
+
+.required.formio-component input.form-control::-webkit-input-placeholder::before {
+    color:#666;
+    content:"Line";
+}
+
+
+
+
+
+.post-lede {
+  font-family: Avenir Next, SegoeUI, Franklin Gothic, arial, sans-serif;
+  font-size: 1.25em;
+  font-weight: 500;
+}
+
+.post-body p {
+  margin: 0;
+}
+
+.post-body p + p {
+  margin-top: 1.5em;
+}
+
+.post-body {
+    box-sizing: border-box;
+    max-width: 50em;
+    /* width: 40vh; */
+    font-size: 1.125em;
+    margin: -80vh 2vw 2em auto;
+    padding: 5%;
+    position: relative;
+    background-color: #fff;
+}
+
+.post-title {
+  font-family: Avenir Next, SegoeUI, Franklin Gothic, arial, sans-serif;
+  text-align: center;
+  text-shadow: 0 0 .5em rgba(0, 0, 0, 0.6);
+  font-size: calc(1em + 5vw);
+  margin: auto auto 23vw;
+  padding: .5em;
+  color: #fff;
+}
+
+.post-header {
+  overflow: hidden;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  width: 100%;
+  height: calc(100vh - 50px);
+  margin: 0 auto;
+  background-color: #567DA7;
+  background-size: cover;
+  background-position: 50% 0;
+  background-image: url('data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wEEEAAKAAoACgAKAAsACgAMAA0ADQAMABAAEQAPABEAEAAYABYAFAAUABYAGAAkABoAHAAaABwAGgAkADYAIgAoACIAIgAoACIANgAwADoALwAsAC8AOgAwAFYARAA8ADwARABWAGQAVABPAFQAZAB5AGwAbAB5AJgAkQCYAMcAxwEMEQAKAAoACgAKAAsACgAMAA0ADQAMABAAEQAPABEAEAAYABYAFAAUABYAGAAkABoAHAAaABwAGgAkADYAIgAoACIAIgAoACIANgAwADoALwAsAC8AOgAwAFYARAA8ADwARABWAGQAVABPAFQAZAB5AGwAbAB5AJgAkQCYAMcAxwEM/8IAEQgAKgAqAwEiAAIRAQMRAf/EABkAAAMBAQEAAAAAAAAAAAAAAAQGBwUDAv/aAAgBAQAAAABObWZe1pgw7R/ZBRqeX6BReJLIejc20fb05bvu03tqlMKaL//EABcBAQEBAQAAAAAAAAAAAAAAAAQDAQL/2gAIAQIQAAAAHBnEGD0v/8QAGAEAAwEBAAAAAAAAAAAAAAAAAAECAwT/2gAIAQMQAAAA6DHSIGv/xAAuEAACAQMDAgQFBAMAAAAAAAABAgMABBEFEiETIgYxQWEUM0JRcSM0U7KBgrH/2gAIAQEAAT8AtrJ+hHKmAJGKc89uAQTiobQLb9R3OEQRBhjux5tWjQQWt1cQjgZSX3LFMUmiNqPiWW7kGLZJN7H7utX0kU8+oybwoSEJuPACtTW1vubbf7RngdQ8VY2d7e2SzQ2x2E4BQjGV5NQSPczi1Ze23aISkngue4itR1DoaitrFxLL0zkg8KobJqbUobDQ9wQIir5D6iBk0l6dS0nVnldFmaVCqbguVFEkEg5zV141mtJnt7OzRYd5CEGtPvTJYxuYhCxuWEoHsowx+5NXsmy7V3Byls0gz7np14skWKzhtd65CrH+DwS9LbTNZvsx8xgR6nYMmhaXhAIIwRx3io7WWSLrbXeNC29gN2GHp7VompxWrz2t5npS3DEzfx7VIr4hLyWe6Eji2uH/AEd30pHyePyKvr2W4lyxJ88k+pNILja3eQwQshz5huDioPDsxgiJhXOxaGt6tMl1Y3CINzFjwEKZrwxpiyC7+PWSSCZd8YBI3svJdTWuSaTY2ECky7Cz7QR3hTztpds53EEZB8vuozXhywSSZJppB0NuQuM5anuNKV2DtAHBIbL+taV84H13r/w1D26YmOMFR/jNeP8AhX/MI/tVh+4T/f8Aqa0lEWzIVQBtPkPYmm4ZgOADX//EACMRAAICAQIGAwAAAAAAAAAAAAECAAMRBBITISIjMTJBUVL/2gAIAQIBAT8ALZJP1LLWXpHswlCFVwfMNaquFldW+7d+Y9iJ7MBNW3DRsCaEdhm+Sxl5a25ueNs//8QAHBEBAAEEAwAAAAAAAAAAAAAAAQIAAxExBBAS/9oACAEDAQE/AOPH1PNclPaFaCrEsTBcFXUlckms9u+v/9k=')
+}
+
+.post-header-enhanced {
+  background-image: url('statics/videos/login.jpg');
+   -webkit-filter: opacity(.9);
+  filter: opacity(.9);
+}
+
+@supports (background-image: filter(url('statics/videos/login.jpg'), blur(1px))) {
+  .post-header {
+    transform: translateZ(0);
+  }
+  .post-header-enhanced {
+    animation: sharpen .5s both;
+  }
+  @keyframes sharpen {
+    from {
+      background-image: filter(url('statics/videos/login.jpg'), blur(20px));
+    }
+    to {
+      background-image: filter(url('statics/videos/login.jpg'), blur(0px));
+    }
+  }
+}
+
+
+.radio-inline {
+  margin-left: 10px !important;
 }
 </style>

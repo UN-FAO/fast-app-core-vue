@@ -3,7 +3,7 @@
       <q-list-header class="bg-primary text-white">
       <center>
       <img src="statics/2000px-FAO_logo_reverse.png" style="max-height: 40px; max-width: 40px;"/>
-      SHARP+          
+      {{appName}}
       </center>
       </q-list-header>
       <q-list>
@@ -108,7 +108,7 @@ import Auth from 'modules/Auth/api/Auth'
 import LocalForm from 'database/collections/scopes/LocalForm'
 import {QScrollArea, QSideLink, QItemTile, QItemSide, QItemMain, QListHeader, QCollapsible, QBtn, QIcon, QTooltip, QList, QItem, QItemSeparator} from 'quasar'
 import layoutStore from './layout-store'
-import {FAST_VERSION} from 'config/env'
+import {FAST_VERSION, APP_FANTACY_NAME} from 'config/env'
 export default {
   components: {
     QScrollArea, QSideLink, QItemTile, QItemSide, QItemMain, QListHeader, QCollapsible, QBtn, QIcon, QTooltip, QList, QItem, QItemSeparator
@@ -121,7 +121,8 @@ export default {
       forms: [],
       subscriptions: [],
       layoutStore,
-      fastVersion: FAST_VERSION
+      fastVersion: FAST_VERSION,
+      appName: APP_FANTACY_NAME
     }
   },
   computed: {

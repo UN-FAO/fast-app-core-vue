@@ -7,6 +7,8 @@ var
   HtmlWebpackPlugin = require('html-webpack-plugin'),
   FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
 
+var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+
 // add hot-reload related code to entry chunks
 Object.keys(baseWebpackConfig.entry).forEach(function (name) {
   baseWebpackConfig.entry[name] = ['./build/hot-reload.js', baseWebpackConfig.entry[name]]
@@ -26,6 +28,7 @@ module.exports = merge(baseWebpackConfig, {
     })
   },
   plugins: [
+    new BundleAnalyzerPlugin(),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
     new HtmlWebpackPlugin({

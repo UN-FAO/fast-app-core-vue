@@ -3,6 +3,7 @@ const SMS = class {
    * [listen description]
    * @param  {[type]} vm [description]
    * @return {[type]}    [description]
+   * "aws-sms-send": "^1.0.36",
    */
   static listen (vm) {
     document.removeEventListener('messageRequested', function (e) {}, false)
@@ -33,7 +34,7 @@ const SMS = class {
    * @param {[type]} data [description]
    */
   static Amazon(data, vm) {
-      let Sender = require('aws-sms-send')
+      // let Sender = require('aws-sms-send')
         let config = {
           AWS: {
             accessKeyId: 'AKIAIOGX3P7MOZZSSV2A',

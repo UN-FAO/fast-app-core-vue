@@ -73,7 +73,10 @@
 </q-tabs>
 </template>
 <script>
-import _ from 'lodash'
+import _forEach from 'lodash/forEach'
+import _isEmpty from 'lodash/isEmpty'
+import _orderBy from 'lodash/orderBy'
+import _filter from 'lodash/filter'
 import * as Database from 'database/Database'
 import moment from 'moment'
 import Auth from 'modules/Auth/api/Auth'
@@ -105,15 +108,15 @@ export default {
       let scorePanels = []
       // This should only be called if this is a Wizard
       // Search all of the Score components in different pages
-      _.forEach(data.formio.pages, (page) => {
+      _forEach(data.formio.pages, (page) => {
           let panels = FormioUtils.findComponents(page.components, {
           'type': 'panel'
         })
           if (panels.length > 0) {
-            _.forEach(panels, (panel, index) => {
+            _forEach(panels, (panel, index) => {
               // Make sure that the panel contains Score
               if (panel.key.indexOf('score') !== -1) {
-                _.forEach(panel.components, (component, cindex) => {
+                _forEach(panel.components, (component, cindex) => {
                   // Search the current value of the Score and add it
                   component.value = data.formio.data[component.key]
                 })
@@ -126,7 +129,7 @@ export default {
     })
 
     const db = await Database.get()
-    if (_.isEmpty(Auth.user())) {
+    if (_isEmpty(Auth.user())) {
       return
     }
     
@@ -143,11 +146,11 @@ export default {
         .$
         .filter(x => x != null)
         .subscribe(results => {
-          let filter = _.filter(results, function (o) {
+          let filter = _filter(results, function (o) {
             return true
           })
 
-          filter = _.orderBy(filter, ['data.created'], ['desc'])
+          filter = _orderBy(filter, ['data.created'], ['desc'])
           this.Unsynced = filter
         })
     )

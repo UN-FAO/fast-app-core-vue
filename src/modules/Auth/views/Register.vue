@@ -2,15 +2,15 @@
  <div>
 <header class="post-header">
 </header>
-  <div class="post-body col-xl-4 col-lg-4 col-md-5 col-sm-6 col-xs-12 pull-right">
+  <div class="post-body col-xl-4 col-lg-4 col-md-5 col-sm-6 col-xs-12 pull-right shadow-4">
       <div data-reactroot="" data-desktop="true" data-section="login" data-style="table" class="main-app-container container-fluid"> 
         <div class="login-main-container"> 
             <div class="login-form-container"> 
                 <div class="login-form-holder"> 
                    <div class="appTitleHolder"> 
                     <!--<div class="fao-logo-login"></div>--> 
-                    <h4><!-- react-text: 28 --><!-- /react-text --><!-- react-text: 29 -->SHARP+<!-- /react-text --></h4> 
-                    <h5 style="color: #0e6da5">Self-evaluation and Holistic Assessment of climate resilence of Farmers and Pastoralists</h5> 
+                    <h4><!-- react-text: 28 --><!-- /react-text --><!-- react-text: 29 -->{{appName}}<!-- /react-text --></h4> 
+                    <h5 style="color: #0e6da5">{{appPhrase}}</h5> 
                   </div> 
                     <br>
                         <formio :formioURL="formioURL"
@@ -30,28 +30,13 @@
 </template>
 
 <script>
-/* eslint-disable */
-import { mapMutations } from 'vuex'
-import Auth from 'modules/Auth/api/Auth'
-import { Platform, Loading, Toast, QCard, QCardTitle, QField, QCardMain, QInput, QBtn, QCardActions } from 'quasar'
-import { mapState } from 'vuex'
-import Formio from 'modules/Formio/api/Formio'
-import * as Database from 'database/Database';
-import _clone from 'lodash/clone'
-import md5 from 'md5';
-import { MD5_KEY } from 'config/env';
+
+import * as Database from 'database/Database'
 import formio from 'modules/Formio/components/formio/formio'
-import { APP_URL } from 'config/env'
+import {APP_URL, APP_FANTACY_NAME, APP_PHRASE} from 'config/env'
 
 export default {
   components: {
-    QCard,
-    QCardTitle,
-    QField,
-    QCardMain,
-    QInput,
-    QBtn,
-    QCardActions,
     formio
   },
   async beforeRouteEnter(to, from, next) {
@@ -59,7 +44,6 @@ export default {
     let db = await Database.get()
     let formRequest = await db.forms.findOne().where('data.name').eq('userregister').exec()
     let form = formRequest.data
-    console.log('form => ', form)
     next(vm => {
       // Load the form and submission before entering the route
       vm.form = form
@@ -67,28 +51,13 @@ export default {
   },
   async beforeRouteUpdate(to, from, next) {
     this.form = null
+    let db = await Database.get()
     let formRequest = await db.forms.findOne().where('data.name').eq('userregister').exec()
     this.form = formRequest.data
-    console.log('this.form => ', this.form)
     next()
   },
   mounted () {
     this.mountPicture()
-  },
-  /**
-   * Computed Properties for
-   * Login View
-   * @type {Object}
-   */
-  computed: {
-    /**
-     * [description]
-     * @param  {[type]} state [description]
-     * @return {[type]}       [description]
-     */
-    ...mapState({
-          userStore: state => state.userStore
-    })
   },
   /**
    * Data for Login view
@@ -98,7 +67,9 @@ export default {
     return {
       form: null,
       formioURL: APP_URL + '/userregister',
-      submission: {data: 'register'}
+      submission: {data: 'register'},
+      appName: APP_FANTACY_NAME,
+      appPhrase: APP_PHRASE
     }
   },
   /**
@@ -107,20 +78,13 @@ export default {
    * @type {Object}
    */
   methods: {
-    /**
-     * Map layout methods for the theme
-     */
-    ...mapMutations([
-          'setLayoutNeeded',
-          'setIsLoginPage'
-    ]),
-    mountPicture(){
+    mountPicture () {
+     let loadStuff = function () {
       var win, doc, img, header, enhancedClass
       // Quit early if older browser (e.g. IE8).
       if (!('addEventListener' in window)) {
         return
       }
-
       win = window
       doc = win.document
       img = new Image()
@@ -140,7 +104,7 @@ export default {
             // ...checking if the rule is the one targeting the
             // enhanced header.
             if (styles[i].selectorText &&
-              styles[i].selectorText == '.' + enhancedClass) {
+              styles[i].selectorText === '.' + enhancedClass) {
               // If so, set bgDecl to the entire background-image
               // value of that rule
               bgStyle = styles[i].style.backgroundImage
@@ -158,17 +122,16 @@ export default {
       }())
 
       // Assign an onLoad handler to the dummy image *before* assigning the src
-      
       header.className += ' ' + enhancedClass
-    
+
       // Finally, trigger the whole preloading chain by giving the dummy
       // image its source.
       if (bigSrc) {
         img.src = bigSrc
       }
-
+    }
+      window.addEventListener('load', loadStuff(), false)
     }
   }
 }
-
 </script>

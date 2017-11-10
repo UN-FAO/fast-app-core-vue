@@ -15,8 +15,6 @@ import Quasar from 'quasar'
 import router from 'config/router'
 import store from 'config/store'
 import axios from 'config/axios'
-import VueEvents from 'vue-events'
-import Vuetify from 'vuetify'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-default/index.css'
 import DataTables from 'vue-data-tables'
@@ -32,8 +30,6 @@ Vue.use(VueAsyncProperties)
 Vue.use(VueSweetAlert)
 Vue.use(ElementUI)
 Vue.use(DataTables)
-Vue.use(Vuetify)
-Vue.use(VueEvents)
 Vue.use(VueI18n)
 Vue.use(EventHub)
 

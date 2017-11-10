@@ -6,7 +6,7 @@
         <q-icon name="menu" />
       </q-btn>
       <q-toolbar-title style="color: #0e6da5">
-       {{ $t("App.title") }}
+       {{ appName }}
       </q-toolbar-title>
       <div v-if="$route.name !== 'login' && $route.name !== 'register' && $route.name !== 'login_redirect'  ">
       {{userEmail}}
@@ -31,6 +31,7 @@ import wifiDisplay from 'modules/Connection/components/display'
 import {QToolbar, QToolbarTitle, QAjaxBar, QBtn, QIcon} from 'quasar'
 import Auth from 'modules/Auth/api/Auth'
 import {mapMutations} from 'vuex'
+import {APP_FANTACY_NAME} from 'config/env'
 export default {
   components: {
     Localization,
@@ -48,7 +49,8 @@ export default {
   },
   data () {
     return {
-      User: Auth.user()
+      User: Auth.user(),
+      appName: APP_FANTACY_NAME
     }
   },
   methods: {
