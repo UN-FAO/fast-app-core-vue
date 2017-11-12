@@ -82,7 +82,8 @@ const LocalSubmission = class {
         status: submission.data.sync === false ? 'offline' : 'online',
         draft: submission.data.draft,
         fullSubmission: data,
-        formio: formio
+        formio: formio,
+        syncError: submission.data.syncError ? submission.data.syncError : false
       }
       return submission
     })

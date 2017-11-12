@@ -106,7 +106,7 @@ const syncSubmissions = async ({ db, vm }) => {
     let filter = await db.submissions.find().exec()
     // updated incomplete submission
     filter = _filter(filter, function (o) {
-      return (o.data.sync === false && o.data.draft === false && o.data.user_email === userEmail)
+      return (o.data.sync === false && o.data.draft === false && o.data.user_email === userEmail && !o.data.queuedForSync && !o.data.syncError)
     })
     console.log('Offline submissions are', filter)
     filter = _orderBy(filter, ['data.created'], ['asc'])

@@ -9,7 +9,7 @@
   <toolbar slot="header"></toolbar>
   <template v-if="$route.name !== 'login' && $route.name !== 'register' && $route.name !== 'login_redirect'  ">
     <leftdrawer slot="left"></leftdrawer>
-    <rigthdrawer slot="right"></rigthdrawer>
+    <rightdrawer slot="right"></rightdrawer>
   </template> 
   <connection-alert></connection-alert>
     <router-view :key="$route.path" />

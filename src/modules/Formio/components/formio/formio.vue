@@ -170,6 +170,7 @@ export default {
         data: this.getCurrentData(),
         redirect: true,
         draft: true,
+        syncError: false,
         trigger: 'saveAsLocalDraft'
       }
       this.save(formSubmission)
@@ -192,6 +193,7 @@ export default {
         data: this.getCurrentData(),
         redirect: false,
         draft: true,
+        syncError: false,
         trigger: 'autoSaveAsDraft'
       }
       this.save(formSubmission)
@@ -398,6 +400,7 @@ export default {
                   formSubmission.draft = false
                   formSubmission.redirect = true
                   formSubmission.trigger = 'formioSubmit'
+                  formSubmission.syncError = false
                   this.save(formSubmission)
                   this.$swal(
                     'Sent!',

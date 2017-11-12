@@ -25,6 +25,7 @@
                             <el-tag :type="getIconColor(scope.row)" close-transition>
                             <i class="material-icons">{{scope.row.status === 'offline' ? 'cloud_off' : 'cloud_done'}}</i>
                             </el-tag>
+                            <i class="material-icons" style="color: red;font-size: x-large;" v-if="scope.row.syncError">error_outline</i>
                         </template>
                     </el-table-column>
 

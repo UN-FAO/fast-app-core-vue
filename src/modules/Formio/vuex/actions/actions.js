@@ -226,6 +226,11 @@ const actions = {
         let postData = {
           data: offlineSubmission.data.data
         }
+        await offlineSubmission.update({
+            $set: {
+              'data.queuedForSync': true
+            }
+          })
 
         // If it has an ID and the Id its not local (doesnt contain ":")
         if (offlineSubmission.data._id && offlineSubmission.data._id.indexOf(':') === -1) {
@@ -252,6 +257,12 @@ const actions = {
         }
         catch (e) {
           console.log('The submission cannot be synced ', e)
+          await offlineSubmission.update({
+            $set: {
+              'data.queuedForSync': false,
+              'data.syncError': e.isJoi ? e : false
+            }
+          })
           if (offlinePlugin) {
             FormioJS.registerPlugin(offlinePlugin, 'offline')
           }

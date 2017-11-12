@@ -41,7 +41,8 @@
 
 
   <q-item v-for="(submission, index) in Unsynced"  separator :key="submission._id">
-    <q-item-side icon="assignmente" />
+    <q-item-side :icon="submission.data.syncError ? 'fa-exclamation' : 'assignment'" 
+    :color="submission.data.syncError ? 'red' : 'inherit'"/> 
     <q-item-main>
       <q-item-tile label>
         {{submission.data.formio.formId}}
