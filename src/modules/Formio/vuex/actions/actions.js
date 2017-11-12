@@ -257,6 +257,10 @@ const actions = {
         }
         catch (e) {
           console.log('The submission cannot be synced ', e)
+          if (e === 'TypeError: Could not connect to API server (Failed to fetch)')
+          {
+            console.log('Error connecting to the API server')
+          }
           await offlineSubmission.update({
             $set: {
               'data.queuedForSync': false,
