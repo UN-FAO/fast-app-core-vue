@@ -128,6 +128,7 @@ export default {
       }
     })
     this.$eventHub.on('VALIDATION_ERRORS', (data) => {
+      /*
       this.errors = data
       let submitButton = document.querySelector('.btn-wizard-nav-submit')
       if (submitButton && this.errors.count > 0) {
@@ -137,6 +138,7 @@ export default {
           submitButton.disabled = false
         }
       }
+      */
     })
   },
   beforeDestroy() {
@@ -170,7 +172,7 @@ export default {
       if (this.showPages && this._isWizard) {
         className = 'col-lg-8  col-md-8 col-sm-8'
       } else {
-        className = 'col-lg-10  col-md-12 col-sm-12 col-lg-offset-1'
+        className = 'col-xl-10 col-lg-10  col-md-12 col-sm-12 col-lg-offset-1 col-md-offset-1 col-xl-offset-1'
       }
       if (!this.saved) {
         className = className + ' saving'

@@ -8,7 +8,7 @@
 | understand whats are your users looking at!
 |
 */ 
-	export const FAST_VERSION = '0.2.6'
+	export const FAST_VERSION = '0.3.0'
 /*
 |--------------------------------------------------------------------------
 | FORM.IO CONFIGURATION
@@ -19,8 +19,8 @@
 | forms asociated with it.
 |
 */ 
-	export const APP_URL = 'https://uiorzjzflxyccmo.form.io'
-	export const APP_NAME = 'uiorzjzflxyccmo'
+	export const APP_URL = 'https://efqbsqrkscuzlpi.form.io'
+	export const APP_NAME = 'efqbsqrkscuzlpi'
 /*
 |--------------------------------------------------------------------------
 | APP CONFIGURATION
@@ -31,8 +31,8 @@
 | in the app.
 |
 */ 
-	export const APP_FANTACY_NAME = 'SHARP+'
-	export const APP_PHRASE = 'Self-evaluation and Holistic Assessment of climate resilence of Farmers and Pastoralists'
+	export const APP_FANTACY_NAME = 'FAMEWS'
+	export const APP_PHRASE = 'Fall Armyworm Monitoring and Early Warning System'
 /*
 |--------------------------------------------------------------------------
 | MD5 KEY 

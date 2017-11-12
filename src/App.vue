@@ -537,8 +537,6 @@ input[type=radio]:checked + span, input[type=checkbox]:checked + span {
     border-color: transparent !important; 
 }
 
-
-
 input.form-control {
     background: white !important;
 } 
@@ -575,20 +573,7 @@ label {
  border: #0E6DA5 solid 1px;
 }
 
-.backgroundImage {
-  background-image: url('/statics/videos/login.jpg') !important ;
-  background-position: center center !important;
-  background-repeat:  no-repeat !important;
-  background-attachment: fixed !important;
-  background-size:  cover !important;
-  width: 100%;
-  opacity: 0.75;
-  filter: alpha(opacity=75);
-  position: fixed;
-  left:0;
-  top: 0px !important;
-  min-height: calc(100vh);
-}
+
 
 .tableColumnTitle {
   font-weight: 700;
@@ -599,10 +584,6 @@ label {
     color:#666;
     content:"Line";
 }
-
-
-
-
 
 .post-lede {
   font-family: Avenir Next, SegoeUI, Franklin Gothic, arial, sans-serif;
@@ -654,12 +635,12 @@ label {
 }
 
 .post-header-enhanced {
-  background-image: url('statics/videos/login.jpg');
+  background-image: url('statics/videos/faw-login-comp.jpg');
    -webkit-filter: opacity(.9);
   filter: opacity(.9);
 }
 
-@supports (background-image: filter(url('statics/videos/login.jpg'), blur(1px))) {
+@supports (background-image: filter(url('statics/videos/faw-login-comp.jpg'), blur(1px))) {
   .post-header {
     transform: translateZ(0);
   }
@@ -668,14 +649,13 @@ label {
   }
   @keyframes sharpen {
     from {
-      background-image: filter(url('statics/videos/login.jpg'), blur(20px));
+      background-image: filter(url('statics/videos/faw-login-comp.jpg'), blur(20px));
     }
     to {
-      background-image: filter(url('statics/videos/login.jpg'), blur(0px));
+      background-image: filter(url('statics/videos/faw-login-comp.jpg'), blur(0px));
     }
   }
 }
-
 
 .radio-inline {
   margin-left: 10px !important;

@@ -3,8 +3,8 @@
 #  Project Setup Variables
 ###################################################
 	APPNAME="FAST"
-	PRODUCTNAME="SHARP+"
-	VERSION="0.2.6"
+	PRODUCTNAME="FAMEWS"
+	VERSION="0.3.0"
 	AUTHOR="Ignacio Cabrera <ignacio.cabrera@fao.org>"
 	DESCRIPTION="Collection application for Form.io"
 ###################################################

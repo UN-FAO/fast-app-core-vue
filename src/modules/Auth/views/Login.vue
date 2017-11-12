@@ -98,7 +98,6 @@ export default {
   methods: {
     ...mapActions(['sendOfflineData', 'getResources']),
     mountPicture () {
-     let loadStuff = function () {
       var win, doc, img, header, enhancedClass
       // Quit early if older browser (e.g. IE8).
       if (!('addEventListener' in window)) {
@@ -148,8 +147,6 @@ export default {
       if (bigSrc) {
         img.src = bigSrc
       }
-    }
-      window.addEventListener('load', loadStuff(), false)
     },
     /**
      * Response to the login method
@@ -158,6 +155,8 @@ export default {
      */
     handleLogin(event, done) {
       this.logingIn = true
+      this.credentials.password = this.credentials.password.trim()
+      this.credentials.username = this.credentials.username.trim()
       // Try to authenticate the User
       Auth.attempt(this.credentials, this.$store.state.authStore.appURL)
         .then((User) => {

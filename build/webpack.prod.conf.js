@@ -25,9 +25,10 @@ module.exports = merge(baseWebpackConfig, {
     new UglifyJSPlugin({
     uglifyOptions: {
         ie8: true,
+        ecma: 8,
         output: {
-          comments: true,
-          beautify: true,
+          comments: false,
+          beautify: false,
         },
         warnings: false
       }
