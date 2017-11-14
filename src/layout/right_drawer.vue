@@ -1,174 +1,203 @@
 <template>
   <q-tabs>
-        <!-- Tabs - notice slot="title" -->
-        <q-tab v-if="scorePanels.length > 0"  slot="title" name="tab-1" icon="assessment" label="Score" />
-        <q-tab  default :count="Unsynced.length"  slot="title" name="tab-2" icon="signal_wifi_off" label="Unsync" />
+    <!-- Tabs - notice slot="title" -->
+    <q-tab v-if="scorePanels.length > 0" slot="title" name="tab-1" icon="assessment" label="Score" />
+    <q-tab default :count="Unsynced.length" slot="title" name="tab-2" icon="signal_wifi_off" label="Unsync" />
 
-        <!-- //////////////////////////// -->
+    <!-- //////////////////////////// -->
 
-        <q-tab-pane name="tab-1">
-            <q-list separator>
-          <!-- collapsible to hide sub-level menu entries -->
-          <q-collapsible v-for="(panel, index) in scorePanels"  separator :key="panel.key" icon="apps" :label="panel.title" >
-           
-            <q-item multiline icon="favorite" v-for="(component, cIndex) in panel.components" :label="component.label" :key="component.key">
+    <q-tab-pane name="tab-1">
+      <q-list separator>
+        <!-- collapsible to hide sub-level menu entries -->
+        <q-collapsible v-for="(panel, index) in scorePanels" separator :key="panel.key" icon="apps" :label="panel.title">
+
+          <q-item multiline icon="favorite" v-for="(component, cIndex) in panel.components" :label="component.label" :key="component.key">
             <q-item-side icon="school" />
-            <q-item-main
-              :label="component.label"
-              label-lines="3"
-            />
+            <q-item-main :label="component.label" label-lines="3" />
             <q-item-side right :stamp="component.value" />
           </q-item>
 
+        </q-collapsible>
+      </q-list>
 
-          </q-collapsible>
-        </q-list>
+    </q-tab-pane>
 
-        </q-tab-pane>
+    <q-tab-pane name="tab-2">
 
+      <q-list-header>{{ $t("App.unsynced_actions") }}
 
-        <q-tab-pane name="tab-2">
-  
-       <q-list-header>{{ $t("App.unsynced_actions") }}
-        
-          <q-btn flat  color="primary" @click="syncSubmissions()">
+        <q-btn flat color="primary" @click="syncSubmissions()">
           <q-icon name="cloud_upload" />
           <q-tooltip anchor="center right" self="center left" :offset="[10, 0]">
             {{ $t("App.sync_submissions") }}
           </q-tooltip>
-          </q-btn>
-       </q-list-header>
+        </q-btn>
+      </q-list-header>
 
 
-  <q-item v-for="(submission, index) in Unsynced"  separator :key="submission._id">
-    <q-item-side :icon="submission.data.syncError ? 'fa-exclamation' : 'assignment'" 
-    :color="submission.data.syncError ? 'red' : 'inherit'"/> 
-    <q-item-main>
-      <q-item-tile label>
-        {{submission.data.formio.formId}}
-      </q-item-tile>
+      <q-item v-for="(submission, index) in Unsynced" separator :key="submission._id">
+        <q-item-side :icon="submission.data.syncError ? 'fa-exclamation' : 'assignment'" :color="submission.data.syncError ? 'red' : 'inherit'"
+        />
+        <q-item-main>
+          <q-item-tile label>
+            {{submission.data.formio.formId}}
+          </q-item-tile>
 
-    </q-item-main>
+        </q-item-main>
 
-    <q-item-side right icon="more_vert">
-    <q-item-tile stamp>{{humanizeDate(submission.data.created)}}</q-item-tile>
-            <q-popover ref="popover">
-              <q-list link>
-                <q-item @click="$refs.popover.close()">
-                  <q-item-main label="Reply" />
-                </q-item>
-                <q-item @click="$refs.popover.close()">
-                  <q-item-main label="Forward" />
-                </q-item>
-                <q-item @click="$refs.popover.close()">
-                  <q-item-main label="Delete" />
-                </q-item>
-              </q-list>
-            </q-popover>
-          </q-item-side>
-  </q-item>
+        <q-item-side right icon="more_vert">
+          <q-item-tile stamp>{{humanizeDate(submission.data.created)}}</q-item-tile>
+          <q-popover ref="popover">
+            <q-list link>
+              <q-item @click="$refs.popover.close()">
+                <q-item-main label="Reply" />
+              </q-item>
+              <q-item @click="$refs.popover.close()">
+                <q-item-main label="Forward" />
+              </q-item>
+              <q-item @click="$refs.popover.close()">
+                <q-item-main label="Delete" />
+              </q-item>
+            </q-list>
+          </q-popover>
+        </q-item-side>
+      </q-item>
 
 
-   </q-tab-pane>
- 
-</q-tabs>
+    </q-tab-pane>
+
+  </q-tabs>
 </template>
 <script>
-import _forEach from 'lodash/forEach'
-import _isEmpty from 'lodash/isEmpty'
-import _orderBy from 'lodash/orderBy'
-import _filter from 'lodash/filter'
-import * as Database from 'database/Database'
-import moment from 'moment'
-import Auth from 'modules/Auth/api/Auth'
-import FormioUtils from 'formiojs/utils'
-import {QTabs, QTab, QTabPane, QScrollArea, QSideLink, QItemTile, QItemSide, QItemMain, QListHeader, QCollapsible, QBtn, QIcon, QTooltip, QList, QItem, QItemSeparator, QPopover} from 'quasar'
-export default {
-  components: {
-    QTabs, QTab, QTabPane, QScrollArea, QSideLink, QItemTile, QItemSide, QItemMain, QListHeader, QCollapsible, QBtn, QIcon, QTooltip, QList, QItem, QItemSeparator, QPopover
-  },
-  data () {
-    return {
-      Unsynced: [],
-      allSubmissionSubs: [],
-      scorePanels: []
-    }
-  },
-  beforeDestroy: function () {
-    this.allSubmissionSubs.forEach(sub => sub.unsubscribe())
-  },
-  /**
+  import _forEach from "lodash/forEach";
+  import _isEmpty from "lodash/isEmpty";
+  import _orderBy from "lodash/orderBy";
+  import _filter from "lodash/filter";
+  import * as Database from "database/Database";
+  import moment from "moment";
+  import Auth from "modules/Auth/api/Auth";
+  import FormioUtils from "formiojs/utils";
+  import {
+    QTabs,
+    QTab,
+    QTabPane,
+    QScrollArea,
+    QSideLink,
+    QItemTile,
+    QItemSide,
+    QItemMain,
+    QListHeader,
+    QCollapsible,
+    QBtn,
+    QIcon,
+    QTooltip,
+    QList,
+    QItem,
+    QItemSeparator,
+    QPopover
+  } from "quasar";
+  export default {
+    components: {
+      QTabs,
+      QTab,
+      QTabPane,
+      QScrollArea,
+      QSideLink,
+      QItemTile,
+      QItemSide,
+      QItemMain,
+      QListHeader,
+      QCollapsible,
+      QBtn,
+      QIcon,
+      QTooltip,
+      QList,
+      QItem,
+      QItemSeparator,
+      QPopover
+    },
+    data() {
+      return {
+        Unsynced: [],
+        allSubmissionSubs: [],
+        scorePanels: []
+      };
+    },
+    beforeDestroy: function () {
+      this.allSubmissionSubs.forEach(sub => sub.unsubscribe());
+    },
+    /**
      * [beforeRouteUpdate description]
      * @param  {[type]}   to   [description]
      * @param  {[type]}   from [description]
      * @param  {Function} next [description]
      * @return {[type]}        [description]
      */
-  mounted: async function () {
-    this.$eventHub.on('formio.change', (data) => {
-      let scorePanels = []
-      // This should only be called if this is a Wizard
-      // Search all of the Score components in different pages
-      _forEach(data.formio.pages, (page) => {
+    mounted: async function () {
+      this.$eventHub.on("formio.change", data => {
+        let scorePanels = [];
+        // This should only be called if this is a Wizard
+        // Search all of the Score components in different pages
+        _forEach(data.formio.pages, page => {
           let panels = FormioUtils.findComponents(page.components, {
-          'type': 'panel'
-        })
+            type: "panel"
+          });
           if (panels.length > 0) {
             _forEach(panels, (panel, index) => {
               // Make sure that the panel contains Score
-              if (panel.key.indexOf('score') !== -1) {
+              if (panel.key.indexOf("score") !== -1) {
                 _forEach(panel.components, (component, cindex) => {
                   // Search the current value of the Score and add it
-                  component.value = data.formio.data[component.key]
-                })
-                scorePanels.push(panel)
+                  component.value = data.formio.data[component.key];
+                });
+                scorePanels.push(panel);
               }
-            })
+            });
           }
-      })
-        this.scorePanels = scorePanels
-    })
+        });
+        this.scorePanels = scorePanels;
+      });
 
-    const db = await Database.get()
-    if (_isEmpty(Auth.user())) {
-      return
-    }
-    
-    this.allSubmissionSubs.push(
-      db.submissions
+      const db = await Database.get();
+      if (_isEmpty(Auth.user())) {
+        return;
+      }
+
+      this.allSubmissionSubs.push(
+        db.submissions
         .find({
-          'data.sync': false,
-          'data.draft': false,
-          'data.user_email': {
+          "data.sync": false,
+          "data.draft": false,
+          "data.user_email": {
             $exists: true,
             $eq: Auth.user().data.email || Auth.user().email
           }
         })
-        .$
-        .filter(x => x != null)
+        .$.filter(x => x != null)
         .subscribe(results => {
           let filter = _filter(results, function (o) {
-            return true
-          })
+            return true;
+          });
 
-          filter = _orderBy(filter, ['data.created'], ['desc'])
-          this.Unsynced = filter
+          filter = _orderBy(filter, ["data.created"], ["desc"]);
+          this.Unsynced = filter;
         })
-    )
-  },
-  methods: {
-    changeSelectedPage () {
-      // let ref = 'page-' + this.currentPage
-      // let listPage = this.$refs[ref]
+      );
     },
-    humanizeDate (givenDate) {
-      let start = moment(givenDate)
-      let end = moment()
-      return end.to(start)
-    },
-    syncSubmissions () {
-      Database.sync(this)
+    methods: {
+      changeSelectedPage() {
+        // let ref = 'page-' + this.currentPage
+        // let listPage = this.$refs[ref]
+      },
+      humanizeDate(givenDate) {
+        let start = moment(givenDate);
+        let end = moment();
+        return end.to(start);
+      },
+      syncSubmissions() {
+        Database.sync(this);
+      }
     }
-  }
-}
+  };
+
 </script>

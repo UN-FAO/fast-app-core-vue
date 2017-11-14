@@ -8,6 +8,7 @@ var
   FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
 
 var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+var configVars = require('../src/config/env')
 
 // add hot-reload related code to entry chunks
 Object.keys(baseWebpackConfig.entry).forEach(function (name) {
@@ -34,6 +35,7 @@ module.exports = merge(baseWebpackConfig, {
     new HtmlWebpackPlugin({
       filename: 'index.html',
       template: 'src/index.html',
+      title: configVars.APP_FANTACY_NAME,
       inject: true
     }),
     new FriendlyErrorsPlugin({

@@ -28,14 +28,14 @@
 </template>
 
 <script>
-import {QModal, QModalLayout, QToolbar, QBtn} from 'quasar'
+import { QModal, QModalLayout, QToolbar, QBtn } from "quasar";
 export default {
-  components: {QModal, QModalLayout, QToolbar, QBtn},
-  name: 'selectSurvey',
+  components: { QModal, QModalLayout, QToolbar, QBtn },
+  name: "selectSurvey",
   methods: {
-    toggleFlip () {
-      console.log('try to toggle')
+    toggleFlip() {
+      console.log("try to toggle");
     }
   }
-}
+};
 </script>

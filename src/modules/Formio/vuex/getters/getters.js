@@ -9,10 +9,12 @@ const getters = {
    * @return {[type]}          [description]
    */
   getFormById: (state, getters) => (id) => {
-    return _.filter(state.forms, { '_id': String(id) })[0]
+    return _.filter(state.forms, {
+      '_id': String(id)
+    })[0]
   },
 
-  getSubmissionByFormId: (state, getters) => async (id) => {
+  getSubmissionByFormId: (state, getters) => async(id) => {
     let db = await Database.get()
     let submissions = await db.submissions.find().where('data.form').eq(id).exec()
 

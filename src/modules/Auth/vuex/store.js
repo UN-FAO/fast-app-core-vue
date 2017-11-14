@@ -1,6 +1,9 @@
 import * as Database from 'database/Database'
 import SyncHelper from 'database/helpers/SyncHelper'
-import { APP_URL, APP_NAME } from 'config/env'
+import {
+  APP_URL,
+  APP_NAME
+} from 'config/env'
 
 const state = {
   layoutNeeded: false,
@@ -57,7 +60,9 @@ const actions = {
    * @param  {[type]} User           [description]
    * @return {[type]}                [description]
    */
-  setUserObject: ({ commit }, User) => {
+  setUserObject: ({
+    commit
+  }, User) => {
     commit('SET_AUTH_USER', User)
   },
   /**
@@ -65,11 +70,15 @@ const actions = {
    * @param  {[type]} options.commit [description]
    * @return {[type]}                [description]
    */
-  clearAuthUser: ({ commit }) => {
+  clearAuthUser: ({
+    commit
+  }) => {
     commit('CLEAR_AUTH_USER')
   },
 
-  changeIsOnlineStatus: ({ commit }, status) => {
+  changeIsOnlineStatus: ({
+    commit
+  }, status) => {
     commit('CHANGE_IS_ONLINE_STATUS', status)
   },
   /**
@@ -78,7 +87,9 @@ const actions = {
    * @param  {[type]} currentForm    [description]
    * @return {[type]}                [description]
    */
-  storeUserLocally: async({ commit }, formIoUser) => {
+  storeUserLocally: async({
+    commit
+  }, formIoUser) => {
     let DB = await Database.get()
     let user = await DB.users.findOne().where('data.data.email').eq(formIoUser.data.email).exec()
     formIoUser = SyncHelper.deleteNulls(formIoUser)

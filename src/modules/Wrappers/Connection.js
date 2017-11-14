@@ -1,11 +1,13 @@
 import axios from 'axios'
-import {HEARTBEAT_URL} from 'config/env'
+import {
+  HEARTBEAT_URL
+} from 'config/env'
 import _ from 'lodash'
 
 let isOnline = window.navigator.onLine
 
 const Connection = class {
-  static check () {
+  static check() {
     let dHeartBeat = _.debounce(this.heartBeat, 3000)
     return dHeartBeat
   }
@@ -14,7 +16,7 @@ const Connection = class {
    * [status description]
    * @return {Promise} [description]
    */
-  static initEventListeners (vm) {
+  static initEventListeners(vm) {
     let self = this
     window.addEventListener('online', function () {
       console.log('App is now online')
@@ -27,25 +29,25 @@ const Connection = class {
     })
   }
 
-  static setOnline (vm) {
+  static setOnline(vm) {
     if (!isOnline) {
       isOnline = true
       vm && vm.$eventHub.$emit('connectionStatusChanged', isOnline)
     }
   }
 
-  static setOffline (vm) {
+  static setOffline(vm) {
     if (isOnline) {
       isOnline = false
       vm && vm.$eventHub.$emit('connectionStatusChanged', isOnline)
     }
   }
 
-  static isOnline () {
+  static isOnline() {
     return isOnline
   }
 
-  static heartBeat (vm) {
+  static heartBeat(vm) {
     return axios.get(HEARTBEAT_URL)
       .then(() => {
         this.setOnline.bind(this)(vm)

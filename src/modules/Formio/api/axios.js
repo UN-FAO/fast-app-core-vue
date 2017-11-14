@@ -1,5 +1,8 @@
 import axios from 'axios'
-import { LocalStorage, Loading } from 'quasar'
+import {
+  LocalStorage,
+  Loading
+} from 'quasar'
 
 /**
  * Sets the default URL for API Calls

@@ -3,15 +3,19 @@ const Position = class {
    * [getConfig description]
    * @return {Object} [description]
    */
-  static getConfig () {
-    return {maximumAge: 3000, timeout: 5000, enableHighAccuracy: true}
+  static getConfig() {
+    return {
+      maximumAge: 3000,
+      timeout: 5000,
+      enableHighAccuracy: true
+    }
   }
 
   /**
    * [getPosition description]
    * @return {Promise} [description]
    */
-  static current () {
+  static current() {
     return new Promise((resolve, reject) => {
       navigator.geolocation.getCurrentPosition((position) => {
         resolve(position)
@@ -25,7 +29,7 @@ const Position = class {
    * [followPosition description]
    * @return {Promise} [description]
    */
-  static follow () {
+  static follow() {
     return new Promise((resolve, reject) => {
       navigator.geolocation.watchPosition((position) => {
         resolve(position)

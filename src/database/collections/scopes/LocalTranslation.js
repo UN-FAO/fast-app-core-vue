@@ -7,16 +7,18 @@ const LocalTranslation = class {
    * @param  {[type]} id [description]
    * @return {[type]}    [description]
    */
-  static async getFormTranslations () {
-  	const DB = await Database.get()
-    let formTranslations = {i18n: {}}
+  static async getFormTranslations() {
+    const DB = await Database.get()
+    let formTranslations = {
+      i18n: {}
+    }
     let localTranslations = await DB.translations.findOne().exec()
     localTranslations = localTranslations.data
 
     _forEach(localTranslations, (lenguage, index) => {
-        if (index !== 'type') {
-          formTranslations.i18n[index] = lenguage ? lenguage.translations : {}
-        }
+      if (index !== 'type') {
+        formTranslations.i18n[index] = lenguage ? lenguage.translations : {}
+      }
     })
 
     return formTranslations

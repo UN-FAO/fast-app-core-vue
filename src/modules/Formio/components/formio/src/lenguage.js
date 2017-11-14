@@ -4,7 +4,7 @@ const Lenguage = class {
    * @param  {[type]} vm [description]
    * @return {[type]}    [description]
    */
-  static listen (vm) {
+  static listen(vm) {
     vm.$eventHub.$on('lenguageSelection', (lenguage) => {
       vm.formIO.language = lenguage.code
       vm.renderForm()

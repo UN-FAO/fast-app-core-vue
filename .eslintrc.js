@@ -52,7 +52,8 @@ module.exports = {
     "brace-style":0,
     "no-useless-return":0,
     "no-unexpected-multiline":0,
-    "func-call-spacing":0
-
+    "func-call-spacing":0,
+    "quotes": 0,
+    "semi": 0
   }
 }

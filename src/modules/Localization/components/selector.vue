@@ -18,10 +18,10 @@
 </q-btn>
 </template>
 <style scoped>
-  .active {
-    background: #0e6da5;
-    color: white;
-  }
+.active {
+  background: #0e6da5;
+  color: white;
+}
 </style>
 
 <script>
@@ -40,10 +40,10 @@ import {
   QChip,
   QFixedPosition,
   QItemSeparator
-} from 'quasar'
-import Localization from '../Localization'
+} from "quasar";
+import Localization from "../Localization";
 export default {
-  name: 'localization',
+  name: "localization",
   components: {
     QItemSeparator,
     Toast,
@@ -60,40 +60,43 @@ export default {
     QChip,
     QFixedPosition
   },
-   data: function () {
+  data: function() {
     return {
-      lenguage: localStorage.getItem('defaultLenguage') ? localStorage.getItem('defaultLenguage') : 'en',
-      lenguages: [{code: 'en', direction: 'ltr', label: 'English'},
-                  {code: 'es', direction: 'ltr', label: 'Español'},
-                  {code: 'fr', direction: 'ltr', label: 'Francais'}
-                ]
-    }
+      lenguage: localStorage.getItem("defaultLenguage")
+        ? localStorage.getItem("defaultLenguage")
+        : "en",
+      lenguages: [
+        { code: "en", direction: "ltr", label: "English" },
+        { code: "es", direction: "ltr", label: "Español" },
+        { code: "fr", direction: "ltr", label: "Francais" }
+      ]
+    };
   },
   methods: {
-    async getTranslations () {
-       await Localization.getTranslations()
-       this.$swal({
-                title: 'Localizations Synced',
-                text: 'You need to reload the page to see them. Want to do it now?',
-                type: 'success',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, reaload it!',
-                cancelButtonText: 'No, Later'
-              }).then(async () => {
-                  window.location.reload(true)
-              })
+    async getTranslations() {
+      await Localization.getTranslations();
+      this.$swal({
+        title: "Localizations Synced",
+        text: "You need to reload the page to see them. Want to do it now?",
+        type: "success",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, reaload it!",
+        cancelButtonText: "No, Later"
+      }).then(async () => {
+        window.location.reload(true);
+      });
     },
-    isActive (code) {
-      return !!(this.lenguage === code)
+    isActive(code) {
+      return !!(this.lenguage === code);
     },
-    setLanguage (lenguage) {
-      this.$i18n.locale = lenguage.code
-      this.lenguage = lenguage.code
-      localStorage.setItem('defaultLenguage', lenguage.code)
-      this.$eventHub.$emit('lenguageSelection', lenguage)
+    setLanguage(lenguage) {
+      this.$i18n.locale = lenguage.code;
+      this.lenguage = lenguage.code;
+      localStorage.setItem("defaultLenguage", lenguage.code);
+      this.$eventHub.$emit("lenguageSelection", lenguage);
     }
   }
-}
+};
 </script>

@@ -22,7 +22,7 @@ class Wso2 {
       },
       json: false // Automatically parses the JSON string in the response
     };
-    return rp(options).then(function(obj) {
+    return rp(options).then(function (obj) {
       var document = new xmldoc.XmlDocument(obj);
       if (document.valueWithPath("soapenv:Body.ns:authenticateResponse.ns:return") == "true") {
         return true;
@@ -34,7 +34,7 @@ class Wso2 {
         error.code = "LOGIN_FAILED";
         return error;
       }
-    }).catch(function(err) {
+    }).catch(function (err) {
       let error = new Error();
       error.status = 501;
       error.name = "Error";

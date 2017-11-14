@@ -8,11 +8,17 @@ import Connection from 'modules/Wrappers/Connection'
 import LocalSubmission from 'database/collections/scopes/LocalSubmission'
 import FormioJS from 'formiojs'
 import deep from 'deep-diff'
-import {Toast} from 'quasar'
+import {
+  Toast
+} from 'quasar'
 import Promise from 'bluebird'
 const actions = {
 
-  async updateLocalResource ({ collection, label, data }) {
+  async updateLocalResource({
+    collection,
+    label,
+    data
+  }) {
     // let offlinePlugin = FormioJS.getPlugin('offline')
     var formio = new FormioJS('https://' + data.appName + '.form.io')
     let isOnline = Connection.isOnline()
@@ -25,7 +31,11 @@ const actions = {
       if (isOnline) {
         FormioJS.clearCache()
       }
-      remoteResources = isOnline ? await formio.loadForms({params: {limit: '100'}}) : []
+      remoteResources = isOnline ? await formio.loadForms({
+        params: {
+          limit: '100'
+        }
+      }) : []
     }
 
     let sync = SyncHelper.offlineOnlineSync({
@@ -48,7 +58,9 @@ const actions = {
     })
 
     if (sync.length > 0) {
-      Toast.create.positive({ html: sync.length + ' ' + label + ' were updated' })
+      Toast.create.positive({
+        html: sync.length + ' ' + label + ' were updated'
+      })
     } else {
       // Toast.create.info({html: 'Local forms up to date'})
     }
@@ -60,13 +72,19 @@ const actions = {
    * @param  {[type]} projectName    [description]
    * @return {[type]}                [description]
    */
-  async getResources ({ commit }, data) {
+  async getResources({
+    commit
+  }, data) {
     let promises = [
-      actions.getForms({ commit }, data)
+      actions.getForms({
+        commit
+      }, data)
     ]
 
     if (Auth.check()) {
-      promises.push(actions.getUsers({ commit }, data))
+      promises.push(actions.getUsers({
+        commit
+      }, data))
     }
     await Promise.all(promises)
   },
@@ -77,7 +95,9 @@ const actions = {
    * @param  {[type]} projectName    [description]
    * @return {[type]}                [description]
    */
-  async getUsers ({ commit }, data) {
+  async getUsers({
+    commit
+  }, data) {
     actions.updateLocalResource({
       data,
       collection: 'users',
@@ -91,7 +111,9 @@ const actions = {
    * @param  {[type]} projectName    [description]
    * @return {[type]}                [description]
    */
-  async getForms ({ commit }, data) {
+  async getForms({
+    commit
+  }, data) {
     actions.updateLocalResource({
       data,
       collection: 'forms',
@@ -105,24 +127,33 @@ const actions = {
    * @param  {[type]} projectName    [description]
    * @return {[type]}                [description]
    */
-  async getSubmissions ({ commit }, { currentForm, User }) {
+  async getSubmissions({
+    commit
+  }, {
+    currentForm,
+    User
+  }) {
     FormioJS.setToken(Auth.user().x_jwt_token)
     const DB = await Database.get()
     let isOnline = Connection.isOnline()
     let formUrl = 'https://' + currentForm.data.machineName.substring(0, currentForm.data.machineName.indexOf(':')) + '.form.io/' + currentForm.data.path
-    
+
     let formio = new FormioJS(formUrl)
 
     let localUnSyncSubmissions = await LocalSubmission.offline(User.id, currentForm.data.path)
 
     FormioJS.clearCache()
 
-    let remoteSubmissions = (isOnline) ? await formio.loadSubmissions({params: {limit: '100'}}) : []
-  
+    let remoteSubmissions = (isOnline) ? await formio.loadSubmissions({
+      params: {
+        limit: '100'
+      }
+    }) : []
+
     _.map(remoteSubmissions, function (o) {
       o.formio = formio
     })
- 
+
     let localSubmissions = LocalSubmission.stored(User.id, currentForm.data.path)
 
     var Localresult = _.unionBy(localSubmissions, localUnSyncSubmissions, '_id')
@@ -146,11 +177,11 @@ const actions = {
       let isRepleaceble = localSubmission.data && !(localSubmission.data.sync === false || localSubmission.data.draft === false)
       let isNotLocal = typeof localSubmission.data === 'undefined'
       if (isRepleaceble || isNotLocal) {
-            // Inser the new or updated entry
-            DB.submissions.insert({
-              data: submission
-            })
-        }
+        // Inser the new or updated entry
+        DB.submissions.insert({
+          data: submission
+        })
+      }
     })
     /*
     if (sync.length > 0) {
@@ -165,9 +196,15 @@ const actions = {
    * @param {[type]} options.commit [description]
    * @param {[type]} currentForm    [description]
    */
-  async addSubmission ({ commit }, { formSubmission, formio, User }) {
+  async addSubmission({
+    commit
+  }, {
+    formSubmission,
+    formio,
+    User
+  }) {
     const DB = await Database.get()
-    
+
     let submission = formSubmission
     submission.sync = false
     submission.user_email = User.email
@@ -187,7 +224,7 @@ const actions = {
       // If there are differences between the
       // Stored and the new data.
       if (((differences || submitting || (localDraft && submissionNotDraft)) && !autoSave) || (!isSynced && differences && autoSave)) {
-          await localSubmission.update({
+        await localSubmission.update({
           $set: {
             data: submission
           }
@@ -212,7 +249,9 @@ const actions = {
    * @param  {[type]} offlineSubmissions [description]
    * @return {[type]}                    [description]
    */
-  async sendOfflineData ({ commit }, data) {
+  async sendOfflineData({
+    commit
+  }, data) {
     let offlineSubmissions = data.offlineSubmissions
     let vm = data.vm
     let isOnline = Connection.isOnline()
@@ -220,17 +259,17 @@ const actions = {
     let syncedSubmissions = []
     let offlinePlugin = FormioJS.getPlugin('offline')
     if (isOnline) {
-     Promise.each(offlineSubmissions, async function (offlineSubmission) {
+      Promise.each(offlineSubmissions, async function (offlineSubmission) {
         // Create FormIOJS plugin instace (Manipulation)
         let formio = new FormioJS(offlineSubmission.data.formio.formUrl)
         let postData = {
           data: offlineSubmission.data.data
         }
         await offlineSubmission.update({
-            $set: {
-              'data.queuedForSync': true
-            }
-          })
+          $set: {
+            'data.queuedForSync': true
+          }
+        })
 
         // If it has an ID and the Id its not local (doesnt contain ":")
         if (offlineSubmission.data._id && offlineSubmission.data._id.indexOf(':') === -1) {
@@ -254,11 +293,9 @@ const actions = {
           if (offlinePlugin) {
             FormioJS.registerPlugin(offlinePlugin, 'offline')
           }
-        }
-        catch (e) {
+        } catch (e) {
           console.log('The submission cannot be synced ', e)
-          if (e === 'TypeError: Could not connect to API server (Failed to fetch)')
-          {
+          if (e === 'TypeError: Could not connect to API server (Failed to fetch)') {
             console.log('Error connecting to the API server')
           }
           await offlineSubmission.update({
@@ -272,8 +309,10 @@ const actions = {
           }
         }
       }).then((result) => {
-          vm.$eventHub.emit('FAST-DATA_SYNCED', {count: syncedSubmissionsCount,
-            data: syncedSubmissions })
+        vm.$eventHub.emit('FAST-DATA_SYNCED', {
+          count: syncedSubmissionsCount,
+          data: syncedSubmissions
+        })
       })
     }
   }

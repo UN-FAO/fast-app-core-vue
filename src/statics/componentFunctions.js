@@ -2,7 +2,7 @@
  * Use the navigator GPS coordinates to determine
  * the current position and display it on the
  * given latitud and longitud input fields
- * 
+ *
  * You can listen to this event as follows
  *    document.addEventListener("gpsRequested", function(e) {
  *      console.log(e);
@@ -14,40 +14,48 @@
  */
 var getGpsPosition = function (data, latitudField, longitudField) {
   // Create the events
-  var requestedEvent = new CustomEvent('gpsRequested',
-    {
-      'detail': {'data': data, 'text': 'GPS requested'}
+  var requestedEvent = new CustomEvent('gpsRequested', {
+    'detail': {
+      'data': data,
+      'text': 'GPS requested'
     }
-  )
-  var doneEvent = new CustomEvent('gpsSucceeded',
-    {
-      'detail': {'data': data, 'text': 'GPS Succeeded'}
+  })
+  var doneEvent = new CustomEvent('gpsSucceeded', {
+    'detail': {
+      'data': data,
+      'text': 'GPS Succeeded'
     }
-  )
+  })
 
-  function error (e) {
+  function error(e) {
     console.log('GPS error', e)
-    var errorEvent = new CustomEvent('gpsError',
-    	{
-      	'detail': {'data': e, 'text': 'GPS Error'}
-    	}
-  	)
+    var errorEvent = new CustomEvent('gpsError', {
+      'detail': {
+        'data': e,
+        'text': 'GPS Error'
+      }
+    })
     document.dispatchEvent(errorEvent)
   }
 
-  function getLocation () {
+  function getLocation() {
     if (navigator.geolocation) {
       document.dispatchEvent(requestedEvent)
-      navigator.geolocation.getCurrentPosition(showPosition, error, {maximumAge: 3000, timeout: 15000, enableHighAccuracy: true})
+      navigator.geolocation.getCurrentPosition(showPosition, error, {
+        maximumAge: 3000,
+        timeout: 15000,
+        enableHighAccuracy: true
+      })
     } else {
       document.dispatchEvent(doneEvent)
       console.log('Geolocation is not supported by this browser.')
     }
-    function showPosition (position) {
+
+    function showPosition(position) {
       data[longitudField] = position.coords.longitude
       data[latitudField] = position.coords.latitude
-      document.getElementsByName('data['+ longitudField +']')[0].value = position.coords.longitude
-      document.getElementsByName('data['+ latitudField +']')[0].value = position.coords.latitude
+      document.getElementsByName('data[' + longitudField + ']')[0].value = position.coords.longitude
+      document.getElementsByName('data[' + latitudField + ']')[0].value = position.coords.latitude
       // Dispatch/Trigger/Fire the event
       document.dispatchEvent(doneEvent)
     }
@@ -56,7 +64,7 @@ var getGpsPosition = function (data, latitudField, longitudField) {
 }
 
 /**
- * Count the number of elements inside the 
+ * Count the number of elements inside the
  * elements array that are not empty
  * @param  {Array} data     [description]
  * @param  {Array} elements [description]
@@ -98,19 +106,19 @@ var addIfNotEmpty = function (data, elements) {
  * @param  {[type]} input         [description]
  * @return {[type]}               [description]
  */
-var notEmptyIfComponentGreaterThanZero = function(data, componentName, input) {
+var notEmptyIfComponentGreaterThanZero = function (data, componentName, input) {
 
-    if (typeof data[componentName] !== 'undefined' && data[componentName] !== null &&
-        data[componentName] !== '' && !isNaN(data[componentName]) && data[componentName] > 0) {
+  if (typeof data[componentName] !== 'undefined' && data[componentName] !== null &&
+    data[componentName] !== '' && !isNaN(data[componentName]) && data[componentName] > 0) {
 
-        if (typeof input !== 'undefined' && input !== null && input !== '') {
-            return true
-        } else {
-            return 'This field should not be empty';
-        }
+    if (typeof input !== 'undefined' && input !== null && input !== '') {
+      return true
     } else {
-        return true;
+      return 'This field should not be empty';
     }
+  } else {
+    return true;
+  }
 
 }
 
@@ -120,12 +128,13 @@ var notEmptyIfComponentGreaterThanZero = function(data, componentName, input) {
  * @return {[type]}      [description]
  */
 var sendSMS = function (data) {
-	// Create the event
-  var messageRequested = new CustomEvent('messageRequested',
-    {
-      'detail': {'data': data, 'text': 'SMS message requested'}
+  // Create the event
+  var messageRequested = new CustomEvent('messageRequested', {
+    'detail': {
+      'data': data,
+      'text': 'SMS message requested'
     }
-  )
+  })
   document.dispatchEvent(messageRequested)
 }
 
@@ -135,11 +144,12 @@ var sendSMS = function (data) {
  * @return {[type]}      [description]
  */
 var saveAsDraft = function (data) {
-    // Create the event
-  var saveAsDraft = new CustomEvent('saveAsDraft',
-    {
-      'detail': {'data': data, 'text': 'Save as Draft Requested'}
+  // Create the event
+  var saveAsDraft = new CustomEvent('saveAsDraft', {
+    'detail': {
+      'data': data,
+      'text': 'Save as Draft Requested'
     }
-  )
+  })
   document.dispatchEvent(saveAsDraft)
 }

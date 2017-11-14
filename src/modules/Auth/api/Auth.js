@@ -1,7 +1,12 @@
-import { LocalStorage, Loading } from 'quasar'
+import {
+  LocalStorage,
+  Loading
+} from 'quasar'
 import router from 'config/router'
 import Formio from 'modules/Formio/api/Formio'
-import { MD5_KEY } from 'config/env'
+import {
+  MD5_KEY
+} from 'config/env'
 import md5 from 'md5'
 import * as Database from 'database/Database'
 import store from 'config/store'
@@ -35,7 +40,9 @@ const Auth = class {
     LocalStorage.remove('id_token')
     LocalStorage.remove('formioToken')
     LocalStorage.remove('formioUser')
-    router.push({ path: '/login' })
+    router.push({
+      path: '/login'
+    })
   }
 
   /**
@@ -115,7 +122,10 @@ const Auth = class {
    * @return {[type]}             [description]
    */
   static async localAuthenticate(credentials) {
-    const { username, password } = credentials
+    const {
+      username,
+      password
+    } = credentials
     // Hash password
     const hashedPassword = md5(password, MD5_KEY)
 

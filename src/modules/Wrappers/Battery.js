@@ -3,7 +3,7 @@ const Battery = class {
    * [status description]
    * @return {Promise} [description]
    */
-  static status () {
+  static status() {
     return new Promise((resolve, reject) => {
       window.addEventListener('batterystatus', (status) => {
         resolve(status)
@@ -15,7 +15,7 @@ const Battery = class {
    * [isLow description]
    * @return {Promise} [description]
    */
-  static isLow () {
+  static isLow() {
     return new Promise((resolve, reject) => {
       window.addEventListener('batterylow', (status) => {
         resolve(status)
@@ -27,7 +27,7 @@ const Battery = class {
    * [isCritical description]
    * @return {Promise} [description]
    */
-  static isCritical () {
+  static isCritical() {
     return new Promise((resolve, reject) => {
       window.addEventListener('batterycritical', (status) => {
         resolve(status)

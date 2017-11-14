@@ -11,41 +11,58 @@ require(`quasar/dist/quasar.ie`)
 require(`quasar/dist/quasar.ie.${__THEME}.css`)
 
 import Vue from 'vue'
+
 import Quasar from 'quasar'
+Vue.use(Quasar) // Install Quasar Framework
+
 import router from 'config/router'
 import store from 'config/store'
 import axios from 'config/axios'
-import ElementUI from 'element-ui'
-import 'element-ui/lib/theme-default/index.css'
+
+import {
+  Table,
+  TableColumn,
+  Pagination,
+  Tag,
+  Button
+} from 'element-ui';
+
+Vue.use(Table)
+Vue.use(TableColumn)
+Vue.use(Pagination)
+Vue.use(Tag)
+Vue.use(Button)
+
 import DataTables from 'vue-data-tables'
-import VueSweetAlert from 'vue-sweetalert'
-import VueI18n from 'vue-i18n'
-import EventHub from 'vue-event-hub'
-import 'quasar-extras/ionicons'
-import 'quasar-extras/fontawesome'
-// import Auth from 'modules/Auth/api/Auth'
-import Localization from 'modules/Localization/Localization'
-import VueAsyncProperties from 'vue-async-properties'
-Vue.use(VueAsyncProperties)
-Vue.use(VueSweetAlert)
-Vue.use(ElementUI)
 Vue.use(DataTables)
+
+import VueSweetAlert from 'vue-sweetalert'
+Vue.use(VueSweetAlert)
+
+import VueI18n from 'vue-i18n'
 Vue.use(VueI18n)
+import EventHub from 'vue-event-hub'
 Vue.use(EventHub)
 
-Vue.config.productionTip = false
-Vue.use(Quasar) // Install Quasar Framework
-Vue.prototype.$http = axios
+import 'quasar-extras/material-icons'
+import 'quasar-extras/ionicons'
+import 'quasar-extras/fontawesome'
+// import 'quasar-extras/animate'
 
+import Localization from 'modules/Localization/Localization'
+
+import VueAsyncProperties from 'vue-async-properties'
+Vue.use(VueAsyncProperties)
+
+Vue.config.productionTip = false
+
+Vue.prototype.$http = axios
 
 if (__THEME === 'mat') {
   require('quasar-extras/roboto-font')
 }
-import 'quasar-extras/material-icons'
-// import 'quasar-extras/ionicons'
-// import 'quasar-extras/fontawesome'
-// import 'quasar-extras/animate'
-Quasar.start(async () => {
+
+Quasar.start(async() => {
   /* eslint-disable no-new */
   let appTranslations = []
   appTranslations = await Localization.setLocales()

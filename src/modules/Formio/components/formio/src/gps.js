@@ -1,4 +1,6 @@
-import { Loading } from 'quasar'
+import {
+  Loading
+} from 'quasar'
 
 const GPS = class {
   /**
@@ -6,7 +8,7 @@ const GPS = class {
    * @param  {[type]} vm [description]
    * @return {[type]}    [description]
    */
-  static listen (vm) {
+  static listen(vm) {
     // Remove previous registered events listeners
     document.removeEventListener('gpsSucceeded', function (e) {}, false)
     document.removeEventListener('gpsRequested', function (e) {}, false)
@@ -19,7 +21,7 @@ const GPS = class {
         spinnerSize: 100
       })
     })
- 
+
     document.addEventListener('gpsError', (e) => {
       Loading.hide()
       vm.$swal(

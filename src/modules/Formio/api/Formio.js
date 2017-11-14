@@ -1,5 +1,7 @@
 import axios from './axios'
-import { Loading } from 'quasar'
+import {
+  Loading
+} from 'quasar'
 import _ from 'lodash'
 import FormioUtils from 'formiojs/utils'
 import FormioForm from 'formiojs/form'
@@ -12,11 +14,19 @@ const Formio = class {
    * @param  {[type]} password [description]
    * @return {[type]}          [description]
    */
-  static authenticate (username, password) {
+  static authenticate(username, password) {
     return new Promise((resolve, reject) => {
-      axios.post('https://formio.form.io/user/login', { data: { email: username, password: password } })
+      axios.post('https://formio.form.io/user/login', {
+          data: {
+            email: username,
+            password: password
+          }
+        })
         .then(response => {
-          resolve({ headers: response.headers, data: response.data })
+          resolve({
+            headers: response.headers,
+            data: response.data
+          })
           Loading.hide()
         })
         .catch((error) => {
@@ -30,7 +40,7 @@ const Formio = class {
    * [projects description]
    * @return {[type]} [description]
    */
-  static projects () {
+  static projects() {
     return new Promise((resolve, reject) => {
       Loading.show({
         message: 'Loading projects..'
@@ -52,7 +62,7 @@ const Formio = class {
    * [projects description]
    * @return {[type]} [description]
    */
-  static project (id) {
+  static project(id) {
     return new Promise((resolve, reject) => {
       Loading.show({
         message: 'Loading project information..'
@@ -77,7 +87,11 @@ const Formio = class {
    * @param  {[type]} options.process     [description]
    * @return {[type]}                     [description]
    */
-  static getResource ({ projectName, resource, process }) {
+  static getResource({
+    projectName,
+    resource,
+    process
+  }) {
     return new Promise((resolve, reject) => {
       axios.get('https://' + projectName + '.form.io/' + resource)
         .then(response => {
@@ -100,7 +114,7 @@ const Formio = class {
    * @param  {[type]} projectName [description]
    * @return {[type]}             [description]
    */
-  static forms (projectName) {
+  static forms(projectName) {
     let self = this
 
     return this.getResource({
@@ -119,15 +133,18 @@ const Formio = class {
    * @param  {[type]} projectName [description]
    * @return {[type]}             [description]
    */
-  static users (projectName) {
-    return this.getResource({ projectName, resource: 'user/submission' })
+  static users(projectName) {
+    return this.getResource({
+      projectName,
+      resource: 'user/submission'
+    })
   }
 
   /**
    * [setEditUrl description]
    * @param {[type]} form [description]
    */
-  static setEditUrl (form) {
+  static setEditUrl(form) {
     let url = 'https://portal.form.io/#/project/' + form.project + '/form/' + form._id + '/edit'
     return url
   }
@@ -136,7 +153,7 @@ const Formio = class {
    * [setSubmissionEditURL description]
    * @param {[type]} submission [description]
    */
-  static setSubmissionEditURL (submission) {
+  static setSubmissionEditURL(submission) {
     let url = '/form/' + submission.form + '/submission/' + submission._id + '/edit'
     return url
   }
@@ -146,7 +163,7 @@ const Formio = class {
    * @param  {[type]} formPath [description]
    * @return {[type]}          [description]
    */
-  static getSubmissions (idMachine, formPath) {
+  static getSubmissions(idMachine, formPath) {
     let self = this
     return new Promise((resolve, reject) => {
       let res = idMachine.substring(0, idMachine.indexOf(':'))
@@ -167,12 +184,12 @@ const Formio = class {
     })
   }
 
-    /**
+  /**
    * [getSubmissions description]
    * @param  {[type]} formPath [description]
    * @return {[type]}          [description]
    */
-  static getSubmissionsURL (url) {
+  static getSubmissionsURL(url) {
     return new Promise((resolve, reject) => {
       axios.get(url)
         .then(response => {
@@ -192,7 +209,7 @@ const Formio = class {
    * @param  {[type]} container [description]
    * @return {[type]}           [description]
    */
-  static loadConfigProject (container) {
+  static loadConfigProject(container) {
     let form = new FormioForm(container)
     form.src = 'https://swgxzpjusiyswjy.form.io/projects'
     return form
@@ -203,7 +220,7 @@ const Formio = class {
    * @param  {[type]} container [description]
    * @return {[type]}           [description]
    */
-  static loadForm (container, formModel) {
+  static loadForm(container, formModel) {
     let form = new FormioForm(container)
     form.src = 'https://' + formModel.machineName.substring(0, formModel.machineName.indexOf(':')) + '.form.io/' + formModel.path
     return form
@@ -215,9 +232,11 @@ const Formio = class {
    * @param  {[type]} formModel [description]
    * @return {[type]}           [description]
    */
-  static loadFormFromJson (container, formModel) {
+  static loadFormFromJson(container, formModel) {
     let form = new FormioForm(container)
-    form.form = { components: formModel.components }
+    form.form = {
+      components: formModel.components
+    }
     form.formio = {}
     form.formio.formUrl = 'https://' + formModel.machineName.substring(0, formModel.machineName.indexOf(':')) + '.form.io/' + formModel.path
 
@@ -229,7 +248,7 @@ const Formio = class {
    * @param  {[type]} container [description]
    * @return {[type]}           [description]
    */
-  static loadConfigForm (container) {
+  static loadConfigForm(container) {
     let form = new FormioForm(container)
     form.src = 'https://swgxzpjusiyswjy.form.io/forms'
     return form
@@ -240,7 +259,7 @@ const Formio = class {
    * @param  {[type]} data [description]
    * @return {[type]}      [description]
    */
-  static createProject (data) {
+  static createProject(data) {
     return new Promise((resolve, reject) => {
       let parsedData = data.data
       parsedData.template = 'https://cdn.rawgit.com/formio/formio-app-basic/2.1.0/src/project.json'
@@ -274,14 +293,17 @@ const Formio = class {
    * @param  {[type]} url [description]
    * @return {[type]}     [description]
    */
-  static deleteProject (url) {
+  static deleteProject(url) {
     return new Promise((resolve, reject) => {
       Loading.show({
         message: 'Deleting project...'
       })
       axios.delete(url)
         .then(response => {
-          resolve({ headers: response.headers, data: response.data })
+          resolve({
+            headers: response.headers,
+            data: response.data
+          })
           Loading.hide()
         })
         .catch((error) => {
@@ -296,7 +318,7 @@ const Formio = class {
    * @param  {[type]} projectModel [description]
    * @return {[type]}              [description]
    */
-  static generateApiKey (projectModel) {
+  static generateApiKey(projectModel) {
     let url = 'https://api.form.io/project/' + projectModel._id
     return new Promise((resolve, reject) => {
       Loading.show({
@@ -310,7 +332,10 @@ const Formio = class {
         }]
         axios.put(url, project)
           .then(response => {
-            resolve({ headers: response.headers, data: response.data })
+            resolve({
+              headers: response.headers,
+              data: response.data
+            })
             Loading.hide()
           })
           .catch((error) => {
@@ -327,7 +352,7 @@ const Formio = class {
    * @param  {[type]} projectId       [description]
    * @return {[type]}                 [description]
    */
-  static generateForm (formInformation, projectId) {
+  static generateForm(formInformation, projectId) {
     return new Promise((resolve, reject) => {
       Loading.show({
         message: 'Creating new Form..'
@@ -346,45 +371,45 @@ const Formio = class {
             name: formInformation.data.name,
             display: formInformation.data.display,
             components: [{
-              defaultValue: project._id,
-              input: true,
-              tableView: true,
-              key: 'projectId',
-              label: 'projectID',
-              protected: false,
-              unique: false,
-              persistent: true,
-              type: 'hidden',
-              tags: [],
-              conditional: {}
-            },
-            {
-              defaultValue: projectNameLower.toLowerCase(),
-              input: true,
-              tableView: true,
-              key: 'projectName',
-              label: 'projectName',
-              protected: false,
-              unique: false,
-              persistent: true,
-              type: 'hidden',
-              tags: [],
-              conditional: {}
-            },
-            {
-              input: true,
-              label: 'Submit',
-              tableView: false,
-              key: 'submit',
-              size: 'md',
-              leftIcon: '',
-              rightIcon: '',
-              block: false,
-              action: 'submit',
-              disableOnInvalid: false,
-              theme: 'primary',
-              type: 'button'
-            }
+                defaultValue: project._id,
+                input: true,
+                tableView: true,
+                key: 'projectId',
+                label: 'projectID',
+                protected: false,
+                unique: false,
+                persistent: true,
+                type: 'hidden',
+                tags: [],
+                conditional: {}
+              },
+              {
+                defaultValue: projectNameLower.toLowerCase(),
+                input: true,
+                tableView: true,
+                key: 'projectName',
+                label: 'projectName',
+                protected: false,
+                unique: false,
+                persistent: true,
+                type: 'hidden',
+                tags: [],
+                conditional: {}
+              },
+              {
+                input: true,
+                label: 'Submit',
+                tableView: false,
+                key: 'submit',
+                size: 'md',
+                leftIcon: '',
+                rightIcon: '',
+                block: false,
+                action: 'submit',
+                disableOnInvalid: false,
+                theme: 'primary',
+                type: 'button'
+              }
             ],
             // TODO This has to be the logged in user Change needed
             owner: '573cc203e35b990100f16c0a',
@@ -417,11 +442,11 @@ const Formio = class {
   }
 
   /**
-     * [generateTranslationForm description]
-     * @param  {[type]} projectID [description]
-     * @return {[type]}           [description]
-     */
-  static generateTranslationForm (projectID) {
+   * [generateTranslationForm description]
+   * @param  {[type]} projectID [description]
+   * @return {[type]}           [description]
+   */
+  static generateTranslationForm(projectID) {
     let formInformation = {}
     formInformation.data.title = 'translations'
     formInformation.data.path = 'translations'
@@ -437,7 +462,7 @@ const Formio = class {
    * @param  {[type]} formId    [description]
    * @return {[type]}           [description]
    */
-  static generateAction (projectId, formId) {
+  static generateAction(projectId, formId) {
     console.log('Generating Actions for the project', projectId, formId)
     let url = 'https://api.form.io/project/' + projectId + '/form/' + formId + '/action'
     return new Promise((resolve, reject) => {
@@ -463,7 +488,10 @@ const Formio = class {
         }
         axios.post(url, Action)
           .then(response => {
-            resolve({ headers: response.headers, data: response.data })
+            resolve({
+              headers: response.headers,
+              data: response.data
+            })
             Loading.hide()
           })
           .catch((error) => {
@@ -479,11 +507,14 @@ const Formio = class {
    * @param  {[type]} form [description]
    * @return {[type]}      [description]
    */
-  static getEmptyErrors (form) {
+  static getEmptyErrors(form) {
     let emptyErrors = []
     FormioUtils.eachComponent(form.components, (component) => {
       if (component.component.validate && component.component.validate.required === true && component.value === '') {
-        emptyErrors.push({ component: component.component, message: 'Empty Field' })
+        emptyErrors.push({
+          component: component.component,
+          message: 'Empty Field'
+        })
       }
     })
 
@@ -495,7 +526,7 @@ const Formio = class {
    * @param  {[type]} form [description]
    * @return {[type]}      [description]
    */
-  static createSubmission (form) {
+  static createSubmission(form) {
     return new Promise((resolve, reject) => {
       if (!form.formio) {
         console.log('This is not defined', form)
@@ -507,7 +538,9 @@ const Formio = class {
       let dataToInsert = form.submission
 
       if (!form.sync) {
-        dataToInsert = { data: form.data }
+        dataToInsert = {
+          data: form.data
+        }
       }
 
       axios.post(url, dataToInsert)
@@ -528,9 +561,11 @@ const Formio = class {
    * @param  {[type]} formUrl [description]
    * @return {[type]}         [description]
    */
-  static registerUser (user, formUrl) {
+  static registerUser(user, formUrl) {
     let url = formUrl + '/user/register/'
-    return axios.post(url, { data: user })
+    return axios.post(url, {
+      data: user
+    })
   }
 
   /**
@@ -539,13 +574,18 @@ const Formio = class {
    * @param  {[type]} baseUrl     [description]
    * @return {Promise}             [description]
    */
-  static userAuth (credentials, baseUrl) {
+  static userAuth(credentials, baseUrl) {
     return new Promise((resolve, reject) => {
       Loading.show({
         message: 'Login user in...'
       })
       let url = baseUrl + '/user/login'
-      AXIOS.post(url, { data: { email: credentials.username, password: credentials.password } })
+      AXIOS.post(url, {
+          data: {
+            email: credentials.username,
+            password: credentials.password
+          }
+        })
         .then(response => {
           Loading.hide()
           resolve(response)
@@ -563,7 +603,7 @@ const Formio = class {
    * @param  {[type]} baseUrl [description]
    * @return {[type]}         [description]
    */
-  static getUser (id, baseUrl) {
+  static getUser(id, baseUrl) {
     return new Promise((resolve, reject) => {
       Loading.show({
         message: 'Loading user info...'
@@ -589,7 +629,7 @@ const Formio = class {
    * @param  {[type]} url       [description]
    * @return {[type]}           [description]
    */
-  static loadRegisterForm (container, url) {
+  static loadRegisterForm(container, url) {
     let form = new FormioForm(container)
     form.src = url + '/user/register'
     return form
@@ -600,7 +640,7 @@ const Formio = class {
    * @param  {[type]} projectId [description]
    * @return {[type]}           [description]
    */
-  static getRoles (projectId) {
+  static getRoles(projectId) {
     let roles = []
     // url = 'https://api.form.io/project/' + projectId + '/role'
     return roles
@@ -611,7 +651,7 @@ const Formio = class {
    * @param  {[type]} formPath [description]
    * @return {[type]}          [description]
    */
-  static getTranslations (idMachine) {
+  static getTranslations(idMachine) {
     return new Promise((resolve, reject) => {
       let url = 'https://' + idMachine + '.form.io/translations/submission?limit=50000'
       axios.get(url)

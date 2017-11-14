@@ -11,6 +11,7 @@ var
   ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin'),
   CompressionPlugin = require("compression-webpack-plugin"),
   UglifyJSPlugin = require('uglifyjs-webpack-plugin')
+var configVars = require('../src/config/env')
 
 module.exports = merge(baseWebpackConfig, {
   module: {
@@ -23,7 +24,7 @@ module.exports = merge(baseWebpackConfig, {
   devtool: config.build.productionSourceMap ? '#source-map' : false,
   plugins: [
     new UglifyJSPlugin({
-    uglifyOptions: {
+      uglifyOptions: {
         ie8: true,
         ecma: 8,
         output: {
@@ -59,6 +60,7 @@ module.exports = merge(baseWebpackConfig, {
       filename: path.resolve(__dirname, '../dist/index.html'),
       template: 'src/index.html',
       inject: true,
+      title: configVars.APP_FANTACY_NAME,
       minify: {
         removeComments: true,
         collapseWhitespace: true,

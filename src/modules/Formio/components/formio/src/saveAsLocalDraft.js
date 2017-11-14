@@ -1,22 +1,23 @@
-import { Toast } from 'quasar'
+import {
+  Toast
+} from 'quasar'
 const SaveAsDraft = class {
   /**
    * [listen description]
    * @param  {[type]} vm [description]
    * @return {[type]}    [description]
    */
-  static listen (vm) {
-  }
+  static listen(vm) {}
 
   /**
    * [listen description]
    * @param  {[type]} vm [description]
    * @return {[type]}    [description]
    */
-  static listenSaved (vm) {
+  static listenSaved(vm) {
     document.removeEventListener('draftSaved', function (e) {}, false)
     document.addEventListener('draftSaved', (e) => {
-        Toast.create.positive({
+      Toast.create.positive({
         html: 'Saved as Draft',
         icon: 'done',
         timeout: 1000

@@ -5,18 +5,22 @@
   </div>
 </template>
 <script>
-  import {mapMutations, mapGetters} from 'vuex'
+  import {
+    mapMutations,
+    mapGetters
+  } from "vuex";
   export default {
     computed: {
-      ...mapGetters(['getLayoutNeeded', 'getIsLoginPage']),
-      routerTitle () {
-        return this.$route.meta.name
+      ...mapGetters(["getLayoutNeeded", "getIsLoginPage"]),
+      routerTitle() {
+        return this.$route.meta.name;
       }
     },
     methods: {
-      ...mapMutations(['setLayoutNeeded'])
+      ...mapMutations(["setLayoutNeeded"])
     }
-  }
+  };
+
 </script>
 <style scoped>
   #configurations {
@@ -32,7 +36,7 @@
 
   @media screen and (max-width: 600px) {
     .content-header {
-      padding: 1.5em .5em;
+      padding: 1.5em 0.5em;
     }
 
     #configurations {
@@ -50,4 +54,5 @@
   .q-popover {
     padding: 8px;
   }
+
 </style>

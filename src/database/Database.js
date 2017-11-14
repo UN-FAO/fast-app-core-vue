@@ -10,13 +10,15 @@ import * as Database from 'database/Database'
 import store from 'config/store'
 import Connection from 'modules/Wrappers/Connection'
 /* SYNC_URL */
-import { LOCAL_DB_PASSWORD } from 'config/env'
+import {
+  LOCAL_DB_PASSWORD
+} from 'config/env'
 
 /*
 |--------------------------------------------------------------------------
 | RxDB Plugins
 |--------------------------------------------------------------------------
-| Require all the RxDB adapters that you would 
+| Require all the RxDB adapters that you would
 | like to use in your application
 |
 */
@@ -33,7 +35,7 @@ let dbPromise = null
 | RxDB Config
 |--------------------------------------------------------------------------
 | This is the configuration for the Local DB creation.
-| Also you will find the sync methods for 
+| Also you will find the sync methods for
 | the external server (FORM.io)
 |
 */
@@ -88,8 +90,10 @@ const _create = async function () {
  * [get description]
  * @return {[type]} [description]
  */
-export function get () {
-  if (!dbPromise) { dbPromise = _create() }
+export function get() {
+  if (!dbPromise) {
+    dbPromise = _create()
+  }
   return dbPromise
 }
 
@@ -99,9 +103,19 @@ export function get () {
  * @param  {[type]} options.isOnline [description]
  * @return {[type]}                  [description]
  */
-const syncSubmissions = async ({ db, vm }) => {
+const syncSubmissions = async({
+  db,
+  vm
+}) => {
   let usersAreSync = await areUsersSynced()
-  let userEmail = Auth.user().data.email || Auth.user().email
+  let userEmail = ''
+
+  if (Auth.user() && Auth.user().data && Auth.user().data.email) {
+    userEmail = Auth.user().data.email
+  } else if (Auth.user() && Auth.user().email) {
+    userEmail = Auth.user().email
+  }
+
   if (usersAreSync) {
     let filter = await db.submissions.find().exec()
     // updated incomplete submission
@@ -111,7 +125,10 @@ const syncSubmissions = async ({ db, vm }) => {
     console.log('Offline submissions are', filter)
     filter = _orderBy(filter, ['data.created'], ['asc'])
     if (filter.length > 0) {
-      store.dispatch('sendOfflineData', { offlineSubmissions: filter, vm: vm })
+      store.dispatch('sendOfflineData', {
+        offlineSubmissions: filter,
+        vm: vm
+      })
     }
   }
 }
@@ -122,9 +139,11 @@ const DsyncSubmissions = _debounce(syncSubmissions, 1000)
  * [description]
  * @return {[type]} [description]
  */
-const getUsersToSync = async () => {
+const getUsersToSync = async() => {
   const db = await Database.get()
-  let filter = await db.users.find({ 'data.sync': false }).exec()
+  let filter = await db.users.find({
+    'data.sync': false
+  }).exec()
   return _filter(filter, function (o) {
     return (o.data.sync === false)
   })
@@ -134,7 +153,7 @@ const getUsersToSync = async () => {
  * [description]
  * @return {[type]} [description]
  */
-const areUsersSynced = async () => {
+const areUsersSynced = async() => {
   let users = await getUsersToSync()
   return !!users && Array.isArray(users) && users.length === 0
 }
@@ -144,11 +163,17 @@ const areUsersSynced = async () => {
  * @param  {[type]} options.isOnline [description]
  * @return {[type]}                  [description]
  */
-const syncUsers = async ({ db, isOnline }) => {
+const syncUsers = async({
+  db,
+  isOnline
+}) => {
   let filter = await getUsersToSync()
 
   if (filter.length > 0) {
-    store.dispatch('sendOfflineData', { offlineSubmissions: filter, isOnline })
+    store.dispatch('sendOfflineData', {
+      offlineSubmissions: filter,
+      isOnline
+    })
   }
 }
 
@@ -163,10 +188,16 @@ export const sync = async function (vm) {
   const db = await Database.get()
   const isOnline = Connection.isOnline() /*  Connection.isTabInUse() ? await Connection.heartBeat(vm) : Connection.isOnline() */
   if (Auth.check() && isOnline) {
-    await DsyncSubmissions({ db, vm })
+    await DsyncSubmissions({
+      db,
+      vm
+    })
   }
 
   if (isOnline) {
-    await DsyncUsers({ db, isOnline })
+    await DsyncUsers({
+      db,
+      isOnline
+    })
   }
 }

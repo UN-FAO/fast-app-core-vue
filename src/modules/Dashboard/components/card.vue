@@ -30,119 +30,119 @@
 </template>
 <style scoped>
 img.contact {
-    max-height: 50%;
+  max-height: 50%;
 }
-@import url('https://fonts.googleapis.com/css?family=Muli');
+@import url("https://fonts.googleapis.com/css?family=Muli");
 * {
-    box-sizing: border-box;
-    font-family: 'Muli', sans-serif;
+  box-sizing: border-box;
+  font-family: "Muli", sans-serif;
 }
 
 #container {
-    width: auto;
-    height: auto;
-    margin-top: 60px;
-    -webkit-perspective: 800px;
-            perspective: 800px;
-    text-align: center;
+  width: auto;
+  height: auto;
+  margin-top: 60px;
+  -webkit-perspective: 800px;
+  perspective: 800px;
+  text-align: center;
 }
 #container h1 {
-    color: black;
-    margin-bottom: 30px;
+  color: black;
+  margin-bottom: 30px;
 }
 #container > hr {
-    border: none;
-    border: 1px solid #fff;
-    width: 80%;
+  border: none;
+  border: 1px solid #fff;
+  width: 80%;
 }
 .card {
-    margin: 10px;
-    display: inline-block;
-    position: relative;
-    width: 220px;
-    height: 260px;
-    opacity: 0.85;
+  margin: 10px;
+  display: inline-block;
+  position: relative;
+  width: 220px;
+  height: 260px;
+  opacity: 0.85;
 }
 .front,
 .back {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    -webkit-backface-visibility: hidden;
-            backface-visibility: hidden;
-    -webkit-transition: -webkit-transform 300ms;
-    transition: -webkit-transform 300ms;
-    transition: transform 300ms;
-    transition: transform 300ms, -webkit-transform 300ms;
-    -webkit-transition-timing-function: linear;
-            transition-timing-function: linear;
-    border-radius: 5px;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-transition: -webkit-transform 300ms;
+  transition: -webkit-transform 300ms;
+  transition: transform 300ms;
+  transition: transform 300ms, -webkit-transform 300ms;
+  -webkit-transition-timing-function: linear;
+  transition-timing-function: linear;
+  border-radius: 5px;
 }
 .front {
-    transform: rotateY(0deg);
-    background: -webkit-linear-gradient(top left, white, white);
-    background: linear-gradient(to bottom right, white, white);
-    text-align: center;
-    padding: 30px;
-    color: black;
+  transform: rotateY(0deg);
+  background: -webkit-linear-gradient(top left, white, white);
+  background: linear-gradient(to bottom right, white, white);
+  text-align: center;
+  padding: 30px;
+  color: black;
 }
 .back {
-    background: -webkit-linear-gradient(top left, white, white);
-    background: linear-gradient(to bottom right, white, white);
-    -webkit-transform: rotateY(180deg);
-            transform: rotateY(180deg);
-    padding: 40px 15px;
-    color: black;
+  background: -webkit-linear-gradient(top left, white, white);
+  background: linear-gradient(to bottom right, white, white);
+  -webkit-transform: rotateY(180deg);
+  transform: rotateY(180deg);
+  padding: 40px 15px;
+  color: black;
 }
 .card:hover .front {
-    -webkit-transform: rotateY(-180deg);
-            transform: rotateY(-180deg);
+  -webkit-transform: rotateY(-180deg);
+  transform: rotateY(-180deg);
 }
 .card:hover .back {
-    -webkit-transform: rotateY(0deg);
-            transform: rotateY(0deg);
+  -webkit-transform: rotateY(0deg);
+  transform: rotateY(0deg);
 }
 //styling
 .front .contact {
-    height: 120px;
-    width: 120px;
-    border: 5px solid #B2DBBF;
-    border-radius: 50%;
-    display: inline-block;
-    margin-bottom: 10px;
+  height: 120px;
+  width: 120px;
+  border: 5px solid #b2dbbf;
+  border-radius: 50%;
+  display: inline-block;
+  margin-bottom: 10px;
 }
 .front .name {
-    display: inline-block;
-    font-size: 18px;
-    color: #fff;
+  display: inline-block;
+  font-size: 18px;
+  color: #fff;
 }
 .front .job {
-    color: #fff;
+  color: #fff;
 }
 .front hr {
-    border: none;
-    color: #B2DBBF;
-    border: 1px solid;
+  border: none;
+  color: #b2dbbf;
+  border: 1px solid;
 }
 .back .icon {
-    fill: currentColor;
-    color: inherit;
-    height: 33px;
-    width: 33px;
-    margin-top: 15px;
-    color: white;
+  fill: currentColor;
+  color: inherit;
+  height: 33px;
+  width: 33px;
+  margin-top: 15px;
+  color: white;
 }
 .back .icon:hover {
-    cursor: pointer;
-    color: #648767;
+  cursor: pointer;
+  color: #648767;
 }
 </style>
 <script>
 export default {
   methods: {
-    toggleFlip () {
-      console.log('try to toggle')
+    toggleFlip() {
+      console.log("try to toggle");
     }
   }
-}
+};
 </script>

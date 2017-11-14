@@ -11,7 +11,12 @@ class SyncHelper {
    * @param  {[type]} OnlineResults [description]
    * @return {[type]}               [description]
    */
-  static offlineOnlineSync ({ LocalResults, OnlineResults, isOnline, collection }) {
+  static offlineOnlineSync({
+    LocalResults,
+    OnlineResults,
+    isOnline,
+    collection
+  }) {
     let Sync = []
     LocalResults = _map(LocalResults, 'data')
     Sync = !isOnline ? [] : this.compare(LocalResults, OnlineResults)
@@ -26,7 +31,7 @@ class SyncHelper {
    * @param  {Array} OnlineResults [description]
    * @return {Array}               [description]
    */
-  static compare (LocalResults, OnlineResults) {
+  static compare(LocalResults, OnlineResults) {
     let result = []
     let self = this
     // Check for updates
@@ -37,7 +42,7 @@ class SyncHelper {
           // If we are comparing forms
           if (LocalResult.components) {
             differences = differences = deep.diff(self.deleteNulls(LocalResult), self.deleteNulls(OnlineResult))
-          // If we are comparing submissions
+            // If we are comparing submissions
           } else if (LocalResult.data) {
             differences = differences = deep.diff(self.deleteNulls(LocalResult.data), self.deleteNulls(OnlineResult.data))
           }
@@ -51,7 +56,9 @@ class SyncHelper {
     })
     // Check for new forms
     _forEach(OnlineResults, function (OnlineResult) {
-      if (!(_find(LocalResults, { '_id': OnlineResult._id }))) {
+      if (!(_find(LocalResults, {
+          '_id': OnlineResult._id
+        }))) {
         let form = self.deleteNulls(OnlineResult)
         result.push(form)
       }
@@ -72,7 +79,7 @@ class SyncHelper {
    * @param  {Object, Array} object [description]
    * @return {Object, Array}        [description]
    */
-  static deleteNulls (object) {
+  static deleteNulls(object) {
     let obj = object
     var isArray = obj instanceof Array
     for (var k in obj) {

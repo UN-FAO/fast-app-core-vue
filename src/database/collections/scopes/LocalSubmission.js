@@ -11,9 +11,9 @@ const LocalSubmission = class {
    * @param  {[type]} id [description]
    * @return {[type]}    [description]
    */
-  static async get (id) {
-  	let db = await Database.get()
-  	id = id.replace(/\s/g, '')
+  static async get(id) {
+    let db = await Database.get()
+    id = id.replace(/\s/g, '')
     let offline = await db.submissions.findOne()
       .where('_id').eq(id).exec()
     let online = await db.submissions.findOne()
@@ -24,11 +24,13 @@ const LocalSubmission = class {
     if (offline) {
       return offline
     } else {
-      return {data: false}
+      return {
+        data: false
+      }
     }
   }
 
-  static async offline (userId, formId) {
+  static async offline(userId, formId) {
     let db = await Database.get()
     let userEmail = Auth.user().data.email || Auth.user().email
     let filter = await db.submissions.find().exec()
@@ -40,7 +42,7 @@ const LocalSubmission = class {
     return filter
   }
 
-  static async stored (userId, formId) {
+  static async stored(userId, formId) {
     let db = await Database.get()
     return db.submissions
       .find({
@@ -57,23 +59,23 @@ const LocalSubmission = class {
       }).exec()
   }
 
-    static async sFind (vm, filter) {
+  static async sFind(vm, filter) {
     let userEmail = Auth.user().data.email || Auth.user().email
     const db = await Database.get()
 
     let submissions = await db.submissions.find(filter).exec()
-    submissions = _filter(submissions, function(o) {
+    submissions = _filter(submissions, function (o) {
       return (
-          (o.data.owner && o.data.owner === Auth.user()._id) ||
-          (o.data.user_email && o.data.user_email === userEmail)
-        )
+        (o.data.owner && o.data.owner === Auth.user()._id) ||
+        (o.data.user_email && o.data.user_email === userEmail)
+      )
     })
 
-    submissions = _map(submissions, function(submission) {
-        let data = submission.data.data
-        let formio = submission.data.formio
-        submission = _clone(submission)
-        submission.data.data = {
+    submissions = _map(submissions, function (submission) {
+      let data = submission.data.data
+      let formio = submission.data.formio
+      submission = _clone(submission)
+      submission.data.data = {
         created: submission.data.created,
         Humancreated: vm.humanizeDate(submission.data.created),
         id_submision: submission.data._id ? submission.data._id : submission._id,
@@ -91,9 +93,9 @@ const LocalSubmission = class {
     submissions = _map(submissions, 'data')
     submissions = _map(submissions, 'data')
     submissions = _orderBy(submissions, [
-              'created'
-            ], [
-              'desc'
+      'created'
+    ], [
+      'desc'
     ])
     return submissions
   }

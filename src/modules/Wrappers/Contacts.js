@@ -1,10 +1,12 @@
-import { Platform } from 'quasar'
+import {
+  Platform
+} from 'quasar'
 const Contacts = class {
   /**
    * [status description]
    * @return {Promise} [description]
    */
-  static pick () {
+  static pick() {
     return new Promise((resolve, reject) => {
       if (!Platform.is.cordova) {
         reject(false)

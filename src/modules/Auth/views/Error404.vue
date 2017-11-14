@@ -27,28 +27,24 @@
 </template>
 
 <script>
-import { mapMutations } from 'vuex'
+import { mapMutations } from "vuex";
 export default {
   mounted() {
-    this.setLayoutNeeded(false)
-    this.setIsLoginPage(true)
+    this.setLayoutNeeded(false);
+    this.setIsLoginPage(true);
   },
   data() {
     return {
       canGoBack: window.history.length > 1
-    }
+    };
   },
   methods: {
-    ...mapMutations([
-          'setLayoutNeeded',
-          'setIsLoginPage'
-    ]),
+    ...mapMutations(["setLayoutNeeded", "setIsLoginPage"]),
     goBack() {
       this.$router.push({
-        name: 'login'
-      })
+        name: "login"
+      });
     }
   }
-}
-
+};
 </script>
