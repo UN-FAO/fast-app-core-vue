@@ -93,15 +93,18 @@ const actions = {
     let user = await LocalUser.findOne({
       'data.data.email': formIoUser.data.email
     })
-    console.log('user is', user)
+
     formIoUser = SyncHelper.deleteNulls(formIoUser)
     let isUserAlreadyStored = !!user && !_isEmpty(user)
+
     //  check if user is already present in local storage
     if (isUserAlreadyStored) {
+      console.log('user Already exisits', user)
       user.data = formIoUser
       //  update the user with the updated information
       LocalUser.update(user)
     } else {
+      console.log('user doesnt exisits', user)
       //  Insert the new user
       await LocalUser.insert({
         data: formIoUser

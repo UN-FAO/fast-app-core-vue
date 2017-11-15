@@ -48,6 +48,11 @@ const LocalSubmission = class {
     }
   }
 
+  static async update(document) {
+    const model = await LocalSubmission.getModel()
+    return model.update(document);
+  }
+
   static async offline(userId, formId) {
     let filter = await LocalSubmission.find()
     // updated incomplete submission

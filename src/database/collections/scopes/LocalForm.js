@@ -17,6 +17,11 @@ const LocalForm = class {
     element._id = uuidv4() + '_local'
     return model.insert(element);
   }
+
+  static async update(document) {
+    const model = await LocalForm.getModel()
+    return model.update(document);
+  }
   /**
    * [get description]
    * @param  {[type]} id [description]

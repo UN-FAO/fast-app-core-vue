@@ -12,6 +12,7 @@ import LocalSubmission from 'database/collections/scopes/LocalSubmission'
 import _forEach from 'lodash/forEach'
 import _map from 'lodash/map'
 import _unionBy from 'lodash/unionBy'
+import _isEmpty from 'lodash/isEmpty'
 import {
   Toast
 } from 'quasar'
@@ -60,11 +61,14 @@ const actions = {
         'data._id': res._id
       })
       // remove local duplicated or updated entries
-      localRes.remove()
-      // Insery the new or updated entry
-      await model.insert({
-        data: res
-      })
+      if (!_isEmpty(localRes)) {
+        localRes.data = res
+        await model.update(localRes)
+      } else {
+        await model.insert({
+          data: res
+        })
+      }
     })
 
     if (sync.length > 0) {
@@ -189,7 +193,7 @@ const actions = {
       let isNotLocal = typeof localSubmission.data === 'undefined'
       if (isRepleaceble || isNotLocal) {
         // Inser the new or updated entry
-       await LocalSubmission.insert({
+        await LocalSubmission.insert({
           data: submission
         })
       }

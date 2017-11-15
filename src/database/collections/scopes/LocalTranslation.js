@@ -19,6 +19,11 @@ const LocalTranslation = class {
     return model.insert(element);
   }
 
+  static async update(document) {
+    const model = await LocalTranslation.getModel()
+    return model.update(document);
+  }
+
 
   static async getFormTranslations() {
     const model = await LocalTranslation.getModel()
