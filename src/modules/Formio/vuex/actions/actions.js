@@ -228,6 +228,7 @@ const actions = {
     if (formSubmission._id || (formSubmission.trigger !== 'createLocalDraft' && formSubmission.trigger !== 'resourceCreation')) {
       submission.type = 'update'
       let localSubmission = await LocalSubmission.get(formSubmission._id)
+
       let differences = deep.diff(SyncHelper.deleteNulls(localSubmission.data.data), SyncHelper.deleteNulls(submission.data))
       let submitting = submission.draft === false
       let localDraft = localSubmission.data.draft === false
@@ -236,10 +237,11 @@ const actions = {
       let isSynced = !!(localSubmission.data.access && Array.isArray(localSubmission.data.access))
       // If there are differences between the
       // Stored and the new data.
+
       if (((differences || submitting || (localDraft && submissionNotDraft)) && !autoSave) || (!isSynced && differences && autoSave)) {
-        await localSubmission.update({
-          data: submission
-        })
+        localSubmission.data = submission
+        // console.log('updating the submission', localSubmission)
+        // await LocalSubmission.update(localSubmission)
       }
       return localSubmission
       // If we are creating a new draft from scratch

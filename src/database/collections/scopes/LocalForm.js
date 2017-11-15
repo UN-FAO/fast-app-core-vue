@@ -12,6 +12,11 @@ const LocalForm = class {
     return model.find(filter);
   }
 
+  static async findOne(filter) {
+    const model = await LocalForm.getModel()
+    return model.findOne(filter);
+  }
+
   static async insert(element) {
     const model = await LocalForm.getModel()
     element._id = uuidv4() + '_local'

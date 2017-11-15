@@ -61,14 +61,72 @@
 </template>
 
 <script>
-  import DataTables from "vue-data-tables";
-  import _ from "lodash";
-  import lang from "element-ui/lib/locale/lang/en";
-  import locale from "element-ui/lib/locale";
-  import * as Database from "database/Database";
-  import moment from "moment";
-  import jsonexport from "jsonexport";
-  import {
+import DataTables from "vue-data-tables";
+import _ from "lodash";
+import lang from "element-ui/lib/locale/lang/en";
+import locale from "element-ui/lib/locale";
+import moment from "moment";
+import jsonexport from "jsonexport";
+import {
+  QCard,
+  QCardTitle,
+  QCardSeparator,
+  QCardMain,
+  QFab,
+  QFabAction,
+  QFixedPosition,
+  QPullToRefresh,
+  QSpinnerAudio,
+  QTransition,
+  QInnerLoading
+} from "quasar";
+import LocalSubmission from "database/collections/scopes/LocalSubmission";
+import LocalForm from "database/collections/scopes/LocalForm";
+import FormioUtils from "formiojs/utils";
+locale.use(lang);
+
+export default {
+  async mounted() {
+    if (this.$route.params.idForm === "*") {
+      this.submissions = await LocalSubmission.sFind(this, {});
+    } else {
+      this.submissions = await LocalSubmission.sFind(this, {
+        "data.formio.formId": this.$route.params.idForm
+      });
+    }
+
+    this.currentForm = await LocalForm.findOne({
+      "data.path": this.$route.params.idForm
+    });
+
+    console.log('local form', this.currentForm)
+
+    this.$eventHub.on("FAST-DATA_SYNCED", data => {
+      this.updateLocalSubmissions();
+    });
+    this.visibleColumns = FormioUtils.findComponents(
+      this.currentForm.data.components,
+      {
+        input: true,
+        tableView: true
+      }
+    );
+
+    this.visibleColumns = this.visibleColumns.slice(0, 20);
+  },
+  computed: {
+    formTitle() {
+      let title = "";
+      if (this.currentForm) {
+        title = this.currentForm.data ? this.currentForm.data.title : "";
+      }
+      return title;
+    }
+  },
+  components: {
+    QInnerLoading,
+    QTransition,
+    DataTables,
     QCard,
     QCardTitle,
     QCardSeparator,
@@ -77,307 +135,244 @@
     QFabAction,
     QFixedPosition,
     QPullToRefresh,
-    QSpinnerAudio,
-    QTransition,
-    QInnerLoading
-  } from "quasar";
-  import LocalSubmission from "database/collections/scopes/LocalSubmission";
-  import FormioUtils from "formiojs/utils";
-  locale.use(lang);
-
-  export default {
-    async mounted() {
-      if (this.$route.params.idForm === "*") {
-        this.submissions = await LocalSubmission.sFind(this, {});
-      } else {
-        this.submissions = await LocalSubmission.sFind(this, {
-          "data.formio.formId": this.$route.params.idForm
-        });
-      }
-      let db = await Database.get();
-      this.currentForm = await db.forms
-        .findOne()
-        .where("data.path")
-        .eq(this.$route.params.idForm)
-        .exec();
-
-      this.$eventHub.on("FAST-DATA_SYNCED", data => {
-        this.updateLocalSubmissions();
-      });
-      this.visibleColumns = FormioUtils.findComponents(
-        this.currentForm.data.components, {
-          input: true,
-          tableView: true
+    QSpinnerAudio
+  },
+  data() {
+    return {
+      deleteRows: [],
+      currentForm: {},
+      submissions: undefined,
+      visibleColumns: [],
+      searchDef: {
+        colProps: {
+          span: 9
         }
-      );
-
-      this.visibleColumns = this.visibleColumns.slice(0, 20);
-    },
-    computed: {
-      formTitle() {
-        let title = "";
-        if (this.currentForm) {
-          title = this.currentForm.data ? this.currentForm.data.title : "";
-        }
-        return title;
-      }
-    },
-    components: {
-      QInnerLoading,
-      QTransition,
-      DataTables,
-      QCard,
-      QCardTitle,
-      QCardSeparator,
-      QCardMain,
-      QFab,
-      QFabAction,
-      QFixedPosition,
-      QPullToRefresh,
-      QSpinnerAudio
-    },
-    data() {
-      return {
-        deleteRows: [],
-        currentForm: {},
-        submissions: undefined,
-        visibleColumns: [],
-        searchDef: {
-          colProps: {
-            span: 9
-          }
+      },
+      actionsDef: {
+        colProps: {
+          span: 14
         },
-        actionsDef: {
-          colProps: {
-            span: 14
+        def: [
+          {
+            name: "CSV",
+            handler: () => {
+              let json = [];
+              _.forEach(this.submissions, function(submission) {
+                let record = submission.fullSubmission;
+                record.id = submission.id_submision;
+                json.push(submission.fullSubmission);
+              });
+              jsonexport(json, (err, csv) => {
+                if (err) {
+                  return console.log(err);
+                }
+                // If browser we have to export it like this
+                this.download(csv, "backup.csv", "text/csv;encoding:utf-8");
+                // If its cordova, we have to export like this
+                // self.DATA2FILE('backup.csv', csv, function (FILE) {
+                //  console.log(FILE)
+                // })
+                this.$message("Data Exported");
+              });
+            },
+            icon: "document"
           },
-          def: [{
-              name: "CSV",
-              handler: () => {
-                let json = [];
-                _.forEach(this.submissions, function (submission) {
-                  let record = submission.fullSubmission;
-                  record.id = submission.id_submision;
-                  json.push(submission.fullSubmission);
-                });
-                jsonexport(json, (err, csv) => {
-                  if (err) {
-                    return console.log(err);
-                  }
-                  // If browser we have to export it like this
-                  this.download(csv, "backup.csv", "text/csv;encoding:utf-8");
-                  // If its cordova, we have to export like this
-                  // self.DATA2FILE('backup.csv', csv, function (FILE) {
-                  //  console.log(FILE)
-                  // })
-                  this.$message("Data Exported");
-                });
-              },
-              icon: "document"
+          {
+            name: "JSON",
+            handler: () => {
+              let json = [];
+              _.forEach(this.submissions, function(submission) {
+                let record = submission.fullSubmission;
+                record.id = submission.id_submision;
+                json.push(submission.fullSubmission);
+              });
+              this.download(
+                JSON.stringify(json),
+                "backup.json",
+                "text/json;encoding:utf-8"
+              );
             },
-            {
-              name: "JSON",
-              handler: () => {
-                let json = [];
-                _.forEach(this.submissions, function (submission) {
-                  let record = submission.fullSubmission;
-                  record.id = submission.id_submision;
-                  json.push(submission.fullSubmission);
-                });
-                this.download(
-                  JSON.stringify(json),
-                  "backup.json",
-                  "text/json;encoding:utf-8"
-                );
-              },
-              icon: "document"
+            icon: "document"
+          },
+          {
+            name: "DELETE",
+            handler: () => {
+              this.handleDelete(this.deleteRows);
             },
-            {
-              name: "DELETE",
-              handler: () => {
-                this.handleDelete(this.deleteRows);
-              },
-              icon: "delete"
-            }
-          ]
+            icon: "delete"
+          }
+        ]
+      }
+    };
+  },
+  methods: {
+    handleEdit(data) {
+      let self = this;
+      let submission = data.row;
+      self.$router.push({
+        name: "formio_submission_update",
+        params: {
+          idForm: submission.formio.formId,
+          idSubmission: submission.id_submision
         }
-      };
+      });
     },
-    methods: {
-      handleEdit(data) {
-        let self = this;
-        let submission = data.row;
-        self.$router.push({
-          name: "formio_submission_update",
-          params: {
-            idForm: submission.formio.formId,
-            idSubmission: submission.id_submision
-          }
+    handleDelete(rows) {
+      let self = this;
+      if (rows.length > 1) {
+        self.$swal({
+          title: "Multiple rows selected",
+          text: "You cannot delete more than one row",
+          type: "error"
         });
-      },
-      handleDelete(rows) {
-        let self = this;
-        if (rows.length > 1) {
-          self.$swal({
-            title: "Multiple rows selected",
-            text: "You cannot delete more than one row",
-            type: "error"
-          });
-          return;
-        }
-        if (rows.length === 0) {
-          self.$swal({
-            title: "No row selected",
-            text: "You must select at least one row to delete",
-            type: "error"
-          });
-          return;
-        }
-        let submission = rows[0];
-        self
-          .$swal({
-            title: "Are you sure?",
-            text: "You won't be able to revert this!",
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, delete it!"
+        return;
+      }
+      if (rows.length === 0) {
+        self.$swal({
+          title: "No row selected",
+          text: "You must select at least one row to delete",
+          type: "error"
+        });
+        return;
+      }
+      let submission = rows[0];
+      self
+        .$swal({
+          title: "Are you sure?",
+          text: "You won't be able to revert this!",
+          type: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, delete it!"
+        })
+        .then(async () => {
+          let online = await LocalSubmission.findOne({"data._id": submission.id_submision})
+
+          let offline = await LocalSubmission.findOne({"_id": submission.id_submision})
+
+          let deleteSubmission = offline;
+          if (online) {
+            deleteSubmission = online;
+          }
+          await deleteSubmission.remove();
+          this.updateLocalSubmissions();
+          self.$swal(
+            "Deleted!",
+            "Your submission has been deleted.",
+            "success"
+          );
+        });
+    },
+    download: function(content, fileName, mimeType) {
+      var a = document.createElement("a");
+      mimeType = mimeType || "application/octet-stream";
+
+      if (navigator.msSaveBlob) {
+        // IE10
+        navigator.msSaveBlob(
+          new Blob([content], {
+            type: mimeType
+          }),
+          fileName
+        );
+      } else if (URL && "download" in a) {
+        // html5 A[download]
+        a.href = URL.createObjectURL(
+          new Blob([content], {
+            type: mimeType
           })
-          .then(async() => {
-            let db = await Database.get();
-            let online = await db.submissions
-              .findOne()
-              .where("data._id")
-              .eq(submission.id_submision)
-              .exec();
-            let offline = await db.submissions
-              .findOne()
-              .where("_id")
-              .eq(submission.id_submision)
-              .exec();
+        );
+        a.setAttribute("download", fileName);
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      } else {
+        location.href =
+          "data:application/octet-stream," + encodeURIComponent(content); // only this mime type is supported
+      }
+    },
+    getIconColor: function(row) {
+      if (row.draft) {
+        return "primary";
+      } else if (row.status === "offline") {
+        return "danger";
+      } else {
+        return "success";
+      }
+    },
+    DATA2FILE: function(filename, data, callback) {
+      // default filename
+      var defaultFileName = "export-file.txt";
 
-            let deleteSubmission = offline;
-            if (online) {
-              deleteSubmission = online;
-            }
-            await deleteSubmission.remove();
-            this.updateLocalSubmissions();
-            self.$swal(
-              "Deleted!",
-              "Your submission has been deleted.",
-              "success"
-            );
-          });
-      },
-      download: function (content, fileName, mimeType) {
-        var a = document.createElement("a");
-        mimeType = mimeType || "application/octet-stream";
+      if (filename === undefined || filename === null) {
+        filename = defaultFileName;
+      }
 
-        if (navigator.msSaveBlob) {
-          // IE10
-          navigator.msSaveBlob(
-            new Blob([content], {
-              type: mimeType
-            }),
-            fileName
-          );
-        } else if (URL && "download" in a) {
-          // html5 A[download]
-          a.href = URL.createObjectURL(
-            new Blob([content], {
-              type: mimeType
-            })
-          );
-          a.setAttribute("download", fileName);
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-        } else {
-          location.href =
-            "data:application/octet-stream," + encodeURIComponent(content); // only this mime type is supported
-        }
-      },
-      getIconColor: function (row) {
-        if (row.draft) {
-          return "primary";
-        } else if (row.status === "offline") {
-          return "danger";
-        } else {
-          return "success";
-        }
-      },
-      DATA2FILE: function (filename, data, callback) {
-        // default filename
-        var defaultFileName = "export-file.txt";
+      // Request the file system
+      window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, gotFS, fail);
 
-        if (filename === undefined || filename === null) {
-          filename = defaultFileName;
-        }
-
-        // Request the file system
-        window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, gotFS, fail);
-
-        // Access to filesystem is OK
-        function gotFS(fileSystem) {
-          fileSystem.root.getFile(
-            filename, {
-              create: true
-            },
-            gotFileEntry,
-            fail
-          );
-        }
-
-        // File is ready
-        function gotFileEntry(fileEntry) {
-          fileEntry.createWriter(gotFileWriter, fail);
-        }
-
-        // Write file content
-        function gotFileWriter(writer) {
-          writer.onwriteend = function (evt) {
-            if (callback !== undefined) {
-              callback(writer);
-            }
-          };
-          writer.write(data);
-        }
-
-        function fail(error) {
-          console.log("Error: ", error.code);
-        }
-      },
-      humanizeDate(givenDate) {
-        let start = moment(givenDate);
-        let end = moment();
-        return end.to(start);
-      },
-      scrollToEnd: function (ID) {
-        var container = this.$el.querySelector("#container");
-        container.scrollTop = container.scrollHeight;
-      },
-      createSubmission() {
-        this.$router.push({
-          name: "formio_form_submission",
-          params: {
-            id: this.$route.params.id,
-            idForm: this.$route.params.idForm
+      // Access to filesystem is OK
+      function gotFS(fileSystem) {
+        fileSystem.root.getFile(
+          filename,
+          {
+            create: true
           },
-          query: {
-            formPath: this.$route.query.formPath
+          gotFileEntry,
+          fail
+        );
+      }
+
+      // File is ready
+      function gotFileEntry(fileEntry) {
+        fileEntry.createWriter(gotFileWriter, fail);
+      }
+
+      // Write file content
+      function gotFileWriter(writer) {
+        writer.onwriteend = function(evt) {
+          if (callback !== undefined) {
+            callback(writer);
           }
-        });
-      },
-      handleSelectionChange(rows) {
-        this.deleteRows = rows;
-      },
-      getRowActionsDef() {
-        let self = this;
-        return {
-          label: self.$t("App.actions"),
-          def: [
-            /* TODO
+        };
+        writer.write(data);
+      }
+
+      function fail(error) {
+        console.log("Error: ", error.code);
+      }
+    },
+    humanizeDate(givenDate) {
+      let start = moment(givenDate);
+      let end = moment();
+      return end.to(start);
+    },
+    scrollToEnd: function(ID) {
+      var container = this.$el.querySelector("#container");
+      container.scrollTop = container.scrollHeight;
+    },
+    createSubmission() {
+      this.$router.push({
+        name: "formio_form_submission",
+        params: {
+          id: this.$route.params.id,
+          idForm: this.$route.params.idForm
+        },
+        query: {
+          formPath: this.$route.query.formPath
+        }
+      });
+    },
+    handleSelectionChange(rows) {
+      this.deleteRows = rows;
+    },
+    getRowActionsDef() {
+      let self = this;
+      return {
+        label: self.$t("App.actions"),
+        def: [
+          /* TODO
             Uncomment this and finish when CORS are available
             to have PDF export of the submission
             {
@@ -395,31 +390,30 @@
               icon: 'document'
             },
             */
-          ]
-        };
-      },
-      async updateLocalSubmissions() {
-        if (this.$route.params.idForm === "*") {
-          this.submissions = await LocalSubmission.sFind(this, {});
-        } else {
-          this.submissions = await LocalSubmission.sFind(this, {
-            "data.formio.formId": this.$route.params.idForm
-          });
-        }
-      },
-      async pullSubmissions() {
-        this.$store.dispatch("getSubmissions", {
-          currentForm: this.currentForm,
-          User: this.$store.getters.getAuthUser
+        ]
+      };
+    },
+    async updateLocalSubmissions() {
+      if (this.$route.params.idForm === "*") {
+        this.submissions = await LocalSubmission.sFind(this, {});
+      } else {
+        this.submissions = await LocalSubmission.sFind(this, {
+          "data.formio.formId": this.$route.params.idForm
         });
-      },
-      refreshSubmissions(done) {
-        this.pullSubmissions();
-        setTimeout(function () {
-          done();
-        }, 1200);
       }
+    },
+    async pullSubmissions() {
+      this.$store.dispatch("getSubmissions", {
+        currentForm: this.currentForm,
+        User: this.$store.getters.getAuthUser
+      });
+    },
+    refreshSubmissions(done) {
+      this.pullSubmissions();
+      setTimeout(function() {
+        done();
+      }, 1200);
     }
-  };
-
+  }
+};
 </script>

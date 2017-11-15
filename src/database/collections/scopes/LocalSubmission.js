@@ -84,7 +84,7 @@ const LocalSubmission = class {
     submissions = _filter(submissions, function (o) {
       return (
         (o.data.owner && o.data.owner === Auth.user()._id) ||
-        (o.data.user_email && o.data.user_email === Auth.userEmail)
+        (o.data.user_email && o.data.user_email === Auth.userEmail())
       )
     })
 
