@@ -54,14 +54,18 @@ const actions = {
       OnlineResults: remoteResources,
       isOnline: isOnline
     })
+    console.log(localResources)
+    console.log(remoteResources)
+    console.log(sync)
 
     // For every new or updated entry
     _forEach(sync, async function (res, key) {
-      let localRes = await model.find({
+      let localRes = await model.findOne({
         'data._id': res._id
       })
       // remove local duplicated or updated entries
       if (!_isEmpty(localRes)) {
+        console.log(localRes)
         localRes.data = res
         await model.update(localRes)
       } else {
