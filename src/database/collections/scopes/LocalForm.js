@@ -1,9 +1,21 @@
 import * as Database from 'database/Database'
+import uuidv4 from 'uuid/v4'
 
 const LocalForm = class {
   static async getModel() {
     const DB = await Database.get()
     return DB.getCollection("forms")
+  }
+
+  static async find(filter) {
+    const model = await LocalForm.getModel()
+    return model.find(filter);
+  }
+
+  static async insert(element) {
+    const model = await LocalForm.getModel()
+    element._id = uuidv4() + '_local'
+    return model.insert(element);
   }
   /**
    * [get description]

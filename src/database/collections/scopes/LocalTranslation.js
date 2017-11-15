@@ -21,11 +21,11 @@ const LocalTranslation = class {
 
 
   static async getFormTranslations() {
-    const DB = await Database.get()
+    const model = await LocalTranslation.getModel()
     let formTranslations = {
       i18n: {}
     }
-    let localTranslations = await DB.translations.findOne().exec()
+    let localTranslations = await model.findOne()
     localTranslations = localTranslations.data
 
     _forEach(localTranslations, (lenguage, index) => {

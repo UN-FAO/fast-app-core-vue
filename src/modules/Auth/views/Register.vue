@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import * as Database from "database/Database";
+import LocalForm from "database/collections/scopes/LocalForm";
 import formio from "modules/Formio/components/formio/formio";
 import { APP_URL, APP_FANTACY_NAME, APP_PHRASE } from "config/env";
 
@@ -40,12 +40,7 @@ export default {
   },
   async beforeRouteEnter(to, from, next) {
     // Load the form and submission before entering the route
-    let db = await Database.get();
-    let formRequest = await db.forms
-      .findOne()
-      .where("data.name")
-      .eq("userregister")
-      .exec();
+    let formRequest = await LocalForm.find({ "data.name": "userregister" });
     let form = formRequest.data;
     next(vm => {
       // Load the form and submission before entering the route
@@ -54,12 +49,7 @@ export default {
   },
   async beforeRouteUpdate(to, from, next) {
     this.form = null;
-    let db = await Database.get();
-    let formRequest = await db.forms
-      .findOne()
-      .where("data.name")
-      .eq("userregister")
-      .exec();
+    let formRequest = await LocalForm.find({ "data.name": "userregister" });
     this.form = formRequest.data;
     next();
   },
