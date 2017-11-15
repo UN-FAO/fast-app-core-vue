@@ -4,20 +4,38 @@ import _clone from 'lodash/clone'
 import _filter from 'lodash/filter'
 import _orderBy from 'lodash/orderBy'
 import Auth from 'modules/Auth/api/Auth'
+import uuidv4 from 'uuid/v4'
 
 const LocalSubmission = class {
+  static async getModel() {
+    const DB = await Database.get()
+    return DB.getCollection("submissions")
+  }
+
+  static async find(filter) {
+    const model = await LocalSubmission.getModel()
+    return model.find(filter);
+  }
+
+  static async findOne(filter) {
+    const model = await LocalSubmission.getModel()
+    return model.findOne(filter);
+  }
+
+  static async insert(element) {
+    const model = await LocalSubmission.getModel()
+    element._id = uuidv4() + '_local'
+    return model.insert(element);
+  }
   /**
    * [get description]
    * @param  {[type]} id [description]
    * @return {[type]}    [description]
    */
   static async get(id) {
-    let db = await Database.get()
     id = id.replace(/\s/g, '')
-    let offline = await db.submissions.findOne()
-      .where('_id').eq(id).exec()
-    let online = await db.submissions.findOne()
-      .where('data._id').eq(id).exec()
+    let offline = await LocalSubmission.findOne({ '_id': id })
+    let online = await LocalSubmission.findOne({ 'data._id': id })
     if (online) {
       return online
     }
@@ -31,20 +49,17 @@ const LocalSubmission = class {
   }
 
   static async offline(userId, formId) {
-    let db = await Database.get()
-    let userEmail = Auth.user().data.email || Auth.user().email
-    let filter = await db.submissions.find().exec()
+    let filter = await LocalSubmission.find()
     // updated incomplete submission
     filter = _filter(filter, function (o) {
-      return ((o.data.sync === false || o.data.draft === false) && o.data.user_email === userEmail)
+      return ((o.data.sync === false || o.data.draft === false) && o.data.user_email === Auth.userEmail())
     })
     filter = _orderBy(filter, ['data.created'], ['asc'])
     return filter
   }
 
   static async stored(userId, formId) {
-    let db = await Database.get()
-    return db.submissions
+    return LocalSubmission
       .find({
         // Only include this filter if we dont share data
         // between users
@@ -56,18 +71,15 @@ const LocalSubmission = class {
           $exists: true,
           $eq: formId
         }
-      }).exec()
+      })
   }
 
   static async sFind(vm, filter) {
-    let userEmail = Auth.user().data.email || Auth.user().email
-    const db = await Database.get()
-
-    let submissions = await db.submissions.find(filter).exec()
+    let submissions = await LocalSubmission.find(filter)
     submissions = _filter(submissions, function (o) {
       return (
         (o.data.owner && o.data.owner === Auth.user()._id) ||
-        (o.data.user_email && o.data.user_email === userEmail)
+        (o.data.user_email && o.data.user_email === Auth.userEmail)
       )
     })
 

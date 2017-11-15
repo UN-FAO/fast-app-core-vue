@@ -33,6 +33,9 @@ module.exports = {
     ],
     alias: config.aliases
   },
+  node: {
+    fs: 'empty'
+  },
   module: {
     rules: [
 

@@ -70,12 +70,12 @@
 </template>
 <script>
   import _forEach from "lodash/forEach";
-  import _isEmpty from "lodash/isEmpty";
-  import _orderBy from "lodash/orderBy";
-  import _filter from "lodash/filter";
-  import * as Database from "database/Database";
+  // import _isEmpty from "lodash/isEmpty";
+  // import _orderBy from "lodash/orderBy";
+  // import _filter from "lodash/filter";
+  // import * as Database from "database/Database";
   import moment from "moment";
-  import Auth from "modules/Auth/api/Auth";
+  // import Auth from "modules/Auth/api/Auth";
   import FormioUtils from "formiojs/utils";
   import {
     QTabs,
@@ -157,7 +157,7 @@
         });
         this.scorePanels = scorePanels;
       });
-
+      /*
       const db = await Database.get();
       if (_isEmpty(Auth.user())) {
         return;
@@ -183,6 +183,7 @@
           this.Unsynced = filter;
         })
       );
+      */
     },
     methods: {
       changeSelectedPage() {
@@ -195,7 +196,7 @@
         return end.to(start);
       },
       syncSubmissions() {
-        Database.sync(this);
+        // Database.sync(this);
       }
     }
   };

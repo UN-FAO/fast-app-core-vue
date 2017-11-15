@@ -1,10 +1,10 @@
-import * as Database from 'database/Database'
+import LocalUser from 'database/collections/scopes/LocalUser'
 import SyncHelper from 'database/helpers/SyncHelper'
 import {
   APP_URL,
   APP_NAME
 } from 'config/env'
-
+import _isEmpty from 'lodash/isEmpty'
 const state = {
   layoutNeeded: false,
   isLoginPage: true,
@@ -90,21 +90,20 @@ const actions = {
   storeUserLocally: async({
     commit
   }, formIoUser) => {
-    let DB = await Database.get()
-    let user = await DB.users.findOne().where('data.data.email').eq(formIoUser.data.email).exec()
+    let user = await LocalUser.findOne({
+      'data.data.email': formIoUser.data.email
+    })
+    console.log('user is', user)
     formIoUser = SyncHelper.deleteNulls(formIoUser)
-    let isUserAlreadyStored = !!user
+    let isUserAlreadyStored = !!user && !_isEmpty(user)
     //  check if user is already present in local storage
     if (isUserAlreadyStored) {
+      user.data = formIoUser
       //  update the user with the updated information
-      user.update({
-        $set: {
-          data: formIoUser
-        }
-      })
+      LocalUser.update(user)
     } else {
       //  Insert the new user
-      DB.users.insert({
+      await LocalUser.insert({
         data: formIoUser
       })
     }

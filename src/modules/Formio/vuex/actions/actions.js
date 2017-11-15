@@ -23,8 +23,8 @@ const actions = {
     var formio = new FormioJS('https://' + data.appName + '.form.io')
     let isOnline = Connection.isOnline()
     const DB = await Database.get()
+    let localResources = await DB.getCollection(collection).find()
 
-    let localResources = await DB[collection].find().exec()
     let remoteResources = (isOnline && collection !== 'forms') ? await Formio[collection](data.appName) : []
 
     if (collection === 'forms') {
@@ -46,13 +46,16 @@ const actions = {
     })
     // For every new or updated entry
     _.forEach(sync, async function (res, key) {
-      let localRes = await DB[collection].find().where('data._id').eq(res._id).exec()
+      const DB = await Database.get()
+      let localRes = await DB.getCollection(collection).find({
+        'data._id': res._id
+      })
       // remove local duplicated or updated entries
       _.forEach(localRes, function (local) {
         local.remove()
       })
       // Insery the new or updated entry
-      DB[collection].insert({
+      DB.getCollection(collection).insert({
         data: res
       })
     })
@@ -165,7 +168,9 @@ const actions = {
     // await DB.submissions.remove();
     // For every new or updated entry
     _.forEach(sync, async function (submission, key) {
-      let localSubmissions = await DB.submissions.find().where('data._id').eq(submission._id).exec()
+      let localSubmissions = await DB.getCollection('submissions').find({
+        'data._id': submission._id
+      })
       let localSubmission = {}
       // remove local duplicated or updated entries
       _.forEach(localSubmissions, function (local) {
@@ -178,7 +183,7 @@ const actions = {
       let isNotLocal = typeof localSubmission.data === 'undefined'
       if (isRepleaceble || isNotLocal) {
         // Inser the new or updated entry
-        DB.submissions.insert({
+        DB.getCollection('submissions').insert({
           data: submission
         })
       }
@@ -225,15 +230,13 @@ const actions = {
       // Stored and the new data.
       if (((differences || submitting || (localDraft && submissionNotDraft)) && !autoSave) || (!isSynced && differences && autoSave)) {
         await localSubmission.update({
-          $set: {
             data: submission
-          }
         })
       }
       return localSubmission
       // If we are creating a new draft from scratch
     } else if (formSubmission.trigger === 'createLocalDraft' || formSubmission.trigger === 'resourceCreation') {
-      let newSubmission = await DB.submissions.insert({
+      let newSubmission = await DB.getCollection('submissions').insert({
         data: submission
       })
       if (formSubmission.trigger === 'resourceCreation') {

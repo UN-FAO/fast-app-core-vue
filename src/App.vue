@@ -23,7 +23,7 @@ import leftdrawer from "layout/left_drawer";
 import rightdrawer from "layout/right_drawer";
 import connectionAlert from "modules/Connection/components/alert";
 import { mapActions } from "vuex";
-import { sync } from "database/Database";
+// import { sync } from "database/Database";
 import Connection from "modules/Wrappers/Connection";
 import { SYNC_INTERVAL } from "config/env";
 import { QLayout, Toast } from "quasar";
@@ -91,7 +91,7 @@ export default {
         };
       };
       rInterval(() => {
-        return sync(this);
+        // return sync(this);
       }, SYNC_INTERVAL);
     }
   },

@@ -22,6 +22,16 @@ const Auth = class {
     return user === null ? false : user
   }
 
+  static userEmail() {
+    let userEmail = ''
+    if (Auth.user() && Auth.user().data && Auth.user().data.email) {
+      userEmail = Auth.user().data.email
+    } else if (Auth.user() && Auth.user().email) {
+      userEmail = Auth.user().email
+    }
+    return userEmail
+  }
+
   /**
    * Checks if the current user is
    * Authenticated
