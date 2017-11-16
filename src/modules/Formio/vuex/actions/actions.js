@@ -222,6 +222,7 @@ const actions = {
     submission.formio = formio
     submission = SyncHelper.deleteNulls(submission)
 
+
     // If we are creating a new draft from scratch or a resource
     if (formSubmission.trigger === 'createLocalDraft' || formSubmission.trigger === 'resourceCreation') {
       submission.created = moment().format()
@@ -237,8 +238,20 @@ const actions = {
       submission.type = 'update'
       submission.updated = moment().format()
       let localSubmission = await LocalSubmission.get(formSubmission._id)
-      localSubmission.data = submission
-      await LocalSubmission.update(localSubmission)
+
+      // Cases where we may want to update
+      let submitting = submission.draft === false
+      let localDraft = localSubmission.data.draft === false
+      let submissionNotDraft = submission.draft === true
+      let autoSave = submission.trigger === 'autoSaveAsDraft'
+      let isSynced = !!(localSubmission.data.access && Array.isArray(localSubmission.data.access))
+
+      // Check cases
+      if (((submitting || (localDraft && submissionNotDraft)) && !autoSave) || (!isSynced && autoSave)) {
+        localSubmission.data = submission
+        await LocalSubmission.update(localSubmission)
+        console.log('localsubmission updateding', localSubmission)
+      }
       return localSubmission
     }
   },
@@ -298,7 +311,6 @@ const actions = {
           if (e === 'TypeError: Could not connect to API server (Failed to fetch)') {
             console.log('Error connecting to the API server')
           }
-
           offlineSubmission.data.queuedForSync = false
           offlineSubmission.data.syncError = e.isJoi ? e : false
           await model.update(offlineSubmission)
@@ -308,10 +320,12 @@ const actions = {
           }
         }
       }).then((result) => {
-        vm.$eventHub.emit('FAST-DATA_SYNCED', {
-          count: syncedSubmissionsCount,
-          data: syncedSubmissions
-        })
+        if (vm && vm.$eventHub) {
+          vm.$eventHub.emit('FAST-DATA_SYNCED', {
+            count: syncedSubmissionsCount,
+            data: syncedSubmissions
+          })
+        }
       })
     }
   }

@@ -8,7 +8,7 @@
 | understand whats are your users looking at!
 |
 */
-	exports.FAST_VERSION = '0.4.0'
+exports.FAST_VERSION = '0.4.0'
 /*
 |--------------------------------------------------------------------------
 | FORM.IO CONFIGURATION
@@ -19,8 +19,8 @@
 | forms asociated with it.
 |
 */
-	exports.APP_URL = 'https://uiorzjzflxyccmo.form.io'
-	exports.APP_NAME = 'uiorzjzflxyccmo'
+exports.APP_URL = 'https://efqbsqrkscuzlpi.form.io'
+exports.APP_NAME = 'efqbsqrkscuzlpi'
 /*
 |--------------------------------------------------------------------------
 | APP CONFIGURATION
@@ -31,8 +31,8 @@
 | in the app.
 |
 */
-	exports.APP_FANTACY_NAME = 'SHARP+'
-	exports.APP_PHRASE = 'Self-evaluation and Holistic Assessment of climate resilence of Farmers and Pastoralists'
+exports.APP_FANTACY_NAME = 'SHARP+'
+exports.APP_PHRASE = 'Self-evaluation and Holistic Assessment of climate resilence of Farmers and Pastoralists'
 /*
 |--------------------------------------------------------------------------
 | MD5 KEY
@@ -43,7 +43,7 @@
 | hashed version of it.
 |
 */
-	exports.MD5_KEY = 'my_super_secure_key'
+exports.MD5_KEY = 'my_super_secure_key'
 /*
 |--------------------------------------------------------------------------
 | LOCAL DB PASSWORD and SYNC
@@ -55,8 +55,8 @@
 | sync LocalDB´s when using multiple Browser Windows.
 |
 */
-	exports.LOCAL_DB_PASSWORD = 'onePassword123'
-	exports.SYNC_URL = 'http://localhost:3000/'
+exports.LOCAL_DB_PASSWORD = 'onePassword123'
+exports.SYNC_URL = 'http://localhost:3000/'
 
 /*
 |--------------------------------------------------------------------------
@@ -69,10 +69,10 @@
 | submissions should run.
 |
 */
-	exports.HEARTBEAT_URL = 'https://dog.ceo/api/breeds/list/all'
-	// Not recomended to have the SYNC < 10000 milliseconds
-	// You could experience some duplication on the calls
-	exports.SYNC_INTERVAL = 10000
+exports.HEARTBEAT_URL = 'https://dog.ceo/api/breeds/list/all'
+// Not recomended to have the SYNC < 10000 milliseconds
+// You could experience some duplication on the calls
+exports.SYNC_INTERVAL = 10000
 /*
 |--------------------------------------------------------------------------
 | MULTILANGUAGE
@@ -81,7 +81,7 @@
 | Here you may specify if this application require multilenguage settings
 |
 */
-	exports.MULTILANGUAGE = true
+exports.MULTILANGUAGE = true
 
 /*
 |--------------------------------------------------------------------------
@@ -92,7 +92,7 @@
 | submissions as local drafts before sending them to FORM.IO
 |
 */
-	exports.LOCAL_DRAFT_ENABLED = true
+exports.LOCAL_DRAFT_ENABLED = true
 /*
 |--------------------------------------------------------------------------
 | OFFLINE FIRST
@@ -102,5 +102,5 @@
 | first approach. This means storing every submission locally
 | before submitting the data to FORM.IO
 */
-	exports.OFFLINE_FIRST = true
-	exports.OFFLINE_USE = true
+exports.OFFLINE_FIRST = true
+exports.OFFLINE_USE = true
