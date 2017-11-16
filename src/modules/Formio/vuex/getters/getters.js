@@ -1,5 +1,6 @@
 import * as Database from 'database/Database'
-import _ from 'lodash'
+import _map from 'lodash/map'
+import _filter from 'lodash/filter'
 
 const getters = {
   /**
@@ -9,7 +10,7 @@ const getters = {
    * @return {[type]}          [description]
    */
   getFormById: (state, getters) => (id) => {
-    return _.filter(state.forms, {
+    return _filter(state.forms, {
       '_id': String(id)
     })[0]
   },
@@ -18,13 +19,13 @@ const getters = {
     let db = await Database.get()
     let submissions = await db.submissions.find().where('data.form').eq(id).exec()
 
-    let submissionData = _.map(submissions, 'data')
+    let submissionData = _map(submissions, 'data')
 
-    _.map(submissionData, function (submission, index) {
+    _map(submissionData, function (submission, index) {
       submission.data.created = submission.created
       submission.data.submission_id = submission._id
     })
-    return _.map(submissionData, 'data')
+    return _map(submissionData, 'data')
   }
 }
 

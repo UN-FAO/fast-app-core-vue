@@ -26,7 +26,6 @@
     "element-ui": "^1.4.3",
     "fastclick": "^1.0.6",
     "formiojs": "^2.21.1",
-    "fs": "0.0.1-security",
     "html2canvas": "^0.5.0-beta4",
     "i18next": "^10.0.3",
     "jsonexport": "^2.0.10",

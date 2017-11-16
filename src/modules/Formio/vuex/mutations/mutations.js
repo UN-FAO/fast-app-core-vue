@@ -1,4 +1,5 @@
-import _ from 'lodash'
+import _findIndex from 'lodash/findIndex'
+
 const mutations = {
 
   /**
@@ -15,7 +16,7 @@ const mutations = {
    * @param {[type]} data  [description]
    */
   SET_SUBMISSIONS(state, data) {
-    let index = _.findIndex(state.forms, {
+    let index = _findIndex(state.forms, {
       '_id': String(data.formId)
     })
     state.forms[index] = { ...state.forms[index],
@@ -30,11 +31,11 @@ const mutations = {
    */
   ADD_SUBMISSION(state, response) {
     console.log(response.data.form)
-    let Formindex = _.findIndex(state.forms, {
+    let Formindex = _findIndex(state.forms, {
       '_id': String(response.data.form)
     })
     // Keeping it for the edit of the submision
-    // let submissionIndex = _.findIndex(state.forms[index].submissions, { '_id': String(response.data._id)});
+    // let submissionIndex = _findIndex(state.forms[index].submissions, { '_id': String(response.data._id)});
     state.forms[Formindex].submissions.push(response.data)
   }
 

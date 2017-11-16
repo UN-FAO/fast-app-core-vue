@@ -9,7 +9,8 @@ import {
   MD5_KEY
 } from 'config/env'
 import Auth from 'modules/Auth/api/Auth'
-import _ from 'lodash'
+import _debounce from 'lodash/debounce'
+import _forEach from 'lodash/forEach'
 import FORMIOAPI from 'modules/Formio/api/Formio'
 
 const OFFLINE_PLUGIN = class {
@@ -180,7 +181,7 @@ const OFFLINE_PLUGIN = class {
           let formioURL = 'https://' + form.machineName.split(':')[0] + '.form.io/' + form.path
 
           let formio = new Formio(formioURL)
-          let dStoreForm = _.debounce(this.storeForm, 1000)
+          let dStoreForm = _debounce(this.storeForm, 1000)
 
           let dataToSubmit = args.data
           if (args.data && !args.data.trigger) {
@@ -214,7 +215,7 @@ const OFFLINE_PLUGIN = class {
    */
   static LocalToJson(rxDBData) {
     let transformedArray = []
-    _.forEach(rxDBData, function (element) {
+    _forEach(rxDBData, function (element) {
       transformedArray.push(element.data)
     })
     return transformedArray

@@ -1,6 +1,6 @@
 import Formio from 'modules/Formio/api/Formio'
 import store from 'config/store'
-import _ from 'lodash'
+import _forEach from 'lodash/forEach'
 import messages from 'i18n/translations'
 import localTranslation from 'database/collections/scopes/LocalTranslation'
 
@@ -39,9 +39,9 @@ const Localization = class {
         let translations = await Localization.getOnlineTranslation()
 
         // Foreach of the locale lenguages, set the translations
-        _.forEach(messages, (lenguage, lenguageCode) => {
+        _forEach(messages, (lenguage, lenguageCode) => {
           lenguage.translations = {}
-          _.forEach(translations, (translation, index) => {
+          _forEach(translations, (translation, index) => {
             if (translation.data[lenguageCode]) {
               lenguage.translations[translation.data.en] = translation.data[lenguageCode]
             }

@@ -2,13 +2,13 @@ import axios from 'axios'
 import {
   HEARTBEAT_URL
 } from 'config/env'
-import _ from 'lodash'
+import _debounce from 'lodash/debounce'
 
 let isOnline = window.navigator.onLine
 
 const Connection = class {
   static check() {
-    let dHeartBeat = _.debounce(this.heartBeat, 3000)
+    let dHeartBeat = _debounce(this.heartBeat, 3000)
     return dHeartBeat
   }
 

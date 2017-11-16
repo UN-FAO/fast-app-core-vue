@@ -4,7 +4,7 @@
 ###################################################
 	APPNAME="FAST"
 	PRODUCTNAME="SHARP+"
-	VERSION="0.3.2"
+	VERSION="0.4.0"
 	AUTHOR="Ignacio Cabrera <ignacio.cabrera@fao.org>"
 	DESCRIPTION="Collection application for Form.io"
 ###################################################
@@ -20,7 +20,7 @@ mkdir ./deploys/all && \
 	cp ./cordova/platforms/android/build/outputs/apk/android-debug.apk ./deploys/all/${PRODUCTNAME}_v${VERSION}.apk && \
 ###################################################
 # Copy the Electron Mac project to the deploy folder
-# 
+#
 	cp -R ./electron/dist/${PRODUCTNAME}-darwin-x64/${PRODUCTNAME}.app ./deploys/all/${PRODUCTNAME}_v${VERSION}.app && \
 ###################################################
 # Copy the Electron Win32 project to the deploy folder

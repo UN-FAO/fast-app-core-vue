@@ -2,7 +2,7 @@ import axios from './axios'
 import {
   Loading
 } from 'quasar'
-import _ from 'lodash'
+import _forEach from 'lodash/forEach'
 import FormioUtils from 'formiojs/utils'
 import FormioForm from 'formiojs/form'
 import AXIOS from 'axios'
@@ -121,7 +121,7 @@ const Formio = class {
       projectName,
       resource: 'form',
       process: function (forms) {
-        _.forEach(forms, function (form, index) {
+        _forEach(forms, function (form, index) {
           forms[index].editUrl = self.setEditUrl(form)
         })
       }
@@ -171,7 +171,7 @@ const Formio = class {
       axios.get(url)
         .then(response => {
           let submissions = response.data
-          _.forEach(submissions, function (submission, index) {
+          _forEach(submissions, function (submission, index) {
             submissions[index].editUrl = self.setSubmissionEditURL(submission)
           })
           resolve(submissions)

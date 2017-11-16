@@ -1,6 +1,5 @@
-var Promise = require('bluebird')
 var rp = require('request-promise')
-var _ = require('lodash')
+var _toUpper = require('lodash/toUpper')
 /* Implementing this function
     Fds.getUsers(ctx.req.body)
        .then((users)=>{
@@ -54,12 +53,12 @@ class Fsd {
             'last_name': obj[i].lastName,
             'title': obj[i].title,
             'display_name': obj[i].fullName,
-            'email': _.toUpper(obj[i].emailAddress),
+            'email': _toUpper(obj[i].emailAddress),
             'phone': obj[i].contactsDirect,
             'division': obj[i].assignmentTechnicalDiv,
             'image_url': obj[i].contactsPhoto,
             'index_number': obj[i].indexNumber,
-            'username': _.toUpper(obj[i].account.substring(obj[i].account.lastIndexOf('\\') + 1, obj[i].account.length)),
+            'username': _toUpper(obj[i].account.substring(obj[i].account.lastIndexOf('\\') + 1, obj[i].account.length)),
             'password': 'password'
           })
         }
