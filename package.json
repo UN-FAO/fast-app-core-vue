@@ -1,6 +1,6 @@
 {
-  "name": "FAST",
-  "version": "0.1.2",
+  "name": "fast",
+  "version": "0.4.0",
   "description": "A data collection application for FORM.io",
   "author": "Ignacio Cabrera <ignacio.cabrera@fao.org>",
   "scripts": {
