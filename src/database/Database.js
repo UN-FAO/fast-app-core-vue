@@ -143,6 +143,7 @@ const syncUsers = async({
   isOnline
 }) => {
   let users = await getUsersToSync()
+  console.log('users to sync are', users)
 
   if (users.length > 0) {
     store.dispatch('sendOfflineData', {

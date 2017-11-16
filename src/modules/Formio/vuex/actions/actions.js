@@ -266,7 +266,12 @@ const actions = {
           data: offlineSubmission.data.data
         }
         offlineSubmission.data.queuedForSync = true
-        await LocalSubmission.update(offlineSubmission)
+        let model = LocalSubmission
+
+        if (offlineSubmission.data.formio.formId === 'userregister') {
+          model = LocalUser
+        }
+        await model.update(offlineSubmission)
 
         // If it has an ID and the Id its not local (doesnt contain "_local")
         if (offlineSubmission.data._id && offlineSubmission.data._id.indexOf('_local') === -1) {
@@ -283,7 +288,7 @@ const actions = {
 
           // Update the local submission
           offlineSubmission.data = FormIOinsertedData
-          await LocalSubmission.update(offlineSubmission)
+          await model.update(offlineSubmission)
 
           if (offlinePlugin) {
             FormioJS.registerPlugin(offlinePlugin, 'offline')
@@ -296,7 +301,7 @@ const actions = {
 
           offlineSubmission.data.queuedForSync = false
           offlineSubmission.data.syncError = e.isJoi ? e : false
-          await LocalSubmission.update(offlineSubmission)
+          await model.update(offlineSubmission)
 
           if (offlinePlugin) {
             FormioJS.registerPlugin(offlinePlugin, 'offline')

@@ -92,6 +92,14 @@ export default {
       return !!(this.lenguage === code);
     },
     setLanguage(lenguage) {
+       this.$swal({
+        title: "Language Changed",
+        text: "The lenguage was changed.",
+        type: "success",
+        showCancelButton: false,
+        confirmButtonColor: "#3085d6",
+        confirmButtonText: "OK"
+      })
       this.$i18n.locale = lenguage.code;
       this.lenguage = lenguage.code;
       localStorage.setItem("defaultLenguage", lenguage.code);
