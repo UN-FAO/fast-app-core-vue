@@ -4,7 +4,6 @@ import moment from 'moment'
 import Auth from 'modules/Auth/api/Auth'
 import Connection from 'modules/Wrappers/Connection'
 import FormioJS from 'formiojs'
-import deep from 'deep-diff'
 import Promise from 'bluebird'
 import LocalForm from 'database/collections/scopes/LocalForm'
 import LocalUser from 'database/collections/scopes/LocalUser'
@@ -54,10 +53,6 @@ const actions = {
       OnlineResults: remoteResources,
       isOnline: isOnline
     })
-    console.log(localResources)
-    console.log(remoteResources)
-    console.log(sync)
-
     // For every new or updated entry
     _forEach(sync, async function (res, key) {
       let localRes = await model.findOne({
@@ -65,7 +60,6 @@ const actions = {
       })
       // remove local duplicated or updated entries
       if (!_isEmpty(localRes)) {
-        console.log(localRes)
         localRes.data = res
         await model.update(localRes)
       } else {
@@ -228,28 +222,10 @@ const actions = {
     submission.formio = formio
     submission.created = moment().format()
     submission = SyncHelper.deleteNulls(submission)
-    // If we are updating the submission
-    if (formSubmission._id || (formSubmission.trigger !== 'createLocalDraft' && formSubmission.trigger !== 'resourceCreation')) {
-      submission.type = 'update'
-      let localSubmission = await LocalSubmission.get(formSubmission._id)
 
-      let differences = deep.diff(SyncHelper.deleteNulls(localSubmission.data.data), SyncHelper.deleteNulls(submission.data))
-      let submitting = submission.draft === false
-      let localDraft = localSubmission.data.draft === false
-      let submissionNotDraft = submission.draft === true
-      let autoSave = submission.trigger === 'autoSaveAsDraft'
-      let isSynced = !!(localSubmission.data.access && Array.isArray(localSubmission.data.access))
-      // If there are differences between the
-      // Stored and the new data.
-
-      if (((differences || submitting || (localDraft && submissionNotDraft)) && !autoSave) || (!isSynced && differences && autoSave)) {
-        localSubmission.data = submission
-        // console.log('updating the submission', localSubmission)
-        // await LocalSubmission.update(localSubmission)
-      }
-      return localSubmission
-      // If we are creating a new draft from scratch
-    } else if (formSubmission.trigger === 'createLocalDraft' || formSubmission.trigger === 'resourceCreation') {
+    // If we are creating a new draft from scratch or a resource
+    if (formSubmission.trigger === 'createLocalDraft' || formSubmission.trigger === 'resourceCreation') {
+      console.log('creating new submission')
       let newSubmission = await LocalSubmission.insert({
         data: submission
       })
@@ -257,6 +233,14 @@ const actions = {
         newSubmission.trigger = 'resourceCreation'
       }
       return newSubmission
+    } // If we are updating the submission
+    else if (formSubmission._id) {
+      submission.type = 'update'
+      let localSubmission = await LocalSubmission.get(formSubmission._id)
+      localSubmission.data = submission
+      let a = await LocalSubmission.update(localSubmission)
+      console.log('the submission has been updated', a)
+      return localSubmission
     }
   },
 

@@ -1,6 +1,6 @@
 import * as Database from 'database/Database'
 import _map from 'lodash/map'
-import _clone from 'lodash/clone'
+import _cloneDeep from 'lodash/cloneDeep'
 import _filter from 'lodash/filter'
 import _orderBy from 'lodash/orderBy'
 import Auth from 'modules/Auth/api/Auth'
@@ -85,7 +85,9 @@ const LocalSubmission = class {
   }
 
   static async sFind(vm, filter) {
-    let submissions = await LocalSubmission.find(filter)
+    let localSubmissions = await LocalSubmission.find(filter)
+    let submissions = _cloneDeep(localSubmissions)
+
     submissions = _filter(submissions, function (o) {
       return (
         (o.data.owner && o.data.owner === Auth.user()._id) ||
@@ -96,7 +98,7 @@ const LocalSubmission = class {
     submissions = _map(submissions, function (submission) {
       let data = submission.data.data
       let formio = submission.data.formio
-      submission = _clone(submission)
+      submission = _cloneDeep(submission)
       submission.data.data = {
         created: submission.data.created,
         Humancreated: vm.humanizeDate(submission.data.created),

@@ -87,6 +87,7 @@ const _create = function () {
       if (users === null) {
         db.addCollection("users");
       }
+      db.saveDatabase()
       resolve(db)
     }
   })
