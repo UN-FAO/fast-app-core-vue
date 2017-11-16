@@ -24,6 +24,10 @@ const LocalTranslation = class {
     return model.update(document);
   }
 
+  static async remove(document) {
+    const model = await LocalTranslation.getModel()
+    return model.remove(document);
+  }
 
   static async getFormTranslations() {
     const model = await LocalTranslation.getModel()

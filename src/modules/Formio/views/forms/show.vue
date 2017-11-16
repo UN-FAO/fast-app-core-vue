@@ -255,7 +255,8 @@ export default {
           if (online) {
             deleteSubmission = online;
           }
-          await deleteSubmission.remove();
+
+          await LocalSubmission.remove(deleteSubmission)
           this.updateLocalSubmissions();
           self.$swal(
             "Deleted!",

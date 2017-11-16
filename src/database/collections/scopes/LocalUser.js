@@ -22,6 +22,11 @@ const LocalUser = class {
     return model.update(document);
   }
 
+  static async remove(document) {
+    const model = await LocalUser.getModel()
+    return model.remove(document);
+  }
+
   static async insert(element) {
     const model = await LocalUser.getModel()
     element._id = uuidv4() + '_local'

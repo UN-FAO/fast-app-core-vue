@@ -27,6 +27,11 @@ const LocalSubmission = class {
     element._id = uuidv4() + '_local'
     return model.insert(element);
   }
+
+  static async remove(document) {
+    const model = await LocalSubmission.getModel()
+    return model.remove(document);
+  }
   /**
    * [get description]
    * @param  {[type]} id [description]
