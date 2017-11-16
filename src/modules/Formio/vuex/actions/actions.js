@@ -220,12 +220,11 @@ const actions = {
     submission.sync = false
     submission.user_email = User.email
     submission.formio = formio
-    submission.created = moment().format()
     submission = SyncHelper.deleteNulls(submission)
 
     // If we are creating a new draft from scratch or a resource
     if (formSubmission.trigger === 'createLocalDraft' || formSubmission.trigger === 'resourceCreation') {
-      console.log('creating new submission')
+      submission.created = moment().format()
       let newSubmission = await LocalSubmission.insert({
         data: submission
       })
@@ -236,6 +235,7 @@ const actions = {
     } // If we are updating the submission
     else if (formSubmission._id) {
       submission.type = 'update'
+      submission.updated = moment().format()
       let localSubmission = await LocalSubmission.get(formSubmission._id)
       localSubmission.data = submission
       let a = await LocalSubmission.update(localSubmission)
@@ -269,8 +269,8 @@ const actions = {
         offlineSubmission.data.queuedForSync = true
         await LocalSubmission.update(offlineSubmission)
 
-        // If it has an ID and the Id its not local (doesnt contain ":")
-        if (offlineSubmission.data._id && offlineSubmission.data._id.indexOf(':') === -1) {
+        // If it has an ID and the Id its not local (doesnt contain "_local")
+        if (offlineSubmission.data._id && offlineSubmission.data._id.indexOf('_local') === -1) {
           postData._id = offlineSubmission.data._id
         }
         FormioJS.deregisterPlugin('offline')

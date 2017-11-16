@@ -84,6 +84,20 @@ const LocalSubmission = class {
       })
   }
 
+  static async getUnsync() {
+    let unsynced = await LocalSubmission.find({
+      'data.sync': false
+    })
+    // updated incomplete submission
+    unsynced = _filter(unsynced, function (o) {
+      return (o.data.sync === false && o.data.draft === false && o.data.user_email === Auth.userEmail() && !o.data.queuedForSync && !o.data.syncError)
+    })
+
+    console.log('Offline submissions are', unsynced)
+    unsynced = _orderBy(unsynced, ['data.created'], ['asc'])
+    return unsynced
+  }
+
   static async sFind(vm, filter) {
     let localSubmissions = await LocalSubmission.find(filter)
     let submissions = _cloneDeep(localSubmissions)

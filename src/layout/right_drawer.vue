@@ -73,7 +73,7 @@
   // import _isEmpty from "lodash/isEmpty";
   // import _orderBy from "lodash/orderBy";
   // import _filter from "lodash/filter";
-  // import * as Database from "database/Database";
+  import LocalSubmission from "database/collections/scopes/LocalSubmission";
   import moment from "moment";
   // import Auth from "modules/Auth/api/Auth";
   import FormioUtils from "formiojs/utils";
@@ -134,6 +134,10 @@
      * @return {[type]}        [description]
      */
     mounted: async function () {
+      this.$eventHub.on("FAST-DATA_SYNCED", data => {
+        this.updateUnsyncedSubmissions();
+      });
+
       this.$eventHub.on("formio.change", data => {
         let scorePanels = [];
         // This should only be called if this is a Wizard
@@ -157,33 +161,7 @@
         });
         this.scorePanels = scorePanels;
       });
-      /*
-      const db = await Database.get();
-      if (_isEmpty(Auth.user())) {
-        return;
-      }
-
-      this.allSubmissionSubs.push(
-        db.submissions
-        .find({
-          "data.sync": false,
-          "data.draft": false,
-          "data.user_email": {
-            $exists: true,
-            $eq: Auth.user().data.email || Auth.user().email
-          }
-        })
-        .$.filter(x => x != null)
-        .subscribe(results => {
-          let filter = _filter(results, function (o) {
-            return true;
-          });
-
-          filter = _orderBy(filter, ["data.created"], ["desc"]);
-          this.Unsynced = filter;
-        })
-      );
-      */
+      await this.updateUnsyncedSubmissions()
     },
     methods: {
       changeSelectedPage() {
@@ -195,8 +173,8 @@
         let end = moment();
         return end.to(start);
       },
-      syncSubmissions() {
-        // Database.sync(this);
+      async updateUnsyncedSubmissions() {
+        this.Unsynced = await LocalSubmission.getUnsync()
       }
     }
   };

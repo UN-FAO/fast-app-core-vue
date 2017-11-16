@@ -6,11 +6,11 @@ import {
 import Promise from 'bluebird'
 import Auth from 'modules/Auth/api/Auth'
 import _filter from 'lodash/filter'
-import _orderBy from 'lodash/orderBy'
 import _debounce from 'lodash/debounce'
 import Connection from 'modules/Wrappers/Connection'
 import store from 'config/store'
 import LocalUser from 'database/collections/scopes/LocalUser'
+import LocalSubmission from 'database/collections/scopes/LocalSubmission'
 // import {  Platform} from 'quasar'
 /*
 import collections from './collections/collections'
@@ -109,16 +109,10 @@ const syncSubmissions = async({
   let usersAreSync = await areUsersSynced()
 
   if (usersAreSync) {
-    let filter = await db.submissions.find().exec()
-    // updated incomplete submission
-    filter = _filter(filter, function (o) {
-      return (o.data.sync === false && o.data.draft === false && o.data.user_email === Auth.userEmail() && !o.data.queuedForSync && !o.data.syncError)
-    })
-    console.log('Offline submissions are', filter)
-    filter = _orderBy(filter, ['data.created'], ['asc'])
-    if (filter.length > 0) {
+    let unsyncSubmissions = await LocalSubmission.getUnsync()
+    if (unsyncSubmissions.length > 0) {
       store.dispatch('sendOfflineData', {
-        offlineSubmissions: filter,
+        offlineSubmissions: unsyncSubmissions,
         vm: vm
       })
     }
@@ -148,11 +142,11 @@ const syncUsers = async({
   db,
   isOnline
 }) => {
-  let filter = await getUsersToSync()
+  let users = await getUsersToSync()
 
-  if (filter.length > 0) {
+  if (users.length > 0) {
     store.dispatch('sendOfflineData', {
-      offlineSubmissions: filter,
+      offlineSubmissions: users,
       isOnline
     })
   }

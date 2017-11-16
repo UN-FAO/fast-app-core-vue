@@ -104,6 +104,7 @@ export default {
     this.$eventHub.on("FAST-DATA_SYNCED", data => {
       this.updateLocalSubmissions();
     });
+
     this.visibleColumns = FormioUtils.findComponents(
       this.currentForm.data.components,
       {
