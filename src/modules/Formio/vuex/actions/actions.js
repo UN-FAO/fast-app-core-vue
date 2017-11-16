@@ -238,8 +238,7 @@ const actions = {
       submission.updated = moment().format()
       let localSubmission = await LocalSubmission.get(formSubmission._id)
       localSubmission.data = submission
-      let a = await LocalSubmission.update(localSubmission)
-      console.log('the submission has been updated', a)
+      await LocalSubmission.update(localSubmission)
       return localSubmission
     }
   },

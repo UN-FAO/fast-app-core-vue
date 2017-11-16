@@ -93,7 +93,6 @@ const LocalSubmission = class {
       return (o.data.sync === false && o.data.draft === false && o.data.user_email === Auth.userEmail() && !o.data.queuedForSync && !o.data.syncError)
     })
 
-    console.log('Offline submissions are', unsynced)
     unsynced = _orderBy(unsynced, ['data.created'], ['asc'])
     return unsynced
   }

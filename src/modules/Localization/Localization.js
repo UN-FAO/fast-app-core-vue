@@ -16,7 +16,6 @@ const Localization = class {
 
     let localTranslations = await localTranslation.find()
 
-    console.log('localTranslations', localTranslations)
     if (localTranslations.length > 0 && localTranslations[0].data) {
       appTranslations = localTranslations[0].data
     } else {
@@ -38,7 +37,6 @@ const Localization = class {
       try {
         // Fetch the Translation that are online
         let translations = await Localization.getOnlineTranslation()
-        console.log('Online translations', translations)
 
         // Foreach of the locale lenguages, set the translations
         _.forEach(messages, (lenguage, lenguageCode) => {
