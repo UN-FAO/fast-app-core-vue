@@ -62,7 +62,7 @@
 
 <script>
 import DataTables from "vue-data-tables";
-import _ from "lodash";
+import _forEach from "lodash/forEach";
 import lang from "element-ui/lib/locale/lang/en";
 import locale from "element-ui/lib/locale";
 import moment from "moment";
@@ -99,10 +99,10 @@ export default {
       "data.path": this.$route.params.idForm
     });
 
-    console.log('local form', this.currentForm)
+    console.log("local form", this.currentForm);
 
-    this.$eventHub.on("FAST-DATA_SYNCED", data => {
-      this.updateLocalSubmissions();
+    this.$eventHub.on("FAST-DATA_SYNCED", async data => {
+      await this.updateLocalSubmissions();
     });
 
     this.visibleColumns = FormioUtils.findComponents(
@@ -158,7 +158,7 @@ export default {
             name: "CSV",
             handler: () => {
               let json = [];
-              _.forEach(this.submissions, function(submission) {
+              _forEach(this.submissions, function(submission) {
                 let record = submission.fullSubmission;
                 record.id = submission.id_submision;
                 json.push(submission.fullSubmission);
@@ -182,7 +182,7 @@ export default {
             name: "JSON",
             handler: () => {
               let json = [];
-              _.forEach(this.submissions, function(submission) {
+              _forEach(this.submissions, function(submission) {
                 let record = submission.fullSubmission;
                 record.id = submission.id_submision;
                 json.push(submission.fullSubmission);
@@ -220,6 +220,7 @@ export default {
     },
     handleDelete(rows) {
       let self = this;
+      /*
       if (rows.length > 1) {
         self.$swal({
           title: "Multiple rows selected",
@@ -228,6 +229,7 @@ export default {
         });
         return;
       }
+      */
       if (rows.length === 0) {
         self.$swal({
           title: "No row selected",
@@ -236,7 +238,6 @@ export default {
         });
         return;
       }
-      let submission = rows[0];
       self
         .$swal({
           title: "Are you sure?",
@@ -248,17 +249,23 @@ export default {
           confirmButtonText: "Yes, delete it!"
         })
         .then(async () => {
-          let online = await LocalSubmission.findOne({"data._id": submission.id_submision})
+          _forEach(rows, async submission => {
+            let online = await LocalSubmission.findOne({
+              "data._id": submission.id_submision
+            });
 
-          let offline = await LocalSubmission.findOne({"_id": submission.id_submision})
+            let offline = await LocalSubmission.findOne({
+              _id: submission.id_submision
+            });
 
-          let deleteSubmission = offline;
-          if (online) {
-            deleteSubmission = online;
-          }
+            let deleteSubmission = offline;
+            if (online) {
+              deleteSubmission = online;
+            }
+            await LocalSubmission.remove(deleteSubmission);
+            await this.updateLocalSubmissions();
+          });
 
-          await LocalSubmission.remove(deleteSubmission)
-          this.updateLocalSubmissions();
           self.$swal(
             "Deleted!",
             "Your submission has been deleted.",
@@ -402,12 +409,13 @@ export default {
         this.submissions = await LocalSubmission.sFind(this, {
           "data.formio.formId": this.$route.params.idForm
         });
+        console.log("Data was synced, trying to update", this.submissions);
       }
     },
     async pullSubmissions() {
       this.$store.dispatch("getSubmissions", {
         currentForm: this.currentForm,
-        User: this.$store.getters.getAuthUser
+        vm: this
       });
     },
     refreshSubmissions(done) {

@@ -39,8 +39,12 @@ const LocalSubmission = class {
    */
   static async get(id) {
     id = id.replace(/\s/g, '')
-    let offline = await LocalSubmission.findOne({ '_id': id })
-    let online = await LocalSubmission.findOne({ 'data._id': id })
+    let offline = await LocalSubmission.findOne({
+      '_id': id
+    })
+    let online = await LocalSubmission.findOne({
+      'data._id': id
+    })
     if (online) {
       return online
     }
@@ -58,29 +62,24 @@ const LocalSubmission = class {
     return model.update(document);
   }
 
-  static async offline(userId, formId) {
-    let filter = await LocalSubmission.find()
+  static async offline(formId) {
+    let filter = await LocalSubmission.find({
+      'data.user_email': Auth.userEmail(),
+      'data.formio.formId': formId
+    })
     // updated incomplete submission
     filter = _filter(filter, function (o) {
-      return ((o.data.sync === false || o.data.draft === false) && o.data.user_email === Auth.userEmail())
+      return ((o.data.sync === false || o.data.draft === false))
     })
     filter = _orderBy(filter, ['data.created'], ['asc'])
     return filter
   }
 
-  static async stored(userId, formId) {
+  static async stored(formId) {
     return LocalSubmission
       .find({
-        // Only include this filter if we dont share data
-        // between users
-        'data.owner': {
-          $exists: true,
-          $eq: userId
-        },
-        'data.formio.formId': {
-          $exists: true,
-          $eq: formId
-        }
+        'data.formio.formId': formId,
+        'data.owner': Auth.user()._id
       })
   }
 

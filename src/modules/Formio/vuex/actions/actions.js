@@ -143,7 +143,7 @@ const actions = {
     commit
   }, {
     currentForm,
-    User
+    vm
   }) {
     FormioJS.setToken(Auth.user().x_jwt_token)
     let isOnline = Connection.isOnline()
@@ -151,7 +151,7 @@ const actions = {
 
     let formio = new FormioJS(formUrl)
 
-    let localUnSyncSubmissions = await LocalSubmission.offline(User.id, currentForm.data.path)
+    let localUnSyncSubmissions = await LocalSubmission.offline(currentForm.data.path)
 
     FormioJS.clearCache()
 
@@ -165,7 +165,7 @@ const actions = {
       o.formio = formio
     })
 
-    let localSubmissions = LocalSubmission.stored(User.id, currentForm.data.path)
+    let localSubmissions = await LocalSubmission.stored(currentForm.data.path)
 
     var Localresult = _unionBy(localSubmissions, localUnSyncSubmissions, '_id')
     let sync = SyncHelper.offlineOnlineSync({
@@ -173,7 +173,6 @@ const actions = {
       OnlineResults: remoteSubmissions,
       isOnline: isOnline
     })
-    // await DB.submissions.remove();
     // For every new or updated entry
     _forEach(sync, async function (submission, key) {
       let localSubmissions = await LocalSubmission.find({
@@ -184,7 +183,7 @@ const actions = {
       _forEach(localSubmissions, function (local) {
         localSubmission = local
         if (!(localSubmission.data.sync === false || localSubmission.data.draft === false)) {
-          local.remove()
+          LocalSubmission.remove(localSubmission)
         }
       })
       let isRepleaceble = localSubmission.data && !(localSubmission.data.sync === false || localSubmission.data.draft === false)
@@ -195,14 +194,20 @@ const actions = {
           data: submission
         })
       }
+      if (key === sync.length - 1) {
+        if (vm && vm.$eventHub) {
+          vm.$eventHub.emit('FAST-DATA_SYNCED', {
+            count: sync.length,
+            data: sync
+          })
+        }
+      }
     })
-    /*
-    if (sync.length > 0) {
-      Toast.create.positive({ html: sync.length + ' Submissions were updated' })
-    } else {
-      // Toast.create.info({html: 'Submissions are up to date'})
+    if (sync.length === 0) {
+      Toast.create.info({
+        html: 'Submissions are up to date'
+      })
     }
-    */
   },
   /**
    * [addSubmission description]

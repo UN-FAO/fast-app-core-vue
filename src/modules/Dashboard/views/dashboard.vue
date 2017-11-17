@@ -99,34 +99,63 @@
 
 </template>
 <style scoped>
-  .q-card {
-    background-color: white;
-  }
+.q-card {
+  background-color: white;
+}
 
-  .q-card-container {
-    padding: 50px;
-    padding-top: 65px;
-    padding-bottom: 25px;
-  }
+.q-card-container {
+  padding: 50px;
+  padding-top: 65px;
+  padding-bottom: 25px;
+}
 
-  .q-card-main {
-    text-align: center;
-  }
+.q-card-main {
+  text-align: center;
+}
 
-  .q-card-main h1 {}
+.q-card-main h1 {
+}
 
-  .q-card-main .q-icon {
-    color: #28536d;
-    font-size: 6em;
-  }
-
+.q-card-main .q-icon {
+  color: #28536d;
+  font-size: 6em;
+}
 </style>
 
 
 
 
 <script>
-  import {
+import {
+  QCard,
+  QCardTitle,
+  QCardSeparator,
+  QCardMain,
+  QFab,
+  QFabAction,
+  QFixedPosition,
+  QPullToRefresh,
+  QTabs,
+  QTab,
+  QTabPane,
+  QCollapsible,
+  QBtn,
+  QIcon,
+  QTooltip,
+  QList,
+  QItem,
+  QItemSeparator,
+  Loading
+} from "quasar";
+// import LocalForm from 'database/collections/scopes/LocalForm'
+import _sortBy from "lodash/sortBy";
+import { APP_FANTACY_NAME } from "config/env";
+export default {
+  name: "card",
+  mounted: async function() {
+    // LocalForm.sAll(this, 'forms')
+  },
+  components: {
     QCard,
     QCardTitle,
     QCardSeparator,
@@ -146,70 +175,38 @@
     QItem,
     QItemSeparator,
     Loading
-  } from "quasar";
-  // import LocalForm from 'database/collections/scopes/LocalForm'
-  import _ from "lodash";
-  import {
-    APP_FANTACY_NAME
-  } from "config/env";
-  export default {
-    name: "card",
-    mounted: async function () {
-      // LocalForm.sAll(this, 'forms')
-    },
-    components: {
-      QCard,
-      QCardTitle,
-      QCardSeparator,
-      QCardMain,
-      QFab,
-      QFabAction,
-      QFixedPosition,
-      QPullToRefresh,
-      QTabs,
-      QTab,
-      QTabPane,
-      QCollapsible,
-      QBtn,
-      QIcon,
-      QTooltip,
-      QList,
-      QItem,
-      QItemSeparator,
-      Loading
-    },
-    data: () => {
-      return {
-        flipped0: "card",
-        flipped1: "card",
-        flipped2: "card",
-        flipped3: "card",
-        forms: [],
-        subscriptions: [],
-        appName: APP_FANTACY_NAME
-      };
-    },
-    methods: {
-      toggleFlip(n) {
-        if (this["flipped" + n] === "card") {
-          this["flipped" + n] = "card flipped";
-        } else {
-          this["flipped" + n] = "card";
-        }
-      }
-    },
-    computed: {
-      // a computed getter
-      orderedForms: function () {
-        let ordered = [];
-        if (this.forms.length === 0) {
-          return [];
-        } else {
-          ordered = _.sortBy(this.forms, "data.title");
-          return ordered;
-        }
+  },
+  data: () => {
+    return {
+      flipped0: "card",
+      flipped1: "card",
+      flipped2: "card",
+      flipped3: "card",
+      forms: [],
+      subscriptions: [],
+      appName: APP_FANTACY_NAME
+    };
+  },
+  methods: {
+    toggleFlip(n) {
+      if (this["flipped" + n] === "card") {
+        this["flipped" + n] = "card flipped";
+      } else {
+        this["flipped" + n] = "card";
       }
     }
-  };
-
+  },
+  computed: {
+    // a computed getter
+    orderedForms: function() {
+      let ordered = [];
+      if (this.forms.length === 0) {
+        return [];
+      } else {
+        ordered = _sortBy(this.forms, "data.title");
+        return ordered;
+      }
+    }
+  }
+};
 </script>

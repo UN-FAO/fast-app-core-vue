@@ -8,7 +8,10 @@
     </div>
 </template>
 <script>
-import _ from "lodash";
+import _debounce from "lodash/debounce";
+import _isEmpty from "lodash/isEmpty";
+import _cloneDeep from "lodash/cloneDeep";
+import _map from "lodash/map";
 import Formio from "formiojs";
 import FormioForm from "formiojs/form";
 import FormioWizard from "formiojs/wizard";
@@ -51,7 +54,7 @@ export default {
     GPS.listen(this);
     // SMS.listen(this)
     document.addEventListener("saveAsDraft", this.saveAsLocalDraft);
-    this.save = _.debounce(this.save, 100);
+    this.save = _debounce(this.save, 100);
     this.renderForm();
   },
   beforeDestroy() {
@@ -140,7 +143,7 @@ export default {
       let comps = FormioUtils.findComponents(Components, {
         tag: "p"
       });
-      _.map(comps, comp => {
+      _map(comps, comp => {
         if (
           this.$t('translations["' + comp.content + '"]') !==
           'translations["' + comp.content + '"]'
@@ -289,12 +292,12 @@ export default {
       let readOnly = this.readOnly;
       // Create the formIOForm Instance (Renderer)
       if (onlineJsonForm.display === "wizard") {
-        if (_.isEmpty(this.formIO)) {
+        if (_isEmpty(this.formIO)) {
           translations.readOnly = readOnly;
           this.formIO = new FormioWizard(this.$refs.formIO, translations);
         }
       } else {
-        if (_.isEmpty(this.formIO)) {
+        if (_isEmpty(this.formIO)) {
           translations.readOnly = readOnly;
           this.formIO = new FormioForm(this.$refs.formIO, translations);
         }
@@ -330,7 +333,7 @@ export default {
         this.setSubmission(onlineJsonForm, savedSubmission);
 
         // Clone the original object to avoid changes
-        let cloneJsonForm = _.cloneDeep(onlineJsonForm);
+        let cloneJsonForm = _cloneDeep(onlineJsonForm);
 
         // Load data stored locally
         cloneJsonForm.components = this.loadExternalResources(
@@ -339,7 +342,7 @@ export default {
 
         // Translate the form
         cloneJsonForm.components = this.setTranslations(
-          _.cloneDeep(onlineJsonForm.components)
+          _cloneDeep(onlineJsonForm.components)
         );
 
         let components = FormioUtils.findComponents(cloneJsonForm.components, {
@@ -347,7 +350,7 @@ export default {
           type: "number"
         });
 
-        _.map(components, function(c) {
+        _map(components, function(c) {
           c.defaultValue = "default";
         });
 

@@ -7,11 +7,11 @@ import Auth from "modules/Auth/api/Auth";
 import { Alert } from "quasar";
 import "quasar-extras/animate/bounceInRight.css";
 import "quasar-extras/animate/bounceOutRight.css";
-import _ from "lodash";
+import _debounce from "lodash/debounce";
 export default {
   name: "connectionAlert",
   mounted: function() {
-    this.showPopUp = _.debounce(this.showPopUp, 3000);
+    this.showPopUp = _debounce(this.showPopUp, 3000);
     this.$eventHub.on("connectionStatusChanged", this.showPopUp);
   },
   beforeDestroy() {

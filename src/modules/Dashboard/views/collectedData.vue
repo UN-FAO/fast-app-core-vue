@@ -39,7 +39,29 @@
   </div>
 </template>
 <script>
-  import {
+import {
+  QIcon,
+  QBtn,
+  QList,
+  QItem,
+  QItemSide,
+  QItemTile,
+  QItemMain,
+  QCollapsible,
+  QSpinnerAudio
+} from "quasar";
+import LocalForm from "database/collections/scopes/LocalForm";
+import _sortBy from "lodash/sortBy";
+import _forEach from "lodash/forEach";
+import _orderBy from "lodash/orderBy";
+
+export default {
+  name: "card",
+  mounted: async function() {
+    let forms = await LocalForm.sAll();
+    this.forms = _orderBy(forms, "data.title", "asc");
+  },
+  components: {
     QIcon,
     QBtn,
     QList,
@@ -49,63 +71,43 @@
     QItemMain,
     QCollapsible,
     QSpinnerAudio
-  } from "quasar";
-  import LocalForm from "database/collections/scopes/LocalForm";
-  import _ from "lodash";
-  export default {
-    name: "card",
-    mounted: async function () {
-      let forms = await LocalForm.sAll();
-      this.forms = _.orderBy(forms, "data.title", "asc");
-    },
-    components: {
-      QIcon,
-      QBtn,
-      QList,
-      QItem,
-      QItemSide,
-      QItemTile,
-      QItemMain,
-      QCollapsible,
-      QSpinnerAudio
-    },
-    data: () => {
-      return {
-        forms: undefined,
-        loading: true
-      };
-    },
-    methods: {
-      goTo(route) {
-        this.$router.push(route);
-      }
-    },
-    computed: {
-      // a computed getter
-      groupedSurveys: function () {
-        let grouped = [];
-        if (this.forms.length === 0) {
-          return [];
-        } else {
-          _.forEach(this.forms, function (form) {
-            if (form.data.tags.indexOf("visible") > -1) {
-              let module = form.data.title.split(".")[0];
-              form.module = module;
-              if (grouped[module]) {
-                grouped[module].push(form);
-              } else {
-                grouped[module] = [];
-                grouped[module].push(form);
-              }
+  },
+  data: () => {
+    return {
+      forms: undefined,
+      loading: true
+    };
+  },
+  methods: {
+    goTo(route) {
+      this.$router.push(route);
+    }
+  },
+  computed: {
+    // a computed getter
+    groupedSurveys: function() {
+      let grouped = [];
+      if (this.forms.length === 0) {
+        return [];
+      } else {
+        _forEach(this.forms, function(form) {
+          if (form.data.tags.indexOf("visible") > -1) {
+            let module = form.data.title.split(".")[0];
+            form.module = module;
+            if (grouped[module]) {
+              grouped[module].push(form);
+            } else {
+              grouped[module] = [];
+              grouped[module].push(form);
             }
-          });
-          _.forEach(grouped, (group, index) => {
-            grouped[index] = _.sortBy(group, "data.title");
-          });
-          return grouped;
-        }
+          }
+        });
+        _forEach(grouped, (group, index) => {
+          grouped[index] = _sortBy(group, "data.title");
+        });
+        return grouped;
       }
     }
-  };
-
+  }
+};
 </script>
