@@ -71,7 +71,7 @@ const actions = {
 
     if (sync.length > 0) {
       Toast.create.positive({
-        html: sync.length + ' ' + label + ' were updated'
+        html: sync.length + ' ' + label + ' updated'
       })
     } else {
       // Toast.create.info({html: 'Local forms up to date'})

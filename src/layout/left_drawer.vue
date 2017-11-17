@@ -47,7 +47,7 @@
 
     <q-side-link multiline highlight item :to="{name: 'c', params: { idForm: 'idform'}}" :key="about">
       <q-item-side icon="tablet_mac" />
-      <q-item-main label="About PAT" />
+      <q-item-main :label="'About ' + appName" />
     </q-side-link>
 
     <!--
