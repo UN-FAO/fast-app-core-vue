@@ -2,7 +2,7 @@
   <q-pull-to-refresh :handler="reloadPage">
     <div class="row FormioContainer">
 
-      <q-card style="background-color: white" class="col-lg-3  col-md-3 col-sm-3" v-if="_isWizard && showPages">
+      <q-card style="background-color: white; max-height: fit-content;" class="col-lg-3  col-md-3 col-sm-3" v-if="_isWizard && showPages">
         <q-card-main>
           <q-list separator style="border: none !important">
 
@@ -20,7 +20,7 @@
           <q-btn flat @click="togglePages" icon="menu" style="color:black;" v-if="_isWizard"></q-btn>
           <q-tabs inverted id="contentForm">
             <!-- Tabs - notice slot="title" -->
-            <q-tab default slot="title" name="tab-1" icon="person" label="P1" :color="saved ? 'primary' : 'red'" />
+            <q-tab v-bind:class="!parallelSurveys ? 'hidden' : ''" default slot="title" name="tab-1" icon="person" label="P1" :color="saved ? 'primary' : 'red'" />
             <!-- Targets -->
 
             <q-tab-pane name="tab-1" ref="tab1">
@@ -45,7 +45,7 @@
 
           <q-fab-action color="primary" @click="getForms()" icon="cloud_download"></q-fab-action>
 
-          <q-fab-action color="amber" @click="addSurvey()" icon="person_add"></q-fab-action>
+          <q-fab-action v-bind:class="!parallelSurveys ? 'hidden' : ''" color="amber" @click="addSurvey()" icon="person_add"></q-fab-action>
 
         </q-fab>
       </q-fixed-position>
@@ -75,7 +75,7 @@ import { mapActions } from "vuex";
 import Auth from "modules/Auth/api/Auth";
 import formio from "modules/Formio/components/formio/formio";
 import LocalSubmission from "database/collections/scopes/LocalSubmission";
-import { APP_URL, LOCAL_DRAFT_ENABLED } from "config/env";
+import { APP_URL, LOCAL_DRAFT_ENABLED, PARALLEL_SURVEYS } from "config/env";
 import {
   QCard,
   QCardTitle,
@@ -240,7 +240,8 @@ export default {
       showPages: false,
       currentQuestion: -1,
       displayUp: false,
-      displayDown: true
+      displayDown: true,
+      parallelSurveys: PARALLEL_SURVEYS
     };
   },
   methods: {

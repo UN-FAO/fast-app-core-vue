@@ -116,6 +116,7 @@ export default {
 <style>
 @import url("../node_modules/bootstrap/dist/css/bootstrap.min.css");
 @import url("../node_modules/formiojs/dist/formio.full.min.css");
+
 *:not(i):not(.fa) {
   /* box-sizing: border-box; */
   cursor: default;
@@ -345,6 +346,10 @@ input.form-control {
   background-repeat: no-repeat;
 }
 
+.login-form-holder {
+  min-width: -webkit-fill-available;
+}
+
 .login-form-holder h1 {
   font-size: 5em;
   color: #065276;
@@ -437,14 +442,14 @@ html {
 }
 
 label.control-label {
-  color: #666;
-  font-size: medium !important;
-  font-weight: 300 !important;
+    color: #888686;
+    font-size: medium !important;
+    font-weight: 350 !important;
 }
 
-.radio label {
-  font-weight: normal !important;
-  font-size: medium !important;
+.radio label, .radio-inline  label, .checkbox-inline label, .checkbox label{
+    font-weight: 400!important;
+    font-size: small !important;
 }
 
 input[type="radio"] {
@@ -651,6 +656,8 @@ label {
   padding: 5%;
   position: relative;
   background-color: #fff;
+  overflow: auto;
+  max-height: calc(100vh - 250px);
 }
 
 .post-title {
@@ -678,12 +685,12 @@ label {
 }
 
 .post-header-enhanced {
-  background-image: url("statics/videos/login.jpg");
+  background-image: url("assets/imgs/loginBig.jpg");
   -webkit-filter: opacity(0.9);
   filter: opacity(0.9);
 }
 
-@supports (background-image: filter(url("statics/videos/login.jpg"), blur(1px))) {
+@supports (background-image: filter(url("assets/imgs/loginBig.jpg"), blur(1px))) {
   .post-header {
     transform: translateZ(0);
   }
@@ -692,15 +699,31 @@ label {
   }
   @keyframes sharpen {
     from {
-      background-image: filter(url("statics/videos/login.jpg"), blur(20px));
+      background-image: filter(url("assets/imgs/loginBig.jpg"), blur(20px));
     }
     to {
-      background-image: filter(url("statics/videos/login.jpg"), blur(0px));
+      background-image: filter(url("assets/imgs/loginBig.jpg"), blur(0px));
     }
   }
 }
 
 .radio-inline {
+  margin-left: 10px !important;
+}
+
+.glyphicon-remove-circle:before {
+    content: "x";
+}
+
+.formio-component-fieldset {
+    margin-top: 50px;
+}
+
+.formio-component-fieldset legend {
+    font-size: x-large !important;
+}
+
+.checkbox-inline {
   margin-left: 10px !important;
 }
 </style>

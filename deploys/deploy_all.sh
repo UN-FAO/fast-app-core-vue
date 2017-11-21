@@ -1,10 +1,24 @@
 #!/bin/sh
+PACKAGE_VERSION=$(cat package.json \
+  | grep version \
+  | head -1 \
+  | awk -F: '{ print $2 }' \
+  | sed 's/[",]//g' \
+  | tr -d '[[:space:]]')
+
+DEPLOY_APP_NAME=$(cat package.json \
+  | grep deployAppName \
+  | head -1 \
+  | awk -F: '{ print $2 }' \
+  | sed 's/[",]//g' \
+  | tr -d '[[:space:]]')
+
 ####################################################
 #  Project Setup Variables
 ###################################################
 	APPNAME="FAST"
-	PRODUCTNAME="SHARP+"
-	VERSION="0.4.0"
+	PRODUCTNAME=$DEPLOY_APP_NAME
+	VERSION=$PACKAGE_VERSION
 	AUTHOR="Ignacio Cabrera <ignacio.cabrera@fao.org>"
 	DESCRIPTION="Collection application for Form.io"
 ###################################################

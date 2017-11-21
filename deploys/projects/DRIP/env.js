@@ -19,8 +19,8 @@ exports.FAST_VERSION = '0.4.2'
 | forms asociated with it.
 |
 */
-exports.APP_URL = 'https://efqbsqrkscuzlpi.form.io'
-exports.APP_NAME = 'efqbsqrkscuzlpi'
+exports.APP_URL = 'https://qumqhkjyyrhislq.form.io'
+exports.APP_NAME = 'qumqhkjyyrhislq'
 /*
 |--------------------------------------------------------------------------
 | APP CONFIGURATION
@@ -31,8 +31,8 @@ exports.APP_NAME = 'efqbsqrkscuzlpi'
 | in the app.
 |
 */
-exports.APP_FANTACY_NAME = 'FAMEWS'
-exports.APP_PHRASE = 'Fall Armyworm Monitoring and Early Warning System'
+exports.APP_FANTACY_NAME = 'FAST DEV'
+exports.APP_PHRASE = 'Development Environment for FAST'
 /*
 |--------------------------------------------------------------------------
 | MD5 KEY

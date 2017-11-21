@@ -1,6 +1,7 @@
 {
   "name": "fast",
-  "version": "0.4.0",
+  "version": "0.4.2",
+  "deployAppName": "FAW",
   "description": "A data collection application for FORM.io",
   "author": "Ignacio Cabrera <ignacio.cabrera@fao.org>",
   "scripts": {
@@ -14,7 +15,12 @@
     "deploy:ios": "sh deploys/electron/electron_ios.sh",
     "deploy:windows": "sh deploys/electron/electron_windows.sh",
     "deploy:linux": "sh deploys/electron/electron_linux.sh",
-    "deploy:all": "sh deploys/deploy_all.sh"
+    "deploy:all": "sh deploys/deploy_all.sh",
+    "set:sharp": "sh deploys/setEnv.sh SHARP SHARP+",
+    "set:faw": "sh deploys/setEnv.sh FAW FAW",
+    "set:drip": "sh deploys/setEnv.sh DRIP DRIP",
+    "set:pat": "sh deploys/setEnv.sh PAT PAT",
+    "set:dev": "sh deploys/setEnv.sh DEV DEV"
   },
   "dependencies": {
     "axios": "^0.16.2",
@@ -25,7 +31,7 @@
     "deep-diff": "^0.3.8",
     "element-ui": "^1.4.3",
     "fastclick": "^1.0.6",
-    "formiojs": "^2.21.1",
+    "formiojs": "2.22.1",
     "html2canvas": "^0.5.0-beta4",
     "i18next": "^10.0.3",
     "jsonexport": "^2.0.10",
@@ -44,7 +50,8 @@
     "vue-i18n": "^7.1.2",
     "vue-router": "^2.7.0",
     "vue-sweetalert": "^0.1.18",
-    "vuex": "^2.3.1"
+    "vuex": "^2.3.1",
+    "text-mask-all": "github:text-mask/text-mask"
   },
   "devDependencies": {
     "autoprefixer": "^6.4.0",
@@ -79,6 +86,7 @@
     "html-critical-webpack-plugin": "^1.0.1",
     "html-webpack-plugin": "^2.30.1",
     "http-proxy-middleware": "^0.17.0",
+    "json": "^9.0.6",
     "json-loader": "^0.5.7",
     "opn": "^5.0.0",
     "optimize-css-assets-webpack-plugin": "^3.2.0",

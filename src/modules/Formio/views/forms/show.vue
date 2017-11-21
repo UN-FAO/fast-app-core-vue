@@ -20,9 +20,10 @@
                 </template>
               </el-table-column>
 
+              <!--
               <el-table-column label="ID" prop="id_submision" sortable min-width="230">
               </el-table-column>
-
+              -->
 
               <el-table-column :label="column.label" sortable v-for="column in visibleColumns" :key="column.key" min-width="180">
                 <template scope="scope">
