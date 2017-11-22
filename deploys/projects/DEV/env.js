@@ -19,8 +19,8 @@ exports.FAST_VERSION = '0.4.2'
 | forms asociated with it.
 |
 */
-exports.APP_URL = 'https://qumqhkjyyrhislq.form.io'
-exports.APP_NAME = 'qumqhkjyyrhislq'
+exports.APP_URL = 'https://dghnmpjfioshlsx.form.io'
+exports.APP_NAME = 'dghnmpjfioshlsx'
 /*
 |--------------------------------------------------------------------------
 | APP CONFIGURATION
