@@ -214,6 +214,7 @@ p {
 .choices__list.choices__list--dropdown {
   position: inherit;
   width: max-content !important;
+  min-width: -webkit-fill-available;
 }
 
 ul.list-inline {

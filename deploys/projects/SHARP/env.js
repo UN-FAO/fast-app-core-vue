@@ -31,8 +31,8 @@ exports.APP_NAME = 'qumqhkjyyrhislq'
 | in the app.
 |
 */
-exports.APP_FANTACY_NAME = 'FAST DEV'
-exports.APP_PHRASE = 'Development Environment for FAST'
+exports.APP_FANTACY_NAME = 'SHARP+'
+exports.APP_PHRASE = 'Self-evaluation and Holistic Assessment of climate resilence of Farmers and Pastoralists'
 /*
 |--------------------------------------------------------------------------
 | MD5 KEY

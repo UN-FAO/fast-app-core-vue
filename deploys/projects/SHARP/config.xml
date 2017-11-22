@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget android-versionCode="35" id="org.fao.sharp" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>FAST DEV</name>
+    <name>SHARP+</name>
     <description>
-       Development app for the FAST project
+  Self-evaluation and Holistic Assessment of climate resilence of Farmers and Pastoralists
     </description>
     <author email="ignacio.cabrera@fao.org" href="http://www.fao.org">
         FAO-UN  - CIO - IT DESIGN AND TECHNOLOGY
