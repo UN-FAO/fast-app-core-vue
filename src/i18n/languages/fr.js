@@ -1,21 +1,20 @@
 const en = {
   App: {
-    submissions_for: 'Submissions for',
-    new_submission_for: 'New Submission for:',
-    title: 'SHARP+',
-    form: 'Form',
-    submission_id: 'Submission Id',
-    created_at: 'Created at',
-    actions: 'Actions',
-    online: 'Online',
-    offline: 'Offline',
-    home: 'Home',
-    available_forms: 'Available Forms',
-    unsynced_actions: 'Unsynced Actions',
-    submit: 'Submit',
-    sync_forms: 'Sync forms',
-    sync_submissions: 'Sync Submissions',
-    logout: 'Logout'
+    'Submissions for': 'Nuevo registro:',
+    'New Submission for:': 'Formulario',
+    'Form': 'Form',
+    'Submission Id': 'Submission Id',
+    'Created at': 'Created at',
+    'Actions': 'Actions',
+    'Online': 'Online',
+    'Offline': 'Offline',
+    'Home': 'Home',
+    'Available Forms': 'Available Forms',
+    'Unsynced Actions': 'Unsynced Actions',
+    'Submit': 'Submit',
+    'Sync forms': 'Sync forms',
+    'Sync Submissions': 'Sync Submissions',
+    'Logout': 'Registros de'
   }
 }
 

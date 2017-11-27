@@ -26,7 +26,7 @@ module.exports = merge(baseWebpackConfig, {
     new UglifyJSPlugin({
       uglifyOptions: {
         ie8: true,
-        ecma: 8,
+        ecma: 5,
         output: {
           comments: false,
           beautify: false,
@@ -34,7 +34,7 @@ module.exports = merge(baseWebpackConfig, {
         warnings: false
       }
     }),
-    new webpack.NoErrorsPlugin(),
+    new webpack.NoEmitOnErrorsPlugin(),
     /*
     new CompressionPlugin({
       asset: "[path].gz[query]",
@@ -77,6 +77,10 @@ module.exports = merge(baseWebpackConfig, {
       defaultAttribute: 'async'
     }),
     */
+    // keep module.id stable when vender modules does not change
+    new webpack.HashedModuleIdsPlugin(),
+    // enable scope hoisting
+    new webpack.optimize.ModuleConcatenationPlugin(),
     // split vendor js into its own file
     new webpack.optimize.CommonsChunkPlugin({
       name: 'vendor',

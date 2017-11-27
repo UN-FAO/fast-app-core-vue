@@ -32,7 +32,7 @@
 
               </el-table-column>
 
-              <el-table-column :label="$t('App.created_at')" prop="Humancreated" sortable fixed="left" width="140">
+              <el-table-column :label="$t('translations.app_created_at')" prop="Humancreated" sortable fixed="left" width="140">
               </el-table-column>
 
               <el-table-column fixed="right" label="Actions" width="120">
@@ -380,7 +380,7 @@ export default {
     getRowActionsDef() {
       let self = this;
       return {
-        label: self.$t("App.actions"),
+        label: self.$t("translations.app_actions"),
         def: [
           /* TODO
             Uncomment this and finish when CORS are available

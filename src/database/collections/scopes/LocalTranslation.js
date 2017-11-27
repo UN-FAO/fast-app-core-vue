@@ -39,7 +39,7 @@ const LocalTranslation = class {
 
     _forEach(localTranslations, (lenguage, index) => {
       if (index !== 'type') {
-        formTranslations.i18n[index] = lenguage ? lenguage.translations : {}
+        formTranslations.i18n[index] = lenguage
       }
     })
 

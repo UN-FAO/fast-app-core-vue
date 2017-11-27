@@ -16,14 +16,14 @@
                          <div class="form-group">
             <q-field icon="person" style="text-align: -webkit-auto;">
                <q-input v-model="credentials.username"
-                stack-label="username" style="border-bottom: 1px solid;" />
+                :stack-label="$t('Username')" style="border-bottom: 1px solid;" />
                 </q-field>
     </div>
                         <div class="form-group">
                             <q-field icon="lock_outline" style="text-align: -webkit-auto;">
                               <q-input v-model="credentials.password"
                                        type="password"
-                                       stack-label="password"
+                                       :stack-label="$t('Password')"
                                        @keyup.enter="handleLogin" style="border-bottom: 1px solid;" />
                             </q-field>
                         </div>
@@ -32,12 +32,12 @@
                              color="white"
                              style="border: #0E6DA5 solid 1px; color: #0e6da5 !important;"
                              @click="handleLogin">
-                        Login
+                       {{$t('Login')}}
                         <span slot="loading">Load...</span>
                       </q-btn>
                     </p>
                     <br>
-                    <p class="text-center _new-user"><router-link :to="{ path: 'register' }">New user ?</router-link></p>
+                    <p class="text-center _new-user"><router-link :to="{ path: 'register' }">{{$t('New user')}}?</router-link></p>
             <br>
             <p class="text-center" style="color: grey !important">
                 <!-- react-text: 44 -->Version

@@ -145,10 +145,10 @@ export default {
       });
       _map(comps, comp => {
         if (
-          this.$t('translations["' + comp.content + '"]') !==
-          'translations["' + comp.content + '"]'
+          this.$t(comp.content) !==
+          comp.content
         ) {
-          comp.content = this.$t('translations["' + comp.content + '"]');
+          comp.content = this.$t(comp.content);
         }
       });
       return Components;

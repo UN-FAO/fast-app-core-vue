@@ -1,6 +1,7 @@
 import Formio from 'modules/Formio/api/Formio'
 import store from 'config/store'
 import _forEach from 'lodash/forEach'
+import _map from 'lodash/map'
 import messages from 'i18n/translations'
 import localTranslation from 'database/collections/scopes/LocalTranslation'
 
@@ -40,6 +41,7 @@ const Localization = class {
 
         // Foreach of the locale lenguages, set the translations
         _forEach(messages, (lenguage, lenguageCode) => {
+          delete lenguage.App
           lenguage.translations = {}
           _forEach(translations, (translation, index) => {
             if (translation.data[lenguageCode]) {
@@ -48,11 +50,15 @@ const Localization = class {
           })
         })
 
+        _map(messages, (lenguage, lenguageCode) => {
+          messages[lenguageCode] = lenguage.translations
+          delete lenguage.App
+        })
+
         // If we already had translations, then update them
         if (localTranslations.length > 0) {
-          localTranslations[0].update({
-            data: messages
-          })
+          localTranslations[0].data = messages
+          localTranslation.update(localTranslations[0])
           appTranslations = localTranslations[0].data
         } else if (localTranslations.length === 0) {
           appTranslations = await localTranslation.insert({

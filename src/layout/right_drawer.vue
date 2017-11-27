@@ -2,7 +2,7 @@
   <q-tabs>
     <!-- Tabs - notice slot="title" -->
     <q-tab v-if="scorePanels.length > 0" slot="title" name="tab-1" icon="assessment" label="Score" />
-    <q-tab default :count="Unsynced.length" slot="title" name="tab-2" icon="signal_wifi_off" label="Unsync" />
+    <q-tab default :count="Unsynced.length" slot="title" name="tab-2" icon="signal_wifi_off" :label="$t('Unsynced')" />
 
     <!-- //////////////////////////// -->
 
@@ -24,12 +24,12 @@
 
     <q-tab-pane name="tab-2">
 
-      <q-list-header>{{ $t("App.unsynced_actions") }}
+      <q-list-header>{{ $t("Unsynced Actions") }}
 
         <q-btn flat color="primary" @click="syncSubmissions()">
           <q-icon name="cloud_upload" />
           <q-tooltip anchor="center right" self="center left" :offset="[10, 0]">
-            {{ $t("App.sync_submissions") }}
+            {{ $t("Sync Actions") }}
           </q-tooltip>
         </q-btn>
       </q-list-header>

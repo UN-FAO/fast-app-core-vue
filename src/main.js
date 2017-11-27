@@ -1,3 +1,4 @@
+import "babel-polyfill"
 // === DEFAULT / CUSTOM STYLE ===
 // WARNING! always comment out ONE of the two require() calls below.
 // 1. use next line to activate CUSTOM STYLE (./src/themes)
@@ -11,7 +12,6 @@ require(`quasar/dist/quasar.ie`)
 require(`quasar/dist/quasar.ie.${__THEME}.css`)
 
 import Vue from 'vue'
-
 import Quasar from 'quasar'
 Vue.use(Quasar) // Install Quasar Framework
 
@@ -68,6 +68,7 @@ Quasar.start(async() => {
   appTranslations = await Localization.setLocales()
   let defaultLenguage = localStorage.getItem('defaultLenguage') ? localStorage.getItem('defaultLenguage') : 'en'
 
+  console.log(appTranslations)
   const i18n = new VueI18n({
     locale: defaultLenguage, // set locale
     messages: appTranslations // set locale messages

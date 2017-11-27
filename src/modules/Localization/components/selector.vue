@@ -76,14 +76,14 @@ export default {
     async getTranslations() {
       await Localization.getTranslations();
       this.$swal({
-        title: "Localizations Synced",
-        text: "You need to reload the page to see them. Want to do it now?",
+        title: this.$t('Localizations Synced'),
+        text: this.$t("You need to reload the page to see them. Want to do it now?"),
         type: "success",
         showCancelButton: true,
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, reaload it!",
-        cancelButtonText: "No, Later"
+        confirmButtonText: this.$t("Yes, reaload it!"),
+        cancelButtonText: this.$t("No, Later")
       }).then(async () => {
         window.location.reload(true);
       });
@@ -92,18 +92,18 @@ export default {
       return !!(this.lenguage === code);
     },
     setLanguage(lenguage) {
+       this.$i18n.locale = lenguage.code;
+        this.lenguage = lenguage.code;
+        localStorage.setItem("defaultLenguage", lenguage.code);
+        this.$eventHub.$emit("lenguageSelection", lenguage);
        this.$swal({
-        title: "Language Changed",
-        text: "The lenguage was changed.",
+        title: this.$t("Language Changed"),
+        text: this.$t("The lenguage was changed."),
         type: "success",
         showCancelButton: false,
         confirmButtonColor: "#3085d6",
         confirmButtonText: "OK"
       })
-      this.$i18n.locale = lenguage.code;
-      this.lenguage = lenguage.code;
-      localStorage.setItem("defaultLenguage", lenguage.code);
-      this.$eventHub.$emit("lenguageSelection", lenguage);
     }
   }
 };

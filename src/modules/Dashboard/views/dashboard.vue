@@ -8,7 +8,7 @@
         <q-card-main @click="$router.push({name: 'newSurvey'})" style="cursor: pointer;">
           <!--<q-icon name="fa-plus-square-o fa-5x" />-->
           <q-icon class="material-icons">playlist_add</q-icon>
-          <h1 style="color: rgb(14, 109, 165)">Surveys</h1>
+          <h1 style="color: rgb(14, 109, 165)">{{$t("Surveys") }}</h1>
 
           <q-list style="border: none; padding: 0;">
             <!--
@@ -37,8 +37,8 @@
         <q-card-main @click="$router.push({name: 'CollectedData'})" style="cursor: pointer;">
           <!--<q-icon name="fa-database fa-5x" />-->
           <q-icon class="material-icons">storage</q-icon>
-          <h1 style="color: rgb(14, 109, 165)">Data
-            <br>Collected</h1>
+          <h1 style="color: rgb(14, 109, 165)"> {{ $t("Collected Data") }}
+            </h1>
 
           <q-list style="border: none; padding: 0;">
             <!--
@@ -77,8 +77,7 @@
         <q-card-main>
           <!--<q-icon name="fa-cog fa-5x" />-->
           <q-icon class="material-icons">settings</q-icon>
-          <h1 style="color: rgb(14, 109, 165)">Application
-            <br>Settings</h1>
+          <h1 style="color: rgb(14, 109, 165)">{{ $t("Application Settings") }}</h1>
           <q-btn @click="toggleFlip(3)" round color="grey" flat>
           </q-btn>
         </q-card-main>
@@ -88,11 +87,10 @@
         <q-card-main>
           <!--<q-icon name="fa-tablet fa-5x" />-->
           <q-icon class="material-icons">tablet_mac</q-icon>
-          <h1 style="color: rgb(14, 109, 165)">About
-            <br> {{appName}}</h1>
+          <h1 style="color: rgb(14, 109, 165)"> {{ $t("About") }}
+           <br>{{appName}} </h1>
         </q-card-main>
       </q-card>
-
     </div>
 
   </div>
