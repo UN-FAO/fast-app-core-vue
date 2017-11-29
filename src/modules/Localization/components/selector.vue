@@ -98,7 +98,7 @@ export default {
         this.$eventHub.$emit("lenguageSelection", lenguage);
        this.$swal({
         title: this.$t("Language Changed"),
-        text: this.$t("The lenguage was changed."),
+        text: this.$t("The language was changed."),
         type: "success",
         showCancelButton: false,
         confirmButtonColor: "#3085d6",

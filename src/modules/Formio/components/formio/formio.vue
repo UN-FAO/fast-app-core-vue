@@ -1,8 +1,5 @@
 <template>
     <div>
-        <div v-if="loading">
-
-        </div>
         <div ref="formIO" class="formContainer">
         </div>
     </div>
@@ -17,17 +14,12 @@ import FormioForm from "formiojs/form";
 import FormioWizard from "formiojs/wizard";
 import FormioUtils from "formiojs/utils";
 import OFFLINE_PLUGIN from "./src/offlinePlugin";
-import { QSpinner, QSpinnerGears } from "quasar";
 import GPS from "./src/gps";
 import Lenguage from "./src/lenguage";
 // import SMS from './src/sms'
 
 export default {
   name: "formio",
-  components: {
-    QSpinner,
-    QSpinnerGears
-  },
   props: {
     formioURL: {
       required: true
@@ -439,6 +431,9 @@ export default {
            * @return {[type]}             [description]
            */
           this.formIO.on("submit", submission => {
+            console.log(this.formIO.checkSurveyValidity(), 'this.formio')
+
+            return
             this.$swal({
               title: "Are you sure?",
               text:

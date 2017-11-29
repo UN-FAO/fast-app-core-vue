@@ -8,7 +8,7 @@
 
             <q-item class="formioPagination" multiline style="text-align: left; text-transform: uppercase; min-height: 60px; border-radius: 5px;"
               link v-for="(page, index) in _pages" :key="page.title" @click="goToPage(index)" :ref="'page-'+ index" v-bind:class="currentPage === index ? 'activePage' : ''">
-              <q-item-main style=" margin-top: auto;  margin-bottom: auto;" :label="getLabelForPage(page)" label-lines="3" />
+              <q-item-main style=" margin-top: auto;  margin-bottom: auto;" :label="$t(getLabelForPage(page))" label-lines="3" />
             </q-item>
           </q-list>
         </q-card-main>

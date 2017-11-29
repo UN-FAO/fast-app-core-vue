@@ -1,6 +1,6 @@
 {
   "name": "fast",
-  "version": "0.4.4",
+  "version": "0.4.5",
   "deployAppName": "DEV",
   "description": "A data collection application for FORM.io",
   "author": "Ignacio Cabrera <ignacio.cabrera@fao.org>",
@@ -32,7 +32,7 @@
     "deep-diff": "^0.3.8",
     "element-ui": "^1.4.3",
     "fastclick": "^1.0.6",
-    "formiojs": "2.22.1",
+    "formiojs": "^2.24.3",
     "html2canvas": "^0.5.0-beta4",
     "i18next": "^10.0.3",
     "jsonexport": "^2.0.10",
