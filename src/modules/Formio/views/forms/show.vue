@@ -1,7 +1,7 @@
 <template>
-  <div class="row" style="margin-top: 30px;">
+  <div class="row" style="background:#f3f3f5">
     <div>
-      <q-card color="white" style="bottom: unset;" class="col-lg-10 col-lg-offset-1 col-md-offset-1 col-md-10 col-sm-10 col-sm-offset-1 col-xs-offset-0 col-xs-12  centered relative-position">
+      <q-card color="white" style="bottom: unset;margin-top: 30px;" class="col-lg-10 col-lg-offset-1 col-md-offset-1 col-md-10 col-sm-10 col-sm-offset-1 col-xs-offset-0 col-xs-12  centered relative-position">
         <q-card-main>
           <q-transition appear enter="fadeIn" leave="fadeOut">
 
@@ -16,7 +16,8 @@
                   <el-tag :type="getIconColor(scope.row)" close-transition>
                     <i class="material-icons">{{scope.row.status === 'offline' ? 'cloud_off' : 'cloud_done'}}</i>
                   </el-tag>
-                  <i class="material-icons" style="color: red;font-size: x-large;" v-if="scope.row.syncError">error_outline</i>
+                  <i class="material-icons" style="color: red;font-size: x-large;" v-if="scope.row.syncError && scope.row.syncError !=='Unauthorized' ">error_outline</i>
+                  <i class="material-icons" style="color: red;font-size: x-large;" v-if="scope.row.syncError && scope.row.syncError ==='Unauthorized' ">lock</i>
                 </template>
               </el-table-column>
 

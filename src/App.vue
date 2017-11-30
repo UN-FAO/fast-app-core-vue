@@ -57,7 +57,11 @@ export default {
     });
 
     this.$eventHub.on("FAST-DATA_SYNCED", data => {
-      Toast.create.positive({ html: data.count + " SUBMISSION(s) SYNCED" });
+      if (data.count === 0) {
+        Toast.create.negative({ html: "SYNC SUBMISSION ERROR" });
+      } else {
+        Toast.create.positive({ html: data.count + " SUBMISSION(s) SYNCED" });
+      }
     });
 
     Connection.initEventListeners(this);
@@ -105,11 +109,11 @@ export default {
   },
   computed: {
     isInsideApp() {
-        return (
+      return (
         this.$route.name !== "login" &&
         this.$route.name !== "register" &&
         this.$route.name !== "login_redirect"
-      )
+      );
     }
   },
   components: {
@@ -127,12 +131,12 @@ export default {
 @import url("../node_modules/formiojs/dist/formio.full.min.css");
 @import url("./assets/css/main.css");
 
-.background-app{
- background:transparent;
- height: -webkit-fill-available;
+.background-app {
+  background: transparent;
+  height: -webkit-fill-available;
 }
 
-.background-login{
-background:transparent;
+.background-login {
+  background: transparent;
 }
 </style>

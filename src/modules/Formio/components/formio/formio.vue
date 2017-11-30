@@ -431,9 +431,6 @@ export default {
            * @return {[type]}             [description]
            */
           this.formIO.on("submit", submission => {
-            console.log(this.formIO.checkSurveyValidity(), 'this.formio')
-
-            return
             this.$swal({
               title: "Are you sure?",
               text:

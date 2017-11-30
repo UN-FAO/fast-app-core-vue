@@ -317,7 +317,8 @@ const actions = {
             console.log('Error connecting to the API server')
           }
           offlineSubmission.data.queuedForSync = false
-          offlineSubmission.data.syncError = e.isJoi ? e : false
+          offlineSubmission.data.syncError = e.isJoi || e === 'Unauthorized' ? e : false
+
           await model.update(offlineSubmission)
 
           if (offlinePlugin) {

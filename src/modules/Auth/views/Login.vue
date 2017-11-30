@@ -30,6 +30,9 @@
                 <input type="submit" :value="$t('Login')" class="btn btn-success btn-sm" @click="handleLogin" />
                   <br>
                   <p class="text-center _new-user"><router-link :to="{ path: 'register' }">{{$t('New user')}}?</router-link></p>
+                  <p class="text-center" style="color: grey !important">
+                    Version   {{fastVersion}}
+                  </p>
                 </div>
             </div>
         </div>
