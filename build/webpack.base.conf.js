@@ -8,17 +8,15 @@ var
   projectRoot = path.resolve(__dirname, '../'),
   ProgressBarPlugin = require('progress-bar-webpack-plugin'),
   useCssSourceMap =
-  (env.dev && config.dev.cssSourceMap) ||
-  (env.prod && config.build.productionSourceMap)
+    (env.dev && config.dev.cssSourceMap) ||
+    (env.prod && config.build.productionSourceMap)
 
-function resolve(dir) {
+function resolve (dir) {
   return path.join(__dirname, '..', dir)
 }
 
 module.exports = {
-  entry: {
-    app: './src/main.js'
-  },
+  entry: { app: './src/main.js' },
   output: {
     path: path.resolve(__dirname, '../dist'),
     publicPath: config[env.prod ? 'build' : 'dev'].publicPath,
@@ -33,9 +31,6 @@ module.exports = {
     ],
     alias: config.aliases
   },
-  node: {
-    fs: 'empty'
-  },
   module: {
     rules: [
       { // eslint
@@ -48,22 +43,18 @@ module.exports = {
           formatter: require('eslint-friendly-formatter')
         }
       },
-
       {
         test: /\.js$/,
         loader: 'babel-loader',
         include: projectRoot,
-        options: { presets: ['es2015'] },
-        exclude: /node_modules/,
+        exclude: /node_modules/
       },
       {
         test: /\.vue$/,
         loader: 'vue-loader',
         options: {
           postcss: cssUtils.postcss,
-          loaders: merge({
-            js: 'babel-loader'
-          }, cssUtils.styleLoaders({
+          loaders: merge({js: 'babel-loader'}, cssUtils.styleLoaders({
             sourceMap: useCssSourceMap,
             extract: env.prod
           }))

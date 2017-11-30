@@ -1,8 +1,8 @@
 <template>
 
-  <div class="row" style="margin-top: 30px;">
+  <div class="row" style=" background:#f3f3f5">
     <div>
-      <q-card color="white" style="bottom: unset; background-color: white" class="col-lg-6 col-lg-offset-2 col-md-6 col-md-offset-2 centered relative-position shadow-2">
+      <q-card color="white" style="bottom: unset; margin-top: 30px;background-color: white" class="col-lg-6 col-lg-offset-2 col-md-6 col-md-offset-2 centered relative-position shadow-2">
         <q-card-main>
           <q-transition appear enter="fadeIn" leave="fadeOut">
 

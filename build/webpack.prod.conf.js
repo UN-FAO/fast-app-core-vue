@@ -14,6 +14,7 @@ var
 var configVars = require('../src/config/env')
 
 module.exports = merge(baseWebpackConfig, {
+  entry: ['babel-polyfill', './src/main.js'],
   module: {
     rules: cssUtils.styleRules({
       sourceMap: config.build.productionSourceMap,

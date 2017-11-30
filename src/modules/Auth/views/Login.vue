@@ -1,58 +1,43 @@
 <template>
-  <div>
-<header class="post-header">
-</header>
-  <div class="post-body col-xl-4 col-lg-4 col-md-5 col-sm-6 col-xs-12 pull-right shadow-4">
-      <div data-reactroot="" data-desktop="true" data-section="login" data-style="table" class="main-app-container container-fluid">
-        <div class="login-main-container">
-            <div class="login-form-container">
-                <div class="login-form-holder">
-                   <div class="appTitleHolder">
-                    <!--<div class="fao-logo-login"></div>-->
-                    <h4><!-- react-text: 28 --><!-- /react-text --><!-- react-text: 29 -->{{appName}}<!-- /react-text --></h4>
-                    <h5 style="color: #0e6da5">{{appPhrase}}</h5>
+<div class="container">
+    <div class="row">
+        <div class="col-xl-6 col-lg-6 col-md-9 col-sm-12 col-xs-12 col-xl-offset-3 col-lg-offset-3 col-md-offset-3 col-sm-offset-2">
+            <div class="pr-wrap">
+                <div class="pass-reset">
+                    <label>
+                        Enter the email you signed up with</label>
+                    <input type="email" placeholder="Email" />
+                    <input type="submit" value="Submit" class="pass-reset-submit btn btn-success btn-sm" />
+                </div>
+            </div>
+            <div class="wrap">
+                <p class="form-title">
+                    {{appName}}
+                  <div class="form-subtitle"> {{appPhrase}}</div>
+                </p>
+
+
+                <div class="form-login" >
+                  <div class="form-group">
+                    <label class="control-label" >{{$t('Username')}}</label>
+                    <input type="text" v-model="credentials.username"  :placeholder="$t('Username')" />
                   </div>
-                    <br>
-                         <div class="form-group">
-            <q-field icon="person" style="text-align: -webkit-auto;">
-               <q-input v-model="credentials.username"
-                :stack-label="$t('Username')" style="border-bottom: 1px solid;" />
-                </q-field>
-    </div>
-                        <div class="form-group">
-                            <q-field icon="lock_outline" style="text-align: -webkit-auto;">
-                              <q-input v-model="credentials.password"
-                                       type="password"
-                                       :stack-label="$t('Password')"
-                                       @keyup.enter="handleLogin" style="border-bottom: 1px solid;" />
-                            </q-field>
-                        </div>
-                        <p class="text-center">
-                        <q-btn loader
-                             color="white"
-                             style="border: #0E6DA5 solid 1px; color: #0e6da5 !important;"
-                             @click="handleLogin">
-                       {{$t('Login')}}
-                        <span slot="loading">Load...</span>
-                      </q-btn>
-                    </p>
-                    <br>
-                    <p class="text-center _new-user"><router-link :to="{ path: 'register' }">{{$t('New user')}}?</router-link></p>
-            <br>
-            <p class="text-center" style="color: grey !important">
-                <!-- react-text: 44 -->Version
-                <!-- /react-text -->
-                <!-- react-text: 45 -->{{fastVersion}}
-                <!-- /react-text -->
-            </p>
-               </div>
+                  <div class="form-group">
+                    <label class="control-label" >{{$t('Password')}}</label>
+                    <input type="password" v-model="credentials.password" :placeholder="$t('Password')" />
+                  </div>
+
+                <input type="submit" :value="$t('Login')" class="btn btn-success btn-sm" @click="handleLogin" />
+                  <br>
+                  <p class="text-center _new-user"><router-link :to="{ path: 'register' }">{{$t('New user')}}?</router-link></p>
+                </div>
             </div>
         </div>
     </div>
-
-  </div>
 </div>
+
 </template>
+
 
 <script>
 import Auth from "modules/Auth/api/Auth";
@@ -65,7 +50,6 @@ export default {
     this.getResources({
       appName: this.$store.state.authStore.appName
     });
-    this.mountPicture();
   },
   components: {
     QField,
@@ -97,61 +81,6 @@ export default {
    */
   methods: {
     ...mapActions(["sendOfflineData", "getResources"]),
-    mountPicture() {
-      var win, doc, img, header, enhancedClass;
-      // Quit early if older browser (e.g. IE8).
-      if (!("addEventListener" in window)) {
-        return;
-      }
-      win = window;
-      doc = win.document;
-      img = new Image();
-      header = doc.querySelector(".post-header");
-      enhancedClass = "post-header-enhanced";
-
-      // Rather convoluted, but parses out the first mention of a background
-      // image url for the enhanced header, even if the style is not applied.
-      var bigSrc = (function() {
-        // Find all of the CssRule objects inside the inline stylesheet
-        var styles = doc.querySelector("style").sheet.cssRules;
-        // Fetch the background-image declaration...
-        var bgDecl = (function() {
-          // ...via a self-executing function, where a loop is run
-          var bgStyle,
-            i,
-            l = styles.length;
-          for (i = 0; i < l; i++) {
-            // ...checking if the rule is the one targeting the
-            // enhanced header.
-            if (
-              styles[i].selectorText &&
-              styles[i].selectorText === "." + enhancedClass
-            ) {
-              // If so, set bgDecl to the entire background-image
-              // value of that rule
-              bgStyle = styles[i].style.backgroundImage;
-              // ...and break the loop.
-              break;
-            }
-          }
-          // ...and return that text.
-          return bgStyle;
-        })();
-        // Finally, return a match for the URL inside the background-image
-        // by using a fancy regex i Googled up, if the bgDecl variable is
-        // assigned at all.
-        return bgDecl && bgDecl.match(/(?:\(['|"]?)(.*?)(?:['|"]?\))/)[1];
-      })();
-
-      // Assign an onLoad handler to the dummy image *before* assigning the src
-      header.className += " " + enhancedClass;
-
-      // Finally, trigger the whole preloading chain by giving the dummy
-      // image its source.
-      if (bigSrc) {
-        img.src = bigSrc;
-      }
-    },
     /**
      * Response to the login method
      * sets the layout for the App ON.
@@ -165,7 +94,6 @@ export default {
       Auth.attempt(this.credentials, this.$store.state.authStore.appURL)
         .then(User => {
           this.$store.dispatch("setUserObject", User);
-          done();
           this.$router.push({
             name: "dashboard"
           });
@@ -173,7 +101,6 @@ export default {
         .catch(error => {
           console.log(error);
           this.logingIn = false;
-          done();
           this.$swal(
             "Wrong Credentials!",
             "Wrong username or password...try again",

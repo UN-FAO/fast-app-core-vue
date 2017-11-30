@@ -19,8 +19,8 @@ exports.FAST_VERSION = '0.4.5'
 | forms asociated with it.
 |
 */
-exports.APP_URL = 'https://dghnmpjfioshlsx.form.io'
-exports.APP_NAME = 'dghnmpjfioshlsx'
+exports.APP_URL = 'https://uiorzjzflxyccmo.form.io'
+exports.APP_NAME = 'uiorzjzflxyccmo'
 /*
 |--------------------------------------------------------------------------
 | APP CONFIGURATION
@@ -31,8 +31,8 @@ exports.APP_NAME = 'dghnmpjfioshlsx'
 | in the app.
 |
 */
-exports.APP_FANTACY_NAME = 'FAST DEV'
-exports.APP_PHRASE = 'Development Environment for FAST'
+exports.APP_FANTACY_NAME = 'SHARP+'
+exports.APP_PHRASE = 'Self-evaluation and Holistic Assessment of climate resilence of Farmers and Pastoralists'
 /*
 |--------------------------------------------------------------------------
 | MD5 KEY

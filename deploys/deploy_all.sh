@@ -23,6 +23,7 @@ DEPLOY_APP_NAME=$(cat package.json \
 	DESCRIPTION="Collection application for Form.io"
 ###################################################
 quasar build
+npm run es5
 sh ./deploys/cordova/deploy_all.sh && \
 sh ./deploys/electron/deploy_all.sh && \
 sh ./deploys/web/deploy_all.sh && \

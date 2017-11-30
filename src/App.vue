@@ -12,7 +12,7 @@
     <rightdrawer slot="right"></rightdrawer>
   </template>
   <connection-alert></connection-alert>
-    <router-view :key="$route.path" />
+    <router-view :key="$route.path" v-bind:class="isInsideApp ? 'background-app' : 'background-login' "/>
   </q-layout>
 </template>
 <script>
@@ -103,6 +103,15 @@ export default {
       layoutStore
     };
   },
+  computed: {
+    isInsideApp() {
+        return (
+        this.$route.name !== "login" &&
+        this.$route.name !== "register" &&
+        this.$route.name !== "login_redirect"
+      )
+    }
+  },
   components: {
     leftdrawer,
     rightdrawer,
@@ -117,4 +126,13 @@ export default {
 @import url("../node_modules/bootstrap/dist/css/bootstrap.min.css");
 @import url("../node_modules/formiojs/dist/formio.full.min.css");
 @import url("./assets/css/main.css");
+
+.background-app{
+ background:transparent;
+ height: -webkit-fill-available;
+}
+
+.background-login{
+background:transparent;
+}
 </style>

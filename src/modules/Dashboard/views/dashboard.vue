@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="background:#f3f3f5">
 
     <div class="row">
       <q-card class="col-sm-offset-2 col-md-4 col-md-offset-2 col-lg-4 col-lg-offset-3 col-xl-3" style="margin-top: 30px;">

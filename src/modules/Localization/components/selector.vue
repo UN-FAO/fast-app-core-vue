@@ -1,5 +1,5 @@
 <template>
-<q-btn ref="target" flat="true" style="color: #0e6da5 !important;">
+<q-btn ref="target" flat="true">
     <q-icon name="language" />
   <!-- Direct child of target -->
   <q-popover ref="popover">
