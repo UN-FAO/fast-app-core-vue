@@ -9,7 +9,7 @@
     </author>
     <icon src="www/statics/sharpIcon.png" />
     <platform name="android">
-</platform>
+    </platform>
     <preference name="AndroidExtraFilesystems" value="files,files-external,documents,sdcard,cache,cache-external,assets,root" />
     <preference name="AndroidPersistentFileLocation" value="Compatibility" />
     <content src="index.html" />
