@@ -1,7 +1,7 @@
 {
   "name": "fast",
   "version": "0.5.0",
-  "deployAppName": "DEV",
+  "deployAppName": "SHARP+",
   "description": "A data collection application for FORM.io",
   "author": "Ignacio Cabrera <ignacio.cabrera@fao.org>",
   "scripts": {

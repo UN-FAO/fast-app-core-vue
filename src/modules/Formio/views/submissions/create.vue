@@ -14,7 +14,7 @@
         </q-card-main>
       </q-card>
 
-      <q-card color="white" v-bind:class="getFormClass" style="position:absolute !important;">
+      <q-card color="white" v-bind:class="getFormClass" style="position:inherit !important;">
         <q-card-main>
 
           <q-btn flat @click="togglePages" icon="menu" style="color:black;" v-if="_isWizard"></q-btn>
