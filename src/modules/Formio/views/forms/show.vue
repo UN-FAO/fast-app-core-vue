@@ -171,8 +171,16 @@ export default {
                 if (err) {
                   return console.log(err);
                 }
+                let date = new Date()
+                  .toJSON()
+                  .replace(/-/g, "_")
+                  .replace(/T/g, "_")
+                  .replace(/:/g, "_")
+                  .slice(0, 19);
+
+                let name = "backup_" + date + ".csv";
                 // If browser we have to export it like this
-                self.download(csv, "backup.csv", "text/csv;encoding:utf-8");
+                self.download(csv, name, "text/csv;encoding:utf-8");
                 // If its cordova, we have to export like this
                 // self.DATA2FILE('backup.csv', csv, function (FILE) {
                 //  console.log(FILE)
@@ -192,9 +200,17 @@ export default {
                 record.id = submission.id_submision;
                 json.push(submission.fullSubmission);
               });
+              let date = new Date()
+                .toJSON()
+                .replace(/-/g, "_")
+                .replace(/T/g, "_")
+                .replace(/:/g, "_")
+                .slice(0, 19);
+
+              let name = "backup_" + date + ".json";
               self.download(
                 JSON.stringify(json),
-                "backup.json",
+                name,
                 "text/json;encoding:utf-8"
               );
             },
@@ -323,20 +339,21 @@ export default {
     cordovaDownload(content, fileName, mimeType) {
       let self = this;
       var logOb;
-      window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory, function(
-        dir
-      ) {
-        dir.getFile(
-          fileName,
-          {
-            create: true
-          },
-          function(file) {
-            logOb = file;
-            writeLog(content);
-          }
-        );
-      });
+      window.resolveLocalFileSystemURL(
+        cordova.file.externalDataDirectory,
+        function(dir) {
+          dir.getFile(
+            fileName,
+            {
+              create: true
+            },
+            function(file) {
+              logOb = file;
+              writeLog(content);
+            }
+          );
+        }
+      );
 
       function writeLog(output) {
         if (!logOb) return;
@@ -348,7 +365,9 @@ export default {
           fileWriter.write(blob);
           self.$swal(
             "Exported!",
-            "The file has been exported to: " + cordova.file.externalDataDirectory,
+            "The file has been exported to: " +
+              cordova.file.externalDataDirectory +
+              fileName,
             "success"
           );
         });
