@@ -297,7 +297,6 @@ input.col.q-input-target.text-left:focus {
 
 body {
   font-family: "Open Sans", sans-serif !important;
-  background-color: #f3f3f5;
   color: #333;
   overflow-x: hidden;
 }
@@ -568,7 +567,8 @@ label {
 }
 
 body {
-  background: linear-gradient(to bottom, #43a5c8cc 0, #636fbde6 100%), url("../imgs/loginBig.jpg") fixed;
+  background: linear-gradient(180deg, rgba(67, 165, 200, 0.8), rgba(99, 111, 189, 0.9)),
+  url("../imgs/loginBig.jpg") no-repeat center;
   background-size: cover;
   padding: 0;
   margin: 0;

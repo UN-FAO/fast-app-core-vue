@@ -80,6 +80,7 @@ import {
   QPullToRefresh,
   QSpinnerAudio,
   QTransition,
+  Platform,
   QInnerLoading
 } from "quasar";
 import LocalSubmission from "database/collections/scopes/LocalSubmission";
@@ -160,7 +161,8 @@ export default {
             name: "CSV",
             handler: () => {
               let json = [];
-              _forEach(this.submissions, function(submission) {
+              var self = this;
+              _forEach(self.submissions, function(submission) {
                 let record = submission.fullSubmission;
                 record.id = submission.id_submision;
                 json.push(submission.fullSubmission);
@@ -170,12 +172,12 @@ export default {
                   return console.log(err);
                 }
                 // If browser we have to export it like this
-                this.download(csv, "backup.csv", "text/csv;encoding:utf-8");
+                self.download(csv, "backup.csv", "text/csv;encoding:utf-8");
                 // If its cordova, we have to export like this
                 // self.DATA2FILE('backup.csv', csv, function (FILE) {
                 //  console.log(FILE)
                 // })
-                this.$message("Data Exported");
+                self.$message("Data Exported");
               });
             },
             icon: "document"
@@ -184,12 +186,13 @@ export default {
             name: "JSON",
             handler: () => {
               let json = [];
-              _forEach(this.submissions, function(submission) {
+              var self = this;
+              _forEach(self.submissions, function(submission) {
                 let record = submission.fullSubmission;
                 record.id = submission.id_submision;
                 json.push(submission.fullSubmission);
               });
-              this.download(
+              self.download(
                 JSON.stringify(json),
                 "backup.json",
                 "text/json;encoding:utf-8"
@@ -276,8 +279,19 @@ export default {
         });
     },
     download: function(content, fileName, mimeType) {
+      if (Platform.is.cordova) {
+        this.cordovaDownload(content, fileName, mimeType);
+      } else {
+        this.browserDownload(content, fileName, mimeType);
+      }
+    },
+    browserDownload(content, fileName, mimeType) {
       var a = document.createElement("a");
       mimeType = mimeType || "application/octet-stream";
+      var self = this;
+      let successDownload = function() {
+        self.$swal("Exported!", "The file has been exported.", "success");
+      };
 
       if (navigator.msSaveBlob) {
         // IE10
@@ -287,6 +301,7 @@ export default {
           }),
           fileName
         );
+        successDownload();
       } else if (URL && "download" in a) {
         // html5 A[download]
         a.href = URL.createObjectURL(
@@ -298,9 +313,45 @@ export default {
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
+        successDownload();
       } else {
         location.href =
           "data:application/octet-stream," + encodeURIComponent(content); // only this mime type is supported
+        successDownload();
+      }
+    },
+    cordovaDownload(content, fileName, mimeType) {
+      let self = this;
+      var logOb;
+      window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory, function(
+        dir
+      ) {
+        dir.getFile(
+          fileName,
+          {
+            create: true
+          },
+          function(file) {
+            logOb = file;
+            writeLog(content);
+          }
+        );
+      });
+
+      function writeLog(output) {
+        if (!logOb) return;
+        logOb.createWriter(function(fileWriter) {
+          fileWriter.seek(fileWriter.length);
+          var blob = new Blob([output], {
+            type: mimeType
+          });
+          fileWriter.write(blob);
+          self.$swal(
+            "Exported!",
+            "The file has been exported to: " + cordova.file.externalDataDirectory,
+            "success"
+          );
+        });
       }
     },
     getIconColor: function(row) {
@@ -310,48 +361,6 @@ export default {
         return "danger";
       } else {
         return "success";
-      }
-    },
-    DATA2FILE: function(filename, data, callback) {
-      // default filename
-      var defaultFileName = "export-file.txt";
-
-      if (filename === undefined || filename === null) {
-        filename = defaultFileName;
-      }
-
-      // Request the file system
-      window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, gotFS, fail);
-
-      // Access to filesystem is OK
-      function gotFS(fileSystem) {
-        fileSystem.root.getFile(
-          filename,
-          {
-            create: true
-          },
-          gotFileEntry,
-          fail
-        );
-      }
-
-      // File is ready
-      function gotFileEntry(fileEntry) {
-        fileEntry.createWriter(gotFileWriter, fail);
-      }
-
-      // Write file content
-      function gotFileWriter(writer) {
-        writer.onwriteend = function(evt) {
-          if (callback !== undefined) {
-            callback(writer);
-          }
-        };
-        writer.write(data);
-      }
-
-      function fail(error) {
-        console.log("Error: ", error.code);
       }
     },
     humanizeDate(givenDate) {

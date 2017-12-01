@@ -1,6 +1,6 @@
 <template>
 <q-btn ref="target" flat="true">
-    <q-icon name="language" />
+    <q-icon name="language" v-bind:class="isInsideApp ? 'color-primary' : 'color-white' " />
   <!-- Direct child of target -->
   <q-popover ref="popover">
     <q-list item-separator link>
@@ -71,6 +71,15 @@ export default {
         { code: "fr", direction: "ltr", label: "Francais" }
       ]
     };
+  },
+  computed: {
+    isInsideApp() {
+        return (
+        this.$route.name !== "login" &&
+        this.$route.name !== "register" &&
+        this.$route.name !== "login_redirect"
+      )
+    }
   },
   methods: {
     async getTranslations() {

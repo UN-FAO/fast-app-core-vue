@@ -24,7 +24,8 @@ module.exports = {
     'DEV': true,
     'PROD': true,
     '__THEME': true,
-    'sms': true
+    'sms': true,
+    'logOb':true
   },
   // add your custom rules here
   'rules': {
