@@ -331,8 +331,19 @@ export default {
         document.body.removeChild(a);
         successDownload();
       } else {
-        location.href =
-          "data:application/octet-stream," + encodeURIComponent(content); // only this mime type is supported
+          fileContent = "data:" + mimeType + "," + content;
+            encodedUri = encodeURI(fileContent);
+            link = document.createElement("a");
+            link.id =  "_downloadedFile";
+            if (link.download !== undefined) {
+                link.href = encodedUri;
+                link.download =   fileName;
+                link.target = "_blank";
+                document.body.appendChild(link);
+                link.click();
+            } else {
+                window.open(encodedUri);
+            }
         successDownload();
       }
     },
