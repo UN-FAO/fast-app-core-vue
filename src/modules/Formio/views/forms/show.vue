@@ -33,7 +33,7 @@
 
               </el-table-column>
 
-              <el-table-column :label="$t('translations.app_created_at')" prop="Humancreated" sortable fixed="left" width="140">
+              <el-table-column :label="$t('Created at')" prop="Humancreated" sortable fixed="left" width="140">
               </el-table-column>
 
               <el-table-column fixed="right" label="Actions" width="120">
@@ -331,9 +331,9 @@ export default {
         document.body.removeChild(a);
         successDownload();
       } else {
-        fileContent = "data:" + mimeType + "," + content;
-        encodedUri = encodeURI(fileContent);
-        link = document.createElement("a");
+        let fileContent = "data:" + mimeType + "," + content;
+        let encodedUri = encodeURI(fileContent);
+        let link = document.createElement("a");
         link.id = "_downloadedFile";
         if (link.download !== undefined) {
           link.href = encodedUri;
@@ -420,7 +420,7 @@ export default {
     getRowActionsDef() {
       let self = this;
       return {
-        label: self.$t("translations.app_actions"),
+        label: self.$t("Actions"),
         def: [
           /* TODO
             Uncomment this and finish when CORS are available
