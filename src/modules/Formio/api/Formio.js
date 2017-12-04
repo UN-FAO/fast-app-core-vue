@@ -574,6 +574,35 @@ const Formio = class {
    * @param  {[type]} baseUrl     [description]
    * @return {Promise}             [description]
    */
+  static adminAuth(credentials, baseUrl) {
+    return new Promise((resolve, reject) => {
+      Loading.show({
+        message: 'Login admin in...'
+      })
+      let url = baseUrl + '/admin/login'
+      AXIOS.post(url, {
+        data: {
+          email: credentials.username,
+          password: credentials.password
+        }
+      })
+        .then(response => {
+          Loading.hide()
+          resolve(response)
+        })
+        .catch((error) => {
+          Loading.hide()
+          reject(error)
+        })
+    })
+  }
+
+  /**
+   * [userAuth description]
+   * @param  {[type]} credentials [description]
+   * @param  {[type]} baseUrl     [description]
+   * @return {Promise}             [description]
+   */
   static userAuth(credentials, baseUrl) {
     return new Promise((resolve, reject) => {
       Loading.show({

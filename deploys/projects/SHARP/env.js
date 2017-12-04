@@ -32,7 +32,7 @@ exports.APP_NAME = 'uiorzjzflxyccmo'
 |
 */
 exports.APP_FANTACY_NAME = 'SHARP+'
-exports.APP_PHRASE = 'Self-evaluation and Holistic Assessment of climate resilence of Farmers and Pastoralists'
+exports.APP_PHRASE = 'Self-evaluation and Holistic Assessment of climate Resilence of Farmers and Pastoralists'
 /*
 |--------------------------------------------------------------------------
 | MD5 KEY

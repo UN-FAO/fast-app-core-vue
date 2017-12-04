@@ -1,5 +1,5 @@
 <template>
-  <q-pull-to-refresh :handler="reloadPage">
+
     <div class="row FormioContainer">
 
       <q-card style="background-color: white; max-height: fit-content;" class="col-lg-3  col-md-3 col-sm-3" v-if="_isWizard && showPages">
@@ -64,7 +64,7 @@
                 </q-fixed-position>
               -->
     </div>
-  </q-pull-to-refresh>
+
 </template>
 <script>
 import _debounce from "lodash/debounce";

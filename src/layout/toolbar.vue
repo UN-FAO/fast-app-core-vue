@@ -1,5 +1,5 @@
 <template>
-
+<div>
   <q-toolbar style="-webkit-app-region: drag; -webkit-user-select: none;" v-bind:class="isInsideApp ? 'nav-white' : 'nav-transparent' ">
     <q-ajax-bar color="white"></q-ajax-bar>
     <q-btn flat @click="openLeftDrawer()" v-if="isInsideApp"
@@ -10,7 +10,7 @@
       {{ appName }}
     </q-toolbar-title>
     <div v-if="isInsideApp" class="color-primary">
-      {{userEmail}}
+      {{userEmail()}}
     </div>
     <localization/>
     <wifiDisplay/>
@@ -18,31 +18,28 @@
     <q-btn flat @click="openRightDrawer()" v-if="isInsideApp" v-bind:class="isInsideApp ? 'color-primary' : 'color-white' ">
       <q-icon name="menu" />
     </q-btn>
-    <!--
-    <q-btn flat @click="handleLogout()" v-if="$route.name !== 'login' && $route.name !== 'register' && $route.name !== 'login_redirect'  ">
-        <q-icon name="ion-log-out" />
-    </q-btn>
-  -->
 
   </q-toolbar>
+
+</div>
 </template>
 
 
 <style>
 .nav-white {
-  background: white !important;
+  background: white;
 }
 
 .nav-transparent {
-  background: transparent !important;
+  background: transparent;
 }
 
-.color-white{
-  color:white
+.color-white {
+  color: white;
 }
 
-.color-primary{
-  color:#186EA3
+.color-primary {
+  color: rgb(14, 109, 165);
 }
 </style>
 
@@ -64,25 +61,25 @@ export default {
     wifiDisplay
   },
   computed: {
-    userEmail() {
-      return this.User ? this.User.data.email : "";
-    },
     isInsideApp() {
-        return (
+      return (
         this.$route.name !== "login" &&
         this.$route.name !== "register" &&
-        this.$route.name !== "login_redirect"
-      )
+        this.$route.name !== "login_redirect" &&
+        this.$route.name !== "adminLogin"
+      );
     }
   },
   data() {
     return {
-      User: Auth.user(),
       appName: APP_FANTACY_NAME
     };
   },
   methods: {
     ...mapMutations(["setLayoutNeeded", "setIsLoginPage"]),
+    userEmail() {
+        return Auth.userEmail()
+    },
     openLeftDrawer() {
       this.$eventHub.$emit("openLeftDrawer");
     },

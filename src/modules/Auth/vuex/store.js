@@ -99,12 +99,10 @@ const actions = {
 
     //  check if user is already present in local storage
     if (isUserAlreadyStored) {
-      console.log('user Already exisits', user)
       user.data = formIoUser
       //  update the user with the updated information
       LocalUser.update(user)
     } else {
-      console.log('user doesnt exisits', user)
       //  Insert the new user
       await LocalUser.insert({
         data: formIoUser

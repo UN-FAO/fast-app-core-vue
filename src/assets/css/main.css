@@ -565,11 +565,22 @@ label {
 .checkbox-inline {
   margin-left: 10px !important;
 }
+.background-app {
+  background: #F2F6FA
+  /*background: white;*/
 
+
+
+}
+
+  .background-login,
 body {
-  background: linear-gradient(180deg, rgba(67, 165, 200, 0.8), rgba(99, 111, 189, 0.9)),
-  url("../imgs/loginBig.jpg") no-repeat center;
+
+  background: linear-gradient(180deg, rgba(67, 165, 200, 0.8), rgba(99, 111, 189, 0.9)), url("../imgs/loginBig.jpg") no-repeat center;
   background-size: cover;
+
+}
+body {
   padding: 0;
   margin: 0;
 }
@@ -747,4 +758,25 @@ background: transparent
 .pass-reset input[type="submit"]:hover {
   transition: background-color 0.5s ease;
 }
+
+.q-if-control {
+  cursor: pointer;
+  margin-left: 8px;
+  color: white;
+  font-size: 24px;
+}
+
+.q-if-label.ellipsis.full-width.absolute.self-start.q-if-label-above {
+  font-size: large !important;
+  font-weight: 350 !important;
+  color: white;
+}
+
+.segment-title {
+  font-size: 20px;
+  color: white;
+  text-align: -webkit-center;
+  text-transform: uppercase;
+}
+
 

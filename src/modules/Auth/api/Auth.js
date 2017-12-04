@@ -60,9 +60,11 @@ const Auth = class {
    * @param  {[type]}   credentials [description]
    * @return {Promise}   callback    [description]
    */
-  static attempt(credentials, baseUrl) {
+  static attempt(credentials, baseUrl, role) {
+    role = role || 'user'
+
     return new Promise((resolve, reject) => {
-      this.authenticate(credentials, baseUrl)
+      this.authenticate(credentials, baseUrl, role)
         // If credentials are OK
         .then((response) => {
           Loading.hide()
@@ -91,10 +93,19 @@ const Auth = class {
    * @param  {[type]} credentials [description]
    * @return {Promise}             [description]
    */
-  static authenticate(credentials, baseUrl) {
+  static authenticate(credentials, baseUrl, role) {
     let isOnline = Connection.isOnline()
+
+    if (role === 'admin') {
+      if (isOnline) {
+        return this.remoteAuthenticate(credentials, baseUrl, role)
+          .catch(() => {
+            console.log('Remote Auth failed, trying locally')
+          })
+      }
+    }
     if (isOnline) {
-      return this.remoteAuthenticate(credentials, baseUrl)
+      return this.remoteAuthenticate(credentials, baseUrl, role)
         .catch(() => {
           console.log('Remote Auth failed, trying locally')
           return this.localAuthenticate(credentials, baseUrl)
@@ -109,10 +120,23 @@ const Auth = class {
    * @param  {[type]} baseUrl     [description]
    * @return {[type]}             [description]
    */
-  static remoteAuthenticate(credentials, baseUrl) {
+  static remoteAuthenticate(credentials, baseUrl, role) {
     Loading.show({
       message: 'Authenticating to Formio..'
     })
+
+    if (role === 'admin') {
+      return Formio.adminAuth(credentials, baseUrl)
+        .then((response) => {
+          // Store locally the user for future offline login
+          let user = response.data
+          store.dispatch('storeUserLocally', user)
+          return response
+        })
+        .catch((error) => {
+          console.log('Error from remote auth', error)
+        })
+    }
 
     return Formio.userAuth(credentials, baseUrl)
       .then((response) => {

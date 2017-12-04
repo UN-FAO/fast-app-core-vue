@@ -77,7 +77,8 @@ export default {
         return (
         this.$route.name !== "login" &&
         this.$route.name !== "register" &&
-        this.$route.name !== "login_redirect"
+        this.$route.name !== "login_redirect" &&
+        this.$route.name !== "adminLogin"
       )
     }
   },

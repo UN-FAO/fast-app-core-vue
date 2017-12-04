@@ -1,5 +1,5 @@
 <template>
-  <div style="background:#f3f3f5">
+  <div>
 
     <div class="row">
       <q-card class="col-sm-offset-2 col-md-4 col-md-offset-2 col-lg-4 col-lg-offset-3 col-xl-3" style="margin-top: 30px;">
@@ -8,7 +8,7 @@
         <q-card-main @click="$router.push({name: 'newSurvey'})" style="cursor: pointer;">
           <!--<q-icon name="fa-plus-square-o fa-5x" />-->
           <q-icon class="material-icons">playlist_add</q-icon>
-          <h1 style="color: rgb(14, 109, 165)">{{$t("Surveys") }}</h1>
+          <h1 style="color: rgb(14, 109, 165)">{{$t("Start survey") }}</h1>
 
           <q-list style="border: none; padding: 0;">
             <!--

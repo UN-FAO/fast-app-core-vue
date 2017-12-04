@@ -25,7 +25,7 @@
                                 :submission="submission"
                         />
                     <br>
-                <p class="text-center _new-user"><router-link :to="{ path: 'login' }">Back to login</router-link></p>
+                <p class="text-center _new-user"><router-link :to="{ path: 'login' }">{{$t('Back to login')}}</router-link></p>
                 </div>
             </div>
         </div>

@@ -19,7 +19,7 @@
 
                 <div class="form-login" >
                   <div class="form-group">
-                        <div class="segment-title">User Login</div>
+                        <div class="segment-title">Admin Login</div>
                     <q-field >
                     <q-input v-model="credentials.username"
                     :stack-label="$t('Username')" :placeholder="$t('Username')" />
@@ -40,8 +40,7 @@
                   <br>
                   <p class="text-center _new-user"><router-link :to="{ path: 'register' }">{{$t('New user')}}?</router-link></p>
                   <p class="text-center" style="color: grey !important">
-                    Version   {{fastVersion}}
-                    <q-icon name="fa-cog" color="white" @click="adminLogin" style="cursor:pointer;"/>
+                    Version   {{fastVersion}} <q-icon style="cursor:pointer;" name="fa-arrow-circle-left" color="white" @click="userLogin" />
                   </p>
 
                 </div>
@@ -105,7 +104,7 @@ export default {
       this.credentials.password = this.credentials.password.trim();
       this.credentials.username = this.credentials.username.trim();
       // Try to authenticate the User
-      Auth.attempt(this.credentials, this.$store.state.authStore.appURL)
+      Auth.attempt(this.credentials, this.$store.state.authStore.appURL, 'admin')
         .then(User => {
           this.$store.dispatch("setUserObject", User);
           this.$router.push({
@@ -122,11 +121,12 @@ export default {
           );
         });
     },
-    adminLogin() {
+    userLogin() {
       this.$router.push({
-        name: "adminLogin"
+        name: "login"
       });
     }
+
   }
 };
 </script>

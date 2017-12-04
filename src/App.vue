@@ -5,6 +5,7 @@
     :left-breakpoint="layoutStore.leftBreakpoint"
     :right-breakpoint="layoutStore.rightBreakpoint"
     :reveal="layoutStore.reveal"
+    v-bind:class="isInsideApp ? 'background-app' : 'background-login' "
   >
   <toolbar slot="header"></toolbar>
   <template v-if="$route.name !== 'login' && $route.name !== 'register' && $route.name !== 'login_redirect'  ">
@@ -112,7 +113,8 @@ export default {
       return (
         this.$route.name !== "login" &&
         this.$route.name !== "register" &&
-        this.$route.name !== "login_redirect"
+        this.$route.name !== "login_redirect" &&
+        this.$route.name !== "adminLogin"
       );
     }
   },
@@ -131,12 +133,4 @@ export default {
 @import url("../node_modules/formiojs/dist/formio.full.min.css");
 @import url("./assets/css/main.css");
 
-.background-app {
-  background: transparent;
-  height: -webkit-fill-available;
-}
-
-.background-login {
-  background: transparent;
-}
 </style>
