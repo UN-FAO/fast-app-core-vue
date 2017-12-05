@@ -86,17 +86,16 @@ const Auth = class {
           // Save auth user
           LocalStorage.set('authUser', JSON.stringify(user))
 
-            // user.isAdmin = true
-            let roles = await Formio.getRoles();
-            console.log('rewrerwe', roles)
-            user.rolesNames = [];
-            _forEach(roles, async role => {
-              LocalRoles.updateOrCreate(role);
-              if (user.roles && user.roles.indexOf(role._id) !== -1) {
-                user.rolesNames.push(role)
-              }
-            });
-            LocalStorage.set('authUser', JSON.stringify(user))
+          // user.isAdmin = true
+          let roles = await Formio.getRoles();
+          user.rolesNames = [];
+          _forEach(roles, async role => {
+            LocalRoles.updateOrCreate(role);
+            if (user.roles && user.roles.indexOf(role._id) !== -1) {
+              user.rolesNames.push(role)
+            }
+          });
+          LocalStorage.set('authUser', JSON.stringify(user))
 
           resolve(user)
         })

@@ -1,5 +1,7 @@
 import * as Database from 'database/Database'
 import uuidv4 from 'uuid/v4'
+import FormioUtils from "formiojs/utils";
+import _forEach from 'lodash/forEach'
 
 const LocalForm = class {
   static async getModel() {
@@ -66,6 +68,48 @@ const LocalForm = class {
     const model = await LocalForm.getModel()
     let allForms = await model.find()
     return allForms
+  }
+
+  static async getAllLabels() {
+    let forms = await LocalForm.find();
+    let labels = []
+    _forEach(forms, form => {
+      FormioUtils.eachComponent(form.data.components, (component) => {
+        if (component.label) {
+          labels.push(component.label)
+        }
+        if (component.values) {
+          _forEach(component.values, value => {
+            if (value.label) {
+              labels.push(value.label)
+            }
+          })
+        }
+
+        if (component.type === 'htmlelement') {
+          labels.push(component.content)
+        }
+
+        if (component.type === 'select') {
+          if (component.data && component.data.values) {
+            _forEach(component.data.values, value => {
+              if (value.label) {
+                labels.push(value.label)
+              }
+            })
+          }
+        }
+      });
+    })
+    let totalLabels = Array.from(new Set(labels)).sort();
+    let labelsArray = []
+    _forEach(totalLabels, uniqueLabel => {
+      let translation = []
+      translation.push(uniqueLabel)
+
+      labelsArray.push(translation)
+    })
+    return labelsArray;
   }
 }
 export default LocalForm
