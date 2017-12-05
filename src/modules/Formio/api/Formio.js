@@ -581,11 +581,11 @@ const Formio = class {
       })
       let url = baseUrl + '/admin/login'
       AXIOS.post(url, {
-        data: {
-          email: credentials.username,
-          password: credentials.password
-        }
-      })
+          data: {
+            email: credentials.username,
+            password: credentials.password
+          }
+        })
         .then(response => {
           Loading.hide()
           resolve(response)
@@ -670,19 +670,8 @@ const Formio = class {
    * @return {[type]}           [description]
    */
   static getRoles(projectId) {
-    let url = 'https://api.form.io/project/59b112c7678919000775f921/role'
-    return new Promise((resolve, reject) => {
-      axios.get(url)
-        .then(response => {
-          let roles = response.data
-          resolve(roles)
-          Loading.hide()
-        })
-        .catch((error) => {
-          Loading.hide()
-          reject(error)
-        })
-    })
+    var roles = require('./roles.json');
+    return roles
   }
 
   /**

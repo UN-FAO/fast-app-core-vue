@@ -86,9 +86,9 @@ const Auth = class {
           // Save auth user
           LocalStorage.set('authUser', JSON.stringify(user))
 
-          if (role === 'admin') {
-            user.isAdmin = true
+            // user.isAdmin = true
             let roles = await Formio.getRoles();
+            console.log('rewrerwe', roles)
             user.rolesNames = [];
             _forEach(roles, async role => {
               LocalRoles.updateOrCreate(role);
@@ -97,7 +97,7 @@ const Auth = class {
               }
             });
             LocalStorage.set('authUser', JSON.stringify(user))
-          }
+
           resolve(user)
         })
         // If there are errors

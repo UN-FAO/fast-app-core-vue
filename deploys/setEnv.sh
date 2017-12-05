@@ -10,6 +10,11 @@ YELLOW='\033[1;33m'
 node ./node_modules/json/lib/json.js -I -f package.json -e "this.deployAppName='${2}'"
 
 ###################################################
+# Set the current App ID in Package.json
+#
+node ./node_modules/json/lib/json.js -I -f package.json -e "this.deployAppID='${3}'"
+
+###################################################
 # Copy the projects image into their dev locations
 #
   rm -rf ./src/assets/imgs/loginBig.jpg

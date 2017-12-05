@@ -22,6 +22,8 @@ DEPLOY_APP_NAME=$(cat package.json \
 	AUTHOR="Ignacio Cabrera <ignacio.cabrera@fao.org>"
 	DESCRIPTION="Collection application for Form.io"
 ###################################################
+
+sh ./deploys/getAppRoles.sh
 quasar build
 npm run es5
 sh ./deploys/cordova/deploy_all.sh && \
