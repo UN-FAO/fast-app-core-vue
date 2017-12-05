@@ -71,6 +71,7 @@ const _create = function () {
       var forms = db.getCollection("forms");
       var translations = db.getCollection("translations");
       var users = db.getCollection("users");
+      var roles = db.getCollection("roles");
 
       if (submissions === null) {
         db.addCollection("submissions")
@@ -87,6 +88,10 @@ const _create = function () {
       if (users === null) {
         db.addCollection("users");
       }
+      if (roles === null) {
+        db.addCollection("roles");
+      }
+
       db.saveDatabase()
       resolve(db)
     }

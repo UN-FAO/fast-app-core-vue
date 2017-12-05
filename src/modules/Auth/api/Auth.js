@@ -11,6 +11,9 @@ import md5 from 'md5'
 import LocalUser from 'database/collections/scopes/LocalUser'
 import store from 'config/store'
 import Connection from 'modules/Wrappers/Connection'
+import LocalRoles from "database/collections/scopes/LocalRoles";
+import _forEach from "lodash/forEach";
+import _find from 'lodash/find'
 
 const Auth = class {
   /**
@@ -32,6 +35,13 @@ const Auth = class {
     return userEmail
   }
 
+  static hasRole(roleName) {
+    let user = JSON.parse(LocalStorage.get.item('authUser'))
+    user = user === null ? false : user
+    let result = _find(user.fullRoles, 'title', roleName);
+    console.log(user, roleName, result)
+  }
+
   /**
    * Checks if the current user is
    * Authenticated
@@ -47,9 +57,7 @@ const Auth = class {
    */
   static logOut() {
     LocalStorage.remove('authUser')
-    LocalStorage.remove('id_token')
-    LocalStorage.remove('formioToken')
-    LocalStorage.remove('formioUser')
+
     router.push({
       path: '/login'
     })
@@ -66,7 +74,7 @@ const Auth = class {
     return new Promise((resolve, reject) => {
       this.authenticate(credentials, baseUrl, role)
         // If credentials are OK
-        .then((response) => {
+        .then(async(response) => {
           Loading.hide()
           let headers = response.headers || {}
           let user = response.data
@@ -74,9 +82,21 @@ const Auth = class {
 
           // Save auth user
           LocalStorage.set('authUser', JSON.stringify(user))
-          LocalStorage.set('formioToken', headers['x-jwt-token'])
-          LocalStorage.set('formioUser', JSON.stringify(user))
-          LocalStorage.set('id_token', headers['x-jwt-token'])
+
+          if (role === 'admin') {
+            user.isAdmin = true
+            let roles = await Formio.getRoles();
+            let userRoles = [];
+            _forEach(roles, async role => {
+              await LocalRoles.updateOrCreate(role);
+              if (user.roles && user.roles.indexOf(role._id) !== -1) {
+                userRoles.push(role)
+              }
+            });
+            user.fullRoles = userRoles;
+            LocalStorage.set('authUser', JSON.stringify(user))
+            console.log('the user with role is,', user)
+          }
           resolve(user)
         })
         // If there are errors

@@ -8,7 +8,7 @@
     v-bind:class="isInsideApp ? 'background-app' : 'background-login' "
   >
   <toolbar slot="header"></toolbar>
-  <template v-if="$route.name !== 'login' && $route.name !== 'register' && $route.name !== 'login_redirect'  ">
+  <template v-if="$route.name !== 'login' && $route.name !== 'register' && $route.name !== 'login_redirect' && $route.name !== 'adminLogin'   ">
     <leftdrawer slot="left"></leftdrawer>
     <rightdrawer slot="right"></rightdrawer>
   </template>

@@ -39,7 +39,7 @@
       <q-item-main :label="$t('Collected Data')" />
     </q-side-link>
 
-    <q-side-link multiline highlight item :to="{name: 'b', params: { idForm: 'idform'}}" :key="Setting">
+    <q-side-link v-if="isAdmin()" multiline highlight item :to="{name: 'b', params: { idForm: 'idform'}}" :key="Setting">
       <q-item-side icon="fa-cog" />
       <q-item-main :label="$t('Application Settings')"/>
     </q-side-link>
@@ -92,14 +92,28 @@
   </q-scroll-area>
 </template>
 <script>
-  import {
-    mapMutations,
-    mapState,
-    mapActions
-  } from "vuex";
-  import Auth from "modules/Auth/api/Auth";
-  import LocalForm from "database/collections/scopes/LocalForm";
-  import {
+import { mapMutations, mapState, mapActions } from "vuex";
+import Auth from "modules/Auth/api/Auth";
+import LocalForm from "database/collections/scopes/LocalForm";
+import {
+  QScrollArea,
+  QSideLink,
+  QItemTile,
+  QItemSide,
+  QItemMain,
+  QListHeader,
+  QCollapsible,
+  QBtn,
+  QIcon,
+  QTooltip,
+  QList,
+  QItem,
+  QItemSeparator
+} from "quasar";
+import layoutStore from "./layout-store";
+import { FAST_VERSION, APP_FANTACY_NAME } from "config/env";
+export default {
+  components: {
     QScrollArea,
     QSideLink,
     QItemTile,
@@ -113,68 +127,49 @@
     QList,
     QItem,
     QItemSeparator
-  } from "quasar";
-  import layoutStore from "./layout-store";
-  import {
-    FAST_VERSION,
-    APP_FANTACY_NAME
-  } from "config/env";
-  export default {
-    components: {
-      QScrollArea,
-      QSideLink,
-      QItemTile,
-      QItemSide,
-      QItemMain,
-      QListHeader,
-      QCollapsible,
-      QBtn,
-      QIcon,
-      QTooltip,
-      QList,
-      QItem,
-      QItemSeparator
-    },
-    mounted: async function () {
-      LocalForm.sAll(this, "forms");
-    },
-    data() {
-      return {
-        forms: [],
-        subscriptions: [],
-        layoutStore,
-        fastVersion: FAST_VERSION,
-        appName: APP_FANTACY_NAME
-      };
-    },
-    computed: {
-      ...mapState({
-        User: state => state.authStore.authUser
-      }),
-      isOnline() {
-        return this.$root.VueOnline;
-      }
-    },
-    methods: {
-      ...mapActions(["getResources"]),
-      /**
+  },
+  mounted: async function() {
+    LocalForm.sAll(this, "forms");
+  },
+  data() {
+    return {
+      forms: [],
+      subscriptions: [],
+      layoutStore,
+      fastVersion: FAST_VERSION,
+      appName: APP_FANTACY_NAME
+    };
+  },
+  computed: {
+    ...mapState({
+      User: state => state.authStore.authUser
+    }),
+    isOnline() {
+      return this.$root.VueOnline;
+    }
+  },
+  methods: {
+    ...mapActions(["getResources"]),
+    /**
        * Map layout methods for the theme
        */
-      ...mapMutations(["setLayoutNeeded", "setIsLoginPage"]),
-      closeDrawer() {
-        this.$refs.leftDrawer.close();
-      },
-      getForms() {
-        this.getResources({
-          appName: this.$store.state.authStore.appName
-        });
-      },
-      handleLogout() {
-        this.$eventHub.$emit("openLeftDrawer");
-        this.$store.dispatch("clearAuthUser");
-        Auth.logOut();
-      }
+    ...mapMutations(["setLayoutNeeded", "setIsLoginPage"]),
+    closeDrawer() {
+      this.$refs.leftDrawer.close();
+    },
+    getForms() {
+      this.getResources({
+        appName: this.$store.state.authStore.appName
+      });
+    },
+    handleLogout() {
+      this.$eventHub.$emit("openLeftDrawer");
+      this.$store.dispatch("clearAuthUser");
+      Auth.logOut();
+    },
+    isAdmin() {
+      return Auth.hasRole("Administrator");
     }
-  };
-
+  }
+};
 </script>

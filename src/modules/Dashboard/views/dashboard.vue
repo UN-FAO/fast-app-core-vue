@@ -148,11 +148,9 @@ import {
 // import LocalForm from 'database/collections/scopes/LocalForm'
 import _sortBy from "lodash/sortBy";
 import { APP_FANTACY_NAME } from "config/env";
+
 export default {
   name: "card",
-  mounted: async function() {
-    // LocalForm.sAll(this, 'forms')
-  },
   components: {
     QCard,
     QCardTitle,
@@ -176,23 +174,10 @@ export default {
   },
   data: () => {
     return {
-      flipped0: "card",
-      flipped1: "card",
-      flipped2: "card",
-      flipped3: "card",
       forms: [],
       subscriptions: [],
       appName: APP_FANTACY_NAME
     };
-  },
-  methods: {
-    toggleFlip(n) {
-      if (this["flipped" + n] === "card") {
-        this["flipped" + n] = "card flipped";
-      } else {
-        this["flipped" + n] = "card";
-      }
-    }
   },
   computed: {
     // a computed getter

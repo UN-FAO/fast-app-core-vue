@@ -12,7 +12,6 @@ html {
   height: 100%;
 }
 
-
 .FormioContainer {
   background: #f1f5f9;
   min-height: 1600px;
@@ -23,7 +22,7 @@ header.post-header.post-header-enhanced {
 }
 
 .q-toolbar {
-  background:transparent;
+  background: transparent;
 }
 
 .panel-primary>.panel-heading {
@@ -304,7 +303,6 @@ body {
 body,
 html {
   height: 100%;
-
 }
 
 .bigAppName {
@@ -565,21 +563,18 @@ label {
 .checkbox-inline {
   margin-left: 10px !important;
 }
+
 .background-app {
   background: #F2F6FA
   /*background: white;*/
-
-
-
 }
 
-  .background-login,
+.background-login,
 body {
-
   background: linear-gradient(180deg, rgba(67, 165, 200, 0.8), rgba(99, 111, 189, 0.9)), url("../imgs/loginBig.jpg") no-repeat center;
   background-size: cover;
-
 }
+
 body {
   padding: 0;
   margin: 0;
@@ -691,8 +686,8 @@ p.form-title {
   color: #2ecc71;
 }
 
-.form-login .panel{
-background: transparent
+.form-login .panel {
+  background: transparent
 }
 
 .pr-wrap {
@@ -779,4 +774,6 @@ background: transparent
   text-transform: uppercase;
 }
 
-
+  .formContainer div[role="alert"] {
+  display: none;
+}

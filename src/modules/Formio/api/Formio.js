@@ -670,9 +670,19 @@ const Formio = class {
    * @return {[type]}           [description]
    */
   static getRoles(projectId) {
-    let roles = []
-    // url = 'https://api.form.io/project/' + projectId + '/role'
-    return roles
+    let url = 'https://api.form.io/project/59b112c7678919000775f921/role'
+    return new Promise((resolve, reject) => {
+      axios.get(url)
+        .then(response => {
+          let roles = response.data
+          resolve(roles)
+          Loading.hide()
+        })
+        .catch((error) => {
+          Loading.hide()
+          reject(error)
+        })
+    })
   }
 
   /**

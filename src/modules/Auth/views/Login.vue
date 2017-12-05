@@ -2,24 +2,16 @@
 <div class="container">
     <div class="row">
         <div class="col-xl-6 col-lg-6 col-md-9 col-sm-12 col-xs-12 col-xl-offset-3 col-lg-offset-3 col-md-offset-3 col-sm-offset-2">
-            <div class="pr-wrap">
-                <div class="pass-reset">
-                    <label>
-                        Enter the email you signed up with</label>
-                    <input type="email" placeholder="Email" />
-                    <input type="submit" value="Submit" class="pass-reset-submit btn btn-success btn-sm" />
-                </div>
-            </div>
             <div class="wrap">
                 <p class="form-title">
-                    {{appName}}
-                  <div class="form-subtitle"> {{appPhrase}}</div>
+                     {{$t(appName)}}
+                  <div class="form-subtitle"> {{$t(appPhrase)}}</div>
                 </p>
 
 
                 <div class="form-login" >
                   <div class="form-group">
-                        <div class="segment-title">User Login</div>
+                        <div class="segment-title">{{$t('User Login')}}</div>
                     <q-field >
                     <q-input v-model="credentials.username"
                     :stack-label="$t('Username')" :placeholder="$t('Username')" />
@@ -40,7 +32,7 @@
                   <br>
                   <p class="text-center _new-user"><router-link :to="{ path: 'register' }">{{$t('New user')}}?</router-link></p>
                   <p class="text-center" style="color: grey !important">
-                    Version   {{fastVersion}}
+                    {{$t('Version')}}   {{fastVersion}}
                     <q-icon name="fa-cog" color="white" @click="adminLogin" style="cursor:pointer;"/>
                   </p>
 
@@ -57,9 +49,8 @@ import Auth from "modules/Auth/api/Auth";
 import { QField, QInput, QBtn, QIcon } from "quasar";
 import { FAST_VERSION, APP_FANTACY_NAME, APP_PHRASE } from "config/env";
 import { mapActions } from "vuex";
-
 export default {
-  mounted() {
+  async mounted() {
     this.getResources({
       appName: this.$store.state.authStore.appName
     });
