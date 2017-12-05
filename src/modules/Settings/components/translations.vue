@@ -13,9 +13,9 @@ export default {
       root: "hotTable",
       hotSettings: {
         data: [],
-        colHeaders: ["English Label", "Spanish Label", "French Label"],
+        colHeaders: [],
         stretchH: "all",
-        autoWrapRow: true,
+        autoWrapRow: false,
         rowHeaders: true,
         columnSorting: true,
         sortIndicator: true,
@@ -28,10 +28,11 @@ export default {
         manualColumnResize: true,
         manualRowMove: true,
         manualColumnMove: true,
-        contextMenu: true,
+        contextMenu: false,
         filters: true,
         dropdownMenu: true,
         cells: function(row, col, prop) {
+          /*
           var cellProperties = {};
 
           if (col === 0) {
@@ -41,6 +42,12 @@ export default {
           }
 
           return cellProperties;
+          */
+        },
+        modifyColWidth: function(width, col) {
+          if (width > 200) {
+            return 150;
+          }
         },
         afterChange: function(changes, source) {
           if (changes && this.getData()) {
@@ -58,17 +65,18 @@ export default {
     };
   },
   async mounted() {
-    console.log(this.$refs.hotTable);
-    let labels = await this.getLabels();
-    this.$refs.hotTable.data = labels;
+    let translations = await this.getLabels();
+    console.log(translations.columns);
+    this.$refs.hotTable.data = translations.labels;
+    this.$refs.hotTable.colHeaders = translations.columns;
   },
   components: {
     HotTable
   },
   methods: {
     async getLabels() {
-      let labels = await LocalForm.getAllLabels();
-      return labels;
+      let translations = await LocalForm.getAllLabels();
+      return translations;
     }
   }
 };

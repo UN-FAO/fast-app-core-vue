@@ -39,7 +39,7 @@
       <q-item-main :label="$t('Collected Data')" />
     </q-side-link>
 
-    <q-side-link v-if="isAdmin()" multiline highlight item :to="{name: 'b', params: { idForm: 'idform'}}" :key="Setting">
+    <q-side-link v-if="isAdmin()" multiline highlight item :to="{name: 'settings'}" :key="settings">
       <q-item-side icon="fa-cog" />
       <q-item-main :label="$t('Application Settings')"/>
     </q-side-link>

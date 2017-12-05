@@ -7,6 +7,7 @@ const Translations = r =>
 let SettingsRoutes = [{
   path: '/settings',
   component: Settings,
+  name: 'settings',
   children: [
     {
       // UserProfile will be rendered inside User's <router-view>

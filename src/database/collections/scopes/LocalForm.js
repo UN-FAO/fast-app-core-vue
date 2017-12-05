@@ -2,6 +2,7 @@ import * as Database from 'database/Database'
 import uuidv4 from 'uuid/v4'
 import FormioUtils from "formiojs/utils";
 import _forEach from 'lodash/forEach'
+import LocalTranslation from 'database/collections/scopes/LocalTranslation'
 
 const LocalForm = class {
   static async getModel() {
@@ -71,6 +72,9 @@ const LocalForm = class {
   }
 
   static async getAllLabels() {
+    let translations = await LocalTranslation.find();
+    translations = translations[0].data
+    console.log('translations are', translations)
     let forms = await LocalForm.find();
     let labels = []
     _forEach(forms, form => {
@@ -102,14 +106,24 @@ const LocalForm = class {
       });
     })
     let totalLabels = Array.from(new Set(labels)).sort();
+    let columnsLabels = []
     let labelsArray = []
+    columnsLabels.push('Primary Label')
     _forEach(totalLabels, uniqueLabel => {
       let translation = []
       translation.push(uniqueLabel)
-
+      _forEach(translations, (language, lenguageCode) => {
+        columnsLabels.push(lenguageCode)
+        translation.push(language[uniqueLabel])
+      })
       labelsArray.push(translation)
     })
-    return labelsArray;
+
+    let totalColumns = Array.from(new Set(columnsLabels));
+    return {
+      labels: labelsArray,
+      columns: totalColumns
+    };
   }
 }
 export default LocalForm
