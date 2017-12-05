@@ -38,8 +38,11 @@ const Auth = class {
   static hasRole(roleName) {
     let user = JSON.parse(LocalStorage.get.item('authUser'))
     user = user === null ? false : user
-    let result = _find(user.fullRoles, 'title', roleName);
-    console.log(user, roleName, result)
+    let result = _find(user.rolesNames, {
+      title: roleName
+    });
+
+    return typeof (result) !== 'undefined'
   }
 
   /**
@@ -86,16 +89,14 @@ const Auth = class {
           if (role === 'admin') {
             user.isAdmin = true
             let roles = await Formio.getRoles();
-            let userRoles = [];
+            user.rolesNames = [];
             _forEach(roles, async role => {
-              await LocalRoles.updateOrCreate(role);
+              LocalRoles.updateOrCreate(role);
               if (user.roles && user.roles.indexOf(role._id) !== -1) {
-                userRoles.push(role)
+                user.rolesNames.push(role)
               }
             });
-            user.fullRoles = userRoles;
             LocalStorage.set('authUser', JSON.stringify(user))
-            console.log('the user with role is,', user)
           }
           resolve(user)
         })
