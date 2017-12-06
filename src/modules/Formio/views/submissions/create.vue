@@ -415,6 +415,12 @@ export default {
         components: errors,
         errorsByPage: groupedErrors
       });
+    },
+    customSubmission() {
+      let submission = require('./sub.json')
+      let customSubmission = this.submission
+      customSubmission.data.data = submission[0]
+      return customSubmission
     }
   }
 };

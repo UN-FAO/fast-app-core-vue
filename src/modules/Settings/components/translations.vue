@@ -1,89 +1,59 @@
 <template>
-   <div id="hot-preview">
-    <HotTable :root="root" :ref="root" :settings="hotSettings"></HotTable>
+<div>
+
+  <div class="translations-action-bar pull-right">
+    <q-btn round color="primary" icon="translate" @click="createTranslations" >
+      <q-tooltip>
+        Create translations
+    </q-tooltip>
+    </q-btn>
   </div>
+  <tstats :stats="translations.stats"> </tstats>
+
+
+  <hottable :translations="translations"></hottable>
+
+</div>
 </template>
 
 <script>
-import HotTable from "vue-handsontable-official";
 import LocalForm from "database/collections/scopes/LocalForm";
+import Localization from "modules/Localization/Localization";
+import { QBtn, QTooltip, Toast } from "quasar";
+import tstats from "./stats";
+import hottable from "./hottable";
+import Promise from "bluebird";
 export default {
   data: function() {
     return {
-      root: "hotTable",
-      hotSettings: {
-        data: [],
-        colHeaders: [],
-        stretchH: "all",
-        autoWrapRow: false,
-        rowHeaders: true,
-        columnSorting: true,
-        sortIndicator: true,
-        autoColumnSize: {
-          samplingRatio: 23
-        },
-        height: 800,
-        renderAllRows: false,
-        manualRowResize: true,
-        manualColumnResize: true,
-        manualRowMove: true,
-        manualColumnMove: true,
-        contextMenu: false,
-        filters: true,
-        dropdownMenu: true,
-        cells: function(row, col, prop) {
-          /*
-          var cellProperties = {};
-
-          if (col === 0) {
-            cellProperties.readOnly = true;
-          } else {
-            cellProperties.readOnly = false;
-          }
-
-          return cellProperties;
-          */
-        },
-        modifyColWidth: function(width, col) {
-          if (width > 200) {
-            return 150;
-          }
-        },
-        afterChange: function(changes, source) {
-          if (changes && this.getData()) {
-            let changedRow = this.getData()[changes[0][0]];
-            let changedLabel = changedRow[0];
-            let changedFrom = changes[0][2];
-            let changedTo = changes[0][3];
-            if (source === "edit" && changedLabel) {
-              console.log(changedLabel);
-              console.log(changedFrom, changedTo);
-            }
-          }
-        }
-      }
+      translations: []
     };
   },
   async mounted() {
-    let translations = await this.getLabels();
-    console.log(translations.columns);
-    this.$refs.hotTable.data = translations.labels;
-    this.$refs.hotTable.colHeaders = translations.columns;
+    this.translations = await LocalForm.getAllLabels();
   },
   components: {
-    HotTable
+    QBtn,
+    QTooltip,
+    tstats,
+    hottable
   },
   methods: {
-    async getLabels() {
-      let translations = await LocalForm.getAllLabels();
-      return translations;
+    createTranslations() {
+      let translations = this.translations.stats.missingTranslations;
+      Promise.each(translations, async function(translation) {
+        if (typeof translation !== "undefined" && translation !== "") {
+          await Localization.createTranslation(translation);
+        }
+      })
+        .then(e => {
+          Toast.create.positive({ html: "TRANSLATIONS CREATED" });
+        })
+        .catch(e => {
+          console.log(e);
+          Toast.create.negative({ html: "TRANSLATIONS FAILED" });
+        });
     }
   }
 };
 </script>
-<style>
-#hotTable {
-  overflow: hidden;
-  color: black !important;
-}
-</style>

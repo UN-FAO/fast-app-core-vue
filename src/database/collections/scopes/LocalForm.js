@@ -72,57 +72,101 @@ const LocalForm = class {
   }
 
   static async getAllLabels() {
+    let stats = {}
+    stats.translations = {}
+    stats.missingTranslations = []
     let translations = await LocalTranslation.find();
     translations = translations[0].data
     console.log('translations are', translations)
     let forms = await LocalForm.find();
-    let labels = []
+    let componentLabels = []
+
+    // Extranct all labels for all available forms
     _forEach(forms, form => {
+      // Go across every component
       FormioUtils.eachComponent(form.data.components, (component) => {
-        if (component.label) {
-          labels.push(component.label)
+        // Find an specific label
+        // if (component.label === 'Main source') {
+        //  console.log('Aquiiiii', component);
+        // }
+
+        // If it has a label
+        if (component.label && component.label !== '') {
+          componentLabels.push(component.label)
         }
+        // If it has values that have labels (radio)
         if (component.values) {
           _forEach(component.values, value => {
-            if (value.label) {
-              labels.push(value.label)
+            if (value.label && value.label !== '') {
+              componentLabels.push(value.label)
             }
           })
         }
-
-        if (component.type === 'htmlelement') {
-          labels.push(component.content)
+        // If it is an HTML element
+        if (component.type === 'htmlelement' && component.content !== '') {
+          componentLabels.push(component.content)
         }
-
+        // If it is a select component
         if (component.type === 'select') {
           if (component.data && component.data.values) {
             _forEach(component.data.values, value => {
-              if (value.label) {
-                labels.push(value.label)
+              if (value.label && value.label !== '') {
+                componentLabels.push(value.label)
               }
             })
           }
         }
       });
     })
-    let totalLabels = Array.from(new Set(labels)).sort();
-    let columnsLabels = []
+    // Clean duplicated labels
+    let uniqueLabels = Array.from(new Set(componentLabels)).sort();
+
+    let columnNames = []
     let labelsArray = []
-    columnsLabels.push('Primary Label')
-    _forEach(totalLabels, uniqueLabel => {
+
+    columnNames.push('Primary Label')
+
+    // Match the labels with local translations
+    _forEach(uniqueLabels, uniqueLabel => {
       let translation = []
+      // let languages = {}
       translation.push(uniqueLabel)
       _forEach(translations, (language, lenguageCode) => {
-        columnsLabels.push(lenguageCode)
+        columnNames.push(lenguageCode)
+        if (typeof (language[uniqueLabel]) !== 'undefined' && language[uniqueLabel] !== "") {
+          // If the language doesn't exist, create it
+          if (!stats.translations[lenguageCode]) {
+            stats.translations[lenguageCode] = {}
+            stats.translations[lenguageCode].total = 0
+          }
+          // Add 1 every time we have a translation
+          stats.translations[lenguageCode].total = stats.translations[lenguageCode].total + 1
+        }
+        // languages[lenguageCode] = language[uniqueLabel]
+        if (typeof (language[uniqueLabel]) === 'undefined' && lenguageCode === 'en') {
+          stats.missingTranslations.push(uniqueLabel)
+        }
         translation.push(language[uniqueLabel])
       })
+      // labelsArray.push(languages)
       labelsArray.push(translation)
     })
 
-    let totalColumns = Array.from(new Set(columnsLabels));
+    // Clean the column Names
+    let uniqueColumsNames = Array.from(new Set(columnNames));
+    stats.missingTranslations = Array.from(new Set(stats.missingTranslations));
+
+    stats.totalTranslations = labelsArray.length
+
+    _forEach(stats.translations, (language, index) => {
+      stats.translations[index].translated = stats.translations[index].total / stats.totalTranslations
+    })
+
+    console.log(stats)
     return {
       labels: labelsArray,
-      columns: totalColumns
+      columns: uniqueColumsNames,
+      stats: stats
     };
   }
 }

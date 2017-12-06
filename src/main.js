@@ -47,6 +47,8 @@ import 'quasar-extras/material-icons'
 import 'quasar-extras/ionicons'
 import 'quasar-extras/fontawesome'
 // import 'quasar-extras/animate'
+import FlagIcon from 'vue-flag-icon'
+Vue.use(FlagIcon);
 
 import Localization from 'modules/Localization/Localization'
 

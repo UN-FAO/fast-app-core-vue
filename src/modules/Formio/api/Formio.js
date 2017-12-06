@@ -694,5 +694,25 @@ const Formio = class {
         })
     })
   }
+  static createTranslation(idMachine, label) {
+    return new Promise((resolve, reject) => {
+      let url = 'https://' + idMachine + '.form.io/translations/submission'
+      axios.post(url, {
+        data: {
+          "en": label
+        }
+      })
+        .then(response => {
+          console.log('translation created!!!', response)
+          let submissions = response.data
+          resolve(submissions)
+          Loading.hide()
+        })
+        .catch((error) => {
+          Loading.hide()
+          reject(error)
+        })
+    })
+  }
 }
 export default Formio
