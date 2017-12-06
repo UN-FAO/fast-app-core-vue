@@ -698,12 +698,54 @@ const Formio = class {
     return new Promise((resolve, reject) => {
       let url = 'https://' + idMachine + '.form.io/translations/submission'
       axios.post(url, {
-        data: {
-          "en": label
-        }
-      })
+          data: {
+            "en": label
+          }
+        })
         .then(response => {
-          console.log('translation created!!!', response)
+          let submissions = response.data
+          resolve(submissions)
+          Loading.hide()
+        })
+        .catch((error) => {
+          Loading.hide()
+          reject(error)
+        })
+    })
+  }
+
+  static setTranslations(idMachine, label, translations) {
+    return new Promise((resolve, reject) => {
+      let url = 'https://' + idMachine + '.form.io/translations/submission?data.en=' + encodeURIComponent(label)
+      axios.get(url)
+        .then(response => {
+          if (response.data && response.data.length > 0) {
+            let submissions = response.data[0]
+            let id = submissions._id
+            Formio.updateTranslation(idMachine, id, translations).then((updatedSubmission) => {
+              resolve(submissions)
+              Loading.hide()
+            })
+            .catch((error) => {
+                Loading.hide()
+                reject(error)
+            })
+          }
+        })
+        .catch((error) => {
+          Loading.hide()
+          reject(error)
+        })
+    })
+  }
+
+  static updateTranslation(idMachine, submissionId, translations) {
+    return new Promise((resolve, reject) => {
+      let url = 'https://' + idMachine + '.form.io/translations/submission/' + submissionId
+      let updateObject = { }
+      updateObject.data = translations
+      axios.put(url, updateObject)
+        .then(response => {
           let submissions = response.data
           resolve(submissions)
           Loading.hide()

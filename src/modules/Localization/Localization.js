@@ -89,8 +89,11 @@ const Localization = class {
    * @return {[type]} [description]
    */
   static async createTranslation(label) {
-    console.log(label)
     return Formio.createTranslation(store.getters.getMachineUrl, label)
+  }
+
+  static async setTranslations(label, translations) {
+    return Formio.setTranslations(store.getters.getMachineUrl, label, translations)
   }
 }
 export default Localization

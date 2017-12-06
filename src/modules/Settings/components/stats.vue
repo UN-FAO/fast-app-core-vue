@@ -55,13 +55,13 @@ export default {
     },
     englishPorcentage() {
        if (this.stats && this.stats.translations) {
-       return Math.round(this.stats.translations.en.translated * 100)
+       return (this.stats.translations.en.translated * 100).toFixed(1);
       }
       return 0
     },
     frenchPorcentage() {
        if (this.stats && this.stats.translations) {
-       return Math.round(this.stats.translations.fr.translated * 100)
+       return (this.stats.translations.fr.translated * 100).toFixed(1);
       }
       return 0
     }

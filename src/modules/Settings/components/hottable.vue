@@ -5,9 +5,12 @@
 </template>
 <script>
 import HotTable from "vue-handsontable-official";
+import Localization from "modules/Localization/Localization";
+import { Toast } from "quasar";
 export default {
   components: {
-    HotTable
+    HotTable,
+    Toast
   },
   name: "hottable",
   props: {
@@ -19,6 +22,12 @@ export default {
     this.$refs.hotTable.data = this.translations.labels;
     this.$refs.hotTable.colHeaders = this.translations.columns;
   },
+  methods: {
+    async updateTranslation(label, translations) {
+      await Localization.setTranslations(label, translations);
+      Toast.create.positive({ html: "TRANSLATION UPDATED" });
+    }
+  },
   watch: {
     translations: function(trans) {
       this.$refs.hotTable.data = trans.labels;
@@ -26,6 +35,7 @@ export default {
     }
   },
   data: function() {
+    let self = this;
     return {
       root: "hotTable",
       hotSettings: {
@@ -49,32 +59,34 @@ export default {
         filters: true,
         dropdownMenu: true,
         cells: function(row, col, prop) {
-          /*
           var cellProperties = {};
-
-          if (col === 0) {
+          if (col === 0 || col === 2) {
             cellProperties.readOnly = true;
           } else {
             cellProperties.readOnly = false;
           }
 
           return cellProperties;
-          */
         },
         modifyColWidth: function(width, col) {
           if (width > 200) {
             return 150;
           }
         },
-        afterChange: function(changes, source) {
+        afterChange: async function(changes, source) {
           if (changes && this.getData()) {
             let changedRow = this.getData()[changes[0][0]];
+            // let changedColumn = self.$refs.hotTable.colHeaders[changes[0][1]]
             let changedLabel = changedRow[0];
-            let changedFrom = changes[0][2];
-            let changedTo = changes[0][3];
+            // let changedFrom = changes[0][2];
+            // let changedTo = changes[0][3];
             if (source === "edit" && changedLabel) {
-              console.log(changedLabel);
-              console.log(changedFrom, changedTo);
+              let translations = {
+                en: changedRow[2],
+                es: changedRow[4],
+                fr: changedRow[5]
+              };
+              await self.updateTranslation(changedLabel, translations);
             }
           }
         }
