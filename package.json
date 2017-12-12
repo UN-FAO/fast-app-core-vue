@@ -1,8 +1,8 @@
 {
   "name": "fast",
   "version": "0.5.1",
-  "deployAppName": "SHARP+",
-  "deployAppID": "59b112c7678919000775f921",
+  "deployAppName": "FAW",
+  "deployAppID": "5a0377c335677f0001aee006",
   "description": "A data collection application for FORM.io",
   "author": "Ignacio Cabrera <ignacio.cabrera@fao.org>",
   "scripts": {
@@ -19,10 +19,10 @@
     "deploy:linux": "sh deploys/electron/electron_linux.sh",
     "deploy:all": "sh deploys/deploy_all.sh",
     "set:sharp": "sh deploys/setEnv.sh SHARP SHARP+ 59b112c7678919000775f921",
-    "set:faw": "sh deploys/setEnv.sh FAW FAW",
+    "set:faw": "sh deploys/setEnv.sh FAW FAW 5a0377c335677f0001aee006",
     "set:drip": "sh deploys/setEnv.sh DRIP DRIP",
     "set:pat": "sh deploys/setEnv.sh PAT PAT",
-    "set:dev": "sh deploys/setEnv.sh DEV DEV",
+    "set:dev": "sh deploys/setEnv.sh DEV DEV 59b136fb2f12080007487131",
     "get:roles": "sh deploys/getAppRoles.sh"
   },
   "dependencies": {
@@ -35,8 +35,7 @@
     "deep-diff": "^0.3.8",
     "element-ui": "^1.4.3",
     "fastclick": "^1.0.6",
-    "flag-icon-css": "^2.8.0",
-    "formiojs": "^2.24.6",
+    "formiojs": "^2.25.3",
     "html2canvas": "^0.5.0-beta4",
     "i18next": "^10.0.3",
     "jsonexport": "^2.0.10",

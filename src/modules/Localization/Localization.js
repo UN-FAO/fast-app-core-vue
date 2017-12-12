@@ -2,7 +2,8 @@ import Formio from 'modules/Formio/api/Formio'
 import store from 'config/store'
 import _forEach from 'lodash/forEach'
 import _map from 'lodash/map'
-import messages from 'i18n/translations'
+import _isEmpty from 'lodash/isEmpty'
+// import messages from 'i18n/translations'
 import localTranslation from 'database/collections/scopes/LocalTranslation'
 
 const Localization = class {
@@ -31,41 +32,47 @@ const Localization = class {
    * @param {[type]} appTranslations [description]
    */
   static async getTranslations() {
-    let localTranslations = await localTranslation.find()
     let appTranslations = []
 
     if (navigator.onLine) {
       try {
         // Fetch the Translation that are online
-        let translations = await Localization.getOnlineTranslation()
-
+        let onlineTranslations = await Localization.getOnlineTranslation()
+        let lenguages = localTranslation.getIsoLanguages()
+        let localTranslations = {}
+        localTranslations.label = {}
+        console.log(onlineTranslations, 'onlineTranslations')
         // Foreach of the locale lenguages, set the translations
-        _forEach(messages, (lenguage, lenguageCode) => {
-          delete lenguage.App
-          lenguage.translations = {}
-          _forEach(translations, (translation, index) => {
-            if (translation.data[lenguageCode]) {
-              lenguage.translations[translation.data.en] = translation.data[lenguageCode]
+        _forEach(lenguages, (language) => {
+          _forEach(onlineTranslations, (translation, index) => {
+            if (translation.data[language.code] && translation.data && translation.data.label) {
+              if (!localTranslations[language.code]) {
+                localTranslations[language.code] = {}
+              }
+              localTranslations[language.code][translation.data.label] = translation.data[language.code]
+              localTranslations['label'][translation.data.label] = translation.data.label
             }
           })
         })
 
-        _map(messages, (lenguage, lenguageCode) => {
-          messages[lenguageCode] = lenguage.translations
-          delete lenguage.App
+        _map(localTranslations, (language, index) => {
+          if (!_isEmpty(language.translations)) {
+            localTranslations[language.code] = language.translations
+          } else {
+            delete localTranslations[language.code]
+          }
         })
 
-        // If we already had translations, then update them
-        if (localTranslations.length > 0) {
-          localTranslations[0].data = messages
-          localTranslation.update(localTranslations[0])
-          appTranslations = localTranslations[0].data
-        } else if (localTranslations.length === 0) {
-          appTranslations = await localTranslation.insert({
-            data: messages
-          })
-          appTranslations = appTranslations.data
-        }
+        // Remove all previous translations
+        localTranslation.findAndRemove()
+
+        // Insert the new ones
+        appTranslations = await localTranslation.insert({
+          data: localTranslations
+        })
+
+        appTranslations = appTranslations.data
+
         return appTranslations
       } catch (error) {
         return []

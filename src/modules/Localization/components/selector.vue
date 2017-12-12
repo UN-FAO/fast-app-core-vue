@@ -42,6 +42,8 @@ import {
   QItemSeparator
 } from "quasar";
 import Localization from "../Localization";
+import LocalTranslation from "database/collections/scopes/LocalTranslation";
+
 export default {
   name: "localization",
   components: {
@@ -65,7 +67,7 @@ export default {
       lenguage: localStorage.getItem("defaultLenguage")
         ? localStorage.getItem("defaultLenguage")
         : "en",
-      lenguages: [
+      lenguagess: [
         { code: "en", direction: "ltr", label: "English" },
         { code: "es", direction: "ltr", label: "Español" },
         { code: "fr", direction: "ltr", label: "Francais" }
@@ -74,20 +76,32 @@ export default {
   },
   computed: {
     isInsideApp() {
-        return (
+      return (
         this.$route.name !== "login" &&
         this.$route.name !== "register" &&
         this.$route.name !== "login_redirect" &&
         this.$route.name !== "adminLogin"
-      )
+      );
+    }
+  },
+  asyncData: {
+    lenguages: {
+      get() {
+        return LocalTranslation.supportedLanguages();
+      },
+      transform(result) {
+        return result;
+      }
     }
   },
   methods: {
     async getTranslations() {
       await Localization.getTranslations();
       this.$swal({
-        title: this.$t('Localizations Synced'),
-        text: this.$t("You need to reload the page to see them. Want to do it now?"),
+        title: this.$t("Localizations Synced"),
+        text: this.$t(
+          "You need to reload the page to see them. Want to do it now?"
+        ),
         type: "success",
         showCancelButton: true,
         confirmButtonColor: "#3085d6",
@@ -102,18 +116,18 @@ export default {
       return !!(this.lenguage === code);
     },
     setLanguage(lenguage) {
-       this.$i18n.locale = lenguage.code;
-        this.lenguage = lenguage.code;
-        localStorage.setItem("defaultLenguage", lenguage.code);
-        this.$eventHub.$emit("lenguageSelection", lenguage);
-       this.$swal({
+      this.$i18n.locale = lenguage.code;
+      this.lenguage = lenguage.code;
+      localStorage.setItem("defaultLenguage", lenguage.code);
+      this.$eventHub.$emit("lenguageSelection", lenguage);
+      this.$swal({
         title: this.$t("Language Changed"),
         text: this.$t("The language was changed."),
         type: "success",
         showCancelButton: false,
         confirmButtonColor: "#3085d6",
         confirmButtonText: "OK"
-      })
+      });
     }
   }
 };

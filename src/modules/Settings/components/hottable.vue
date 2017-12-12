@@ -7,6 +7,9 @@
 import HotTable from "vue-handsontable-official";
 import Localization from "modules/Localization/Localization";
 import { Toast } from "quasar";
+import _indexOf from 'lodash/indexOf'
+import _forEach from 'lodash/forEach'
+
 export default {
   components: {
     HotTable,
@@ -60,7 +63,7 @@ export default {
         dropdownMenu: true,
         cells: function(row, col, prop) {
           var cellProperties = {};
-          if (col === 0 || col === 2) {
+          if (col === 0 || col === _indexOf(self.$refs.hotTable.colHeaders, 'label')) {
             cellProperties.readOnly = true;
           } else {
             cellProperties.readOnly = false;
@@ -81,11 +84,11 @@ export default {
             // let changedFrom = changes[0][2];
             // let changedTo = changes[0][3];
             if (source === "edit" && changedLabel) {
-              let translations = {
-                en: changedRow[2],
-                es: changedRow[4],
-                fr: changedRow[5]
-              };
+              let translations = {}
+              _forEach(self.translations.columns, (languageCode) => {
+                translations[languageCode] = changedRow[_indexOf(self.$refs.hotTable.colHeaders, languageCode)]
+              })
+
               await self.updateTranslation(changedLabel, translations);
             }
           }

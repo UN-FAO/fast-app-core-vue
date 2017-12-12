@@ -92,7 +92,7 @@
   </q-scroll-area>
 </template>
 <script>
-import { mapMutations, mapState, mapActions } from "vuex";
+import { mapState, mapActions } from "vuex";
 import Auth from "modules/Auth/api/Auth";
 import LocalForm from "database/collections/scopes/LocalForm";
 import {
@@ -150,10 +150,6 @@ export default {
   },
   methods: {
     ...mapActions(["getResources"]),
-    /**
-       * Map layout methods for the theme
-       */
-    ...mapMutations(["setLayoutNeeded", "setIsLoginPage"]),
     closeDrawer() {
       this.$refs.leftDrawer.close();
     },

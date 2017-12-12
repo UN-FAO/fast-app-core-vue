@@ -699,7 +699,8 @@ const Formio = class {
       let url = 'https://' + idMachine + '.form.io/translations/submission'
       axios.post(url, {
           data: {
-            "en": label
+            "en": label,
+            "label": label
           }
         })
         .then(response => {

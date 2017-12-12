@@ -2,6 +2,7 @@ import * as Database from 'database/Database'
 import uuidv4 from 'uuid/v4'
 import FormioUtils from "formiojs/utils";
 import _forEach from 'lodash/forEach'
+import _isEmpty from 'lodash/isEmpty'
 import LocalTranslation from 'database/collections/scopes/LocalTranslation'
 
 const LocalForm = class {
@@ -77,7 +78,6 @@ const LocalForm = class {
     stats.missingTranslations = []
     let translations = await LocalTranslation.find();
     translations = translations[0].data
-    console.log('translations are', translations)
     let forms = await LocalForm.find();
     let componentLabels = []
 
@@ -123,16 +123,25 @@ const LocalForm = class {
 
     let columnNames = []
     let labelsArray = []
+    let labelsObject = []
 
-    columnNames.push('Primary Label')
+    // First column will always be the Form Label
+    columnNames.push('Form Label')
 
+    if (_isEmpty(translations)) {
+      stats.missingTranslations = uniqueLabels
+    }
+
+    console.log('translations', translations)
     // Match the labels with local translations
     _forEach(uniqueLabels, uniqueLabel => {
       let translation = []
-      // let languages = {}
+      let languages = {}
       translation.push(uniqueLabel)
+
       _forEach(translations, (language, lenguageCode) => {
         columnNames.push(lenguageCode)
+        languages['label'] = uniqueLabel
         if (typeof (language[uniqueLabel]) !== 'undefined' && language[uniqueLabel] !== "") {
           // If the language doesn't exist, create it
           if (!stats.translations[lenguageCode]) {
@@ -142,13 +151,13 @@ const LocalForm = class {
           // Add 1 every time we have a translation
           stats.translations[lenguageCode].total = stats.translations[lenguageCode].total + 1
         }
-        // languages[lenguageCode] = language[uniqueLabel]
-        if (typeof (language[uniqueLabel]) === 'undefined' && lenguageCode === 'en') {
+        languages[lenguageCode] = language[uniqueLabel]
+        if (typeof (language[uniqueLabel]) === 'undefined' && lenguageCode === 'label') {
           stats.missingTranslations.push(uniqueLabel)
         }
         translation.push(language[uniqueLabel])
       })
-      // labelsArray.push(languages)
+      labelsObject.push(languages)
       labelsArray.push(translation)
     })
 
@@ -162,11 +171,12 @@ const LocalForm = class {
       stats.translations[index].translated = stats.translations[index].total / stats.totalTranslations
     })
 
-    console.log(stats)
+    console.log('stats.missingTranslations', stats.missingTranslations);
     return {
       labels: labelsArray,
       columns: uniqueColumsNames,
-      stats: stats
+      stats: stats,
+      labelsObject: labelsObject
     };
   }
 }
