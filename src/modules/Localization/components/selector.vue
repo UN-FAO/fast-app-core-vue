@@ -65,6 +65,7 @@ export default {
   },
   async mounted() {
     this.lenguages = await LocalTranslation.supportedLanguages();
+
     this.$eventHub.on("Translation:languageAdded", async data => {
       this.lenguages = await LocalTranslation.supportedLanguages();
       this.rerender();

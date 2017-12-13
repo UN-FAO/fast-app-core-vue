@@ -60,8 +60,8 @@ export default {
         renderAllRows: false,
         manualRowResize: true,
         manualColumnResize: true,
-        manualRowMove: true,
-        manualColumnMove: true,
+        manualRowMove: false,
+        manualColumnMove: false,
         contextMenu: false,
         filters: true,
         dropdownMenu: true,
@@ -79,8 +79,14 @@ export default {
           return cellProperties;
         },
         modifyColWidth: function(width, col) {
-          if (width > 200) {
-            return 150;
+          if (col === 1) {
+            return 1;
+          }
+          if (width > 400) {
+            return 200;
+          }
+          if (width < 100 && col !== 1) {
+            return 200;
           }
         },
         afterChange: async function(changes, source) {
