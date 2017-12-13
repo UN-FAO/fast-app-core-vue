@@ -1,6 +1,6 @@
 <template>
 <div>
-
+  <div v-if="!hasTranslation()">
   <div class="translations-action-bar pull-right">
     <q-btn round color="primary" icon="translate" @click="createTranslations" >
       <q-tooltip>
@@ -20,11 +20,16 @@
     </q-tooltip>
     </q-btn>
   </div>
-  <tstats :stats="translations.stats"> </tstats>
-
-
-  <hottable :translations="translations"></hottable>
-
+</div>
+<div class="row justify-center">
+  <div class="loading" v-if="hasTranslation()">
+        <q-spinner-gears size="50px" color="primary"></q-spinner-gears>
+  </div>
+  <div v-if="!hasTranslation()">
+    <tstats :stats="translations.stats"> </tstats>
+    <hottable :translations="translations"></hottable>
+  </div>
+</div>
 </div>
 </template>
 
@@ -33,11 +38,12 @@ import LocalForm from "database/collections/scopes/LocalForm";
 import LocalTranslation from "database/collections/scopes/LocalTranslation";
 import Localization from "modules/Localization/Localization";
 import { mapActions } from "vuex";
-import { QBtn, QTooltip, Toast } from "quasar";
+import { QBtn, QTooltip, Toast, QSpinnerGears, QInnerLoading } from "quasar";
 import tstats from "./stats";
 import hottable from "./hottable";
 import Promise from "bluebird";
 import _forEach from "lodash/forEach";
+import _isEmpty from "lodash/isEmpty";
 
 export default {
   data: function() {
@@ -48,15 +54,23 @@ export default {
   },
   async mounted() {
     this.updateValues();
+    this.$eventHub.on("Translation:updated", data => {
+      this.updateValues();
+    });
   },
   components: {
     QBtn,
     QTooltip,
     tstats,
-    hottable
+    hottable,
+    QSpinnerGears,
+    QInnerLoading
   },
   methods: {
     ...mapActions(["getResources"]),
+    hasTranslation() {
+      return _isEmpty(this.translations);
+    },
     createTranslations() {
       let translations = this.translations.stats.missingTranslations;
       let totalTranslations = translations.length;
@@ -115,7 +129,6 @@ export default {
         customOptions[option.code] = option.label;
       });
 
-      console.log("customOptions", customOptions);
       const language = await this.$swal({
         title: "Select the language",
         input: "select",
@@ -127,7 +140,7 @@ export default {
             if (value === "") {
               resolve("You need to select a language");
             }
-            resolve()
+            resolve();
           });
         }
       });
@@ -137,6 +150,9 @@ export default {
         this.translations.columns.push(language);
         _forEach(this.translations.labels, label => {
           label.push(undefined);
+        });
+        this.$eventHub.emit("Translation:languageAdded", {
+          language: customOptions[language]
         });
       }
     }

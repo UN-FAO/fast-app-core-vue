@@ -7,8 +7,8 @@
 import HotTable from "vue-handsontable-official";
 import Localization from "modules/Localization/Localization";
 import { Toast } from "quasar";
-import _indexOf from 'lodash/indexOf'
-import _forEach from 'lodash/forEach'
+import _indexOf from "lodash/indexOf";
+import _forEach from "lodash/forEach";
 
 export default {
   components: {
@@ -29,6 +29,10 @@ export default {
     async updateTranslation(label, translations) {
       await Localization.setTranslations(label, translations);
       Toast.create.positive({ html: "TRANSLATION UPDATED" });
+      this.$eventHub.emit("Translation:updated", {
+        changed: label,
+        translations: translations
+      });
     }
   },
   watch: {
@@ -63,7 +67,10 @@ export default {
         dropdownMenu: true,
         cells: function(row, col, prop) {
           var cellProperties = {};
-          if (col === 0 || col === _indexOf(self.$refs.hotTable.colHeaders, 'label')) {
+          if (
+            col === 0 ||
+            col === _indexOf(self.$refs.hotTable.colHeaders, "label")
+          ) {
             cellProperties.readOnly = true;
           } else {
             cellProperties.readOnly = false;
@@ -84,11 +91,19 @@ export default {
             // let changedFrom = changes[0][2];
             // let changedTo = changes[0][3];
             if (source === "edit" && changedLabel) {
-              let translations = {}
-              _forEach(self.translations.columns, (languageCode) => {
-                translations[languageCode] = changedRow[_indexOf(self.$refs.hotTable.colHeaders, languageCode)]
-              })
-
+              let translations = {};
+              _forEach(self.translations.columns, languageCode => {
+                let index = _indexOf(
+                  self.$refs.hotTable.colHeaders,
+                  languageCode
+                );
+                if (changedRow[index] === "") {
+                  translations[languageCode] = undefined;
+                } else {
+                  translations[languageCode] = changedRow[index];
+                }
+              });
+              delete translations["Form Label"];
               await self.updateTranslation(changedLabel, translations);
             }
           }

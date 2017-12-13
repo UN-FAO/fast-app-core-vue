@@ -41,15 +41,17 @@ const Localization = class {
         let lenguages = localTranslation.getIsoLanguages()
         let localTranslations = {}
         localTranslations.label = {}
-        console.log(onlineTranslations, 'onlineTranslations')
         // Foreach of the locale lenguages, set the translations
         _forEach(lenguages, (language) => {
           _forEach(onlineTranslations, (translation, index) => {
-            if (translation.data[language.code] && translation.data && translation.data.label) {
+            if (translation.data && translation.data[language.code]) {
               if (!localTranslations[language.code]) {
                 localTranslations[language.code] = {}
               }
               localTranslations[language.code][translation.data.label] = translation.data[language.code]
+            }
+
+            if (translation.data && translation.data.label) {
               localTranslations['label'][translation.data.label] = translation.data.label
             }
           })

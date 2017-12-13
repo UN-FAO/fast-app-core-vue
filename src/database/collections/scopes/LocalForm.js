@@ -131,8 +131,7 @@ const LocalForm = class {
     if (_isEmpty(translations)) {
       stats.missingTranslations = uniqueLabels
     }
-
-    console.log('translations', translations)
+    console.log(translations, 'translations')
     // Match the labels with local translations
     _forEach(uniqueLabels, uniqueLabel => {
       let translation = []
@@ -170,8 +169,7 @@ const LocalForm = class {
     _forEach(stats.translations, (language, index) => {
       stats.translations[index].translated = stats.translations[index].total / stats.totalTranslations
     })
-
-    console.log('stats.missingTranslations', stats.missingTranslations);
+    console.log('labelsArray', labelsArray)
     return {
       labels: labelsArray,
       columns: uniqueColumsNames,

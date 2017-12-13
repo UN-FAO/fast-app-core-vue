@@ -1,10 +1,15 @@
 <template>
-<q-btn ref="target" flat="true">
+<q-btn ref="target" flat="true" v-if="show">
     <q-icon name="language" v-bind:class="isInsideApp ? 'color-primary' : 'color-white' " />
   <!-- Direct child of target -->
   <q-popover ref="popover">
     <q-list item-separator link>
-      <q-item v-bind:class="{ active: isActive(lenguage.code)}"  @click="setLanguage({code: lenguage.code, direction: lenguage.direction}), $refs.popover.close()" v-for="lenguage in lenguages" :key="lenguage.code">
+      <q-item
+        v-bind:class="{ active: isActive(lenguage.code)}"
+        @click="setLanguage({code: lenguage.code, direction: lenguage.direction}), $refs.popover.close()"
+        v-for="lenguage in lenguages"
+        :key="lenguage.code"
+      >
       {{lenguage.label}}
       </q-item>
 
@@ -37,8 +42,6 @@ import {
   QCard,
   QCardTitle,
   QCardMain,
-  QChip,
-  QFixedPosition,
   QItemSeparator
 } from "quasar";
 import Localization from "../Localization";
@@ -58,20 +61,27 @@ export default {
     QRadio,
     QCard,
     QCardTitle,
-    QCardMain,
-    QChip,
-    QFixedPosition
+    QCardMain
+  },
+  async mounted() {
+    this.lenguages = await LocalTranslation.supportedLanguages();
+    this.$eventHub.on("Translation:languageAdded", async data => {
+      this.lenguages = await LocalTranslation.supportedLanguages();
+      this.rerender();
+    });
+
+    this.$eventHub.on("Translation:updated", async data => {
+      this.lenguages = await LocalTranslation.supportedLanguages();
+      this.rerender();
+    });
   },
   data: function() {
     return {
       lenguage: localStorage.getItem("defaultLenguage")
         ? localStorage.getItem("defaultLenguage")
         : "en",
-      lenguagess: [
-        { code: "en", direction: "ltr", label: "English" },
-        { code: "es", direction: "ltr", label: "Español" },
-        { code: "fr", direction: "ltr", label: "Francais" }
-      ]
+      languages: [],
+      show: true
     };
   },
   computed: {
@@ -84,17 +94,13 @@ export default {
       );
     }
   },
-  asyncData: {
-    lenguages: {
-      get() {
-        return LocalTranslation.supportedLanguages();
-      },
-      transform(result) {
-        return result;
-      }
-    }
-  },
   methods: {
+    rerender() {
+      this.show = false;
+      this.$nextTick(() => {
+        this.show = true;
+      });
+    },
     async getTranslations() {
       await Localization.getTranslations();
       this.$swal({

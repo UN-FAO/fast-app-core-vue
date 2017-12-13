@@ -717,20 +717,20 @@ const Formio = class {
 
   static setTranslations(idMachine, label, translations) {
     return new Promise((resolve, reject) => {
-      let url = 'https://' + idMachine + '.form.io/translations/submission?data.en=' + encodeURIComponent(label)
+      let url = 'https://' + idMachine + '.form.io/translations/submission?data.label=' + encodeURIComponent(label)
       axios.get(url)
         .then(response => {
           if (response.data && response.data.length > 0) {
             let submissions = response.data[0]
             let id = submissions._id
             Formio.updateTranslation(idMachine, id, translations).then((updatedSubmission) => {
-              resolve(submissions)
-              Loading.hide()
-            })
-            .catch((error) => {
+                resolve(submissions)
+                Loading.hide()
+              })
+              .catch((error) => {
                 Loading.hide()
                 reject(error)
-            })
+              })
           }
         })
         .catch((error) => {
@@ -743,7 +743,7 @@ const Formio = class {
   static updateTranslation(idMachine, submissionId, translations) {
     return new Promise((resolve, reject) => {
       let url = 'https://' + idMachine + '.form.io/translations/submission/' + submissionId
-      let updateObject = { }
+      let updateObject = {}
       updateObject.data = translations
       axios.put(url, updateObject)
         .then(response => {
