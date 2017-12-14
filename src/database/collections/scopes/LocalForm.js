@@ -72,13 +72,22 @@ const LocalForm = class {
     return allForms
   }
 
-  static async getAllLabels() {
+  static async getAllLabels(filter) {
+    filter = filter || undefined
+    let formFilter = filter && {
+      'data.title': {
+        // $containsAny
+        '$in': filter
+      }
+    };
     let stats = {}
     stats.translations = {}
     stats.missingTranslations = []
     let translations = await LocalTranslation.find();
     translations = translations[0].data
-    let forms = await LocalForm.find();
+    let forms = await LocalForm.find(formFilter);
+    console.log('forms', forms)
+
     let componentLabels = []
 
     // Extranct all labels for all available forms

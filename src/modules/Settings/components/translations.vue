@@ -26,30 +26,83 @@
         <q-spinner-gears size="50px" color="primary"></q-spinner-gears>
   </div>
   <div v-if="!hasTranslation()">
-    <tstats :stats="translations.stats"> </tstats>
+      <tstats :stats="translations.stats"> </tstats>
+
+      <q-btn icon="fa-filter" ref="target" color="primary" outline>
+        Filter
+    <!-- Direct child of target -->
+    <q-popover  ref="popover" anchor="bottom middle" max-height="300px" fit>
+      <q-input
+          v-model="search"
+          type="text"
+          stack-label="NAME FILTER"
+          placeholder="'...My form'"
+          :after="[{  icon: 'fa-search'}]"
+          clearable
+          inverted
+        />
+        <div class="row pull-right">
+        <q-btn ref="target" color="primary" flat @click="allFilters()">
+          All
+        </q-btn>
+        <q-btn ref="target" color="primary" flat @click="clearFilters()">
+          Clear
+        </q-btn>
+        <q-btn ref="target" color="primary" flat @click="filterTable()">
+          Apply
+        </q-btn>
+      </div>
+      <br><br>
+      <div v-for="filter in filteredCustomers" :key="filter.data.title" >
+      <q-checkbox style="text-transform: uppercase;" v-model="selection" :val="filter.data.title" :label="filter.data.title"/>
+      </hr>
+      <br><br>
+      </div>
+    </q-popover>
+  </q-btn>
+
+
     <hottable :translations="translations"></hottable>
   </div>
 </div>
 </div>
 </template>
 
+<style scoped>
+.q-checkbox {
+  color: black;
+}
+</style>
 <script>
 import LocalForm from "database/collections/scopes/LocalForm";
 import LocalTranslation from "database/collections/scopes/LocalTranslation";
 import Localization from "modules/Localization/Localization";
 import { mapActions } from "vuex";
-import { QBtn, QTooltip, Toast, QSpinnerGears, QInnerLoading } from "quasar";
+import {
+  QBtn,
+  QTooltip,
+  Toast,
+  QSpinnerGears,
+  QInnerLoading,
+  QCheckbox,
+  QPopover,
+  QInput
+} from "quasar";
 import tstats from "./stats";
 import hottable from "./hottable";
 import Promise from "bluebird";
 import _forEach from "lodash/forEach";
 import _isEmpty from "lodash/isEmpty";
+import _map from "lodash/map";
 
 export default {
   data: function() {
     return {
       translations: [],
-      progress: 0
+      progress: 0,
+      selection: [],
+      formNameFilters: [],
+      search: ""
     };
   },
   async mounted() {
@@ -57,6 +110,8 @@ export default {
     this.$eventHub.on("Translation:updated", data => {
       this.updateValues();
     });
+    this.formNameFilters = await LocalForm.find();
+    this.selection = _map(this.formNameFilters, "data.title");
   },
   components: {
     QBtn,
@@ -64,12 +119,35 @@ export default {
     tstats,
     hottable,
     QSpinnerGears,
-    QInnerLoading
+    QInnerLoading,
+    QCheckbox,
+    QPopover,
+    QInput
+  },
+  computed: {
+    filteredCustomers: function() {
+      return this.formNameFilters.filter(formNameFilter => {
+        return (
+          formNameFilter.data.title
+            .toLowerCase()
+            .indexOf(this.search.toLowerCase()) >= 0
+        );
+      });
+    }
   },
   methods: {
     ...mapActions(["getResources"]),
     hasTranslation() {
       return _isEmpty(this.translations);
+    },
+    allFilters() {
+      this.selection = _map(this.formNameFilters, "data.title");
+    },
+    clearFilters() {
+      this.selection = [];
+    },
+    async filterTable() {
+      this.translations = await LocalForm.getAllLabels(this.selection);
     },
     createTranslations() {
       let translations = this.translations.stats.missingTranslations;

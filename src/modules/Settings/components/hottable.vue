@@ -49,7 +49,7 @@ export default {
         data: [],
         colHeaders: [],
         stretchH: "all",
-        autoWrapRow: false,
+        autoWrapRow: true,
         rowHeaders: true,
         columnSorting: true,
         sortIndicator: true,
@@ -58,7 +58,7 @@ export default {
         },
         height: 800,
         renderAllRows: false,
-        manualRowResize: true,
+        manualRowResize: false,
         manualColumnResize: true,
         manualRowMove: false,
         manualColumnMove: false,
@@ -122,9 +122,15 @@ export default {
 <style>
 #hot-preview {
   padding-top: 30px;
+  width: 100%;
 }
 #hotTable {
   overflow: hidden;
   color: black !important;
+  width: 100%;
+}
+
+#hot-container{
+  width: 100%;
 }
 </style>
