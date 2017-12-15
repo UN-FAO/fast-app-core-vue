@@ -91,27 +91,29 @@ export default {
         },
         afterChange: async function(changes, source) {
           if (changes && this.getData()) {
-            let changedRow = this.getData()[changes[0][0]];
-            // let changedColumn = self.$refs.hotTable.colHeaders[changes[0][1]]
-            let changedLabel = changedRow[0];
-            // let changedFrom = changes[0][2];
-            // let changedTo = changes[0][3];
-            if (source === "edit" && changedLabel) {
-              let translations = {};
-              _forEach(self.translations.columns, languageCode => {
-                let index = _indexOf(
-                  self.$refs.hotTable.colHeaders,
-                  languageCode
-                );
-                if (changedRow[index] === "") {
-                  translations[languageCode] = undefined;
-                } else {
-                  translations[languageCode] = changedRow[index];
-                }
-              });
-              delete translations["Form Label"];
-              await self.updateTranslation(changedLabel, translations);
-            }
+            _forEach(changes, async change => {
+              let changedRow = this.getData()[change[0]];
+              // let changedColumn = self.$refs.hotTable.colHeaders[changes[0][1]]
+              let changedLabel = changedRow[0];
+              // let changedFrom = changes[0][2];
+              // let changedTo = changes[0][3];
+              if (changedLabel) {
+                let translations = {};
+                _forEach(self.translations.columns, languageCode => {
+                  let index = _indexOf(
+                    self.$refs.hotTable.colHeaders,
+                    languageCode
+                  );
+                  if (changedRow[index] === "") {
+                    translations[languageCode] = undefined;
+                  } else {
+                    translations[languageCode] = changedRow[index];
+                  }
+                });
+                delete translations["Form Label"];
+                await self.updateTranslation(changedLabel, translations);
+              }
+            });
           }
         }
       }
@@ -130,7 +132,7 @@ export default {
   width: 100%;
 }
 
-#hot-container{
+#hot-container {
   width: 100%;
 }
 </style>

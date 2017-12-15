@@ -21,7 +21,7 @@
     </q-btn>
   </div>
 </div>
-<div class="row justify-center">
+<div class="justify-center">
   <div class="loading" v-if="hasTranslation()">
         <q-spinner-gears size="50px" color="primary"></q-spinner-gears>
   </div>
@@ -29,14 +29,14 @@
       <tstats :stats="translations.stats"> </tstats>
 
       <q-btn icon="fa-filter" ref="target" color="primary" outline>
-        Filter
+        Forms
     <!-- Direct child of target -->
     <q-popover  ref="popover" anchor="bottom middle" max-height="300px" fit>
       <q-input
           v-model="search"
           type="text"
           stack-label="NAME FILTER"
-          placeholder="'...My form'"
+          placeholder="search..."
           :after="[{  icon: 'fa-search'}]"
           clearable
           inverted
@@ -53,8 +53,41 @@
         </q-btn>
       </div>
       <br><br>
-      <div v-for="filter in filteredCustomers" :key="filter.data.title" >
-      <q-checkbox style="text-transform: uppercase;" v-model="selection" :val="filter.data.title" :label="filter.data.title"/>
+      <div v-for="form in filteredForms" :key="form.data.title" >
+      <q-checkbox style="text-transform: uppercase;" v-model="selection" :val="form.data.title" :label="form.data.title"/>
+      </hr>
+      <br><br>
+      </div>
+    </q-popover>
+  </q-btn>
+
+  <q-btn icon="fa-filter" ref="target" color="primary" outline>
+        Languages
+    <!-- Direct child of target -->
+    <q-popover  ref="popover" anchor="bottom middle" max-height="300px" fit>
+      <q-input
+          v-model="languageSearch"
+          type="text"
+          stack-label="LANGUAGE FILTER"
+          placeholder="search..."
+          :after="[{  icon: 'fa-search'}]"
+          clearable
+          inverted
+        />
+        <div class="row pull-right">
+        <q-btn ref="target" color="primary" flat @click="allLanguageFilters()">
+          All
+        </q-btn>
+        <q-btn ref="target" color="primary" flat @click="clearLanguageFilters()">
+          Clear
+        </q-btn>
+        <q-btn ref="target" color="primary" flat @click="filterTable()">
+          Apply
+        </q-btn>
+      </div>
+      <br><br>
+      <div v-for="language in filteredLanguages" :key="language.code" >
+      <q-checkbox style="text-transform: uppercase;" v-model="languageSelection" :val="language.code" :label="language.label"/>
       </hr>
       <br><br>
       </div>
@@ -101,8 +134,11 @@ export default {
       translations: [],
       progress: 0,
       selection: [],
+      languageSelection: [],
       formNameFilters: [],
-      search: ""
+      languageNameFilters: [],
+      search: "",
+      languageSearch: ""
     };
   },
   async mounted() {
@@ -111,7 +147,9 @@ export default {
       this.updateValues();
     });
     this.formNameFilters = await LocalForm.find();
+    this.languageNameFilters = await LocalTranslation.supportedLanguages();
     this.selection = _map(this.formNameFilters, "data.title");
+    this.languageSelection = _map(this.languageNameFilters, "code");
   },
   components: {
     QBtn,
@@ -125,12 +163,21 @@ export default {
     QInput
   },
   computed: {
-    filteredCustomers: function() {
+    filteredForms: function() {
       return this.formNameFilters.filter(formNameFilter => {
         return (
           formNameFilter.data.title
             .toLowerCase()
             .indexOf(this.search.toLowerCase()) >= 0
+        );
+      });
+    },
+    filteredLanguages: function() {
+      return this.languageNameFilters.filter(languageNameFilter => {
+        return (
+          languageNameFilter.label
+            .toLowerCase()
+            .indexOf(this.languageSearch.toLowerCase()) >= 0
         );
       });
     }
@@ -143,11 +190,20 @@ export default {
     allFilters() {
       this.selection = _map(this.formNameFilters, "data.title");
     },
+    allLanguageFilters() {
+      this.languageSelection = _map(this.languageNameFilters, "code");
+    },
+    clearLanguageFilters() {
+      this.languageSelection = [];
+    },
     clearFilters() {
       this.selection = [];
     },
     async filterTable() {
-      this.translations = await LocalForm.getAllLabels(this.selection);
+      this.translations = await LocalForm.getAllLabels(
+        this.selection,
+        this.languageSelection
+      );
     },
     createTranslations() {
       let translations = this.translations.stats.missingTranslations;

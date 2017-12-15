@@ -72,12 +72,15 @@ const LocalForm = class {
     return allForms
   }
 
-  static async getAllLabels(filter) {
-    filter = filter || undefined
-    let formFilter = filter && {
+  static async getAllLabels(formNameFilter, languageFilter) {
+    formNameFilter = formNameFilter || undefined
+    languageFilter = languageFilter || ['en', 'fr']
+    languageFilter.push('label')
+
+    let formFilter = formNameFilter && {
       'data.title': {
         // $containsAny
-        '$in': filter
+        '$in': formNameFilter
       }
     };
     let stats = {}
@@ -148,6 +151,10 @@ const LocalForm = class {
       translation.push(uniqueLabel)
 
       _forEach(translations, (language, lenguageCode) => {
+        // Dont include if the language is not supported
+        if (languageFilter.indexOf(lenguageCode) === -1) {
+          return
+        }
         columnNames.push(lenguageCode)
         languages['label'] = uniqueLabel
         if (typeof (language[uniqueLabel]) !== 'undefined' && language[uniqueLabel] !== "") {

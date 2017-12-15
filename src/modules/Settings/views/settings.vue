@@ -2,7 +2,7 @@
 
     <div class="row FormioContainer">
 
-      <q-card style="background-color: white; max-height: fit-content;" class="col-lg-3  col-md-3 col-sm-3" v-if="showPages">
+      <q-card style="background-color: white; max-height: fit-content;" class="col-lg-3  col-md-12 col-sm-12 col-xs-12" v-if="showPages">
         <q-card-main>
           <q-list separator style="border: none !important">
 
@@ -85,7 +85,7 @@ export default {
     getFormClass() {
       let className = "";
       if (this.showPages) {
-        className = "col-lg-8  col-md-8 col-sm-8";
+        className = "col-xl-8 col-lg-8  col-md-12 col-sm-12 col-xs-12";
       } else {
         className =
           "col-xl-10 col-lg-10  col-md-12 col-sm-12 col-lg-offset-1 col-md-offset-1 col-xl-offset-1";
