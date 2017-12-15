@@ -93,9 +93,17 @@
       </div>
     </q-popover>
   </q-btn>
+  <q-input
+          v-model="searchBox"
+          type="text"
+          stack-label=" TRANSLATION FILTER"
+          placeholder="Search..."
+          :after="[{  icon: 'fa-search'}]"
+          clearable
+        />
 
 
-    <hottable :translations="translations"></hottable>
+    <hottable :translations="translations" :labels="filteredLabels"></hottable>
   </div>
 </div>
 </div>
@@ -138,7 +146,8 @@ export default {
       formNameFilters: [],
       languageNameFilters: [],
       search: "",
-      languageSearch: ""
+      languageSearch: "",
+      searchBox: ""
     };
   },
   async mounted() {
@@ -180,6 +189,13 @@ export default {
             .indexOf(this.languageSearch.toLowerCase()) >= 0
         );
       });
+    },
+    filteredLabels: function() {
+      this.searchBox.toLowerCase();
+      let labels = this.translations.labels.filter(translation => {
+        return translation.join(",").indexOf(this.searchBox.toLowerCase()) > -1;
+      });
+      return labels;
     }
   },
   methods: {

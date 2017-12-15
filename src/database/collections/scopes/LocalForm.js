@@ -89,7 +89,6 @@ const LocalForm = class {
     let translations = await LocalTranslation.find();
     translations = translations[0].data
     let forms = await LocalForm.find(formFilter);
-    console.log('forms', forms)
 
     let componentLabels = []
 
@@ -143,7 +142,6 @@ const LocalForm = class {
     if (_isEmpty(translations)) {
       stats.missingTranslations = uniqueLabels
     }
-    console.log(translations, 'translations')
     // Match the labels with local translations
     _forEach(uniqueLabels, uniqueLabel => {
       let translation = []
@@ -185,7 +183,7 @@ const LocalForm = class {
     _forEach(stats.translations, (language, index) => {
       stats.translations[index].translated = stats.translations[index].total / stats.totalTranslations
     })
-    console.log('labelsArray', labelsArray)
+
     return {
       labels: labelsArray,
       columns: uniqueColumsNames,

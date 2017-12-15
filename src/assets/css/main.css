@@ -754,20 +754,23 @@ p.form-title {
   transition: background-color 0.5s ease;
 }
 
-.q-if-control {
+.form-login .q-if-control {
+
   cursor: pointer;
   margin-left: 8px;
   color: white;
   font-size: 24px;
 }
 
-.q-if-label.ellipsis.full-width.absolute.self-start.q-if-label-above {
+.form-login .q-if-label.ellipsis.full-width.absolute.self-start.q-if-label-above {
+
   font-size: large !important;
   font-weight: 350 !important;
   color: white;
 }
 
-.segment-title {
+.form-login .segment-title {
+
   font-size: 20px;
   color: white;
   text-align: -webkit-center;

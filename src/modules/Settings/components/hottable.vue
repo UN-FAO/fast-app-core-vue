@@ -19,10 +19,13 @@ export default {
   props: {
     translations: {
       required: true
+    },
+    labels: {
+      required: true
     }
   },
   async mounted() {
-    this.$refs.hotTable.data = this.translations.labels;
+    this.$refs.hotTable.data = this.labels;
     this.$refs.hotTable.colHeaders = this.translations.columns;
   },
   methods: {
@@ -37,8 +40,10 @@ export default {
   },
   watch: {
     translations: function(trans) {
-      this.$refs.hotTable.data = trans.labels;
       this.$refs.hotTable.colHeaders = trans.columns;
+    },
+    labels: function(labels) {
+      this.$refs.hotTable.data = labels;
     }
   },
   data: function() {
