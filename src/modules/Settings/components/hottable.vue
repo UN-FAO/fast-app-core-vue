@@ -43,6 +43,7 @@ export default {
       this.$refs.hotTable.colHeaders = trans.columns;
     },
     labels: function(labels) {
+      console.log(labels, "labels");
       this.$refs.hotTable.data = labels;
     }
   },

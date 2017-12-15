@@ -93,6 +93,7 @@
       </div>
     </q-popover>
   </q-btn>
+  <q-checkbox style="text-transform: uppercase;" v-model="untranslated" label="Not translated"/>
   <q-input
           v-model="searchBox"
           type="text"
@@ -147,7 +148,8 @@ export default {
       languageNameFilters: [],
       search: "",
       languageSearch: "",
-      searchBox: ""
+      searchBox: "",
+      untranslated: false
     };
   },
   async mounted() {
@@ -193,6 +195,19 @@ export default {
     filteredLabels: function() {
       this.searchBox.toLowerCase();
       let labels = this.translations.labels.filter(translation => {
+        if (this.untranslated) {
+          let undefinedElements = 0;
+          _forEach(translation, trans => {
+            if (typeof trans === "undefined" || trans === "") {
+              undefinedElements = undefinedElements + 1;
+            }
+          });
+          console.log(undefinedElements, "undefinedElements");
+          return (
+            translation.join(",").indexOf(this.searchBox.toLowerCase()) > -1 &&
+            undefinedElements >= 1
+          );
+        }
         return translation.join(",").indexOf(this.searchBox.toLowerCase()) > -1;
       });
       return labels;
