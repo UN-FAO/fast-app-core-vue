@@ -14,7 +14,7 @@
                         <div class="segment-title">{{$t('User Login')}}</div>
                     <q-field >
                     <q-input v-model="credentials.username"
-                    :stack-label="$t('Username')" :placeholder="$t('Username')" />
+                    :stack-label="$t('Email')" :placeholder="$t('Email')" />
                     </q-field>
                   </div>
                   <div class="form-group">

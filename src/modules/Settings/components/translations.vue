@@ -27,7 +27,7 @@
   </div>
   <div v-if="!hasTranslation()">
       <tstats :stats="translations.stats"> </tstats>
-
+<div class="col-lg-12">
       <q-btn icon="fa-filter" ref="target" color="primary" outline>
         Forms
     <!-- Direct child of target -->
@@ -61,9 +61,10 @@
     </q-popover>
   </q-btn>
 
+<!--
+
   <q-btn icon="fa-filter" ref="target" color="primary" outline>
         Languages
-    <!-- Direct child of target -->
     <q-popover  ref="popover" anchor="bottom middle" max-height="300px" fit>
       <q-input
           v-model="languageSearch"
@@ -93,6 +94,7 @@
       </div>
     </q-popover>
   </q-btn>
+  -->
   <q-checkbox style="text-transform: uppercase;" v-model="untranslated" label="Not translated"/>
   <q-input
           v-model="searchBox"
@@ -103,7 +105,7 @@
           clearable
         />
 
-
+</div>
     <hottable :translations="translations" :labels="filteredLabels"></hottable>
   </div>
 </div>
@@ -136,6 +138,7 @@ import Promise from "bluebird";
 import _forEach from "lodash/forEach";
 import _isEmpty from "lodash/isEmpty";
 import _map from "lodash/map";
+import Formio from "modules/Formio/api/Formio";
 
 export default {
   data: function() {
@@ -202,19 +205,35 @@ export default {
               undefinedElements = undefinedElements + 1;
             }
           });
-          console.log(undefinedElements, "undefinedElements");
           return (
             translation.join(",").indexOf(this.searchBox.toLowerCase()) > -1 &&
             undefinedElements >= 1
           );
         }
-        return translation.join(",").indexOf(this.searchBox.toLowerCase()) > -1;
+        return (
+          translation
+            .join(",")
+            .toLowerCase()
+            .indexOf(this.searchBox.toLowerCase()) > -1
+        );
       });
       return labels;
     }
   },
   methods: {
     ...mapActions(["getResources"]),
+    async englishTolabel() {
+      console.log("English to label");
+      let trans = await Localization.getOnlineTranslation();
+      _map(trans, translation => {
+        translation.data.label = translation.data.en;
+        return translation.data;
+      });
+      Promise.each(trans, async translation => {
+        let idMachine = "uiorzjzflxyccmo";
+        Formio.updateTranslation(idMachine, translation._id, translation.data);
+      });
+    },
     hasTranslation() {
       return _isEmpty(this.translations);
     },

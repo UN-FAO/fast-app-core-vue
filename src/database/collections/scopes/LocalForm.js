@@ -74,7 +74,7 @@ const LocalForm = class {
 
   static async getAllLabels(formNameFilter, languageFilter) {
     formNameFilter = formNameFilter || undefined
-    languageFilter = languageFilter || ['en', 'fr']
+    languageFilter = languageFilter || ['en', 'fr', 'es', 'pt']
     languageFilter.push('label')
 
     let formFilter = formNameFilter && {

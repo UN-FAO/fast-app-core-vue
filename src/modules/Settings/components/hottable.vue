@@ -43,7 +43,6 @@ export default {
       this.$refs.hotTable.colHeaders = trans.columns;
     },
     labels: function(labels) {
-      console.log(labels, "labels");
       this.$refs.hotTable.data = labels;
     }
   },
@@ -117,6 +116,7 @@ export default {
                   }
                 });
                 delete translations["Form Label"];
+                console.log(translations, "translations");
                 await self.updateTranslation(changedLabel, translations);
               }
             });
