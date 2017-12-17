@@ -7,7 +7,6 @@
         Create translations
     </q-tooltip>
     </q-btn>
-
     <q-btn round color="primary" icon="refresh" @click="updateValues" >
       <q-tooltip>
         Update
@@ -138,7 +137,9 @@ import Promise from "bluebird";
 import _forEach from "lodash/forEach";
 import _isEmpty from "lodash/isEmpty";
 import _map from "lodash/map";
-import Formio from "modules/Formio/api/Formio";
+// import _uniqBy from "lodash/uniqBy";
+// import _groupBy from "lodash/groupBy";
+// import Formio from "modules/Formio/api/Formio";
 
 export default {
   data: function() {
@@ -222,17 +223,7 @@ export default {
   },
   methods: {
     ...mapActions(["getResources"]),
-    async englishTolabel() {
-      console.log("English to label");
-      let trans = await Localization.getOnlineTranslation();
-      _map(trans, translation => {
-        translation.data.label = translation.data.en;
-        return translation.data;
-      });
-      Promise.each(trans, async translation => {
-        let idMachine = "uiorzjzflxyccmo";
-        Formio.updateTranslation(idMachine, translation._id, translation.data);
-      });
+    async removeDuplicated() {
     },
     hasTranslation() {
       return _isEmpty(this.translations);
