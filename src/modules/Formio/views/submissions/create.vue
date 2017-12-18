@@ -269,15 +269,19 @@ export default {
       this.scorePanels = scorePanels;
     },
     goToPage(index) {
-      let pageNumber = index + 1;
-      let page = document.querySelectorAll(
-        "ul li:nth-of-type(" + pageNumber + ")"
-      )[0];
-      page.click();
-      this.currentPage = index;
-      this.currentQuestion = -1;
-      window.scrollTo(0, 0);
-      this.togglePages();
+      try {
+        let pageNumber = index + 1;
+        let page = document.querySelectorAll(
+          "ul.pagination li:nth-of-type(" + pageNumber + ")"
+        )[0];
+        page.click();
+        this.currentPage = index;
+        this.currentQuestion = -1;
+        window.scrollTo(0, 0);
+        this.togglePages();
+      } catch (e) {
+        this.$swal("Complete the required fields");
+      }
     },
     togglePages() {
       this.showPages = !this.showPages;

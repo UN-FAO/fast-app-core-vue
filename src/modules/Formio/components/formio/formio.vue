@@ -46,7 +46,7 @@ export default {
     GPS.listen(this);
     // SMS.listen(this)
     document.addEventListener("saveAsDraft", this.saveAsLocalDraft);
-    this.save = _debounce(this.save, 100);
+    this.save = _debounce(this.save, 400);
     this.renderForm();
   },
   beforeDestroy() {
@@ -215,11 +215,13 @@ export default {
      */
     removeDuplicatedPagination() {
       let x = document.getElementsByClassName("pagination");
-      [].forEach.call(x, function(el, index) {
-        if (index !== x.length - 1) {
-          el.remove();
-        }
-      });
+      if (x.length > 2) {
+        [].forEach.call(x, function(el, index) {
+          if (index !== x.length - 1) {
+            el.remove();
+          }
+        });
+      }
     },
     /**
      * [createLocalDraft description]
@@ -381,29 +383,31 @@ export default {
         }
         let timeoutId;
 
-        this.formIO.on("change", change => {
-          this.removeDuplicatedPagination();
-          if (this.localDraft) {
-            this.saved = false;
-            var draftStatus = new CustomEvent("draftStatus", {
-              detail: { data: false, text: "Draft not Saved" }
-            });
-            document.dispatchEvent(draftStatus);
-            // AutoSave functionality
-            // If a timer was already started, clear it.
-            if (timeoutId) clearTimeout(timeoutId);
+        if (events.filter(e => e.type === "formio.change").length < 1) {
+          this.formIO.on("change", change => {
+            this.removeDuplicatedPagination();
+            if (this.localDraft) {
+              this.saved = false;
+              var draftStatus = new CustomEvent("draftStatus", {
+                detail: { data: false, text: "Draft not Saved" }
+              });
+              document.dispatchEvent(draftStatus);
+              // AutoSave functionality
+              // If a timer was already started, clear it.
+              if (timeoutId) clearTimeout(timeoutId);
 
-            // Set timer that will save comment when it fires.
-            timeoutId = setTimeout(() => {
-              this.autoSaveAsDraft();
-              this.saved = true;
-            }, 700);
-          }
-          this.$eventHub.$emit("formio.change", {
-            change: change,
-            formio: this.formIO
+              // Set timer that will save comment when it fires.
+              timeoutId = setTimeout(() => {
+                this.autoSaveAsDraft();
+                this.saved = true;
+              }, 700);
+            }
+            this.$eventHub.$emit("formio.change", {
+              change: change,
+              formio: this.formIO
+            });
           });
-        });
+        }
 
         // Add error event listener only if we do not have it
         if (events.filter(e => e.type === "formio.nextPage").length < 1) {
