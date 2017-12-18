@@ -96,11 +96,16 @@ const LocalForm = class {
     _forEach(forms, form => {
       // Go across every component
       FormioUtils.eachComponent(form.data.components, (component) => {
-        // Find an specific label
-        // if (component.label === 'Main source') {
-        //  console.log('Aquiiiii', component);
-        // }
+        if (component.addAnother && component.addAnother !== '') {
+          componentLabels.push(component.addAnother)
+        }
+        if (component.legend && component.legend !== '') {
+          componentLabels.push(component.legend)
+        }
 
+        if (component.title && component.title !== '') {
+          componentLabels.push(component.title)
+        }
         // If it has a label
         if (component.label && component.label !== '') {
           componentLabels.push(component.label)
@@ -127,7 +132,7 @@ const LocalForm = class {
             })
           }
         }
-      });
+      }, true);
     })
     // Clean duplicated labels
     let uniqueLabels = Array.from(new Set(componentLabels)).sort();
