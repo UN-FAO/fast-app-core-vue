@@ -26,7 +26,7 @@
             <q-tab-pane name="tab-1" ref="tab1">
 
               <formio :formioURL="formioURL" :submission="submission" :formioToken="formioToken" :localDraft="LOCAL_DRAFT_ENABLED" :readOnly="false"
-              />
+             />
             </q-tab-pane>
 
           </q-tabs>
@@ -417,10 +417,10 @@ export default {
       });
     },
     customSubmission() {
-      let submission = require('./sub.json')
-      let customSubmission = this.submission
-      customSubmission.data.data = submission[0]
-      return customSubmission
+      let submission = require("./sub.json");
+      let customSubmission = this.submission;
+      customSubmission.data.data = submission[0];
+      return customSubmission;
     }
   }
 };

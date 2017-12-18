@@ -68,6 +68,9 @@ export default {
     submission: function(value) {
       this.jsonSubmission = value;
       this.renderForm();
+    },
+    language: function() {
+      this.renderForm();
     }
   },
   computed: {
@@ -136,10 +139,7 @@ export default {
         tag: "p"
       });
       _map(comps, comp => {
-        if (
-          this.$t(comp.content) !==
-          comp.content
-        ) {
+        if (this.$t(comp.content) !== comp.content) {
           comp.content = this.$t(comp.content);
         }
       });
@@ -351,6 +351,10 @@ export default {
 
         // When the submission has been added the form is mounted
         this.$eventHub.$emit("formio.mounted", this.formIO);
+
+        this.formIO.language = localStorage.getItem("defaultLenguage")
+          ? localStorage.getItem("defaultLenguage")
+          : "en";
 
         // Define all the Listeners for the different FORM.io Events
         let events = this.formIO.eventListeners;

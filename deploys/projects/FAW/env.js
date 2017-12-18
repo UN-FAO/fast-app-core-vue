@@ -8,7 +8,7 @@
 | understand whats are your users looking at!
 |
 */
-exports.FAST_VERSION = '0.5.6'
+exports.FAST_VERSION = '0.5.7'
 /*
 |--------------------------------------------------------------------------
 | FORM.IO CONFIGURATION
