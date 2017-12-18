@@ -60,8 +60,6 @@
     </q-popover>
   </q-btn>
 
-<!--
-
   <q-btn icon="fa-filter" ref="target" color="primary" outline>
         Languages
     <q-popover  ref="popover" anchor="bottom middle" max-height="300px" fit>
@@ -93,7 +91,7 @@
       </div>
     </q-popover>
   </q-btn>
-  -->
+
   <q-checkbox style="text-transform: uppercase;" v-model="untranslated" label="Not translated"/>
   <q-input
           v-model="searchBox"
@@ -223,8 +221,7 @@ export default {
   },
   methods: {
     ...mapActions(["getResources"]),
-    async removeDuplicated() {
-    },
+    async removeDuplicated() {},
     hasTranslation() {
       return _isEmpty(this.translations);
     },
@@ -295,7 +292,10 @@ export default {
         appName: this.$store.state.authStore.appName
       });
       await Localization.getTranslations();
-      this.translations = await LocalForm.getAllLabels();
+      this.translations = await LocalForm.getAllLabels(
+        this.selection,
+        this.languageSelection
+      );
     },
     async addLanguage() {
       let options = LocalTranslation.getIsoLanguages();

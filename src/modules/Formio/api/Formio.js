@@ -3,6 +3,7 @@ import {
   Loading
 } from 'quasar'
 import _forEach from 'lodash/forEach'
+import _merge from 'lodash/merge'
 import FormioUtils from 'formiojs/utils'
 import FormioForm from 'formiojs/form'
 import AXIOS from 'axios'
@@ -723,7 +724,8 @@ const Formio = class {
           if (response.data && response.data.length > 0) {
             let submissions = response.data[0]
             let id = submissions._id
-            Formio.updateTranslation(idMachine, id, translations).then((updatedSubmission) => {
+            let mergedTranslations = _merge(submissions.data, translations)
+            Formio.updateTranslation(idMachine, id, mergedTranslations).then((updatedSubmission) => {
                 resolve(submissions)
                 Loading.hide()
               })
