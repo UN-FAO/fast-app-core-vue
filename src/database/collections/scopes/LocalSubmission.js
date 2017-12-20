@@ -3,8 +3,10 @@ import _map from 'lodash/map'
 import _cloneDeep from 'lodash/cloneDeep'
 import _filter from 'lodash/filter'
 import _orderBy from 'lodash/orderBy'
+import _get from 'lodash/get'
 import Auth from 'modules/Auth/api/Auth'
 import uuidv4 from 'uuid/v4'
+
 
 const LocalSubmission = class {
   static async getModel() {
@@ -134,6 +136,37 @@ const LocalSubmission = class {
       'desc'
     ])
     return submissions
+  }
+
+  static async getParallelParticipants(idForm, idSubmission) {
+    let currentSubmission = await LocalSubmission.find({
+      'data._id': idSubmission
+    })
+    currentSubmission = currentSubmission[0]
+    let groupId = _get(currentSubmission, 'data.data.parallelSurvey', undefined)
+
+    groupId = groupId && groupId !== '[object Object]' ? JSON.parse(groupId).groupId : undefined
+
+    let submissions = await LocalSubmission.find({
+      'data.formio.formId': idForm
+    })
+
+    let a = submissions.filter((submission) => {
+      let parallelSurveyID = _get(submission, 'data.data.parallelSurvey', undefined)
+      if (submission.data.data && submission.data.data.parallelSurvey) {
+        parallelSurveyID = parallelSurveyID && parallelSurveyID !== '[object Object]' ? JSON.parse(parallelSurveyID).groupId : undefined
+
+        if (parallelSurveyID) {
+          return parallelSurveyID === groupId
+        }
+      }
+    })
+
+    a = _map(a, 'data.data.parallelSurvey')
+    a = _map(a, (survey) => {
+      return JSON.parse(survey)
+    })
+    return a
   }
 }
 export default LocalSubmission

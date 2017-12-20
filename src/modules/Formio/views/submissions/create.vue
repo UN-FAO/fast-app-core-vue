@@ -18,10 +18,13 @@
         <q-card-main>
 
           <q-btn flat @click="togglePages" icon="menu" style="color:black;" v-if="_isWizard"></q-btn>
+          <q-icon name="thumb_up" />
           <q-tabs inverted id="contentForm">
             <!-- Tabs - notice slot="title" -->
-            <q-tab v-bind:class="!parallelSurveys ? 'hidden' : ''" default slot="title" name="tab-1" icon="person" label="P1" :color="saved ? 'primary' : 'red'" />
+
+            <q-tab v-bind:class="!parallelSurveys ? 'hidden' : ''" default slot="title" name="tab-1" icon="person" :label="participantName" :color="saved ? 'primary' : 'red'" />
             <!-- Targets -->
+              <q-tab  slot="title" v-if="participant.submissionId !== $route.params.idSubmission" v-for="participant in participants" :key="participant.submissionId" icon="person" :label="participant.participantName" :color="saved ? 'primary' : 'red'" @click="goToSurvey(participant.submissionId)" />
 
             <q-tab-pane name="tab-1" ref="tab1">
 
@@ -70,12 +73,14 @@
 import _debounce from "lodash/debounce";
 import _forEach from "lodash/forEach";
 import _groupBy from "lodash/groupBy";
+import _get from "lodash/get";
 import FormioUtils from "formiojs/utils";
 import { mapActions } from "vuex";
 import Auth from "modules/Auth/api/Auth";
 import formio from "modules/Formio/components/formio/formio";
 import LocalSubmission from "database/collections/scopes/LocalSubmission";
 import { APP_URL, LOCAL_DRAFT_ENABLED, PARALLEL_SURVEYS } from "config/env";
+import uuidv4 from "uuid/v4";
 import {
   QCard,
   QCardTitle,
@@ -198,9 +203,39 @@ export default {
       transform(result) {
         return result;
       }
+    },
+    participants: {
+      get() {
+        return LocalSubmission.getParallelParticipants(
+          this.$route.params.idForm,
+          this.$route.params.idSubmission
+        );
+      },
+      transform(result) {
+        return result;
+      }
     }
   },
   computed: {
+    participantName() {
+      let parallelSurvey = null;
+      if (
+        this.currentSubmission &&
+        this.currentSubmission.data &&
+        this.currentSubmission.data.parallelSurvey
+      ) {
+        try {
+          parallelSurvey = JSON.parse(
+            this.currentSubmission.data.parallelSurvey
+          );
+        } catch (e) {
+          parallelSurvey = this.currentSubmission.data.parallelSurvey;
+        }
+        return parallelSurvey.participantName;
+      } else {
+        return "";
+      }
+    },
     _pages() {
       return this.pages;
     },
@@ -219,6 +254,13 @@ export default {
         className = className + " saving";
       }
       return className;
+    },
+    currentSubmission() {
+      if (this.submission && this.submission.data) {
+        return this.submission.data;
+      } else {
+        return {};
+      }
     }
   },
   data: function() {
@@ -241,7 +283,8 @@ export default {
       currentQuestion: -1,
       displayUp: false,
       displayDown: true,
-      parallelSurveys: PARALLEL_SURVEYS
+      parallelSurveys: PARALLEL_SURVEYS,
+      parallelSub: []
     };
   },
   methods: {
@@ -354,20 +397,65 @@ export default {
       }
     },
     addSurvey() {
-      let self = this;
-      this.$swal({
-        title: "Give her a name",
+      let groupId = _get(this.currentSubmission, 'data.parallelSurvey', undefined)
+      groupId = groupId && groupId !== '[object Object]' ? JSON.parse(groupId).groupId : undefined
+
+      let steps = [];
+      let progressSteps = [];
+      if (groupId) {
+        progressSteps = ["1"];
+        steps = [
+          {
+            title: "Participant Name",
+            text: "Give the next participant a name"
+          }
+        ];
+      } else {
+        progressSteps = ["1", "2", "3"];
+        steps = [
+          {
+            title: "Group Name",
+            text: "Give the group a name"
+          },
+          {
+            title: "Participant Name",
+            text: "Give the current participant a name"
+          },
+          {
+            title: "Participant Name",
+            text: "Give the next participant a name"
+          }
+        ];
+      }
+
+      this.$swal.setDefaults({
         input: "text",
+        confirmButtonText: "Next &rarr;",
         showCancelButton: true,
-        confirmButtonText: "Add",
-        showLoaderOnConfirm: true,
-        allowOutsideClick: false
-      }).then(function(name) {
-        self.$swal({
-          type: "success",
-          title: "Added to Survey!",
-          html: name + " has been added"
-        });
+        progressSteps: progressSteps
+      });
+
+      this.$swal.queue(steps).then(result => {
+        this.$swal.resetDefaults();
+        this.currentSubmission.data.parallelSurvey = {};
+        this.currentSubmission.data.parallelSurvey.groupId = uuidv4();
+        this.currentSubmission.data.parallelSurvey.groupName = result[0];
+        this.currentSubmission.data.parallelSurvey.participantName = result[1];
+        this.currentSubmission.data.parallelSurvey.submissionId = this.currentSubmission._id;
+
+        this.currentSubmission.data.parallelSurvey = JSON.stringify(
+          this.currentSubmission.data.parallelSurvey
+        );
+        console.log("currentSubmission", this.currentSubmission);
+
+        if (result.value) {
+          this.$swal({
+            title: "All done!",
+            html:
+              "Your answers: <pre>" + JSON.stringify(result.value) + "</pre>",
+            confirmButtonText: "Lovely!"
+          });
+        }
       });
     },
     getForms() {
@@ -381,6 +469,15 @@ export default {
       // let label = errorCount !== '' ? page.title + '<span style="color: red;     font-weight: 500; font-size: larger; font-family: monospace;"> (' + errorCount + ')</span>' : page.title
       let label = page.title;
       return label;
+    },
+    goToSurvey(id) {
+      this.$router.push({
+        name: "formio_submission_update",
+        params: {
+          idForm: this.$route.params.idForm,
+          idSubmission: id
+        }
+      });
     },
     validateRequired(pages, data) {
       let errorCount = 0;
