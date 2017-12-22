@@ -9,6 +9,7 @@ import _debounce from "lodash/debounce";
 import _isEmpty from "lodash/isEmpty";
 import _cloneDeep from "lodash/cloneDeep";
 import _map from "lodash/map";
+import _get from "lodash/get";
 import Formio from "formiojs";
 import FormioForm from "formiojs/form";
 import FormioWizard from "formiojs/wizard";
@@ -21,7 +22,7 @@ import Lenguage from "./src/lenguage";
 export default {
   name: "formio",
   props: {
-    formioURL: {
+    formURL: {
       required: true
     },
     submission: {
@@ -36,8 +37,21 @@ export default {
     localDraft: {
       required: false
     },
-    readOnly: {
+    options: {
+      type: Object,
+      default: () => ({})
+    },
+    autoCreate: {
       required: false
+    }
+  },
+  watch: {
+    submission: function(value) {
+      this.jsonSubmission = value;
+      this.renderForm();
+    },
+    language: function() {
+      this.renderForm();
     }
   },
   mounted() {
@@ -56,61 +70,17 @@ export default {
   data: () => {
     return {
       formIO: null,
-      jsonForm: null,
       jsonSubmission: undefined,
       offlineModePlugin: null,
-      loading: true,
-      saved: false,
-      removedValues: []
+      saved: false
     };
   },
-  watch: {
-    submission: function(value) {
-      this.jsonSubmission = value;
-      this.renderForm();
-    },
-    language: function() {
-      this.renderForm();
-    }
-  },
-  computed: {
-    formId() {
-      return this.formioURL.split("/").pop();
-    },
-    baseURL() {
-      return "https://" + this.formioURL.split("/")[2] + "/";
-    },
-    formioPath() {
-      return this.jsonForm ? this.jsonForm.path : "";
-    }
-  },
   methods: {
-    /**
-         * Refresh when pulled Down
-         * @return {[type]} [description]
-         */
-    refreshForm() {
-      this.renderForm();
-    },
-    triggerDestroy() {
-      this.$destroy();
-    },
     /**
          * [renderForm description]
          * @return {[type]} [description]
          */
     renderForm() {
-      if (this.submission && this.submission.data !== "register") {
-        this.jsonSubmission = this.submission;
-      }
-      let submissionNotLoaded =
-        this.jsonSubmission &&
-        typeof this.jsonSubmission === "undefined" &&
-        this.jsonSubmission.data !== "register";
-      // Wait until submission is present (if needed)
-      if (submissionNotLoaded) {
-        return;
-      }
       // Offline plugin functionallity
       this.registerOfflinePlugin();
       // Solving problem of multiple classes added to the element
@@ -146,30 +116,22 @@ export default {
       return Components;
     },
     /**
-     * [getCurrentForm description]
-     * @return {[type]} [description]
-     */
-    getCurrentForm() {
-      return this.jsonForm;
-    },
-    /**
       * [registerOfflinePlugin description]
       * @return {[type]} [description]
       */
     registerOfflinePlugin() {
-      // Get the Plugin
-      this.offlineModePlugin = OFFLINE_PLUGIN.getPlugin(
-        this.formId,
-        this.getCurrentForm,
-        this.storeForm,
-        this.hashField,
-        false,
-        this.$eventHub
-      );
       // De register if there was a previous registration
       Formio.deregisterPlugin("offline");
       // Register the plugin for offline mode
-      Formio.registerPlugin(this.offlineModePlugin, "offline");
+      Formio.registerPlugin(
+        OFFLINE_PLUGIN.getPlugin(
+          this.formURL,
+          this.hashField,
+          false,
+          this.$eventHub
+        ),
+        "offline"
+      );
     },
     /**
      * [saveAsDraft description]
@@ -178,7 +140,7 @@ export default {
      */
     saveAsLocalDraft(e) {
       let formSubmission = {
-        data: this.getCurrentData(),
+        data: this.formIO.data,
         redirect: true,
         draft: true,
         syncError: false,
@@ -191,9 +153,6 @@ export default {
         "success"
       );
     },
-    getCurrentData() {
-      return this.formIO.data;
-    },
     /**
      * [autoSaveAsDraft description]
      * @param  {[type]} e [description]
@@ -201,7 +160,7 @@ export default {
      */
     autoSaveAsDraft() {
       let formSubmission = {
-        data: this.getCurrentData(),
+        data: this.formIO.data,
         redirect: false,
         draft: true,
         syncError: false,
@@ -229,7 +188,7 @@ export default {
      */
     createLocalDraft() {
       let formSubmission = {
-        data: this.getCurrentData(),
+        data: this.formIO.data,
         redirect: "Update",
         draft: true,
         trigger: "createLocalDraft"
@@ -243,37 +202,23 @@ export default {
      */
     save(formSubmission) {
       if (this.jsonSubmission) {
-        formSubmission._id = this.jsonSubmission.data._id
-          ? this.jsonSubmission.data._id
-          : this.jsonSubmission._id;
+        formSubmission._id = _get(
+          this.jsonSubmission,
+          "data._id",
+          this.jsonSubmission._id
+        );
       }
-      let formio = new Formio(this.formioURL);
+      let formio = new Formio(this.formURL);
       formio.saveSubmission(formSubmission);
     },
-    /**
-     * [setSubmission description]
-     * @param {[type]} savedSubmission [description]
-     */
-    setSubmission(onlineJsonForm, savedSubmission) {
-      this.formIO.submission =
-        this.jsonSubmission &&
-        this.jsonSubmission.data &&
-        this.jsonSubmission.data.data
-          ? { data: this.jsonSubmission.data.data }
-          : { data: {} };
+    setSubmission(onlineJsonForm) {
+      this.formIO.submission = {
+        data: _get(this.jsonSubmission, "data.data", {})
+      };
+
       // If we are creating a wizard
       if (onlineJsonForm.display === "wizard") {
-        this.formIO.data =
-          this.jsonSubmission &&
-          this.jsonSubmission.data &&
-          this.jsonSubmission.data.data
-            ? this.jsonSubmission.data.data
-            : {};
-      } else {
-        // If we have a savedSubmission (Staying on the same page after submit)
-        this.formIO.submission = savedSubmission
-          ? { data: savedSubmission.data }
-          : this.formIO.submission;
+        this.formIO.data = _get(this.jsonSubmission, "data.data", {});
       }
     },
     /**
@@ -283,18 +228,15 @@ export default {
      * @return {[type]}                [description]
      */
     createFormioInstance(onlineJsonForm, translations) {
-      let readOnly = this.readOnly;
+      translations.readOnly = this.readOnly;
+      if (!_isEmpty(this.formIO)) {
+        return;
+      }
       // Create the formIOForm Instance (Renderer)
       if (onlineJsonForm.display === "wizard") {
-        if (_isEmpty(this.formIO)) {
-          translations.readOnly = readOnly;
-          this.formIO = new FormioWizard(this.$refs.formIO, translations);
-        }
+        this.formIO = new FormioWizard(this.$refs.formIO, translations);
       } else {
-        if (_isEmpty(this.formIO)) {
-          translations.readOnly = readOnly;
-          this.formIO = new FormioForm(this.$refs.formIO, translations);
-        }
+        this.formIO = new FormioForm(this.$refs.formIO, translations);
       }
     },
     /**
@@ -307,25 +249,23 @@ export default {
       savedSubmission = savedSubmission || null;
 
       // Create FormIOJS plugin instace (Manipulation)
-      let formio = new Formio(this.formioURL);
+      let formio = new Formio(this.formURL);
 
       formio.loadForm().then(async onlineJsonForm => {
         let translations = await OFFLINE_PLUGIN.getLocalTranslations();
 
         this.createFormioInstance(onlineJsonForm, translations);
-        // If we are creating a new record triggers the creation
-        // to go directly to edit (an have autosave functionality)
-        if (
-          this.jsonSubmission &&
-          this.jsonSubmission.data === false &&
-          this.$route.name === "formio_form_submission"
-        ) {
+
+        // Autocreate record, go directly to edit (an have autosave functionality)
+        if (this.autoCreate) {
           this.createLocalDraft();
           return;
         }
-        // Set Submission if we are Updating
-        this.setSubmission(onlineJsonForm, savedSubmission);
 
+        if (this.jsonSubmission) {
+          // Set Submission if we are Updating
+          this.setSubmission(onlineJsonForm);
+        }
         // Clone the original object to avoid changes
         let cloneJsonForm = _cloneDeep(onlineJsonForm);
 
@@ -334,16 +274,17 @@ export default {
           onlineJsonForm.components
         );
 
-        // Translate the form
+        // Generate some custom translations
         cloneJsonForm.components = this.setTranslations(
           _cloneDeep(onlineJsonForm.components)
         );
 
+        // Fixing problem with data not updating on loading
+        // TODO this should be removed and ask for a fix in the library
         let components = FormioUtils.findComponents(cloneJsonForm.components, {
           input: true,
           type: "number"
         });
-
         _map(components, function(c) {
           c.defaultValue = "default";
         });
@@ -364,7 +305,6 @@ export default {
         // Add error event listener only if we do not have it
         if (events.filter(e => e.type === "formio.render").length < 1) {
           this.formIO.on("render", render => {
-            this.loading = false;
             this.$eventHub.$emit("formio.render", {
               render: render,
               formio: this.formIO
@@ -450,7 +390,7 @@ export default {
               confirmButtonText: "Yes, send it!"
             }).then(async () => {
               let formSubmission = {
-                data: this.getCurrentData()
+                data: this.formIO.data
               };
               formSubmission.draft = false;
               formSubmission.redirect = true;

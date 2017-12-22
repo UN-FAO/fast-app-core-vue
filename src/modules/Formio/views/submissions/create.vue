@@ -22,13 +22,28 @@
           <q-tabs inverted id="contentForm">
             <!-- Tabs - notice slot="title" -->
 
-            <q-tab v-bind:class="!parallelSurveys ? 'hidden' : ''" default slot="title" name="tab-1" icon="person" :label="participantName" :color="saved ? 'primary' : 'red'" />
+            <q-tab v-bind:class="!PARRALEL_SURVEYS ? 'hidden' : ''" default slot="title" name="tab-1" icon="person" :label="participantName" :color="saved ? 'primary' : 'red'" />
             <!-- Targets -->
-              <q-tab  slot="title" v-if="participant.submissionId !== $route.params.idSubmission" v-for="participant in participants" :key="participant.submissionId" icon="person" :label="participant.participantName" :color="saved ? 'primary' : 'red'" @click="goToSurvey(participant.submissionId)" />
+              <q-tab
+                slot="title"
+                v-if="participant.submissionId !== $route.params.idSubmission"
+                v-for="participant in participants"
+                :key="participant.submissionId"
+                icon="person"
+                :label="participant.participantName"
+                :color="saved ? 'primary' : 'red'"
+                @click="goToSurvey(participant.submissionId)"
+              />
 
             <q-tab-pane name="tab-1" ref="tab1">
 
-              <formio :formioURL="formioURL" :submission="submission" :formioToken="formioToken" :localDraft="LOCAL_DRAFT_ENABLED" :readOnly="false"
+              <formio
+                :formURL="formURL"
+                :submission="submission"
+                :formioToken="formioToken"
+                :localDraft="LOCAL_DRAFT_ENABLED"
+                :readOnly="readOnly"
+                :autoCreate="autoCreate"
              />
             </q-tab-pane>
 
@@ -46,9 +61,9 @@
         <q-fab color="red" icon="add" direction="left">
           <q-fab-action color="secondary" @click="exportPDF" icon="print"></q-fab-action>
 
-          <q-fab-action color="primary" @click="getForms()" icon="cloud_download"></q-fab-action>
+          <q-fab-action color="primary" @click="saveAsDraft()" icon="fa-floppy-o"></q-fab-action>
 
-          <q-fab-action v-bind:class="!parallelSurveys ? 'hidden' : ''" color="amber" @click="addSurvey()" icon="person_add"></q-fab-action>
+          <q-fab-action v-bind:class="!PARRALEL_SURVEYS ? 'hidden' : ''" color="amber" @click="addSurvey()" icon="person_add"></q-fab-action>
 
         </q-fab>
       </q-fixed-position>
@@ -197,7 +212,7 @@ export default {
         if (this.$route.params.idSubmission) {
           return LocalSubmission.get(this.$route.params.idSubmission);
         } else {
-          return LocalSubmission.get("ABCD");
+          return undefined;
         }
       },
       transform(result) {
@@ -266,7 +281,7 @@ export default {
   data: function() {
     return {
       form: null,
-      formioURL: APP_URL + "/" + this.$route.params.idForm,
+      formURL: APP_URL + "/" + this.$route.params.idForm,
       people: [
         {
           name: "P1"
@@ -283,12 +298,24 @@ export default {
       currentQuestion: -1,
       displayUp: false,
       displayDown: true,
-      parallelSurveys: PARALLEL_SURVEYS,
-      parallelSub: []
+      PARRALEL_SURVEYS: PARALLEL_SURVEYS,
+      parallelSub: [],
+      autoCreate: !this.$route.params.idSubmission,
+      readOnly: false
     };
   },
   methods: {
     ...mapActions(["getResources"]),
+    saveAsDraft() {
+      // Create the event
+      var saveAsDraft = new CustomEvent("saveAsDraft", {
+        detail: {
+          data: {},
+          text: "Save as Draft Requested"
+        }
+      });
+      document.dispatchEvent(saveAsDraft);
+    },
     createScorePanels(pages, data) {
       // Search all of the Score components in different pages
       let scorePanels = [];
@@ -397,8 +424,15 @@ export default {
       }
     },
     addSurvey() {
-      let groupId = _get(this.currentSubmission, 'data.parallelSurvey', undefined)
-      groupId = groupId && groupId !== '[object Object]' ? JSON.parse(groupId).groupId : undefined
+      let groupId = _get(
+        this.currentSubmission,
+        "data.parallelSurvey",
+        undefined
+      );
+      groupId =
+        groupId && groupId !== "[object Object]"
+          ? JSON.parse(groupId).groupId
+          : undefined;
 
       let steps = [];
       let progressSteps = [];
@@ -437,15 +471,15 @@ export default {
 
       this.$swal.queue(steps).then(result => {
         this.$swal.resetDefaults();
-        this.currentSubmission.data.parallelSurvey = {};
-        this.currentSubmission.data.parallelSurvey.groupId = uuidv4();
-        this.currentSubmission.data.parallelSurvey.groupName = result[0];
-        this.currentSubmission.data.parallelSurvey.participantName = result[1];
-        this.currentSubmission.data.parallelSurvey.submissionId = this.currentSubmission._id;
+        if (!groupId) {
+          this.currentSubmission.data.parallelSurvey = JSON.stringify({
+            groupId: uuidv4(),
+            groupName: result[0],
+            participantName: result[1],
+            submissionId: this.currentSubmission._id
+          });
+        }
 
-        this.currentSubmission.data.parallelSurvey = JSON.stringify(
-          this.currentSubmission.data.parallelSurvey
-        );
         console.log("currentSubmission", this.currentSubmission);
 
         if (result.value) {

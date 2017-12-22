@@ -20,9 +20,9 @@
 
                 <div class="form-login" >
                   <br>
-                        <formio :formioURL="formioURL"
-                                hashField="password"
-                                :submission="submission"
+                        <formio
+                          :formURL="formURL"
+                          hashField="password"
                         />
                     <br>
                 <p class="text-center _new-user"><router-link :to="{ path: 'login' }">{{$t('Back to login')}}</router-link></p>
@@ -44,8 +44,7 @@ export default {
   data() {
     return {
       form: null,
-      formioURL: APP_URL + "/userregister",
-      submission: { data: "register" },
+      formURL: APP_URL + "/userregister",
       appName: APP_FANTACY_NAME,
       appPhrase: APP_PHRASE
     };

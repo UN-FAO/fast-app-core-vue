@@ -14,19 +14,7 @@ import _forEach from 'lodash/forEach'
 import FORMIOAPI from 'modules/Formio/api/Formio'
 
 const OFFLINE_PLUGIN = class {
-  /**
-   * Stores the Formio submission locally, to allow for
-   * offline use. Then the submission can manually
-   * be poushed to Form.io afterward
-   * @param  {[type]} formSubmission [description]
-   * @param  {[type]} formio         [description]
-   * @param  {[type]} redirect       [description]
-   * @param  {[type]} hashField      [description]
-   * @param  {[type]} formId         [description]
-   * @param  {[type]} eventHub       [description]
-   * @return {[type]}                [description]
-   */
-  static storeForm(formSubmission, formio, redirect, hashField, formId, eventHub) {
+  static storeForm(formSubmission, formio, redirect, hashField, formId) {
     if ((typeof hashField !== 'undefined')) {
       formSubmission.data.hashedPassword = md5(formSubmission.data.password, MD5_KEY)
       store.dispatch('storeUserLocally', {
@@ -90,19 +78,8 @@ const OFFLINE_PLUGIN = class {
     }
   }
 
-  /**
-   * Defines the Offline Plugin to use with Form.io JS
-   * library. When we want to create an online submission
-   * this plugin must be desactivated.
-   * @param  {[type]} formId         [description]
-   * @param  {[type]} getCurrentForm [description]
-   * @param  {[type]} storeForm      [description]
-   * @param  {[type]} hashField      [description]
-   * @param  {[type]} redirect       [description]
-   * @param  {[type]} eventHub       [description]
-   * @return {[type]}                [description]
-   */
-  static getPlugin(formId, getCurrentForm, storeForm, hashField, redirect, eventHub) {
+  static getPlugin(formioURL, hashField, redirect) {
+    let formId = formioURL.split("/").pop();
     let plugin = {
       priority: 0,
       staticRequest: async(args) => {
@@ -178,9 +155,9 @@ const OFFLINE_PLUGIN = class {
         if ((args.method === 'POST' || args.method === 'PUT') && args.type === 'submission') {
           let form = await LocalForm.get(args.formio.formId)
 
-          let formioURL = 'https://' + form.machineName.split(':')[0] + '.form.io/' + form.path
+          let formioPath = 'https://' + form.machineName.split(':')[0] + '.form.io/' + form.path
 
-          let formio = new Formio(formioURL)
+          let formio = new Formio(formioPath)
           let dStoreForm = _debounce(this.storeForm, 1000)
 
           let dataToSubmit = args.data
@@ -193,7 +170,7 @@ const OFFLINE_PLUGIN = class {
             }
             dataToSubmit = formSubmission
           }
-          dStoreForm(dataToSubmit, formio, redirect, hashField, formId, eventHub)
+          dStoreForm(dataToSubmit, formio, redirect, hashField, formId)
           return args.data
         }
 

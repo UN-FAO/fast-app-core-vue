@@ -21,6 +21,7 @@ exports.FAST_VERSION = '0.5.7'
 */
 exports.APP_URL = 'https://uiorzjzflxyccmo.form.io'
 exports.APP_NAME = 'uiorzjzflxyccmo'
+exports.APP_SUBDOMAIN = true
 /*
 |--------------------------------------------------------------------------
 | APP CONFIGURATION
