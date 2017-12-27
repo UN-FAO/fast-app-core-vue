@@ -96,6 +96,8 @@ import formio from "modules/Formio/components/formio/formio";
 import LocalSubmission from "database/collections/scopes/LocalSubmission";
 import { APP_URL, LOCAL_DRAFT_ENABLED, PARALLEL_SURVEYS } from "config/env";
 import uuidv4 from "uuid/v4";
+import Formio from "formiojs";
+import OFFLINE_PLUGIN from "modules/Formio/components/formio/src/offlinePlugin";
 import {
   QCard,
   QCardTitle,
@@ -234,17 +236,12 @@ export default {
   computed: {
     participantName() {
       let parallelSurvey = null;
-      if (
-        this.currentSubmission &&
-        this.currentSubmission.data &&
-        this.currentSubmission.data.parallelSurvey
-      ) {
+      let submission = this.currentSubmission;
+      if (submission && submission.data && submission.data.parallelSurvey) {
         try {
-          parallelSurvey = JSON.parse(
-            this.currentSubmission.data.parallelSurvey
-          );
+          parallelSurvey = JSON.parse(submission.data.parallelSurvey);
         } catch (e) {
-          parallelSurvey = this.currentSubmission.data.parallelSurvey;
+          parallelSurvey = submission.data.parallelSurvey;
         }
         return parallelSurvey.participantName;
       } else {
@@ -470,27 +467,62 @@ export default {
       });
 
       this.$swal.queue(steps).then(result => {
+        let surveyData;
         this.$swal.resetDefaults();
         if (!groupId) {
+          let groupId = uuidv4();
           this.currentSubmission.data.parallelSurvey = JSON.stringify({
-            groupId: uuidv4(),
+            groupId: groupId,
             groupName: result[0],
             participantName: result[1],
             submissionId: this.currentSubmission._id
           });
+          surveyData = {
+            parallelSurvey: JSON.stringify({
+              groupId: groupId,
+              groupName: result[0],
+              participantName: result[2],
+              submissionId: this.currentSubmission._id
+            })
+          };
+        } else {
+          let parallelsurveyInfo = _get(
+            this.currentSubmission,
+            "data.parallelSurvey",
+            undefined
+          );
+          parallelsurveyInfo =
+            parallelsurveyInfo && parallelsurveyInfo !== "[object Object]"
+              ? JSON.parse(parallelsurveyInfo)
+              : undefined;
+          parallelsurveyInfo.participantName = result[0];
+          surveyData = { parallelSurvey: JSON.stringify(parallelsurveyInfo) };
         }
-
-        console.log("currentSubmission", this.currentSubmission);
-
-        if (result.value) {
-          this.$swal({
-            title: "All done!",
-            html:
-              "Your answers: <pre>" + JSON.stringify(result.value) + "</pre>",
-            confirmButtonText: "Lovely!"
-          });
-        }
+        this.createNewSurvey(surveyData);
       });
+    },
+    createNewSurvey(surveyData) {
+      // De register if there was a previous registration
+      Formio.deregisterPlugin("offline");
+      // Register the plugin for offline mode
+      Formio.registerPlugin(
+        OFFLINE_PLUGIN.getPlugin(
+          this.formURL,
+          this.hashField,
+          false,
+          this.$eventHub
+        ),
+        "offline"
+      );
+
+      let formSubmission = {
+        data: surveyData,
+        redirect: "Update",
+        draft: true,
+        trigger: "createParalelSurvey"
+      };
+      let formio = new Formio(this.formURL);
+      formio.saveSubmission(formSubmission);
     },
     getForms() {
       this.getResources({

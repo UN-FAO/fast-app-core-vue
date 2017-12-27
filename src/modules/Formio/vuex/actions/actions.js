@@ -12,6 +12,7 @@ import _forEach from 'lodash/forEach'
 import _map from 'lodash/map'
 import _unionBy from 'lodash/unionBy'
 import _isEmpty from 'lodash/isEmpty'
+import _get from 'lodash/get'
 import {
   Toast
 } from 'quasar'
@@ -229,13 +230,28 @@ const actions = {
 
 
     // If we are creating a new draft from scratch or a resource
-    if (formSubmission.trigger === 'createLocalDraft' || formSubmission.trigger === 'resourceCreation') {
+    if (formSubmission.trigger === 'createLocalDraft' || formSubmission.trigger === 'resourceCreation' || formSubmission.trigger === 'createParalelSurvey') {
       submission.created = moment().format()
       let newSubmission = await LocalSubmission.insert({
         data: submission
       })
       if (formSubmission.trigger === 'resourceCreation') {
         newSubmission.trigger = 'resourceCreation'
+      }
+      if (formSubmission.trigger === 'createParalelSurvey') {
+        let parallelsurveyInfo = _get(
+          newSubmission,
+          "data.data.parallelSurvey",
+          undefined
+        );
+        parallelsurveyInfo =
+          parallelsurveyInfo && parallelsurveyInfo !== "[object Object]"
+            ? JSON.parse(parallelsurveyInfo)
+            : undefined;
+        parallelsurveyInfo.submissionId = newSubmission._id
+        newSubmission.trigger = 'createParalelSurvey'
+        newSubmission.data.data.parallelSurvey = JSON.stringify(parallelsurveyInfo)
+        await LocalSubmission.update(newSubmission)
       }
       return newSubmission
     } // If we are updating the submission
@@ -255,7 +271,6 @@ const actions = {
       if (((submitting || (localDraft && submissionNotDraft)) && !autoSave) || (!isSynced && autoSave)) {
         localSubmission.data = submission
         await LocalSubmission.update(localSubmission)
-        console.log('localsubmission updateding', localSubmission)
       }
       return localSubmission
     }
