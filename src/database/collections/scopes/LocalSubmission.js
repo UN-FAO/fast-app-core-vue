@@ -140,8 +140,9 @@ const LocalSubmission = class {
 
   static async getParallelParticipants(idForm, idSubmission) {
     let currentSubmission = await LocalSubmission.find({
-      'data._id': idSubmission
+      '_id': idSubmission
     })
+    console.log('currentSubmission', idSubmission)
     currentSubmission = currentSubmission[0]
     let groupId = _get(currentSubmission, 'data.data.parallelSurvey', undefined)
 
@@ -152,16 +153,15 @@ const LocalSubmission = class {
     })
 
     let a = submissions.filter((submission) => {
-      let parallelSurveyID = _get(submission, 'data.data.parallelSurvey', undefined)
-      if (submission.data.data && submission.data.data.parallelSurvey) {
-        parallelSurveyID = parallelSurveyID && parallelSurveyID !== '[object Object]' ? JSON.parse(parallelSurveyID).groupId : undefined
-
-        if (parallelSurveyID) {
-          return parallelSurveyID === groupId
-        }
-      }
+      let parallelSurveyID = _get(
+        submission,
+        "data.data.parallelSurvey",
+        undefined
+      );
+      parallelSurveyID =
+        parallelSurveyID && parallelSurveyID !== "[object Object]" ? JSON.parse(parallelSurveyID).groupId : undefined;
+      return parallelSurveyID && (parallelSurveyID === groupId)
     })
-
     a = _map(a, 'data.data.parallelSurvey')
     a = _map(a, (survey) => {
       return JSON.parse(survey)
