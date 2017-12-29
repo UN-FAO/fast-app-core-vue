@@ -565,8 +565,8 @@ label {
 }
 
 .background-app {
+  /*background: linear-gradient(180deg, rgba(67, 165, 200, 0.8), rgba(99, 111, 189, 0.9));*/
   background: #F2F6FA
-  /*background: white;*/
 }
 
 .background-login,
@@ -755,7 +755,6 @@ p.form-title {
 }
 
 .form-login .q-if-control {
-
   cursor: pointer;
   margin-left: 8px;
   color: white;
@@ -763,20 +762,20 @@ p.form-title {
 }
 
 .form-login .q-if-label.ellipsis.full-width.absolute.self-start.q-if-label-above {
-
   font-size: large !important;
   font-weight: 350 !important;
   color: white;
 }
 
 .form-login .segment-title {
-
   font-size: 20px;
   color: white;
   text-align: -webkit-center;
   text-transform: uppercase;
 }
 
-  .formContainer div[role="alert"] {
+.formContainer div[role="alert"] {
   display: none;
 }
+
+

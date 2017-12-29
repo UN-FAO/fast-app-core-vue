@@ -6,8 +6,65 @@
   <meta name="format-detection" content="telephone=no">
   <meta name="msapplication-tap-highlight" content="no">
   <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
-  <title><%= htmlWebpackPlugin.options.title %></title>
+  <title>
+    <%= htmlWebpackPlugin.options.title %>
+  </title>
   <link rel="icon" href="statics/favicon.ico" type="image/x-icon">
+  <style>
+    .bb,
+    .bb::before,
+    .bb::after {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+    }
+
+    .bb {
+      width: 200px;
+      height: 200px;
+      margin: auto;
+      background: url("./statics/2000px-FAO_logo_reverse.png") no-repeat 50%/70% rgb(14, 109, 165);
+      color: #69ca62;
+      box-shadow: inset 0 0 0 1px rgba(105, 202, 98, 0.5);
+    }
+
+    .bb::before,
+    .bb::after {
+      content: '';
+      z-index: -1;
+      margin: -5%;
+      box-shadow: inset 0 0 0 2px;
+      animation: clipMe 3s linear infinite;
+    }
+
+    .bb::before {
+      animation-delay: -1.5s;
+    }
+
+    .bb:hover::after,
+    .bb:hover::before {
+      background-color: rgba(255, 0, 0, 0.3);
+    }
+
+    @keyframes clipMe {
+      0%,
+      100% {
+        clip: rect(0px, 220px, 2px, 0px);
+      }
+      25% {
+        clip: rect(0px, 2px, 220px, 0px);
+      }
+      50% {
+        clip: rect(218px, 220px, 220px, 0px);
+      }
+      75% {
+        clip: rect(0px, 220px, 220px, 218px);
+      }
+    }
+
+  </style>
 
 </head>
 
@@ -15,7 +72,7 @@
   <div id="q-app">
     <div v-if="forms.length === 0">
       <div style="align-items: center;justify-content: center;display: flex; width: 100%; height: 100%">
-        <h3 style="color:white">Loading...</h3>
+        <div class="bb"></div>
       </div>
     </div>
   </div>

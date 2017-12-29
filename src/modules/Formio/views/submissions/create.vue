@@ -286,7 +286,7 @@ export default {
       ],
       formioToken: Auth.user().x_jwt_token,
       LOCAL_DRAFT_ENABLED: LOCAL_DRAFT_ENABLED,
-      saved: false,
+      saved: true,
       errors: {},
       isWizard: false,
       pages: [],
@@ -537,6 +537,9 @@ export default {
       return label;
     },
     goToSurvey(id) {
+      if (!this.saved) {
+        return;
+      }
       this.$router.push({
         name: "formio_submission_update",
         params: {
