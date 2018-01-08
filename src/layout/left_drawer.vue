@@ -16,12 +16,12 @@
       <q-item-main :label="$t('Home')" />
     </q-side-link>
     <q-item-separator />
-    <q-list-header class="text-white">{{ $t("Available Forms") }}
+    <q-list-header class="text-white">{{ $t("Sync Application") }}
 
-      <q-btn flat color="primary" @click="getForms()">
+      <q-btn flat color="primary" @click="syncApp()">
         <q-icon name="cloud_download" class="cloud-item text-white" />
         <q-tooltip anchor="center right" self="center left" :offset="[10, 0]">
-          <strong>{{ $t("Sync forms") }}</strong>
+          <strong>{{ $t("Sync app") }}</strong>
         </q-tooltip>
       </q-btn>
 
@@ -92,6 +92,7 @@
   </q-scroll-area>
 </template>
 <script>
+import Localization from "modules/Localization/Localization";
 import { mapState, mapActions } from "vuex";
 import Auth from "modules/Auth/api/Auth";
 import LocalForm from "database/collections/scopes/LocalForm";
@@ -153,9 +154,25 @@ export default {
     closeDrawer() {
       this.$refs.leftDrawer.close();
     },
-    getForms() {
+    async syncApp() {
       this.getResources({
         appName: this.$store.state.authStore.appName
+      });
+      await Localization.getTranslations();
+      this.$eventHub.$emit("openLeftDrawer");
+      this.$swal({
+        title: this.$t("Localizations Synced"),
+        text: this.$t(
+          "You need to reload the page to see them. Want to do it now?"
+        ),
+        type: "success",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonClass: "modalCancel",
+        confirmButtonText: this.$t("Yes, reaload it!"),
+        cancelButtonText: this.$t("No, Later")
+      }).then(async () => {
+        window.location.reload(true);
       });
     },
     handleLogout() {

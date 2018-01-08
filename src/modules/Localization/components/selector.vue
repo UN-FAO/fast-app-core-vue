@@ -13,10 +13,12 @@
       {{lenguage.label}}
       </q-item>
 
+      <!--
        <q-item-separator />
       <q-item  @click="getTranslations(), $refs.popover.close()">
           <q-icon name="fa-language" /> Sync
       </q-item>
+      -->
 
     </q-list>
   </q-popover>

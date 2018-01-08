@@ -54,8 +54,8 @@ exports.TRANSLATIONS = [
   'Application Settings',
   'Collected Data',
   'Start new Collection',
-  'Sync forms',
-  'Available Forms',
+  'Sync app',
+  'Sync Application',
   'Home',
   'Reload Translations'
 ]

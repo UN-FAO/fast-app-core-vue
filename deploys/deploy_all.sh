@@ -23,6 +23,7 @@ DEPLOY_APP_NAME=$(cat package.json \
 	DESCRIPTION="Collection application for Form.io"
 ###################################################
 
+echo ${PRODUCTNAME}
 sh ./deploys/getAppRoles.sh
 quasar build
 npm run es5

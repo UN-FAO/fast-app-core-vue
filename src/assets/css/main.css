@@ -779,3 +779,18 @@ p.form-title {
 }
 
 
+.modalCancel{
+  background-color: white !important;
+  border: 1px solid #d33 !important;
+  color:#d33 !important;
+  font-weight: 400 !important;
+}
+.modalCancel:hover {
+  background-color: #d33 !important;
+  border: 1px solid #d33 !important;
+  color: white !important;
+  font-weight: 400 !important;
+}
+
+
+
