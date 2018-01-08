@@ -13,7 +13,8 @@ let SettingsRoutes = [{
       // UserProfile will be rendered inside User's <router-view>
       // when /user/:id/profile is matched
       path: 'translations',
-      component: Translations
+      component: Translations,
+      meta: { requiresAuth: true }
     }
   ]
 }]

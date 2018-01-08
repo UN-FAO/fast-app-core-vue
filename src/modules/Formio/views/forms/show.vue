@@ -52,11 +52,11 @@
     </div>
     <q-fixed-position corner="top-right" :offset="[18, 18]">
       <q-fab color="red" icon="add" direction="left" push>
-        <q-fab-action color="secondary" @click="createSubmission()" icon="add"></q-fab-action>
-
-        <q-fab-action color="amber" @click="pullSubmissions()" icon="cloud_download"></q-fab-action>
-
-        <q-fab-action color="success" @click="updateLocalSubmissions()" icon="fa-refresh"></q-fab-action>
+        <q-fab-action color="secondary" @click="createSubmission()" icon="add">
+          <q-tooltip>
+             {{$t('New Submission')}}
+          </q-tooltip>
+        </q-fab-action>
       </q-fab>
     </q-fixed-position>
   </div>
@@ -81,7 +81,8 @@ import {
   QSpinnerAudio,
   QTransition,
   Platform,
-  QInnerLoading
+  QInnerLoading,
+  QTooltip
 } from "quasar";
 import LocalSubmission from "database/collections/scopes/LocalSubmission";
 import LocalForm from "database/collections/scopes/LocalForm";
@@ -139,7 +140,8 @@ export default {
     QFabAction,
     QFixedPosition,
     QPullToRefresh,
-    QSpinnerAudio
+    QSpinnerAudio,
+    QTooltip
   },
   data() {
     return {

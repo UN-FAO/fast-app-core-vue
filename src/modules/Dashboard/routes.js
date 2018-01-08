@@ -5,7 +5,7 @@ const Survey = r =>
   require.ensure([], () => r(require('./views/newSurvey')), 'offline-module')
 
   const CollectedData = r =>
-  require.ensure([], () => r(require('./views/CollectedData')), 'offline-module')
+  require.ensure([], () => r(require('./views/collectedData')), 'offline-module')
 
 let DashboardRoutes = [
   { path: '/dashboard', component: Dashboard, name: 'dashboard', meta: { requiresAuth: true } },

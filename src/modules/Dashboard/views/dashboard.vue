@@ -73,23 +73,24 @@
 
     <div class="row">
       <q-card class="col-sm-offset-2 col-md-4 col-md-offset-2 col-lg-4 col-lg-offset-3 col-xl-3" style="margin-top: 30px;">
-
-        <q-card-main>
-          <!--<q-icon name="fa-cog fa-5x" />-->
-          <q-icon class="material-icons">settings</q-icon>
-          <h1 style="color: rgb(14, 109, 165)">{{ $t("Application Settings") }}</h1>
-          <q-btn @click="toggleFlip(3)" round color="grey" flat>
-          </q-btn>
-        </q-card-main>
-      </q-card>
-
-      <q-card class="col-md-4 col-lg-4 col-xl-3" style="margin-top: 30px; margin-left: 30px;">
         <q-card-main>
           <!--<q-icon name="fa-tablet fa-5x" />-->
           <q-icon class="material-icons">tablet_mac</q-icon>
           <h1 style="color: rgb(14, 109, 165)"> {{ $t("About") }}
            <br>{{appName}} </h1>
         </q-card-main>
+
+      </q-card>
+
+      <q-card v-if="isAdmin()" class="col-md-4 col-lg-4 col-xl-3" style="margin-top: 30px; margin-left: 30px;">
+          <q-card-main>
+          <!--<q-icon name="fa-cog fa-5x" />-->
+          <q-icon class="material-icons">settings</q-icon>
+          <h1 style="color: rgb(14, 109, 165)">{{ $t("Application Settings") }}</h1>
+          <q-btn @click="toggleFlip(3)" round color="grey" flat>
+          </q-btn>
+        </q-card-main>
+
       </q-card>
     </div>
 
@@ -111,17 +112,11 @@
   text-align: center;
 }
 
-.q-card-main h1 {
-}
-
 .q-card-main .q-icon {
   color: #28536d;
   font-size: 6em;
 }
 </style>
-
-
-
 
 <script>
 import {
@@ -148,6 +143,7 @@ import {
 // import LocalForm from 'database/collections/scopes/LocalForm'
 import _sortBy from "lodash/sortBy";
 import { APP_FANTACY_NAME } from "config/env";
+import Auth from "modules/Auth/api/Auth";
 
 export default {
   name: "card",
@@ -189,6 +185,11 @@ export default {
         ordered = _sortBy(this.forms, "data.title");
         return ordered;
       }
+    }
+  },
+  methods: {
+    isAdmin() {
+      return Auth.hasRole("Administrator");
     }
   }
 };

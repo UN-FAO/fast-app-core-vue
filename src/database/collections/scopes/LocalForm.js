@@ -4,6 +4,9 @@ import FormioUtils from "formiojs/utils";
 import _forEach from 'lodash/forEach'
 import _isEmpty from 'lodash/isEmpty'
 import LocalTranslation from 'database/collections/scopes/LocalTranslation'
+import {
+  TRANSLATIONS
+} from 'modules/Localization/appTranslations'
 
 const LocalForm = class {
   static async getModel() {
@@ -134,6 +137,7 @@ const LocalForm = class {
         }
       }, true);
     })
+    componentLabels = componentLabels.concat(TRANSLATIONS)
     // Clean duplicated labels
     let uniqueLabels = Array.from(new Set(componentLabels)).sort();
 

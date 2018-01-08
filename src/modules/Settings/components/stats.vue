@@ -1,38 +1,36 @@
 <template>
-
-<div class="row">
+  <div class="row">
 
     <div class="statBubbleContainer">
-    <div class="statBubble websitesLaunched">
-      <div class="statNum">
-      {{totalTranslations}}
+      <div class="statBubble websitesLaunched">
+        <div class="statNum">
+          {{totalTranslations}}
+        </div>
       </div>
-    </div>
       <h3>Total Labels</h3>
-        </div>
+    </div>
 
-        <div class="statBubbleContainer">
-    <div class="statBubble websitesLaunched">
+    <div class="statBubbleContainer">
+      <div class="statBubble websitesLaunched">
 
-      <div class="statNum">
+        <div class="statNum">
           {{englishPorcentage}}%
+        </div>
       </div>
-    </div>
       <h3>English Translations</h3>
-        </div>
-
-
-
-        <div class="statBubbleContainer">
-    <div class="statBubble websitesLaunched">
-      <div class="statNum">
-        {{frenchPorcentage}}%
-      </div>
     </div>
-      <h3>French Translations</h3>
+
+    <div class="statBubbleContainer">
+      <div class="statBubble websitesLaunched">
+        <div class="statNum">
+          {{frenchPorcentage}}%
         </div>
+      </div>
+      <h3>French Translations</h3>
+    </div>
   </div>
 </template>
+
 <script>
 export default {
   name: "tstats",
@@ -54,20 +52,27 @@ export default {
       return 0;
     },
     englishPorcentage() {
-       if (this.stats && this.stats.translations && this.stats.translations.en) {
-       return (this.stats.translations.en.translated * 100).toFixed(1);
+      if (this.stats && this.stats.translations && this.stats.translations.en) {
+        let porcentage = (this.stats.translations.en.translated * 100).toFixed(
+          1
+        );
+        if (porcentage < 100) {
+          this.$eventHub.emit("Translation:missing");
+        }
+        return porcentage;
       }
-      return 0
+      return 0;
     },
     frenchPorcentage() {
-       if (this.stats && this.stats.translations && this.stats.translations.fr) {
-       return (this.stats.translations.fr.translated * 100).toFixed(1);
+      if (this.stats && this.stats.translations && this.stats.translations.fr) {
+        return (this.stats.translations.fr.translated * 100).toFixed(1);
       }
-      return 0
+      return 0;
     }
   }
 };
 </script>
+
 <style>
 .translations-action-bar {
   padding-bottom: 30px;

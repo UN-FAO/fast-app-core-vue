@@ -8,7 +8,7 @@
 | understand whats are your users looking at!
 |
 */
-exports.FAST_VERSION = '0.5.7'
+exports.FAST_VERSION = '0.5.9'
 /*
 |--------------------------------------------------------------------------
 | FORM.IO CONFIGURATION
@@ -19,9 +19,8 @@ exports.FAST_VERSION = '0.5.7'
 | forms asociated with it.
 |
 */
-exports.APP_URL = 'https://uiorzjzflxyccmo.form.io'
-exports.APP_NAME = 'uiorzjzflxyccmo'
-exports.APP_SUBDOMAIN = true
+exports.APP_URL = 'https://efqbsqrkscuzlpi.form.io'
+exports.APP_NAME = 'efqbsqrkscuzlpi'
 /*
 |--------------------------------------------------------------------------
 | APP CONFIGURATION
@@ -32,8 +31,8 @@ exports.APP_SUBDOMAIN = true
 | in the app.
 |
 */
-exports.APP_FANTACY_NAME = 'SHARP+'
-exports.APP_PHRASE = 'Self-evaluation and Holistic Assessment of climate Resilence of Farmers and Pastoralists'
+exports.APP_FANTACY_NAME = 'FAMEWS'
+exports.APP_PHRASE = 'Fall Armyworm Monitoring and Early Warning System'
 /*
 |--------------------------------------------------------------------------
 | MD5 KEY
@@ -113,4 +112,4 @@ exports.OFFLINE_USE = true
 | have multiple running surveys (group survey)
 |
 */
-exports.PARALLEL_SURVEYS = true
+exports.PARALLEL_SURVEYS = false

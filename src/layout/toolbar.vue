@@ -16,7 +16,7 @@
     <wifiDisplay/>
 
     <q-btn flat @click="openRightDrawer()" v-if="isInsideApp" v-bind:class="isInsideApp ? 'color-primary' : 'color-white' ">
-      <q-icon name="menu" />
+      <q-icon name="fa-ellipsis-v" style="margin-left: 30px;" />
     </q-btn>
 
   </q-toolbar>

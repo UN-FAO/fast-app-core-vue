@@ -72,6 +72,7 @@ Quasar.start(async() => {
     locale: defaultLenguage, // set locale
     messages: appTranslations // set locale messages
   })
+
   /* eslint-disable no-new */
   new Vue({
     i18n,

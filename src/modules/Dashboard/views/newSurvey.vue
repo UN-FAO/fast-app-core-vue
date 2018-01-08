@@ -53,6 +53,15 @@ export default {
   mounted: async function() {
     let forms = await LocalForm.sAll();
     this.forms = _orderBy(forms, "data.title", "asc");
+    let visible = this.forms.filter(o => {
+      return o.data.tags.indexOf("visible") > -1;
+    });
+    if (visible.length === 1) {
+      this.goTo({
+        name: "formio_form_submission",
+        params: { idForm: visible[0].data.path }
+      });
+    }
   },
   components: {
     QIcon,
