@@ -1,89 +1,72 @@
 <template>
+  <div class="row FormioContainer">
 
-    <div class="row FormioContainer">
+    <q-card style="background-color: white; max-height: fit-content;" class="col-lg-3  col-md-3 col-sm-3" v-if="_isWizard && showPages">
+      <q-card-main>
+        <q-list separator style="border: none !important">
 
-      <q-card style="background-color: white; max-height: fit-content;" class="col-lg-3  col-md-3 col-sm-3" v-if="_isWizard && showPages">
-        <q-card-main>
-          <q-list separator style="border: none !important">
+          <q-item class="formioPagination" multiline style="text-align: left; text-transform: uppercase; min-height: 60px; border-radius: 5px;" link v-for="(page, index) in _pages" :key="page.title" @click="goToPage(index)" :ref="'page-'+ index" v-bind:class="currentPage === index ? 'activePage' : ''">
+            <q-item-main style=" margin-top: auto;  margin-bottom: auto;" :label="$t(getLabelForPage(page))" label-lines="3" />
+          </q-item>
+        </q-list>
+      </q-card-main>
+    </q-card>
 
-            <q-item class="formioPagination" multiline style="text-align: left; text-transform: uppercase; min-height: 60px; border-radius: 5px;"
-              link v-for="(page, index) in _pages" :key="page.title" @click="goToPage(index)" :ref="'page-'+ index" v-bind:class="currentPage === index ? 'activePage' : ''">
-              <q-item-main style=" margin-top: auto;  margin-bottom: auto;" :label="$t(getLabelForPage(page))" label-lines="3" />
-            </q-item>
-          </q-list>
-        </q-card-main>
-      </q-card>
+    <q-card color="white" v-bind:class="getFormClass" style="position:inherit !important;">
+      <q-card-main>
 
-      <q-card color="white" v-bind:class="getFormClass" style="position:inherit !important;">
-        <q-card-main>
+        <q-btn flat @click="togglePages" icon="menu" style="color:black;" v-if="_isWizard"></q-btn>
+        <q-icon name="thumb_up" />
+        <q-tabs inverted id="contentForm">
+          <!-- Tabs - notice slot="title" -->
 
-          <q-btn flat @click="togglePages" icon="menu" style="color:black;" v-if="_isWizard"></q-btn>
-          <q-icon name="thumb_up" />
-          <q-tabs inverted id="contentForm">
-            <!-- Tabs - notice slot="title" -->
+          <q-tab v-bind:class="!PARRALEL_SURVEYS ? 'hidden' : ''" default slot="title" name="tab-1" icon="person" :label="participantName" :color="saved ? 'primary' : 'red'" />
+          <!-- Targets -->
+          <q-tab slot="title" v-if="participant.submissionId !== $route.params.idSubmission" v-for="participant in participants" :key="participant.submissionId" icon="person" :label="participant.participantName" :color="saved ? 'primary' : 'red'" @click="goToSurvey(participant.submissionId)"
+          />
 
-            <q-tab v-bind:class="!PARRALEL_SURVEYS ? 'hidden' : ''" default slot="title" name="tab-1" icon="person" :label="participantName" :color="saved ? 'primary' : 'red'" />
-            <!-- Targets -->
-              <q-tab
-                slot="title"
-                v-if="participant.submissionId !== $route.params.idSubmission"
-                v-for="participant in participants"
-                :key="participant.submissionId"
-                icon="person"
-                :label="participant.participantName"
-                :color="saved ? 'primary' : 'red'"
-                @click="goToSurvey(participant.submissionId)"
-              />
+          <q-tab-pane name="tab-1" ref="tab1">
 
-            <q-tab-pane name="tab-1" ref="tab1">
+            <formio :formURL="formURL" :submission="submission" :formioToken="formioToken" :localDraft="LOCAL_DRAFT_ENABLED" :readOnly="readOnly" :autoCreate="autoCreate" />
+          </q-tab-pane>
 
-              <formio
-                :formURL="formURL"
-                :submission="submission"
-                :formioToken="formioToken"
-                :localDraft="LOCAL_DRAFT_ENABLED"
-                :readOnly="readOnly"
-                :autoCreate="autoCreate"
-             />
-            </q-tab-pane>
+        </q-tabs>
 
-          </q-tabs>
-
-        </q-card-main>
-        <!--
-            <q-inner-loading :visible="typeof submission === 'undefined'">
-              <q-spinner-audio size="50px" color="primary"></q-spinner-audio>
-            </q-inner-loading>
-          -->
-      </q-card>
-
-      <q-fixed-position corner="top-right" :offset="[18, 18]">
-        <q-fab color="red" icon="add" direction="left">
-          <q-fab-action color="secondary" @click="exportPDF" icon="print"></q-fab-action>
-
-          <q-fab-action color="primary" @click="saveAsDraft()" icon="fa-floppy-o"></q-fab-action>
-
-          <q-fab-action v-bind:class="!PARRALEL_SURVEYS ? 'hidden' : ''" color="amber" @click="addSurvey()" icon="person_add"></q-fab-action>
-
-        </q-fab>
-      </q-fixed-position>
-
+      </q-card-main>
       <!--
-                  <q-fixed-position v-if="displayDown" style="margin: 18px;position: sticky;z-index: 100;width: 100%;min-height: 63px;" corner="bottom-right" :offset="[18, 18]">
-                  <q-btn round color="primary" @click="nextQuestion" class="pull-right">
-                    <q-icon name="fa-arrow-circle-down" />
-                  </q-btn>
-                </q-fixed-position>
+              <q-inner-loading :visible="typeof submission === 'undefined'">
+                <q-spinner-audio size="50px" color="primary"></q-spinner-audio>
+              </q-inner-loading>
+            -->
+    </q-card>
 
-                  <q-fixed-position v-if="displayUp" style="margin: 18px;position: sticky;z-index: 99;width: 100%;min-height: 63px;    padding-bottom: 70px;" corner="bottom-right" :offset="[18, 18]">
-                  <q-btn round color="primary" @click="prevQuestion" class="pull-right">
-                    <q-icon name="fa-arrow-circle-up" />
-                  </q-btn>
-                </q-fixed-position>
-              -->
-    </div>
+    <q-fixed-position corner="top-right" :offset="[18, 18]">
+      <q-fab color="red" icon="add" direction="left">
+        <q-fab-action color="secondary" @click="exportPDF" icon="print"></q-fab-action>
 
+        <q-fab-action color="primary" @click="saveAsDraft()" icon="fa-floppy-o"></q-fab-action>
+
+        <q-fab-action v-bind:class="!PARRALEL_SURVEYS ? 'hidden' : ''" color="amber" @click="addSurvey()" icon="person_add"></q-fab-action>
+
+      </q-fab>
+    </q-fixed-position>
+
+    <!--
+                    <q-fixed-position v-if="displayDown" style="margin: 18px;position: sticky;z-index: 100;width: 100%;min-height: 63px;" corner="bottom-right" :offset="[18, 18]">
+                    <q-btn round color="primary" @click="nextQuestion" class="pull-right">
+                      <q-icon name="fa-arrow-circle-down" />
+                    </q-btn>
+                  </q-fixed-position>
+
+                    <q-fixed-position v-if="displayUp" style="margin: 18px;position: sticky;z-index: 99;width: 100%;min-height: 63px;    padding-bottom: 70px;" corner="bottom-right" :offset="[18, 18]">
+                    <q-btn round color="primary" @click="prevQuestion" class="pull-right">
+                      <q-icon name="fa-arrow-circle-up" />
+                    </q-btn>
+                  </q-fixed-position>
+                -->
+  </div>
 </template>
+
 <script>
 import _debounce from "lodash/debounce";
 import _forEach from "lodash/forEach";
@@ -191,16 +174,16 @@ export default {
     });
     this.$eventHub.on("VALIDATION_ERRORS", data => {
       /*
-        this.errors = data
-        let submitButton = document.querySelector('.btn-wizard-nav-submit')
-        if (submitButton && this.errors.count > 0) {
-          submitButton.disabled = true
-        } else {
-          if (submitButton) {
-            submitButton.disabled = false
+          this.errors = data
+          let submitButton = document.querySelector('.btn-wizard-nav-submit')
+          if (submitButton && this.errors.count > 0) {
+            submitButton.disabled = true
+          } else {
+            if (submitButton) {
+              submitButton.disabled = false
+            }
           }
-        }
-        */
+          */
     });
   },
   beforeDestroy() {
@@ -356,17 +339,17 @@ export default {
     exportPDF() {
       let element = document.querySelector("#contentForm");
       /*
-        let body = document.body
-        let html = document.documentElement
-        let height = Math.max(body.scrollHeight, body.offsetHeight,
-                         html.clientHeight, html.scrollHeight, html.offsetHeight)
+          let body = document.body
+          let html = document.documentElement
+          let height = Math.max(body.scrollHeight, body.offsetHeight,
+                           html.clientHeight, html.scrollHeight, html.offsetHeight)
 
-        let heightCM = height / 35.35
+          let heightCM = height / 35.35
 
-        function myCallback(pdf) {
-          console.log('The pdf was generated!!', pdf)
-        }
-        */
+          function myCallback(pdf) {
+            console.log('The pdf was generated!!', pdf)
+          }
+          */
       html2pdf(element, {
         margin: 1,
         filename: "export.pdf",
@@ -426,6 +409,7 @@ export default {
         "data.parallelSurvey",
         undefined
       );
+      console.log(groupId, 'groupId')
       groupId =
         groupId && groupId !== "[object Object]"
           ? JSON.parse(groupId).groupId
@@ -496,7 +480,9 @@ export default {
               ? JSON.parse(parallelsurveyInfo)
               : undefined;
           parallelsurveyInfo.participantName = result[0];
-          surveyData = { parallelSurvey: JSON.stringify(parallelsurveyInfo) };
+          surveyData = {
+            parallelSurvey: JSON.stringify(parallelsurveyInfo)
+          };
         }
         this.createNewSurvey(surveyData);
       });

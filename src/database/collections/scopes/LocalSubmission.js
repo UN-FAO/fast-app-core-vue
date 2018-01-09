@@ -168,5 +168,23 @@ const LocalSubmission = class {
     })
     return a
   }
+
+  static getParallelSurvey(submission) {
+    let parallelsurveyInfo = _get(
+      submission,
+      "data.data.parallelSurvey",
+      undefined
+    );
+    parallelsurveyInfo =
+      parallelsurveyInfo && parallelsurveyInfo !== "[object Object]"
+      ? JSON.parse(parallelsurveyInfo)
+      : undefined;
+
+    return parallelsurveyInfo
+  }
+
+  static setParallelSurvey(parallelsurveyInfo) {
+    return JSON.stringify(parallelsurveyInfo)
+  }
 }
 export default LocalSubmission

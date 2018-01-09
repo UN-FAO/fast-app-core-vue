@@ -8,7 +8,7 @@
 | understand whats are your users looking at!
 |
 */
-exports.FAST_VERSION = '0.5.0'
+exports.FAST_VERSION = '0.5.9'
 /*
 |--------------------------------------------------------------------------
 | FORM.IO CONFIGURATION
@@ -112,4 +112,4 @@ exports.OFFLINE_USE = true
 | have multiple running surveys (group survey)
 |
 */
-exports.PARALLEL_SURVEYS = false
+exports.PARALLEL_SURVEYS = true

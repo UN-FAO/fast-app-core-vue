@@ -12,7 +12,6 @@ import _forEach from 'lodash/forEach'
 import _map from 'lodash/map'
 import _unionBy from 'lodash/unionBy'
 import _isEmpty from 'lodash/isEmpty'
-import _get from 'lodash/get'
 import {
   Toast
 } from 'quasar'
@@ -222,44 +221,21 @@ const actions = {
     formio,
     User
   }) {
-    let submission = formSubmission
-    submission.sync = false
-    submission.user_email = User.email
-    submission.formio = formio
+    let submission = { ...formSubmission,
+      sync: false,
+      user_email: User.email,
+      formio: formio
+    }
     submission = SyncHelper.deleteNulls(submission)
 
+    // If we are updating the submission
+    if (formSubmission._id) {
+      submission = { ...submission,
+        type: 'update',
+        updated: moment().format()
+      }
 
-    // If we are creating a new draft from scratch or a resource
-    if (formSubmission.trigger === 'createLocalDraft' || formSubmission.trigger === 'resourceCreation' || formSubmission.trigger === 'createParalelSurvey') {
-      submission.created = moment().format()
-      let newSubmission = await LocalSubmission.insert({
-        data: submission
-      })
-      if (formSubmission.trigger === 'resourceCreation') {
-        newSubmission.trigger = 'resourceCreation'
-      }
-      if (formSubmission.trigger === 'createParalelSurvey') {
-        let parallelsurveyInfo = _get(
-          newSubmission,
-          "data.data.parallelSurvey",
-          undefined
-        );
-        parallelsurveyInfo =
-          parallelsurveyInfo && parallelsurveyInfo !== "[object Object]"
-            ? JSON.parse(parallelsurveyInfo)
-            : undefined;
-        parallelsurveyInfo.submissionId = newSubmission._id
-        newSubmission.trigger = 'createParalelSurvey'
-        newSubmission.data.data.parallelSurvey = JSON.stringify(parallelsurveyInfo)
-        await LocalSubmission.update(newSubmission)
-      }
-      return newSubmission
-    } // If we are updating the submission
-    else if (formSubmission._id) {
-      submission.type = 'update'
-      submission.updated = moment().format()
       let localSubmission = await LocalSubmission.get(formSubmission._id)
-
       // Cases where we may want to update
       let submitting = submission.draft === false
       let localDraft = localSubmission.data.draft === false
@@ -273,6 +249,27 @@ const actions = {
         await LocalSubmission.update(localSubmission)
       }
       return localSubmission
+    }
+
+    // If we are creating a new draft from scratch or a resource
+    submission.created = moment().format()
+    let newSubmission = await LocalSubmission.insert({
+      data: submission
+    })
+
+    switch (formSubmission.trigger) {
+      case 'createLocalDraft':
+      case 'resourceCreation':
+        return newSubmission
+        break;
+      case 'createParalelSurvey':
+        newSubmission.trigger = 'createParalelSurvey'
+        newSubmission.data.data.parallelSurvey = LocalSubmission.setParallelSurvey({ ...LocalSubmission.getParallelSurvey(newSubmission),
+          submissionId: newSubmission._id
+        })
+        await LocalSubmission.update(newSubmission)
+        return newSubmission
+        break;
     }
   },
 
