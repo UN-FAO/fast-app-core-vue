@@ -236,7 +236,8 @@ const actions = {
       }
 
       let localSubmission = await LocalSubmission.get(formSubmission._id)
-      // Cases where we may want to update
+
+      // Cases where we want to update
       let submitting = submission.draft === false
       let localDraft = localSubmission.data.draft === false
       let submissionNotDraft = submission.draft === true

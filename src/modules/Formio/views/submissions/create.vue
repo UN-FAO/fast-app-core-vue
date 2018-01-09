@@ -405,16 +405,11 @@ export default {
     },
     addSurvey() {
       let groupId = _get(
-        this.currentSubmission,
-        "data.parallelSurvey",
+        LocalSubmission.getParallelSurvey(this.currentSubmission),
+        "groupId",
         undefined
       );
-      console.log(groupId, 'groupId')
-      groupId =
-        groupId && groupId !== "[object Object]"
-          ? JSON.parse(groupId).groupId
-          : undefined;
-
+      console.log('LocalSubmission.getParallelSurvey(this.currentSubmission)', this.currentSubmission)
       let steps = [];
       let progressSteps = [];
       if (groupId) {
@@ -523,9 +518,6 @@ export default {
       return label;
     },
     goToSurvey(id) {
-      if (!this.saved) {
-        return;
-      }
       this.$router.push({
         name: "formio_submission_update",
         params: {

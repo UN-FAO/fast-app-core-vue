@@ -170,13 +170,20 @@ const LocalSubmission = class {
   }
 
   static getParallelSurvey(submission) {
-    let parallelsurveyInfo = _get(
-      submission,
-      "data.data.parallelSurvey",
-      undefined
-    );
+    let parallelsurveyInfo =
+      _get(
+        submission,
+        "data.data.parallelSurvey",
+        undefined
+      ) ||
+      _get(
+        submission,
+        "data.parallelSurvey",
+        undefined
+      )
+
     parallelsurveyInfo =
-      parallelsurveyInfo && parallelsurveyInfo !== "[object Object]"
+      (parallelsurveyInfo && parallelsurveyInfo !== "[object Object]")
       ? JSON.parse(parallelsurveyInfo)
       : undefined;
 
