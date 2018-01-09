@@ -409,7 +409,7 @@ export default {
         "groupId",
         undefined
       );
-      console.log('LocalSubmission.getParallelSurvey(this.currentSubmission)', this.currentSubmission)
+
       let steps = [];
       let progressSteps = [];
       if (groupId) {
@@ -450,33 +450,30 @@ export default {
         this.$swal.resetDefaults();
         if (!groupId) {
           let groupId = uuidv4();
-          this.currentSubmission.data.parallelSurvey = JSON.stringify({
+          let parallelSurvey = {
             groupId: groupId,
             groupName: result[0],
             participantName: result[1],
             submissionId: this.currentSubmission._id
-          });
+          };
+          this.currentSubmission.data.parallelSurvey = LocalSubmission.setParallelSurvey(
+            parallelSurvey
+          );
           surveyData = {
-            parallelSurvey: JSON.stringify({
-              groupId: groupId,
-              groupName: result[0],
-              participantName: result[2],
-              submissionId: this.currentSubmission._id
+            parallelSurvey: LocalSubmission.setParallelSurvey({
+              ...parallelSurvey,
+              participantName: result[2]
             })
           };
         } else {
-          let parallelsurveyInfo = _get(
-            this.currentSubmission,
-            "data.parallelSurvey",
-            undefined
+          let parallelsurveyInfo = LocalSubmission.getParallelSurvey(
+            this.currentSubmission
           );
-          parallelsurveyInfo =
-            parallelsurveyInfo && parallelsurveyInfo !== "[object Object]"
-              ? JSON.parse(parallelsurveyInfo)
-              : undefined;
           parallelsurveyInfo.participantName = result[0];
           surveyData = {
-            parallelSurvey: JSON.stringify(parallelsurveyInfo)
+            parallelSurvey: LocalSubmission.setParallelSurvey(
+              parallelsurveyInfo
+            )
           };
         }
         this.createNewSurvey(surveyData);
