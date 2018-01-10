@@ -12,6 +12,7 @@ import _forEach from 'lodash/forEach'
 import _map from 'lodash/map'
 import _unionBy from 'lodash/unionBy'
 import _isEmpty from 'lodash/isEmpty'
+import bugsnagClient from 'config/bugSnag'
 import {
   Toast
 } from 'quasar'
@@ -326,6 +327,11 @@ const actions = {
           }
         } catch (e) {
           console.log('The submission cannot be synced ', e)
+          bugsnagClient.notify(new Error('Submission cannot be synced'), {
+            metaData: {
+              error: e
+            }
+          })
           if (e === 'TypeError: Could not connect to API server (Failed to fetch)') {
             console.log('Error connecting to the API server')
           }

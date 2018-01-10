@@ -6,7 +6,7 @@
       v-bind:class="isInsideApp ? 'color-primary' : 'color-white' ">
       <q-icon name="menu" />
     </q-btn>
-    <q-toolbar-title v-bind:class="isInsideApp ? 'color-primary' : 'color-white' ">
+    <q-toolbar-title @click="$router.push({name: 'dashboard'})" style="cursor: pointer;"  v-bind:class="isInsideApp ? 'color-primary' : 'color-white' ">
       {{ appName }}
     </q-toolbar-title>
     <div v-if="isInsideApp" class="color-primary">

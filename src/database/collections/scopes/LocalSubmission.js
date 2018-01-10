@@ -3,6 +3,7 @@ import _map from 'lodash/map'
 import _cloneDeep from 'lodash/cloneDeep'
 import _filter from 'lodash/filter'
 import _orderBy from 'lodash/orderBy'
+import _uniqBy from 'lodash/uniqBy'
 import _get from 'lodash/get'
 import Auth from 'modules/Auth/api/Auth'
 import uuidv4 from 'uuid/v4'
@@ -183,9 +184,9 @@ const LocalSubmission = class {
       )
 
     parallelsurveyInfo =
-      (parallelsurveyInfo && parallelsurveyInfo !== "[object Object]")
-      ? JSON.parse(parallelsurveyInfo)
-      : undefined;
+      (parallelsurveyInfo && parallelsurveyInfo !== "[object Object]") ?
+      JSON.parse(parallelsurveyInfo) :
+      undefined;
 
     return parallelsurveyInfo
   }
@@ -193,5 +194,30 @@ const LocalSubmission = class {
   static setParallelSurvey(parallelsurveyInfo) {
     return JSON.stringify(parallelsurveyInfo)
   }
+
+  static async getGroups(formId) {
+    let submissions = await this.find();
+
+    submissions = submissions.filter((submission) => {
+      return submission.data.formio.formId === "translationstest"
+    })
+
+    let groups = submissions.map((submission) => {
+      return this.getParallelSurvey(submission) ? {
+        groupId: this.getParallelSurvey(submission).groupId,
+        groupName: this.getParallelSurvey(submission).groupName
+      } : undefined
+    })
+
+    groups = groups.filter((group) => {
+      return typeof group !== "undefined"
+    })
+
+    return _uniqBy(groups, 'groupId')
+  }
+
+  static async removeFromGroup(submission) {}
+
+  static async assingGroup(submission, groupId) {}
 }
 export default LocalSubmission

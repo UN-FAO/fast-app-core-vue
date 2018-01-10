@@ -73,17 +73,17 @@
 
     <div class="row">
       <q-card class="col-sm-offset-2 col-md-4 col-md-offset-2 col-lg-4 col-lg-offset-3 col-xl-3" style="margin-top: 30px;">
-        <q-card-main>
+        <q-card-main @click="$router.push({name: 'About'})" style="cursor: pointer;">
           <!--<q-icon name="fa-tablet fa-5x" />-->
           <q-icon class="material-icons">tablet_mac</q-icon>
           <h1 style="color: rgb(14, 109, 165)"> {{ $t("About") }}
-           <br>{{appName}} </h1>
+           <br>{{APP_ABOUT_NAME}} </h1>
         </q-card-main>
 
       </q-card>
 
       <q-card v-if="isAdmin()" class="col-md-4 col-lg-4 col-xl-3" style="margin-top: 30px; margin-left: 30px;">
-          <q-card-main>
+          <q-card-main @click="$router.push({name: 'settings'})" style="cursor: pointer;">
           <!--<q-icon name="fa-cog fa-5x" />-->
           <q-icon class="material-icons">settings</q-icon>
           <h1 style="color: rgb(14, 109, 165)">{{ $t("Application Settings") }}</h1>
@@ -142,7 +142,7 @@ import {
 } from "quasar";
 // import LocalForm from 'database/collections/scopes/LocalForm'
 import _sortBy from "lodash/sortBy";
-import { APP_FANTACY_NAME } from "config/env";
+import { APP_ABOUT_NAME } from "config/env";
 import Auth from "modules/Auth/api/Auth";
 
 export default {
@@ -172,7 +172,7 @@ export default {
     return {
       forms: [],
       subscriptions: [],
-      appName: APP_FANTACY_NAME
+      APP_ABOUT_NAME: APP_ABOUT_NAME
     };
   },
   computed: {

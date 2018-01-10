@@ -55,6 +55,7 @@ module.exports = {
     "no-unexpected-multiline":0,
     "func-call-spacing":0,
     "quotes": 0,
-    "semi": 0
+    "semi": 0,
+    "operator-linebreak": 0
   }
 }

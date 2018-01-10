@@ -14,6 +14,10 @@ import Vue from 'vue'
 import Quasar from 'quasar'
 Vue.use(Quasar) // Install Quasar Framework
 
+import bugsnagClient from 'config/bugSnag'
+import bugsnagVue from 'bugsnag-vue'
+bugsnagClient.use(bugsnagVue(Vue))
+
 import router from 'config/router'
 import store from 'config/store'
 import axios from 'config/axios'
