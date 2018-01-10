@@ -273,6 +273,11 @@ export default {
   text-transform: uppercase;
   cursor: pointer;
 }
+
+.showing:hover, .notShowing:hover {
+  background: rgb(14, 109, 165);
+  color: white;
+}
 .notShowing {
   font-size: 20px;
   font-weight: 400;
