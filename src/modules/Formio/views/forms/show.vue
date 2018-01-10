@@ -103,8 +103,6 @@ export default {
       "data.path": this.$route.params.idForm
     });
 
-    console.log("local form", this.currentForm);
-
     this.$eventHub.on("FAST-DATA_SYNCED", async data => {
       await this.updateLocalSubmissions();
     });
