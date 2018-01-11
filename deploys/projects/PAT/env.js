@@ -8,7 +8,7 @@
 | understand whats are your users looking at!
 |
 */
-exports.FAST_VERSION = '0.4.2'
+exports.FAST_VERSION = '0.5.12'
 /*
 |--------------------------------------------------------------------------
 | FORM.IO CONFIGURATION
@@ -31,8 +31,8 @@ exports.APP_NAME = 'qumqhkjyyrhislq'
 | in the app.
 |
 */
-exports.APP_FANTACY_NAME = 'FAST DEV'
-exports.APP_PHRASE = 'Development Environment for FAST'
+exports.APP_FANTACY_NAME = 'PAT'
+exports.APP_PHRASE = 'Plant Breeding Analysis'
 /*
 |--------------------------------------------------------------------------
 | MD5 KEY

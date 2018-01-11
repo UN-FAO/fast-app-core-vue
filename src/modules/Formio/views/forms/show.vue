@@ -16,8 +16,8 @@
                   <el-tag :type="getIconColor(scope.row)" close-transition>
                     <i class="material-icons">{{scope.row.status === 'offline' ? 'cloud_off' : 'cloud_done'}}</i>
                   </el-tag>
-                  <i class="material-icons" style="color: red;font-size: x-large;" v-if="scope.row.syncError && scope.row.syncError !=='Unauthorized' ">error_outline</i>
-                  <i class="material-icons" style="color: red;font-size: x-large;" v-if="scope.row.syncError && scope.row.syncError ==='Unauthorized' ">lock</i>
+                  <i class="material-icons" style="color: red;font-size: x-large; cursor: pointer;" v-if="scope.row.syncError && scope.row.syncError !=='Unauthorized' " @click="displayError(scope.row.syncError)">error_outline</i>
+                  <i class="material-icons" style="color: red;font-size: x-large; cursor: pointer;" v-if="scope.row.syncError && scope.row.syncError ==='Unauthorized' " @click="displayError(scope.row.syncError)">lock</i>
                 </template>
               </el-table-column>
 
@@ -26,11 +26,10 @@
               </el-table-column>
               -->
 
-              <el-table-column :label="column.label" sortable v-for="column in visibleColumns" :key="column.key" min-width="180">
+              <el-table-column :label="$t(column.label)" sortable v-for="column in visibleColumns" :key="column.key" min-width="180">
                 <template scope="scope">
                   {{typeof scope.row.fullSubmission[column.key] === 'object' ? '' : scope.row.fullSubmission[column.key] }}
                 </template>
-
               </el-table-column>
 
               <el-table-column :label="$t('Created at')" prop="Humancreated" sortable fixed="left" width="140">
@@ -38,7 +37,7 @@
 
               <el-table-column fixed="right" label="Actions" width="120">
                 <template scope="scope">
-                  <el-button @click="handleEdit(scope)" type="text">Edit</el-button>
+                  <el-button @click="handleEdit(scope)" type="text">{{$t('Edit')}}</el-button>
                 </template>
               </el-table-column>
 
@@ -226,6 +225,9 @@ export default {
         ]
       }
     };
+  },
+  beforeDestroy() {
+    this.$eventHub.off("FAST-DATA_SYNCED");
   },
   methods: {
     handleEdit(data) {
@@ -450,7 +452,6 @@ export default {
         this.submissions = await LocalSubmission.sFind(this, {
           "data.formio.formId": this.$route.params.idForm
         });
-        console.log("Data was synced, trying to update", this.submissions);
       }
     },
     async pullSubmissions() {
@@ -459,11 +460,26 @@ export default {
         vm: this
       });
     },
-    refreshSubmissions(done) {
-      this.pullSubmissions();
-      setTimeout(function() {
-        done();
-      }, 1200);
+    displayError(error) {
+      let errorString = "<ul>";
+      error.details.forEach(detail => {
+        let component = FormioUtils.getComponent(
+          this.currentForm.data.components,
+          detail.path[0]
+        );
+        let label = component ? this.$t(component.label) + ": " : "";
+        errorString = errorString + "<li>" + label + detail.message + "</li>";
+      });
+      errorString = errorString + "<ul>";
+
+      this.$swal({
+        title: error.name,
+        type: "info",
+        html: errorString,
+        showCloseButton: true,
+        showCancelButton: false,
+        confirmButtonText: "OK"
+      });
     }
   }
 };

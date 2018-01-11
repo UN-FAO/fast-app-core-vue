@@ -57,5 +57,6 @@ exports.TRANSLATIONS = [
   'Sync app',
   'Sync Application',
   'Home',
-  'Reload Translations'
+  'Reload Translations',
+  'Edit'
 ]

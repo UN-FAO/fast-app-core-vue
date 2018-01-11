@@ -14,9 +14,9 @@ import Vue from 'vue'
 import Quasar from 'quasar'
 Vue.use(Quasar) // Install Quasar Framework
 
-import bugsnagClient from 'config/bugSnag'
-import bugsnagVue from 'bugsnag-vue'
-bugsnagClient.use(bugsnagVue(Vue))
+import Raven from 'config/raven'
+Raven.set(Vue)
+Raven.send(new Error('Submission cannot be synced3'))
 
 import router from 'config/router'
 import store from 'config/store'

@@ -64,7 +64,7 @@
                           <q-icon name="fa-arrow-circle-up" />
                         </q-btn>
                       </q-fixed-position>
-                    -->
+    -->
   </div>
 </template>
 

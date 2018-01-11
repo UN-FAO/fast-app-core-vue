@@ -8,7 +8,7 @@
 | understand whats are your users looking at!
 |
 */
-exports.FAST_VERSION = '0.5.10'
+exports.FAST_VERSION = '0.5.12'
 /*
 |--------------------------------------------------------------------------
 | FORM.IO CONFIGURATION
@@ -32,7 +32,7 @@ exports.APP_NAME = 'efqbsqrkscuzlpi'
 |
 */
 exports.APP_FANTACY_NAME = 'FAMEWS'
-exports.APP_ABOUT_NAME = 'Fall Armyworm'
+exports.APP_ABOUT_NAME = 'FAW'
 exports.APP_PHRASE = 'Fall Armyworm Monitoring and Early Warning System'
 /*
 |--------------------------------------------------------------------------
