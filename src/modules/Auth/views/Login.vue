@@ -7,8 +7,6 @@
                      {{$t(appName)}}
                   <div class="form-subtitle"> {{$t(appPhrase)}}</div>
                 </p>
-
-
                 <div class="form-login" >
                   <div class="form-group">
                         <div class="segment-title">{{$t('User Login')}}</div>

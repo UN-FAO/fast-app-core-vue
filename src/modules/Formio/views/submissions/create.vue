@@ -1,4 +1,5 @@
 <template>
+<div class="container-fluid">
   <div class="row FormioContainer">
 
     <q-card style="background-color: white; max-height: fit-content;" class="col-lg-3  col-md-3 col-sm-3" v-if="_isWizard && showPages">
@@ -33,11 +34,6 @@
         </q-tabs>
 
       </q-card-main>
-      <!--
-                  <q-inner-loading :visible="typeof submission === 'undefined'">
-                    <q-spinner-audio size="50px" color="primary"></q-spinner-audio>
-                  </q-inner-loading>
-                -->
     </q-card>
 
     <q-fixed-position corner="top-right" :offset="[18, 18]">
@@ -65,6 +61,7 @@
                         </q-btn>
                       </q-fixed-position>
     -->
+  </div>
   </div>
 </template>
 
@@ -431,26 +428,26 @@
         } else {
           progressSteps = ["1", "2", "3"];
           steps = [{
-              title: "Group Name",
-              text: "Give the group a name",
+              title: this.$t("Group Name"),
+              text: this.$t("Give the group a name"),
               inputValidator: value => {
                 return new Promise((resolve, reject) => {
                   if (value !== "") {
                     resolve();
                   } else {
-                    let error = new Error("The group name is already taken");
+                    let error = new Error(this.$t("The group name is already taken"));
                     reject(error);
                   }
                 });
               }
             },
             {
-              title: "Participant Name",
-              text: "Give the current participant a name"
+              title: this.$t("Participant Name"),
+              text: this.$t("Give the current participant a name")
             },
             {
-              title: "Participant Name",
-              text: "Give the next participant a name"
+              title: this.$t("Participant Name"),
+              text: this.$t("Give the next participant a name")
             }
           ];
         }
@@ -502,28 +499,28 @@
           "groupId",
           undefined
         );
-        let options = await LocalSubmission.getGroups();
+        let options = await LocalSubmission.getGroups(this.$route.params.idForm);
         let customOptions = {};
         options.forEach(option => {
           customOptions[option.groupId] = option.groupName;
         });
-
+    
         let steps = [];
         let progressSteps = [];
 
         if (groupId) {
           progressSteps = ["1"];
           steps = [{
-            title: "Change Group",
+            title: this.$t("Change Group"),
             input: "select",
             inputOptions: customOptions,
-            inputPlaceholder: "Select the destination group",
+            inputPlaceholder: this.$t("Select the destination group"),
             inputValidator: value => {
               return new Promise((resolve, reject) => {
                 if (value !== "") {
                   resolve();
                 } else {
-                  let error = new Error("You must select a destination group");
+                  let error = new Error(this.$t("You must select a destination group"));
                   reject(error);
                 }
               });
@@ -532,14 +529,14 @@
         } else {
           progressSteps = ["1", "2"];
           steps = [{
-              title: "Participant Name",
-              text: "Give the current participant a name",
+              title: this.$t("Participant Name"),
+              text: this.$t("Give the current participant a name"),
               inputValidator: value => {
                 return new Promise((resolve, reject) => {
                   if (value !== "") {
                     resolve();
                   } else {
-                    let error = new Error("The participant name can´t be empty");
+                    let error = new Error(this.$t("The participant name can´t be empty"));
                     reject(error);
                   }
                 });
@@ -549,13 +546,13 @@
               title: "Select Group",
               input: "select",
               inputOptions: customOptions,
-              inputPlaceholder: "Select a group to assign",
+              inputPlaceholder: this.$t("Select a group to assign"),
               inputValidator: value => {
                 return new Promise((resolve, reject) => {
                   if (value !== "") {
                     resolve();
                   } else {
-                    let error = new Error("You must select a group");
+                    let error = new Error(this.$t("You must select a group"));
                     reject(error);
                   }
                 });
@@ -571,9 +568,9 @@
           progressSteps: progressSteps
         });
 
-        this.$swal.queue(steps).then(result => {
+        this.$swal.queue(steps).then(async result => {
           this.$swal.resetDefaults();
-          console.log("result", result);
+          await LocalSubmission.assingToGroup(this.$route.params.idSubmission, result)
         });
       },
       createNewSurvey(surveyData) {

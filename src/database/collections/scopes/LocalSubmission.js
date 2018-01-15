@@ -143,7 +143,7 @@ const LocalSubmission = class {
     let currentSubmission = await LocalSubmission.find({
       '_id': idSubmission
     })
-    console.log('currentSubmission', idSubmission)
+
     currentSubmission = currentSubmission[0]
     let groupId = _get(currentSubmission, 'data.data.parallelSurvey', undefined)
 
@@ -198,10 +198,10 @@ const LocalSubmission = class {
   static async getGroups(formId) {
     let submissions = await this.find();
 
-    submissions = submissions.filter((submission) => {
-      return submission.data.formio.formId === "translationstest"
-    })
-
+    submissions = formId ? submissions.filter((submission) => {
+      return submission.data.formio.formId === formId
+    }) : submissions
+    
     let groups = submissions.map((submission) => {
       return this.getParallelSurvey(submission) ? {
         groupId: this.getParallelSurvey(submission).groupId,
@@ -216,8 +216,33 @@ const LocalSubmission = class {
     return _uniqBy(groups, 'groupId')
   }
 
+  static async getGroup(id) {
+    let groups = await this.getGroups()
+    groups = groups.filter((group) => {
+      return group.groupId === id
+    })
+    return groups[0]
+  }
+
   static async removeFromGroup(submission) {}
 
-  static async assingGroup(submission, groupId) {}
+  static async assingToGroup(submissionId, groupId) {
+    let group = await this.getGroup(groupId[0])
+    let submission = await this.get(submissionId)
+
+    let parallelData = this.getParallelSurvey(submission)
+
+     let parallelSurvey = { ...parallelData,
+        groupId: group.groupId,
+        groupName: group.groupName
+     };
+
+    console.log('parallelSurvey', parallelSurvey)
+
+      submission.data.data.parallelSurvey = this.setParallelSurvey(
+        parallelSurvey
+      );
+      await this.update(submission)
+  }
 }
 export default LocalSubmission

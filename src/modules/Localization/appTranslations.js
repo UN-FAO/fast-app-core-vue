@@ -60,5 +60,16 @@ exports.TRANSLATIONS = [
   'Reload Translations',
   'Edit',
   'New Submission',
-  'DELETE'
+  'DELETE',
+  'Change Group',
+  'Select the destination group',
+  'You must select a destination group',
+  'Give the group a name',
+  'The group name is already taken',
+  'Participant Name',
+  'Give the next participant a name',
+  'Give the current participant a name',
+  'The participant name can´t be empty',
+  'You must select a group',
+  'Select a group to assign'
 ]

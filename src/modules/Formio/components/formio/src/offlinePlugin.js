@@ -42,6 +42,7 @@ const OFFLINE_PLUGIN = class {
           }
 
           if (created.trigger && created.trigger === 'resourceCreation') {
+            console.log('We got a resource creation')
             return
           }
           var draftStatus = new CustomEvent('draftStatus', {

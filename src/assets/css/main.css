@@ -792,4 +792,15 @@ p.form-title {
 }
 
 
+.formio-dialog {
+    width: 70% !important;
+    position: unset !important;
+    top: 45px !important;
+    border-radius: 5px !important;
+    height: 100% !important;
+    transform: none;
+    overflow-x:scroll;
+  overflow-y:scroll;
+}
+
 
