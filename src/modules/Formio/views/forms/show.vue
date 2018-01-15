@@ -71,7 +71,7 @@
 <script>
 import DataTables from "vue-data-tables";
 import _forEach from "lodash/forEach";
-import _map from "lodash/map"
+import _map from "lodash/map";
 import lang from "element-ui/lib/locale/lang/en";
 import locale from "element-ui/lib/locale";
 import moment from "moment";
@@ -165,6 +165,23 @@ export default {
         },
         def: [
           {
+            name: "JSON",
+            handler: () => {
+              let exported = this.loadExportData();
+              let name = "backup_" + exported.date + ".json";
+              this.download(
+                JSON.stringify(exported.data),
+                name,
+                "text/json;encoding:utf-8"
+              );
+            },
+            icon: "document",
+            buttonProps: {
+              type: "text",
+              size: "large"
+            }
+          },
+          {
             name: "CSV",
             handler: (selection, something) => {
               let exported = this.loadExportData();
@@ -176,27 +193,22 @@ export default {
                 this.download(csv, name, "text/csv;encoding:utf-8");
               });
             },
-            icon: "document"
-          },
-          {
-            name: "JSON",
-            handler: () => {
-              let exported = this.loadExportData();
-              let name = "backup_" + exported.date + ".json";
-              this.download(
-                JSON.stringify(exported.data),
-                name,
-                "text/json;encoding:utf-8"
-              );
-            },
-            icon: "document"
+            icon: "document",
+            buttonProps: {
+              type: "text",
+              size: "medium"
+            }
           },
           {
             name: this.$t("DELETE"),
             handler: () => {
               this.handleDelete(this.selectedRows);
             },
-            icon: "delete"
+            icon: "delete",
+            buttonProps: {
+              type: "text",
+              size: "small"
+            }
           }
         ]
       }
@@ -217,7 +229,7 @@ export default {
         json.push(submission.fullSubmission);
       });
 
-      dataExport = _map(dataExport, 'fullSubmission')
+      dataExport = _map(dataExport, "fullSubmission");
 
       let date = new Date()
         .toJSON()
