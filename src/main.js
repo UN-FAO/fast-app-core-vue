@@ -16,7 +16,6 @@ Vue.use(Quasar) // Install Quasar Framework
 
 import Raven from 'config/raven'
 Raven.set(Vue)
-Raven.send(new Error('Submission cannot be synced3'))
 
 import router from 'config/router'
 import store from 'config/store'

@@ -379,26 +379,15 @@ export default {
            * @return {[type]}             [description]
            */
           this.formIO.on("submit", submission => {
-            this.$swal({
-              title: "Are you sure?",
-              text:
-                "Submission will be sent when Online. The previous data collected for this submission will be updated",
-              type: "warning",
-              showCancelButton: true,
-              confirmButtonColor: "#3085d6",
-              cancelButtonColor: "#d33",
-              confirmButtonText: "Yes, send it!"
-            }).then(async () => {
-              let formSubmission = {
-                data: this.formIO.data
-              };
-              formSubmission.draft = false;
-              formSubmission.redirect = true;
-              formSubmission.trigger = "formioSubmit";
-              formSubmission.syncError = false;
-              this.save(formSubmission);
-              this.$swal("Sent!", "Your submission has been sent!", "success");
-            });
+            let formSubmission = {
+              data: this.formIO.data
+            };
+            formSubmission.draft = false;
+            formSubmission.redirect = true;
+            formSubmission.trigger = "formioSubmit";
+            formSubmission.syncError = false;
+            this.save(formSubmission);
+            this.$swal("Sent!", "Your submission has been sent!", "success");
           });
         }
       });

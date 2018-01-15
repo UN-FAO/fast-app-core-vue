@@ -51,7 +51,14 @@
     </div>
     <q-fixed-position corner="top-right" :offset="[18, 18]">
       <q-fab color="red" icon="add" direction="left" push>
-        <q-fab-action color="secondary" @click="createSubmission()" icon="add">
+
+        <q-fab-action color="secondary" @click="importSubmission()" icon="fa-upload">
+          <q-tooltip>
+             {{$t('Import Submissions')}}
+          </q-tooltip>
+        </q-fab-action>
+
+            <q-fab-action color="primary" @click="createSubmission()" icon="add">
           <q-tooltip>
              {{$t('New Submission')}}
           </q-tooltip>
@@ -64,6 +71,7 @@
 <script>
 import DataTables from "vue-data-tables";
 import _forEach from "lodash/forEach";
+import _map from "lodash/map"
 import lang from "element-ui/lib/locale/lang/en";
 import locale from "element-ui/lib/locale";
 import moment from "moment";
@@ -142,7 +150,7 @@ export default {
   },
   data() {
     return {
-      deleteRows: [],
+      selectedRows: [],
       currentForm: {},
       submissions: undefined,
       visibleColumns: [],
@@ -158,33 +166,14 @@ export default {
         def: [
           {
             name: "CSV",
-            handler: () => {
-              let json = [];
-              var self = this;
-              _forEach(self.submissions, function(submission) {
-                let record = submission.fullSubmission;
-                record.id = submission.id_submision;
-                json.push(submission.fullSubmission);
-              });
-              jsonexport(json, (err, csv) => {
+            handler: (selection, something) => {
+              let exported = this.loadExportData();
+              jsonexport(exported.data, (err, csv) => {
                 if (err) {
                   return console.log(err);
                 }
-                let date = new Date()
-                  .toJSON()
-                  .replace(/-/g, "_")
-                  .replace(/T/g, "_")
-                  .replace(/:/g, "_")
-                  .slice(0, 19);
-
-                let name = "backup_" + date + ".csv";
-                // If browser we have to export it like this
-                self.download(csv, name, "text/csv;encoding:utf-8");
-                // If its cordova, we have to export like this
-                // self.DATA2FILE('backup.csv', csv, function (FILE) {
-                //  console.log(FILE)
-                // })
-                self.$message("Data Exported");
+                let name = "backup_" + exported.date + ".csv";
+                this.download(csv, name, "text/csv;encoding:utf-8");
               });
             },
             icon: "document"
@@ -192,23 +181,10 @@ export default {
           {
             name: "JSON",
             handler: () => {
-              let json = [];
-              var self = this;
-              _forEach(self.submissions, function(submission) {
-                let record = submission.fullSubmission;
-                record.id = submission.id_submision;
-                json.push(submission.fullSubmission);
-              });
-              let date = new Date()
-                .toJSON()
-                .replace(/-/g, "_")
-                .replace(/T/g, "_")
-                .replace(/:/g, "_")
-                .slice(0, 19);
-
-              let name = "backup_" + date + ".json";
-              self.download(
-                JSON.stringify(json),
+              let exported = this.loadExportData();
+              let name = "backup_" + exported.date + ".json";
+              this.download(
+                JSON.stringify(exported.data),
                 name,
                 "text/json;encoding:utf-8"
               );
@@ -218,7 +194,7 @@ export default {
           {
             name: "DELETE",
             handler: () => {
-              this.handleDelete(this.deleteRows);
+              this.handleDelete(this.selectedRows);
             },
             icon: "delete"
           }
@@ -230,6 +206,27 @@ export default {
     this.$eventHub.off("FAST-DATA_SYNCED");
   },
   methods: {
+    loadExportData() {
+      let json = [];
+      let dataExport;
+      dataExport =
+        this.selectedRows.length === 0 ? this.submissions : this.selectedRows;
+      _forEach(dataExport, function(submission) {
+        let record = submission.fullSubmission;
+        record.id = submission.id_submision;
+        json.push(submission.fullSubmission);
+      });
+
+      dataExport = _map(dataExport, 'fullSubmission')
+
+      let date = new Date()
+        .toJSON()
+        .replace(/-/g, "_")
+        .replace(/T/g, "_")
+        .replace(/:/g, "_")
+        .slice(0, 19);
+      return { date: date, data: dataExport };
+    },
     handleEdit(data) {
       let self = this;
       let submission = data.row;
@@ -243,16 +240,6 @@ export default {
     },
     handleDelete(rows) {
       let self = this;
-      /*
-      if (rows.length > 1) {
-        self.$swal({
-          title: "Multiple rows selected",
-          text: "You cannot delete more than one row",
-          type: "error"
-        });
-        return;
-      }
-      */
       if (rows.length === 0) {
         self.$swal({
           title: "No row selected",
@@ -417,7 +404,7 @@ export default {
       });
     },
     handleSelectionChange(rows) {
-      this.deleteRows = rows;
+      this.selectedRows = rows;
     },
     getRowActionsDef() {
       let self = this;
