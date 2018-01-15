@@ -192,7 +192,7 @@ export default {
             icon: "document"
           },
           {
-            name: "DELETE",
+            name: this.$t("DELETE"),
             handler: () => {
               this.handleDelete(this.selectedRows);
             },

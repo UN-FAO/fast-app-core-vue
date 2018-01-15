@@ -59,5 +59,6 @@ exports.TRANSLATIONS = [
   'Home',
   'Reload Translations',
   'Edit',
-  'New Submission'
+  'New Submission',
+  'DELETE'
 ]
