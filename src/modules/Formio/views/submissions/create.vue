@@ -658,7 +658,9 @@
       customSubmission() {
         let submission = require("./sub.json");
         let customSubmission = this.submission;
+
         customSubmission.data.data = submission[0];
+        console.log(customSubmission, 'customSubmission')
         return customSubmission;
       }
     }

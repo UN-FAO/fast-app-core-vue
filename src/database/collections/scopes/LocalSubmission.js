@@ -102,13 +102,14 @@ const LocalSubmission = class {
   static async sFind(vm, filter) {
     let localSubmissions = await LocalSubmission.find(filter)
     let submissions = _cloneDeep(localSubmissions)
-
+    
     submissions = _filter(submissions, function (o) {
       return (
         (o.data.owner && o.data.owner === Auth.user()._id) ||
         (o.data.user_email && o.data.user_email === Auth.userEmail())
       )
     })
+    console.log('Sfind submissions', submissions)
 
     submissions = _map(submissions, function (submission) {
       let data = submission.data.data

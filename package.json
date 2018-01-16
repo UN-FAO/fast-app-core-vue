@@ -1,8 +1,8 @@
 {
   "name": "fast",
   "version": "0.5.13",
-  "deployAppName": "PAT",
-  "deployAppID": "5964faf3135d36007ee633be",
+  "deployAppName": "SHARP+",
+  "deployAppID": "59b112c7678919000775f921",
   "description": "A data collection application for FORM.io",
   "author": "Ignacio Cabrera <ignacio.cabrera@fao.org>",
   "scripts": {

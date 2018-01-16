@@ -104,6 +104,7 @@ export default {
       this.submissions = await LocalSubmission.sFind(this, {
         "data.formio.formId": this.$route.params.idForm
       });
+      console.log(this.submissions)
     }
 
     this.currentForm = await LocalForm.findOne({
