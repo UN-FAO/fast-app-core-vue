@@ -22,6 +22,7 @@
     "set:faw": "sh deploys/setEnv.sh FAW FAW 5a0377c335677f0001aee006",
     "set:drip": "sh deploys/setEnv.sh DRIP DRIP 5a108b1feb180900018bced5",
     "set:pat": "sh deploys/setEnv.sh PAT PAT 5964faf3135d36007ee633be",
+    "set:ssfk": "sh deploys/setEnv.sh SSFK SSFK 5a5f08a63f90fd000121aef5",
     "set:dev": "sh deploys/setEnv.sh DEV DEV 59b136fb2f12080007487131",
     "get:roles": "sh deploys/getAppRoles.sh"
   },

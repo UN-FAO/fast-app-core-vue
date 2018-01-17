@@ -112,4 +112,15 @@ exports.OFFLINE_USE = true
 | have multiple running surveys (group survey)
 |
 */
-exports.PARALLEL_SURVEYS = true
+exports.PARALLEL_SURVEYS = false
+/*
+|--------------------------------------------------------------------------
+| LEFT HAND WIZARD NAVIGATION
+|--------------------------------------------------------------------------
+|
+| Here you may specify if this application will automaticaly
+| open the left hand wizard navigation while on create
+|
+*/
+exports.NAVIGATION_OPENED = false
+exports.NAVIGATION_AUTOCLOSE_ON_SELECTION = true
