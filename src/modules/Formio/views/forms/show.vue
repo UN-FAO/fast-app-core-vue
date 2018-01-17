@@ -76,6 +76,7 @@ import lang from "element-ui/lib/locale/lang/en";
 import locale from "element-ui/lib/locale";
 import moment from "moment";
 import jsonexport from "jsonexport";
+import flatten from "flat";
 import {
   QCard,
   QCardTitle,
@@ -104,7 +105,7 @@ export default {
       this.submissions = await LocalSubmission.sFind(this, {
         "data.formio.formId": this.$route.params.idForm
       });
-      console.log(this.submissions)
+      console.log(this.submissions);
     }
 
     this.currentForm = await LocalForm.findOne({
@@ -168,7 +169,7 @@ export default {
           {
             name: "JSON",
             handler: () => {
-              let exported = this.loadExportData();
+              let exported = this.loadExportData("json");
               let name = "backup_" + exported.date + ".json";
               this.download(
                 JSON.stringify(exported.data),
@@ -185,7 +186,7 @@ export default {
           {
             name: "CSV",
             handler: (selection, something) => {
-              let exported = this.loadExportData();
+              let exported = this.loadExportData("csv");
               jsonexport(exported.data, (err, csv) => {
                 if (err) {
                   return console.log(err);
@@ -219,7 +220,7 @@ export default {
     this.$eventHub.off("FAST-DATA_SYNCED");
   },
   methods: {
-    loadExportData() {
+    loadExportData(type) {
       let json = [];
       let dataExport;
       dataExport =
@@ -227,10 +228,28 @@ export default {
       _forEach(dataExport, function(submission) {
         let record = submission.fullSubmission;
         record.id = submission.id_submision;
-        json.push(submission.fullSubmission);
+        const ordered = {};
+        Object.keys(record)
+          .sort()
+          .forEach(function(key) {
+            ordered[key] = record[key];
+          });
+        json.push(flatten(ordered));
       });
 
-      dataExport = _map(dataExport, "fullSubmission");
+      let orderedJsonOut = _map(
+        _map(dataExport, "fullSubmission"),
+        submission => {
+          const ordered = {};
+          Object.keys(submission)
+            .sort()
+            .forEach(function(key) {
+              ordered[key] = submission[key];
+            });
+          return ordered;
+        }
+      );
+      dataExport = type && type === "csv" ? json : orderedJsonOut;
 
       let date = new Date()
         .toJSON()

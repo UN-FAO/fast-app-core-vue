@@ -36,6 +36,7 @@
     "deep-diff": "^0.3.8",
     "element-ui": "^1.4.3",
     "fastclick": "^1.0.6",
+    "flat": "^4.0.0",
     "formiojs": "^2.27.2",
     "html2canvas": "^0.5.0-beta4",
     "i18next": "^10.0.3",
