@@ -1,5 +1,15 @@
 /*
 |--------------------------------------------------------------------------
+| APP ENV
+|--------------------------------------------------------------------------
+|
+| Here you may specify the environment of the APP that you are
+| building.
+|
+*/
+exports.APP_ENV = 'dev'
+/*
+|--------------------------------------------------------------------------
 | APP VERSION
 |--------------------------------------------------------------------------
 |
@@ -113,3 +123,14 @@ exports.OFFLINE_USE = true
 |
 */
 exports.PARALLEL_SURVEYS = false
+/*
+|--------------------------------------------------------------------------
+| LEFT HAND WIZARD NAVIGATION
+|--------------------------------------------------------------------------
+|
+| Here you may specify if this application will automaticaly
+| open the left hand wizard navigation while on create
+|
+*/
+exports.NAVIGATION_OPENED = false
+exports.NAVIGATION_AUTOCLOSE_ON_SELECTION = true

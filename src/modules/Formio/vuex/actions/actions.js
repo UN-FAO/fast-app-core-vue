@@ -292,7 +292,6 @@ const actions = {
     let offlinePlugin = FormioJS.getPlugin('offline')
     if (isOnline) {
       Promise.each(offlineSubmissions, async function (offlineSubmission) {
-        // Create FormIOJS plugin instace (Manipulation)
         let formio = new FormioJS(offlineSubmission.data.formio.formUrl)
         let postData = {
           data: offlineSubmission.data.data
@@ -313,6 +312,9 @@ const actions = {
 
         try {
           let FormIOinsertedData = await formio.saveSubmission(postData)
+          if (!FormIOinsertedData._id) {
+            throw Error('Submission cannot be synced')
+          }
           FormIOinsertedData.formio = formio
 
           syncedSubmissionsCount = syncedSubmissionsCount + 1

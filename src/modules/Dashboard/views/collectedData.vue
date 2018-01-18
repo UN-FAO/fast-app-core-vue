@@ -18,7 +18,7 @@
                     </label>
                   </div>
                 </div>
-                <div class="input-group" v-for="(form, index) in forms" :key="index" v-if="form.data.tags.indexOf('visible') > -1">
+                <div class="input-group" v-for="(form, index) in forms" :key="index" v-if="form.data.tags.indexOf('visible') > -1 || APP_ENV === 'dev' ">
                   <div class="radio">
                     <label class="control-label" for="S0-info-headOfHousehold-you">
                       <input name="selectedSurvey" type="radio" class="" lang="en" :value="form.data.title">
@@ -54,6 +54,7 @@ import LocalForm from "database/collections/scopes/LocalForm";
 import _sortBy from "lodash/sortBy";
 import _forEach from "lodash/forEach";
 import _orderBy from "lodash/orderBy";
+import {APP_ENV} from "config/env"
 
 export default {
   name: "card",
@@ -84,7 +85,8 @@ export default {
   data: () => {
     return {
       forms: undefined,
-      loading: true
+      loading: true,
+      APP_ENV: APP_ENV
     };
   },
   methods: {

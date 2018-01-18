@@ -11,7 +11,7 @@
 
               <div class="form-group has-feedback formio-component formio-component-radio" v-if="typeof forms !== 'undefined'">
                 <h3 class="control-label" style="color: #525f7f; font-weight: 300;">{{ $t("Please select the version that you want to use") }}: </h3>
-                <div class="input-group" v-for="(form, index) in forms" :key="index" v-if="form.data.tags.indexOf('visible') > -1">
+                <div class="input-group" v-for="(form, index) in forms" :key="index" v-if="form.data.tags.indexOf('visible') > -1 || APP_ENV === 'dev' ">
                   <div class="radio">
                     <label class="control-label" for="S0-info-headOfHousehold-you">
                       <input name="selectedSurvey" type="radio" class="" lang="en" :value="form.data.title">
@@ -48,6 +48,7 @@ import LocalForm from "database/collections/scopes/LocalForm";
 import _orderBy from "lodash/orderBy";
 import _forEach from "lodash/forEach";
 import _sortBy from "lodash/sortBy";
+import { APP_ENV } from "config/env";
 
 export default {
   name: "card",
@@ -78,7 +79,8 @@ export default {
   data: () => {
     return {
       forms: undefined,
-      loading: true
+      loading: true,
+      APP_ENV: APP_ENV
     };
   },
   methods: {

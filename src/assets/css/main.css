@@ -804,3 +804,7 @@ p.form-title {
 }
 
 
+th, th.field-required {
+    color: black;
+}
+

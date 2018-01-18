@@ -8,7 +8,7 @@
 | understand whats are your users looking at!
 |
 */
-exports.FAST_VERSION = '0.5.7'
+exports.FAST_VERSION = '0.5.13'
 /*
 |--------------------------------------------------------------------------
 | FORM.IO CONFIGURATION
@@ -113,3 +113,14 @@ exports.OFFLINE_USE = true
 |
 */
 exports.PARALLEL_SURVEYS = false
+/*
+|--------------------------------------------------------------------------
+| LEFT HAND WIZARD NAVIGATION
+|--------------------------------------------------------------------------
+|
+| Here you may specify if this application will automaticaly
+| open the left hand wizard navigation while on create
+|
+*/
+exports.NAVIGATION_OPENED = false
+exports.NAVIGATION_AUTOCLOSE_ON_SELECTION = true
