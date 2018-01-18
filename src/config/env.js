@@ -8,7 +8,7 @@
 | understand whats are your users looking at!
 |
 */
-exports.FAST_VERSION = '0.5.13'
+exports.FAST_VERSION = '0.5.7'
 /*
 |--------------------------------------------------------------------------
 | FORM.IO CONFIGURATION
@@ -19,8 +19,8 @@ exports.FAST_VERSION = '0.5.13'
 | forms asociated with it.
 |
 */
-exports.APP_URL = 'https://xuvjhcydbqrxtjx.form.io'
-exports.APP_NAME = 'xuvjhcydbqrxtjx'
+exports.APP_URL = 'https://uiorzjzflxyccmo.form.io'
+exports.APP_NAME = 'uiorzjzflxyccmo'
 /*
 |--------------------------------------------------------------------------
 | APP CONFIGURATION
@@ -31,8 +31,8 @@ exports.APP_NAME = 'xuvjhcydbqrxtjx'
 | in the app.
 |
 */
-exports.APP_FANTACY_NAME = 'PAT'
-exports.APP_PHRASE = 'Plant Breeding Analysis'
+exports.APP_FANTACY_NAME = 'SHARP+'
+exports.APP_PHRASE = 'Self-evaluation and Holistic Assessment of climate Resilence of Farmers and Pastoralists'
 /*
 |--------------------------------------------------------------------------
 | MD5 KEY
