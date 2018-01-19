@@ -14,14 +14,14 @@ import _forEach from 'lodash/forEach'
 import FORMIOAPI from 'modules/Formio/api/Formio'
 
 const OFFLINE_PLUGIN = class {
-  static storeForm(formSubmission, formio, redirect, hashField, formId) {
+  static storeForm(formSubmission, formio, redirect, hashField, formId, eventHub) {
     if ((typeof hashField !== 'undefined')) {
       formSubmission.data.hashedPassword = md5(formSubmission.data.password, MD5_KEY)
       store.dispatch('storeUserLocally', {
-          data: formSubmission.data,
-          sync: false,
-          formio: formio
-        })
+        data: formSubmission.data,
+        sync: false,
+        formio: formio
+      })
         .then(() => {
           router.push({
             path: '/login'
@@ -32,58 +32,60 @@ const OFFLINE_PLUGIN = class {
         })
     } else {
       store.dispatch('addSubmission', {
-          formSubmission: formSubmission,
-          formio: formio,
-          User: Auth.user().data
+        formSubmission: formSubmission,
+        formio: formio,
+        User: Auth.user().data
+      }).then((created) => {
+        if (!created) {
+          return
+        }
+
+        if (created.trigger && created.trigger === 'resourceCreation') {
+          console.log('We got a resource creation')
+          return
+        }
+
+        var draftStatus = new CustomEvent('draftStatus', {
+          'detail': {
+            'data': created,
+            'text': 'Draft Saved'
+          }
         })
-        .then((created) => {
-          if (!created) {
-            return
-          }
-
-          if (created.trigger && created.trigger === 'resourceCreation') {
-            console.log('We got a resource creation')
-            return
-          }
-          var draftStatus = new CustomEvent('draftStatus', {
-            'detail': {
-              'data': created,
-              'text': 'Draft Saved'
-            }
-          })
-          document.dispatchEvent(draftStatus)
-
-          if (formSubmission._id) {
-            if (formSubmission.redirect === true) {
-              router.push({
-                name: 'formio_form_show',
-                params: {
-                  idForm: formId
-                }
-              })
-            }
-          } else {
+        document.dispatchEvent(draftStatus)
+        if (formSubmission._id) {
+          if (formSubmission.redirect === true) {
             router.push({
-              name: 'formio_submission_update',
+              name: 'formio_form_show',
               params: {
-                idForm: formId,
-                idSubmission: created._id
+                idForm: formId
               }
             })
           }
-          return created
-        })
+        } else if (created.data && created.data.trigger && created.data.trigger === "importSubmission") {
+          eventHub.emit("FAST-DATA_IMPORTED");
+          return
+        } else {
+          router.push({
+            name: 'formio_submission_update',
+            params: {
+              idForm: formId,
+              idSubmission: created._id
+            }
+          })
+        }
+        return created
+      })
         .catch((error) => {
           console.log(error)
         })
     }
   }
 
-  static getPlugin(formioURL, hashField, redirect) {
+  static getPlugin(formioURL, hashField, redirect, eventHub) {
     let formId = formioURL.split("/").pop();
     let plugin = {
       priority: 0,
-      staticRequest: async(args) => {
+      staticRequest: async (args) => {
         return
         // Try to get the form associated to the static request
         let formArray = args.url.split('/')
@@ -141,7 +143,7 @@ const OFFLINE_PLUGIN = class {
         let jsonSubmissions = this.LocalToJson(submissions)
         return jsonSubmissions
       },
-      request: async(args) => {
+      request: async (args) => {
         // If we are making a request to a external API (NOT)
         if (args.url.indexOf('form.io') === -1 && args.method === 'GET') {
           // let a = {'count': 811, 'previous': null, 'results': [{'url': 'https://pokeapi.co/api/v2/pokemon/1/', 'name': 'aaa'}, {'url': 'https://pokeapi.co/api/v2/pokemon/2/', 'name': 'ivysaur'}, {'url': 'https://pokeapi.co/api/v2/pokemon/3/', 'name': 'venusaur'}, {'url': 'https://pokeapi.co/api/v2/pokemon/4/', 'name': 'charmander'}, {'url': 'https://pokeapi.co/api/v2/pokemon/5/', 'name': 'charmeleon'}, {'url': 'https://pokeapi.co/api/v2/pokemon/6/', 'name': 'charizard'}, {'url': 'https://pokeapi.co/api/v2/pokemon/7/', 'name': 'squirtle'}, {'url': 'https://pokeapi.co/api/v2/pokemon/8/', 'name': 'wartortle'}, {'url': 'https://pokeapi.co/api/v2/pokemon/9/', 'name': 'blastoise'}, {'url': 'https://pokeapi.co/api/v2/pokemon/10/', 'name': 'caterpie'}, {'url': 'https://pokeapi.co/api/v2/pokemon/11/', 'name': 'metapod'}, {'url': 'https://pokeapi.co/api/v2/pokemon/12/', 'name': 'butterfree'}, {'url': 'https://pokeapi.co/api/v2/pokemon/13/', 'name': 'weedle'}, {'url': 'https://pokeapi.co/api/v2/pokemon/14/', 'name': 'kakuna'}, {'url': 'https://pokeapi.co/api/v2/pokemon/15/', 'name': 'beedrill'}, {'url': 'https://pokeapi.co/api/v2/pokemon/16/', 'name': 'pidgey'}, {'url': 'https://pokeapi.co/api/v2/pokemon/17/', 'name': 'pidgeotto'}, {'url': 'https://pokeapi.co/api/v2/pokemon/18/', 'name': 'pidgeot'}, {'url': 'https://pokeapi.co/api/v2/pokemon/19/', 'name': 'rattata'}, {'url': 'https://pokeapi.co/api/v2/pokemon/20/', 'name': 'raticate'}], 'next': 'https://pokeapi.co/api/v2/pokemon/?offset=20'}
@@ -159,6 +161,7 @@ const OFFLINE_PLUGIN = class {
           let formioPath = 'https://' + form.machineName.split(':')[0] + '.form.io/' + form.path
 
           let formio = new Formio(formioPath)
+
           let dStoreForm = _debounce(this.storeForm, 1000)
 
           let dataToSubmit = args.data
@@ -171,7 +174,8 @@ const OFFLINE_PLUGIN = class {
             }
             dataToSubmit = formSubmission
           }
-          dStoreForm(dataToSubmit, formio, redirect, hashField, formId)
+
+          dStoreForm(dataToSubmit, formio, redirect, hashField, formId, eventHub)
           return args.data
         }
 

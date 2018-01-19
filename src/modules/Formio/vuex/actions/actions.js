@@ -144,7 +144,7 @@ const actions = {
     commit
   }, {
     currentForm,
-    vm
+      vm
   }) {
     FormioJS.setToken(Auth.user().x_jwt_token)
     let isOnline = Connection.isOnline()
@@ -219,10 +219,11 @@ const actions = {
     commit
   }, {
     formSubmission,
-    formio,
-    User
+      formio,
+      User
   }) {
-    let submission = { ...formSubmission,
+    let submission = {
+      ...formSubmission,
       sync: false,
       user_email: User.email,
       formio: formio
@@ -231,7 +232,8 @@ const actions = {
 
     // If we are updating the submission
     if (formSubmission._id) {
-      submission = { ...submission,
+      submission = {
+        ...submission,
         type: 'update',
         updated: moment().format()
       }
@@ -252,7 +254,6 @@ const actions = {
       }
       return localSubmission
     }
-
     // If we are creating a new draft from scratch or a resource
     submission.created = moment().format()
     let newSubmission = await LocalSubmission.insert({
@@ -260,13 +261,15 @@ const actions = {
     })
 
     switch (formSubmission.trigger) {
+      case 'importSubmission':
       case 'createLocalDraft':
       case 'resourceCreation':
         return newSubmission
         break;
       case 'createParalelSurvey':
         newSubmission.trigger = 'createParalelSurvey'
-        newSubmission.data.data.parallelSurvey = LocalSubmission.setParallelSurvey({ ...LocalSubmission.getParallelSurvey(newSubmission),
+        newSubmission.data.data.parallelSurvey = LocalSubmission.setParallelSurvey({
+          ...LocalSubmission.getParallelSurvey(newSubmission),
           submissionId: newSubmission._id
         })
         await LocalSubmission.update(newSubmission)

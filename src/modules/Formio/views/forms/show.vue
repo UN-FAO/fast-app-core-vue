@@ -70,6 +70,7 @@
 
 <script>
 import DataTables from "vue-data-tables";
+import OFFLINE_PLUGIN from "modules/Formio/components/formio/src/offlinePlugin";
 import _forEach from "lodash/forEach";
 import _map from "lodash/map";
 import lang from "element-ui/lib/locale/lang/en";
@@ -95,6 +96,8 @@ import {
 import LocalSubmission from "database/collections/scopes/LocalSubmission";
 import LocalForm from "database/collections/scopes/LocalForm";
 import FormioUtils from "formiojs/utils";
+import Formio from "formiojs";
+import { APP_URL } from "config/env";
 locale.use(lang);
 
 export default {
@@ -105,7 +108,6 @@ export default {
       this.submissions = await LocalSubmission.sFind(this, {
         "data.formio.formId": this.$route.params.idForm
       });
-      console.log(this.submissions);
     }
 
     this.currentForm = await LocalForm.findOne({
@@ -113,6 +115,10 @@ export default {
     });
 
     this.$eventHub.on("FAST-DATA_SYNCED", async data => {
+      await this.updateLocalSubmissions();
+    });
+
+    this.$eventHub.on("FAST-DATA_IMPORTED", async data => {
       await this.updateLocalSubmissions();
     });
 
@@ -464,6 +470,60 @@ export default {
         ]
       };
     },
+    async importSubmission() {
+      const file = await this.$swal({
+        title: this.$t("Select you JSON file"),
+        input: "file",
+        inputAttributes: {
+          accept: ".json",
+          "aria-label": this.$t("Upload your JSON File")
+        }
+      });
+
+      if (file) {
+        var reader = new FileReader();
+        let self = this;
+        // Closure to capture the file information.
+        reader.onload = (function(theFile) {
+          return function(e) {
+            let json;
+            try {
+              json = JSON.parse(e.target.result);
+            } catch (ex) {
+              throw new Error("The Json file could not be parsed");
+            }
+            json.forEach(row => {
+              if (row.id || row._id) {
+                delete row.id;
+                delete row._id;
+              }
+              let formSubmission = {
+                data: row,
+                redirect: false,
+                syncError: false,
+                draft: true,
+                trigger: "importSubmission"
+              };
+              let formUrl = APP_URL + "/" + self.currentForm.data.path;
+              Formio.deregisterPlugin("offline");
+              Formio.registerPlugin(
+                OFFLINE_PLUGIN.getPlugin(
+                  self.currentForm.data.path,
+                  undefined,
+                  false,
+                  self.$eventHub
+                ),
+                "offline"
+              );
+              let formio = new Formio(formUrl);
+              formio.saveSubmission(formSubmission);
+            });
+          };
+        })(file);
+
+        reader.readAsText(file);
+      }
+    },
     async updateLocalSubmissions() {
       if (this.$route.params.idForm === "*") {
         this.submissions = await LocalSubmission.sFind(this, {});
@@ -480,16 +540,46 @@ export default {
       });
     },
     displayError(error) {
-      let errorString = "<ul>";
+      let errorString =
+        '<div style="overflow-x:auto;"><table class="restable"><thead> <tr><th scope="col">' +
+        this.$t("Label") +
+        '</th><th scope="col">' +
+        this.$t("Code") +
+        '</th><th scope="col">' +
+        this.$t("Module") +
+        "</th></tr></thead><tbody>";
+
       error.details.forEach(detail => {
         let component = FormioUtils.getComponent(
           this.currentForm.data.components,
           detail.path[0]
         );
         let label = component ? this.$t(component.label) + ": " : "";
-        errorString = errorString + "<li>" + label + detail.message + "</li>";
+        errorString = errorString + "<tr>";
+        errorString =
+          errorString +
+          "<td data-label=" +
+          this.$t("Label") +
+          ">" +
+          label +
+          "</td>";
+        errorString =
+          errorString +
+          "<td data-label=" +
+          this.$t("Code") +
+          ">" +
+          detail.message +
+          "</td>";
+        errorString =
+          errorString +
+          "<td data-label=" +
+          this.$t("Module") +
+          ">" +
+          detail.message +
+          "</td>";
+        errorString = errorString + "</tr>";
       });
-      errorString = errorString + "<ul>";
+      errorString = errorString + "</tbody></table></div>";
 
       this.$swal({
         title: error.name,
@@ -503,3 +593,87 @@ export default {
   }
 };
 </script>
+<style SCOPED>
+table.restable {
+  border: 1px solid #ccc;
+  border-collapse: collapse;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  table-layout: fixed;
+}
+
+table.restable caption {
+  font-size: 1.5em;
+  margin: 0.5em 0 0.75em;
+}
+
+table.restable tr {
+  background: #f8f8f8;
+  border: 1px solid #ddd;
+  padding: 0.35em;
+}
+
+table.restable th,
+table.restable td {
+  padding: 0.625em;
+  text-align: center;
+}
+
+table.restable th {
+  font-size: 0.85em;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+@media screen and (max-width: 600px) {
+  table.restable {
+    border: 0;
+  }
+
+  table.restable caption {
+    font-size: 1.3em;
+  }
+
+  table.restable thead {
+    border: none;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+  }
+
+  table.restable tr {
+    border-bottom: 3px solid #ddd;
+    display: block;
+    margin-bottom: 0.625em;
+  }
+
+  table.restable td {
+    border-bottom: 1px solid #ddd;
+    display: block;
+    font-size: 0.8em;
+    text-align: right;
+  }
+
+  table.restable td:before {
+    /*
+    * aria-label has no advantage, it won't be read inside a table
+    content: attr(aria-label);
+    */
+    content: attr(data-label);
+    float: left;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+
+  table.restable td:last-child {
+    border-bottom: 0;
+  }
+}
+</style>
+
+

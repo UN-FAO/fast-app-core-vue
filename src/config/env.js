@@ -7,7 +7,7 @@
 | building.
 |
 */
-exports.APP_ENV = 'dev'
+exports.APP_ENV = 'prod'
 /*
 |--------------------------------------------------------------------------
 | APP VERSION

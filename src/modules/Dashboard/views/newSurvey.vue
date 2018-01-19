@@ -49,7 +49,6 @@ import _orderBy from "lodash/orderBy";
 import _forEach from "lodash/forEach";
 import _sortBy from "lodash/sortBy";
 import { APP_ENV } from "config/env";
-
 export default {
   name: "card",
   mounted: async function() {

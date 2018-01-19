@@ -102,14 +102,13 @@ const LocalSubmission = class {
   static async sFind(vm, filter) {
     let localSubmissions = await LocalSubmission.find(filter)
     let submissions = _cloneDeep(localSubmissions)
-    
+
     submissions = _filter(submissions, function (o) {
       return (
         (o.data.owner && o.data.owner === Auth.user()._id) ||
         (o.data.user_email && o.data.user_email === Auth.userEmail())
       )
     })
-    console.log('Sfind submissions', submissions)
 
     submissions = _map(submissions, function (submission) {
       let data = submission.data.data
@@ -120,7 +119,6 @@ const LocalSubmission = class {
         Humancreated: vm.humanizeDate(submission.data.created),
         id_submision: submission.data._id ? submission.data._id : submission._id,
         local: !submission.data._id,
-        id_submision_state: submission.data.sync ? submission.data.data.id_submision : submission.data.data.id_submision + '(Offline)',
         status: submission.data.sync === false ? 'offline' : 'online',
         draft: submission.data.draft,
         fullSubmission: data,
@@ -202,7 +200,7 @@ const LocalSubmission = class {
     submissions = formId ? submissions.filter((submission) => {
       return submission.data.formio.formId === formId
     }) : submissions
-    
+
     let groups = submissions.map((submission) => {
       return this.getParallelSurvey(submission) ? {
         groupId: this.getParallelSurvey(submission).groupId,
