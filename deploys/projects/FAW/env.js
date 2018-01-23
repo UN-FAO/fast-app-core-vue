@@ -8,7 +8,7 @@
 | understand whats are your users looking at!
 |
 */
-exports.FAST_VERSION = '0.5.13'
+exports.FAST_VERSION = '0.5.14'
 /*
 |--------------------------------------------------------------------------
 | FORM.IO CONFIGURATION
@@ -19,8 +19,8 @@ exports.FAST_VERSION = '0.5.13'
 | forms asociated with it.
 |
 */
-exports.APP_URL = 'https://efqbsqrkscuzlpi.form.io'
-exports.APP_NAME = 'efqbsqrkscuzlpi'
+exports.APP_URL = 'https://vbemsizlqbxmzzk.form.io'
+exports.APP_NAME = 'vbemsizlqbxmzzk'
 /*
 |--------------------------------------------------------------------------
 | APP CONFIGURATION

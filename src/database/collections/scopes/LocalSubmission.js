@@ -133,8 +133,8 @@ const LocalSubmission = class {
     submissions = _orderBy(submissions, [
       'created'
     ], [
-      'desc'
-    ])
+        'desc'
+      ])
     return submissions
   }
 
@@ -184,8 +184,8 @@ const LocalSubmission = class {
 
     parallelsurveyInfo =
       (parallelsurveyInfo && parallelsurveyInfo !== "[object Object]") ?
-      JSON.parse(parallelsurveyInfo) :
-      undefined;
+        JSON.parse(parallelsurveyInfo) :
+        undefined;
 
     return parallelsurveyInfo
   }
@@ -223,7 +223,7 @@ const LocalSubmission = class {
     return groups[0]
   }
 
-  static async removeFromGroup(submission) {}
+  static async removeFromGroup(submission) { }
 
   static async assingToGroup(submissionId, groupId) {
     let group = await this.getGroup(groupId[0])
@@ -231,17 +231,18 @@ const LocalSubmission = class {
 
     let parallelData = this.getParallelSurvey(submission)
 
-     let parallelSurvey = { ...parallelData,
-        groupId: group.groupId,
-        groupName: group.groupName
-     };
+    let parallelSurvey = {
+      ...parallelData,
+      groupId: group.groupId,
+      groupName: group.groupName
+    };
 
     console.log('parallelSurvey', parallelSurvey)
 
-      submission.data.data.parallelSurvey = this.setParallelSurvey(
-        parallelSurvey
-      );
-      await this.update(submission)
+    submission.data.data.parallelSurvey = this.setParallelSurvey(
+      parallelSurvey
+    );
+    await this.update(submission)
   }
 }
 export default LocalSubmission

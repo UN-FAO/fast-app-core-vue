@@ -155,7 +155,7 @@ export default {
       this.$refs.leftDrawer.close();
     },
     async syncApp() {
-      this.getResources({
+      await this.getResources({
         appName: this.$store.state.authStore.appName
       });
       await Localization.getTranslations();

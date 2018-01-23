@@ -246,12 +246,15 @@ const actions = {
       let submissionNotDraft = submission.draft === true
       let autoSave = submission.trigger === 'autoSaveAsDraft'
       let isSynced = !!(localSubmission.data.access && Array.isArray(localSubmission.data.access))
-      let hasError = localSubmission.data.syncError !== '' && typeof localSubmission.data.syncError !== 'undefined'
+      let hasError = localSubmission.data.syncError !== false && typeof localSubmission.data.syncError !== 'undefined'
+      localSubmission.data = submission
+      console.log('hasError', hasError)
+      console.log('localSubmission', localSubmission)
       // Check cases
       if (((submitting || (localDraft && submissionNotDraft)) && !autoSave) || (!isSynced && autoSave && !hasError)) {
-        localSubmission.data = submission
         await LocalSubmission.update(localSubmission)
       }
+      await LocalSubmission.update(localSubmission)
       return localSubmission
     }
     // If we are creating a new draft from scratch or a resource
