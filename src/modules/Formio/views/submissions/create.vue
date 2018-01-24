@@ -514,6 +514,11 @@ export default {
       options.forEach(option => {
         customOptions[option.groupId] = option.groupName;
       });
+      let currentGroup = await LocalSubmission.getParallelSurvey(
+        this.currentSubmission
+      );
+      currentGroup = currentGroup.groupId ? currentGroup.groupId : undefined;
+      delete customOptions[currentGroup];
 
       let steps = [];
       let progressSteps = [];
@@ -591,6 +596,9 @@ export default {
           this.$route.params.idSubmission,
           result
         );
+        setTimeout(function() {
+          window.location.reload(true);
+        }, 1500);
       });
     },
     createNewSurvey(surveyData) {

@@ -236,9 +236,6 @@ const LocalSubmission = class {
       groupId: group.groupId,
       groupName: group.groupName
     };
-
-    console.log('parallelSurvey', parallelSurvey)
-
     submission.data.data.parallelSurvey = this.setParallelSurvey(
       parallelSurvey
     );
