@@ -138,7 +138,6 @@ export default {
 
     this.$eventHub.on("formio.change", data => {
       let scorePanels = [];
-      console.log("data", data);
       // This should only be called if this is a Wizard
       // Search all of the Score components in different pages
       if (data.formio && data.formio.pages) {
@@ -179,16 +178,11 @@ export default {
           });
         }
       }
-      console.log("scorePanels", scorePanels);
       this.scorePanels = scorePanels;
     });
     await this.updateUnsyncedSubmissions();
   },
   methods: {
-    changeSelectedPage() {
-      // let ref = 'page-' + this.currentPage
-      // let listPage = this.$refs[ref]
-    },
     humanizeDate(givenDate) {
       let start = moment(givenDate);
       let end = moment();

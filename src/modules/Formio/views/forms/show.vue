@@ -63,6 +63,7 @@
              {{$t('New Submission')}}
           </q-tooltip>
         </q-fab-action>
+
       </q-fab>
     </q-fixed-position>
   </div>
