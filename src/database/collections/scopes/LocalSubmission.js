@@ -127,7 +127,6 @@ const LocalSubmission = class {
       }
       return submission
     })
-
     submissions = _map(submissions, 'data')
     submissions = _map(submissions, 'data')
     submissions = _orderBy(submissions, [

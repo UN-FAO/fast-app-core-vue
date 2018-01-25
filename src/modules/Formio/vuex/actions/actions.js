@@ -248,7 +248,6 @@ const actions = {
       let isSynced = !!(localSubmission.data.access && Array.isArray(localSubmission.data.access))
       let hasError = localSubmission.data.syncError !== false && typeof localSubmission.data.syncError !== 'undefined'
       localSubmission.data = submission
-
       // Check cases
       if (((submitting || (localDraft && submissionNotDraft)) && !autoSave) || (!isSynced && autoSave && !hasError)) {
         await LocalSubmission.update(localSubmission)

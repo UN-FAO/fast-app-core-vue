@@ -238,6 +238,7 @@ export default {
       } else {
         this.formIO = new FormioForm(this.$refs.formIO, translations);
       }
+      this.formIO.url = this.formURL
     },
     /**
       * [mountFormIOForm description]

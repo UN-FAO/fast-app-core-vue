@@ -57,7 +57,7 @@ export default {
     let visible = this.forms.filter(o => {
       return o.data.tags.indexOf("visible") > -1;
     });
-    if (visible.length === 1) {
+    if (visible.length === 1 && this.APP_ENV !== 'dev') {
       this.goTo({
         name: "formio_form_submission",
         params: { idForm: visible[0].data.path }
