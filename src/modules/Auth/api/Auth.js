@@ -8,7 +8,7 @@ import {
   MD5_KEY
 } from 'config/env'
 import md5 from 'md5'
-import LocalUser from 'database/collections/scopes/LocalUser'
+import User from 'database/models/User'
 import store from 'config/store'
 import Connection from 'modules/Wrappers/Connection'
 import LocalRoles from "database/collections/scopes/LocalRoles";
@@ -183,7 +183,7 @@ const Auth = class {
     // Hash password
     const hashedPassword = md5(password, MD5_KEY)
     // Get the user
-    let dbUser = await LocalUser.findOne({
+    let dbUser = await User.local().findOne({
       'data.data.email': username
     })
     // Compare hashed passwords

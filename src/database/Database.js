@@ -9,7 +9,7 @@ import _filter from 'lodash/filter'
 import _debounce from 'lodash/debounce'
 import Connection from 'modules/Wrappers/Connection'
 import store from 'config/store'
-import LocalUser from 'database/collections/scopes/LocalUser'
+import User from 'database/models/User'
 import LocalSubmission from 'database/collections/scopes/LocalSubmission'
 // import {  Platform} from 'quasar'
 /*
@@ -30,23 +30,6 @@ import collections from './collections/collections'
 */
 var DB;
 const _create = function () {
-  /*
-    var userAgent = navigator && navigator.userAgent && navigator.userAgent.toLowerCase()
-    // If running on Electron
-    if (userAgent && userAgent.indexOf(' electron/') > -1) {
-      database.adapter = 'websql'
-    }
-    // If running on Mobile Browser
-    else if (Platform.is.mobile) {
-      database.adapter = 'localstorage'
-    }
-    // If running on Cordova App
-    else if (Platform.is.cordova) {
-      database.adapter = 'websql'
-    } else {
-      db = initializeWebDB();
-    }
-  */
   return new Promise((resolve) => {
     var idbAdapter = new LokiIndexedAdapter('FAST');
 
@@ -61,10 +44,6 @@ const _create = function () {
       autoload: true,
       autoloadCallback: databaseInitialize
     });
-
-    console.log('#####################')
-    console.log('Using IndexedDB')
-    console.log('#####################')
 
     function databaseInitialize() {
       var submissions = db.getCollection("submissions");
@@ -128,7 +107,7 @@ const DsyncSubmissions = _debounce(syncSubmissions, 1000)
 
 
 const getUsersToSync = async() => {
-  let filter = await LocalUser.find({
+  let filter = await User.local().find({
     'data.sync': false
   })
   return _filter(filter, function (o) {

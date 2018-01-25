@@ -6,7 +6,7 @@ import Connection from 'modules/Wrappers/Connection'
 import FormioJS from 'formiojs'
 import Promise from 'bluebird'
 import LocalForm from 'database/collections/scopes/LocalForm'
-import LocalUser from 'database/collections/scopes/LocalUser'
+import User from 'database/models/User'
 import LocalSubmission from 'database/collections/scopes/LocalSubmission'
 import _forEach from 'lodash/forEach'
 import _map from 'lodash/map'
@@ -28,7 +28,7 @@ const actions = {
     if (collection === 'forms') {
       model = LocalForm
     } else if (collection === 'users') {
-      model = LocalUser
+      model = User
     }
     // let offlinePlugin = FormioJS.getPlugin('offline')
     var formio = new FormioJS('https://' + data.appName + '.form.io')
@@ -304,7 +304,7 @@ const actions = {
         let model = LocalSubmission
 
         if (offlineSubmission.data.formio.formId === 'userregister') {
-          model = LocalUser
+          model = User
         }
         await model.update(offlineSubmission)
 
