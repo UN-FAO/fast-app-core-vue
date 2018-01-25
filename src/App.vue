@@ -1,5 +1,12 @@
 <template>
-  <q-layout ref="layout" :view="layoutStore.view" :left-breakpoint="layoutStore.leftBreakpoint" :right-breakpoint="layoutStore.rightBreakpoint" :reveal="layoutStore.reveal" v-bind:class="isInsideApp ? 'background-app' : 'background-login' ">
+  <q-layout ref="layout"
+    :view="layoutStore.view"
+    :left-breakpoint="layoutStore.leftBreakpoint"
+    :right-breakpoint="layoutStore.rightBreakpoint"
+    :reveal="layoutStore.reveal"
+    v-bind:class="isInsideApp ? 'background-app' : 'background-login'"
+    :dir="ltr ? 'ltr' : 'rtl' "
+    >
     <toolbar slot="header"></toolbar>
     <template v-if="isInsideApp">
       <leftdrawer slot="left"></leftdrawer>
@@ -77,8 +84,10 @@
     },
     methods: {
       ...mapActions(["sendOfflineData"]),
-      toggleRtl: function(lenguageDirecction) {
-        this.ltr = lenguageDirecction === "ltr";
+      toggleRtl: function(lenguage) {
+        console.log('lenguage', lenguage)
+        console.log(lenguage.direction === "ltr")
+        this.ltr = lenguage.direction === "ltr";
       },
       /**
        * [setSyncInterval description]
