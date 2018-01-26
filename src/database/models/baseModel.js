@@ -87,5 +87,10 @@ const baseModel = class {
       model.insert(document)
     }
   }
+
+  static async findAndRemove(filter) {
+    const model = await this.getModel()
+    return model.findAndRemove(filter);
+  }
 }
 export default baseModel

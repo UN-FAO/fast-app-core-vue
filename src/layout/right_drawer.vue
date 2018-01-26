@@ -71,7 +71,7 @@ import _forEach from "lodash/forEach";
 // import _isEmpty from "lodash/isEmpty";
 // import _orderBy from "lodash/orderBy";
 // import _filter from "lodash/filter";
-import LocalSubmission from "database/collections/scopes/LocalSubmission";
+import Submission from "database/models/Submission";
 import moment from "moment";
 // import Auth from "modules/Auth/api/Auth";
 import FormioUtils from "formiojs/utils";
@@ -189,7 +189,7 @@ export default {
       return end.to(start);
     },
     async updateUnsyncedSubmissions() {
-      this.Unsynced = await LocalSubmission.getUnsync();
+      this.Unsynced = await Submission.getUnsync();
     }
   }
 };

@@ -1,6 +1,6 @@
-import LocalForm from 'database/collections/scopes/LocalForm'
-import LocalSubmission from 'database/collections/scopes/LocalSubmission'
-import LocalTranslation from 'database/collections/scopes/LocalTranslation'
+import Form from 'database/models/Form'
+import Submission from 'database/models/Submission'
+import Translation from 'database/models/Translation'
 import Formio from 'formiojs'
 import router from 'config/router'
 import store from 'config/store'
@@ -98,7 +98,7 @@ const OFFLINE_PLUGIN = class {
           localformId = formArray[6] ? formArray[6] : ''
         }
 
-        let form = await LocalForm.get(localformId)
+        let form = await Form.local().get(localformId)
 
         console.log('THe form is ', form)
         // If its a external call outside FORM.io (Local Resources)
@@ -139,7 +139,7 @@ const OFFLINE_PLUGIN = class {
           return
         }
 
-        let submissions = await LocalSubmission.stored(Auth.user()._id, form.path)
+        let submissions = await Submission.local().stored(Auth.user()._id, form.path)
         let jsonSubmissions = this.LocalToJson(submissions)
         return jsonSubmissions
       },
@@ -151,12 +151,12 @@ const OFFLINE_PLUGIN = class {
         }
         // If we are trying to get a form we load it locally
         if (args.method === 'GET' && args.type === 'form') {
-          let form = await LocalForm.get(args.formio.formId)
+          let form = await Form.local().get(args.formio.formId)
           return form
         }
         // If we are trying to get submissions from that form
         if ((args.method === 'POST' || args.method === 'PUT') && args.type === 'submission') {
-          let form = await LocalForm.get(args.formio.formId)
+          let form = await Form.local().get(args.formio.formId)
 
           let formioPath = 'https://' + form.machineName.split(':')[0] + '.form.io/' + form.path
 
@@ -204,7 +204,7 @@ const OFFLINE_PLUGIN = class {
   }
 
   static async getLocalTranslations() {
-    let translations = await LocalTranslation.getFormTranslations()
+    let translations = await Translation.local().getFormTranslations()
     return translations
   }
 }

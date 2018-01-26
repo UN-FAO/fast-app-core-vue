@@ -108,7 +108,7 @@ import _debounce from "lodash/debounce";
 import FormioUtils from "formiojs/utils";
 import Auth from "modules/Auth/api/Auth";
 import formio from "modules/Formio/components/formio/formio";
-import LocalSubmission from "database/collections/scopes/LocalSubmission";
+import Submission from "database/models/Submission";
 import OFFLINE_PLUGIN from "modules/Formio/components/formio/src/offlinePlugin";
 export default {
   components: {
@@ -205,7 +205,7 @@ export default {
     submission: {
       get() {
         if (this.$route.params.idSubmission) {
-          return LocalSubmission.get(this.$route.params.idSubmission);
+          return Submission.local().get(this.$route.params.idSubmission);
         } else {
           return undefined;
         }
@@ -216,7 +216,7 @@ export default {
     },
     participants: {
       get() {
-        return LocalSubmission.getParallelParticipants(
+        return Submission.local().getParallelParticipants(
           this.$route.params.idForm,
           this.$route.params.idSubmission
         );
@@ -417,7 +417,7 @@ export default {
     },
     addSurvey() {
       let groupId = _get(
-        LocalSubmission.getParallelSurvey(this.currentSubmission),
+        Submission.local().getParallelSurvey(this.currentSubmission),
         "groupId",
         undefined
       );
@@ -480,22 +480,22 @@ export default {
             participantName: result[1],
             submissionId: this.currentSubmission._id
           };
-          this.currentSubmission.data.parallelSurvey = LocalSubmission.setParallelSurvey(
+          this.currentSubmission.data.parallelSurvey = Submission.local().setParallelSurvey(
             parallelSurvey
           );
           surveyData = {
-            parallelSurvey: LocalSubmission.setParallelSurvey({
+            parallelSurvey: Submission.local().setParallelSurvey({
               ...parallelSurvey,
               participantName: result[2]
             })
           };
         } else {
-          let parallelsurveyInfo = LocalSubmission.getParallelSurvey(
+          let parallelsurveyInfo = Submission.local().getParallelSurvey(
             this.currentSubmission
           );
           parallelsurveyInfo.participantName = result[0];
           surveyData = {
-            parallelSurvey: LocalSubmission.setParallelSurvey(
+            parallelSurvey: Submission.local().setParallelSurvey(
               parallelsurveyInfo
             )
           };
@@ -505,16 +505,16 @@ export default {
     },
     async groupConfig() {
       let groupId = _get(
-        LocalSubmission.getParallelSurvey(this.currentSubmission),
+        Submission.local().getParallelSurvey(this.currentSubmission),
         "groupId",
         undefined
       );
-      let options = await LocalSubmission.getGroups(this.$route.params.idForm);
+      let options = await Submission.local().getGroups(this.$route.params.idForm);
       let customOptions = {};
       options.forEach(option => {
         customOptions[option.groupId] = option.groupName;
       });
-      let currentGroup = await LocalSubmission.getParallelSurvey(
+      let currentGroup = await Submission.local().getParallelSurvey(
         this.currentSubmission
       );
       currentGroup = currentGroup.groupId ? currentGroup.groupId : undefined;
@@ -592,7 +592,7 @@ export default {
 
       this.$swal.queue(steps).then(async result => {
         this.$swal.resetDefaults();
-        await LocalSubmission.assingToGroup(
+        await Submission.local().assingToGroup(
           this.$route.params.idSubmission,
           result
         );

@@ -1,81 +1,27 @@
-import * as Database from 'database/Database'
-import uuidv4 from 'uuid/v4'
 import FormioUtils from "formiojs/utils";
 import _forEach from 'lodash/forEach'
 import _isEmpty from 'lodash/isEmpty'
-import LocalTranslation from 'database/collections/scopes/LocalTranslation'
+import Translation from 'database/models/Translation'
 import {
   TRANSLATIONS
 } from 'modules/Localization/appTranslations'
+import Form from 'database/models/Form'
 
-const LocalForm = class {
-  static async getModel() {
-    const DB = await Database.get()
-    return DB.getCollection("forms")
-  }
-
-  static async find(filter) {
-    const model = await LocalForm.getModel()
-    return model.find(filter);
-  }
-
-  static async findOne(filter) {
-    const model = await LocalForm.getModel()
-    return model.findOne(filter);
-  }
-
-  static async remove(document) {
-    const model = await LocalForm.getModel()
-    return model.remove(document);
-  }
-
-  static async insert(element) {
-    const model = await LocalForm.getModel()
-    element._id = uuidv4() + '_local'
-    return model.insert(element);
-  }
-
-  static async update(document) {
-    const model = await LocalForm.getModel()
-    return model.update(document);
+let FormLabels = class {
+  /**
+   *
+   * @param {*} formNameFilter
+   * @param {*} languageFilter
+   */
+  static async get(formNameFilter, languageFilter) {
+    return this.handle(formNameFilter, languageFilter)
   }
   /**
-   * [get description]
-   * @param  {[type]} id [description]
-   * @return {[type]}    [description]
+   *
+   * @param {*} formNameFilter
+   * @param {*} languageFilter
    */
-  static async get(id) {
-    const model = await LocalForm.getModel()
-    id = id.replace(/\s/g, '')
-
-    let formRequest = await model.findOne({
-      'data.name': id
-    })
-    let formRequestID = await model.findOne({
-      'data._id': id
-    })
-    let formRequestPath = await model.findOne({
-      'data.path': id
-    })
-
-    if (formRequest) {
-      return formRequest.data
-    }
-    if (formRequestID) {
-      return formRequestID.data
-    }
-    if (formRequestPath) {
-      return formRequestPath.data
-    }
-  }
-
-  static async sAll() {
-    const model = await LocalForm.getModel()
-    let allForms = await model.find()
-    return allForms
-  }
-
-  static async getAllLabels(formNameFilter, languageFilter) {
+  static async handle(formNameFilter, languageFilter) {
     formNameFilter = formNameFilter || undefined
     languageFilter = languageFilter || ['en', 'fr', 'es', 'pt']
     languageFilter.push('label')
@@ -89,9 +35,9 @@ const LocalForm = class {
     let stats = {}
     stats.translations = {}
     stats.missingTranslations = []
-    let translations = await LocalTranslation.find();
+    let translations = await Translation.local().find();
     translations = translations[0].data
-    let forms = await LocalForm.find(formFilter);
+    let forms = await Form.find(formFilter);
 
     let componentLabels = []
 
@@ -201,4 +147,5 @@ const LocalForm = class {
     };
   }
 }
-export default LocalForm
+export default FormLabels
+

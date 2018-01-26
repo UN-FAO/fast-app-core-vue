@@ -27,9 +27,7 @@
   import {
     mapActions
   } from "vuex";
-  import {
-    sync
-  } from "database/Database";
+  import Sync from "database/repositories/Database/Sync";
   import Connection from "modules/Wrappers/Connection";
   import {
     SYNC_INTERVAL
@@ -85,8 +83,6 @@
     methods: {
       ...mapActions(["sendOfflineData"]),
       toggleRtl: function(lenguage) {
-        console.log('lenguage', lenguage)
-        console.log(lenguage.direction === "ltr")
         this.ltr = lenguage.direction === "ltr";
       },
       /**
@@ -112,7 +108,7 @@
           };
         };
         rInterval(() => {
-          return sync(this);
+          return Sync.now(this);
         }, SYNC_INTERVAL);
       }
     },

@@ -4,7 +4,7 @@ import _forEach from 'lodash/forEach'
 import _map from 'lodash/map'
 import _isEmpty from 'lodash/isEmpty'
 // import messages from 'i18n/translations'
-import localTranslation from 'database/collections/scopes/LocalTranslation'
+import Translation from 'database/models/Translation'
 
 const Localization = class {
   /**
@@ -16,7 +16,7 @@ const Localization = class {
   static async setLocales() {
     let appTranslations = []
 
-    let localTranslations = await localTranslation.find()
+    let localTranslations = await Translation.local().find()
 
     if (localTranslations.length > 0 && localTranslations[0].data) {
       appTranslations = localTranslations[0].data
@@ -38,7 +38,7 @@ const Localization = class {
       try {
         // Fetch the Translation that are online
         let onlineTranslations = await Localization.getOnlineTranslation()
-        let lenguages = localTranslation.getIsoLanguages()
+        let lenguages = Translation.local().getIsoLanguages()
         let localTranslations = {}
         localTranslations.label = {}
         // Foreach of the locale lenguages, set the translations
@@ -66,10 +66,10 @@ const Localization = class {
         })
 
         // Remove all previous translations
-        localTranslation.findAndRemove()
+        Translation.local().findAndRemove()
 
         // Insert the new ones
-        appTranslations = await localTranslation.insert({
+        appTranslations = await Translation.local().insert({
           data: localTranslations
         })
 

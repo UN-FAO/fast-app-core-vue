@@ -44,7 +44,7 @@ import {
   QCollapsible,
   QSpinnerAudio
 } from "quasar";
-import LocalForm from "database/collections/scopes/LocalForm";
+import Form from 'database/models/Form'
 import _orderBy from "lodash/orderBy";
 import _forEach from "lodash/forEach";
 import _sortBy from "lodash/sortBy";
@@ -52,7 +52,7 @@ import { APP_ENV } from "config/env";
 export default {
   name: "card",
   mounted: async function() {
-    let forms = await LocalForm.sAll();
+    let forms = await Form.local().sAll();
     this.forms = _orderBy(forms, "data.title", "asc");
     let visible = this.forms.filter(o => {
       return o.data.tags.indexOf("visible") > -1;

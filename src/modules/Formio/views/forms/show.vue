@@ -94,8 +94,8 @@ import {
   QInnerLoading,
   QTooltip
 } from "quasar";
-import LocalSubmission from "database/collections/scopes/LocalSubmission";
-import LocalForm from "database/collections/scopes/LocalForm";
+import Submission from "database/models/Submission";
+import Form from 'database/models/Form'
 import FormioUtils from "formiojs/utils";
 import Formio from "formiojs";
 import { APP_URL } from "config/env";
@@ -104,14 +104,14 @@ locale.use(lang);
 export default {
   async mounted() {
     if (this.$route.params.idForm === "*") {
-      this.submissions = await LocalSubmission.sFind(this, {});
+      this.submissions = await Submission.local().sFind(this, {});
     } else {
-      this.submissions = await LocalSubmission.sFind(this, {
+      this.submissions = await Submission.local().sFind(this, {
         "data.formio.formId": this.$route.params.idForm
       });
     }
 
-    this.currentForm = await LocalForm.findOne({
+    this.currentForm = await Form.local().findOne({
       "data.path": this.$route.params.idForm
     });
 
@@ -299,11 +299,11 @@ export default {
         })
         .then(async () => {
           _forEach(rows, async submission => {
-            let online = await LocalSubmission.findOne({
+            let online = await Submission.local().findOne({
               "data._id": submission.id_submision
             });
 
-            let offline = await LocalSubmission.findOne({
+            let offline = await Submission.local().findOne({
               _id: submission.id_submision
             });
 
@@ -311,7 +311,7 @@ export default {
             if (online) {
               deleteSubmission = online;
             }
-            await LocalSubmission.remove(deleteSubmission);
+            await Submission.local().remove(deleteSubmission);
             await this.updateLocalSubmissions();
           });
 
@@ -527,9 +527,9 @@ export default {
     },
     async updateLocalSubmissions() {
       if (this.$route.params.idForm === "*") {
-        this.submissions = await LocalSubmission.sFind(this, {});
+        this.submissions = await Submission.local().sFind(this, {});
       } else {
-        this.submissions = await LocalSubmission.sFind(this, {
+        this.submissions = await Submission.local().sFind(this, {
           "data.formio.formId": this.$route.params.idForm
         });
       }

@@ -95,7 +95,7 @@
 import Localization from "modules/Localization/Localization";
 import { mapState, mapActions } from "vuex";
 import Auth from "modules/Auth/api/Auth";
-import LocalForm from "database/collections/scopes/LocalForm";
+import Form from 'database/models/Form'
 import {
   QScrollArea,
   QSideLink,
@@ -130,7 +130,7 @@ export default {
     QItemSeparator
   },
   mounted: async function() {
-    LocalForm.sAll(this, "forms");
+    Form.local().sAll(this, "forms");
   },
   data() {
     return {

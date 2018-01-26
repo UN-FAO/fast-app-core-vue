@@ -11,7 +11,7 @@ import md5 from 'md5'
 import User from 'database/models/User'
 import store from 'config/store'
 import Connection from 'modules/Wrappers/Connection'
-import LocalRoles from "database/collections/scopes/LocalRoles";
+import Role from "database/models/Role";
 import _forEach from "lodash/forEach";
 import _find from 'lodash/find'
 
@@ -90,7 +90,7 @@ const Auth = class {
           let roles = await Formio.getRoles();
           user.rolesNames = [];
           _forEach(roles, async role => {
-            LocalRoles.updateOrCreate(role);
+            Role.local().updateOrCreate(role);
             if (user.roles && user.roles.indexOf(role._id) !== -1) {
               user.rolesNames.push(role)
             }

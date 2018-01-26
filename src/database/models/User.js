@@ -1,6 +1,6 @@
 import baseModel from './baseModel'
 
-const users = class extends baseModel {
+const User = class extends baseModel {
 
 }
-export default users
+export default User

@@ -140,7 +140,6 @@ import {
   QItemSeparator,
   Loading
 } from "quasar";
-// import LocalForm from 'database/collections/scopes/LocalForm'
 import _sortBy from "lodash/sortBy";
 import { APP_ABOUT_NAME } from "config/env";
 import Auth from "modules/Auth/api/Auth";

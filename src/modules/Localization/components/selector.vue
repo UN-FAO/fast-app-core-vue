@@ -40,7 +40,7 @@ import {
   QItemSeparator
 } from "quasar";
 import Localization from "../Localization";
-import LocalTranslation from "database/collections/scopes/LocalTranslation";
+import Translation from "database/models/Translation";
 
 export default {
   name: "localization",
@@ -59,16 +59,16 @@ export default {
     QCardMain
   },
   async mounted() {
-    this.lenguages = await LocalTranslation.supportedLanguages();
+    this.lenguages = await Translation.local().supportedLanguages();
     this.rerender();
 
     this.$eventHub.on("Translation:languageAdded", async data => {
-      this.lenguages = await LocalTranslation.supportedLanguages();
+      this.lenguages = await Translation.local().supportedLanguages();
       this.rerender();
     });
 
     this.$eventHub.on("Translation:updated", async data => {
-      this.lenguages = await LocalTranslation.supportedLanguages();
+      this.lenguages = await Translation.local().supportedLanguages();
       this.rerender();
     });
   },
