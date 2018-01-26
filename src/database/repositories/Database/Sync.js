@@ -16,7 +16,7 @@ let Sync = class {
       await this.syncUsers({ isOnline })
     }
     if (isOnline) {
-      await this.syncSubmission({ vm })
+      await this.syncSubmission(vm)
     }
   }
   /**
@@ -30,6 +30,7 @@ let Sync = class {
     if (!usersAreSync) { return }
 
     let unsyncSubmissions = await Submission.getUnsync()
+    console.log('unsyncSubmissions', unsyncSubmissions)
     if (unsyncSubmissions.length > 0) {
       store.dispatch('sendOfflineData', {
         offlineSubmissions: unsyncSubmissions,

@@ -243,7 +243,7 @@ const actions = {
       // Cases where we want to update
       let submitting = submission.draft === false
       let localDraft = localSubmission.data.draft === false
-      let submissionNotDraft = submission.draft === true
+      let submissionNotDraft = submission.draft === false
       let autoSave = submission.trigger === 'autoSaveAsDraft'
       let isSynced = !!(localSubmission.data.access && Array.isArray(localSubmission.data.access))
       let hasError = localSubmission.data.syncError !== false && typeof localSubmission.data.syncError !== 'undefined'
@@ -252,7 +252,7 @@ const actions = {
       if (((submitting || (localDraft && submissionNotDraft)) && !autoSave) || (!isSynced && autoSave && !hasError)) {
         await Submission.local().update(localSubmission)
       }
-      await Submission.local().update(localSubmission)
+      // await Submission.local().update(localSubmission)
       return localSubmission
     }
     // If we are creating a new draft from scratch or a resource
@@ -349,7 +349,8 @@ const actions = {
           }
         }
       }).then((result) => {
-        if (vm && vm.$eventHub) {
+        if (vm) {
+          console.log('The data was synced', vm)
           vm.$eventHub.emit('FAST-DATA_SYNCED', {
             count: syncedSubmissionsCount,
             data: syncedSubmissions
