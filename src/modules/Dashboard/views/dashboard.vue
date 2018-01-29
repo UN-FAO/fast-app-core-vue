@@ -5,10 +5,10 @@
       <q-card class="col-sm-offset-2 col-md-4 col-md-offset-2 col-lg-4 col-lg-offset-3 col-xl-3" style="margin-top: 30px;">
 
 
-        <q-card-main @click="$router.push({name: 'newSurvey'})" style="cursor: pointer;">
+        <q-card-main @click="$router.push({name: 'newSurvey'})" style="cursor: pointer; text-align: center;">
           <!--<q-icon name="fa-plus-square-o fa-5x" />-->
           <q-icon class="material-icons">playlist_add</q-icon>
-          <h1 style="color: rgb(14, 109, 165)">{{$t("Start survey") }}</h1>
+          <h1>{{$t("Start survey") }}</h1>
 
           <q-list style="border: none; padding: 0;">
             <!--
@@ -34,10 +34,10 @@
 
       <q-card class="col-md-4 col-lg-4 col-xl-3" style="margin-top: 30px; margin-left: 30px;">
 
-        <q-card-main @click="$router.push({name: 'CollectedData'})" style="cursor: pointer;">
+        <q-card-main @click="$router.push({name: 'CollectedData'})" style="cursor: pointer; text-align: center;">
           <!--<q-icon name="fa-database fa-5x" />-->
           <q-icon class="material-icons">storage</q-icon>
-          <h1 style="color: rgb(14, 109, 165)"> {{ $t("Collected Data") }}
+          <h1> {{ $t("Collected Data") }}
             </h1>
 
           <q-list style="border: none; padding: 0;">
@@ -73,20 +73,20 @@
 
     <div class="row">
       <q-card class="col-sm-offset-2 col-md-4 col-md-offset-2 col-lg-4 col-lg-offset-3 col-xl-3" style="margin-top: 30px;">
-        <q-card-main @click="$router.push({name: 'About'})" style="cursor: pointer;">
+        <q-card-main @click="$router.push({name: 'About'})" style="cursor: pointer; text-align: center;">
           <!--<q-icon name="fa-tablet fa-5x" />-->
           <q-icon class="material-icons">tablet_mac</q-icon>
-          <h1 style="color: rgb(14, 109, 165)"> {{ $t("About") }}
+          <h1> {{ $t("About") }}
            <br>{{APP_ABOUT_NAME}} </h1>
         </q-card-main>
 
       </q-card>
 
       <q-card v-if="isAdmin()" class="col-md-4 col-lg-4 col-xl-3" style="margin-top: 30px; margin-left: 30px;">
-          <q-card-main @click="$router.push({name: 'settings'})" style="cursor: pointer;">
+          <q-card-main @click="$router.push({name: 'settings'})" style="cursor: pointer; text-align: center;">
           <!--<q-icon name="fa-cog fa-5x" />-->
           <q-icon class="material-icons">settings</q-icon>
-          <h1 style="color: rgb(14, 109, 165)">{{ $t("Application Settings") }}</h1>
+          <h1>{{ $t("Application Settings") }}</h1>
           <q-btn @click="toggleFlip(3)" round color="grey" flat>
           </q-btn>
         </q-card-main>
@@ -97,26 +97,17 @@
   </div>
 
 </template>
+
+<!--
 <style scoped>
-.q-card {
-  background-color: white;
-}
 
-.q-card-container {
-  padding: 50px;
-  padding-top: 65px;
-  padding-bottom: 25px;
-}
+	.q-card {background-color: white;}
+	.q-card-container {padding: 50px; padding-top: 65px;}
+	.q-card-main {text-align: center;}
+	.q-card-main .q-icon {color: #28536d; font-size: 6em;}
 
-.q-card-main {
-  text-align: center;
-}
-
-.q-card-main .q-icon {
-  color: #28536d;
-  font-size: 6em;
-}
 </style>
+-->
 
 <script>
 import {

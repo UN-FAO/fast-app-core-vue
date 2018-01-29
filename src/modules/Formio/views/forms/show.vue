@@ -2,7 +2,9 @@
   <div class="row" style="background:#f3f3f5">
     <div>
       <q-card color="white" style="bottom: unset;margin-top: 30px;" class="col-lg-10 col-lg-offset-1 col-md-offset-1 col-md-10 col-sm-10 col-sm-offset-1 col-xs-offset-0 col-xs-12  centered relative-position">
-        <q-card-main>
+        
+          <q-card-main>
+        <h1 class="_control-label-title">Collected Data</h1>  
           <q-transition appear enter="fadeIn" leave="fadeOut">
 
             <data-tables :data="submissions" :search-def="searchDef" :action-col-def="getRowActionsDef()" action-col-label="Actions"
@@ -14,9 +16,9 @@
               <el-table-column label="status" prop="Status" width="90" sortable fixed="left">
                 <template scope="scope">
                   <el-tag :type="getIconColor(scope.row)" close-transition>
-                    <i class="material-icons">{{scope.row.status === 'offline' ? 'cloud_off' : 'cloud_done'}}</i>
+                    <i class="material-icons">{{scope.row.status === 'offline' ? 'remove_circle_outline' : 'check_circle'}}</i>
                   </el-tag>
-                  <i class="material-icons" style="color: red;font-size: x-large; cursor: pointer;" v-if="scope.row.syncError && scope.row.syncError !=='Unauthorized' " @click="displayError(scope.row.syncError)">error_outline</i>
+                  <i class="material-icons" style="color: red;font-size: x-large; cursor: pointer;" v-if="scope.row.syncError && scope.row.syncError !=='Unauthorized' " @click="displayError(scope.row.syncError)">block</i>
                   <i class="material-icons" style="color: red;font-size: x-large; cursor: pointer;" v-if="scope.row.syncError && scope.row.syncError ==='Unauthorized' " @click="displayError(scope.row.syncError)">lock</i>
                 </template>
               </el-table-column>
@@ -37,7 +39,8 @@
 
               <el-table-column fixed="right" label="Actions" width="120">
                 <template scope="scope">
-                  <el-button @click="handleEdit(scope)" type="text">{{$t('Edit')}}</el-button>
+                  <!--<el-button @click="handleEdit(scope)" type="text">{{$t('Edit')}}</el-button>-->
+                    <el-button @click="handleEdit(scope)" type="text"><i class="material-icons edit">edit</i></el-button>
                 </template>
               </el-table-column>
 
@@ -204,7 +207,7 @@ export default {
             icon: "document",
             buttonProps: {
               type: "text",
-              size: "medium"
+              size: "large"
             }
           },
           {
@@ -215,7 +218,7 @@ export default {
             icon: "delete",
             buttonProps: {
               type: "text",
-              size: "small"
+              size: "large"
             }
           }
         ]
