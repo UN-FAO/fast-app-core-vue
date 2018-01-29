@@ -698,28 +698,43 @@ export default {
 </script>
 <style SCOPED>
 @media only screen and (max-width: 760px),
-  (min-device-width: 768px) and (max-device-width: 1024px) {
+  (min-device-width: 768px) and (orientation:portrait) {
   .formio-component-datagrid {
     overflow-x: unset;
-    margin-left: -55px;
-    width: 330px !important;
+    margin-left: -56px;
+    width: 80vw !important;
   }
   .formio-component-datagrid div.row {
     display: block;
   }
+
   div.formio-component-datagrid {
     overflow-x: unset;
-    transform: scale(0.9);
   }
+
+  .formio-component-datagrid fieldset div.row {
+    display: block;
+    margin-left: 0px;
+  }
+  .formio-component-datagrid fieldset {
+    margin-left: 0px;
+  }
+
+  legend,
+  .card-header.panel-heading {
+    margin-left: 15px;
+  }
+
   .table-responsive {
     overflow-x: unset;
     margin-left: -90px;
-    width: 370px !important;
+    width: 100vw !important;
     transform: scale(0.92);
   }
   .table-responsive .choices__item.choices__item--selectable {
     display: table;
-    font-size: small;
+    font-size: x-small;
+    margin-left:-12px;
   }
 
   .table-responsive
@@ -727,11 +742,12 @@ export default {
     .choices__item.choices__item--selectable {
     display: table;
     font-size: large;
+    margin-left:0px;
   }
 
   .table-responsive input.form-control {
-    min-width: 40px !important;
-    max-width: 60px !important;
+    min-width: 16vw !important;
+    max-width: 16vw !important;
     font-size: smaller;
   }
   .table-responsive p {
@@ -740,12 +756,12 @@ export default {
 
   .table-responsive td,
   th {
-    width: 46px !important;
+    width: 16vw !important;
   }
 
   .table-responsive .input-group {
-    min-width: 40px !important;
-    max-width: 60px !important;
+    min-width: 16vw !important;
+    max-width: 16vw !important;
     font-size: smaller;
   }
 
@@ -754,18 +770,27 @@ export default {
   }
 
   .table-responsive .form-control {
-    min-width: 40px !important;
-    max-width: 60px !important;
+    min-width: 16vw !important;
+    max-width: 16vw !important;
     font-size: smaller;
   }
 
   .table-responsive .input-group-addon {
     padding: 0px;
-    font-size: 10px;
+    font-size: 9px;
+  }
+
+  .formio-component-fieldset{
+    margin-top: 0px
   }
 
   fieldset div.row {
     display: block;
+    margin-left: -60px;
   }
+  fieldset {
+    margin-left: -50px;
+  }
+
 }
 </style>
