@@ -1,21 +1,22 @@
 <template>
 <div>
-  <q-toolbar style="-webkit-app-region: drag; -webkit-user-select: none;" v-bind:class="isInsideApp ? 'nav-white' : 'nav-transparent' ">
+  <q-toolbar style="-webkit-app-region: drag; -webkit-user-select: none;" v-bind:class="isInsideApp ? 'nav-default-fao' : 'nav-transparent' ">
     <q-ajax-bar color="white"></q-ajax-bar>
     <q-btn flat @click="openLeftDrawer()" v-if="isInsideApp"
-      v-bind:class="isInsideApp ? 'color-primary' : 'color-white' ">
+      v-bind:class="isInsideApp ? '' : 'color-white' ">
       <q-icon name="menu" />
     </q-btn>
-    <q-toolbar-title @click="$router.push({name: 'dashboard'})" style="cursor: pointer;"  v-bind:class="isInsideApp ? 'color-primary' : 'color-white' ">
+    <q-toolbar-title @click="$router.push({name: 'dashboard'})" style="cursor: pointer;"  v-bind:class="isInsideApp ? '' : 'color-white' ">
       {{ appName }}
     </q-toolbar-title>
-    <div v-if="isInsideApp" class="color-primary">
+	<div class="q-toolbar-fao-logo"><img src="http://www.fao.org/fileadmin/templates/faoweb/images/FAO-logo-3lines-en-w.png"></div>
+    <div v-if="isInsideApp" class="">
       {{userEmail()}}
     </div>
     <localization/>
     <wifiDisplay/>
 
-    <q-btn flat @click="openRightDrawer()" v-if="isInsideApp" v-bind:class="isInsideApp ? 'color-primary' : 'color-white' ">
+    <q-btn flat @click="openRightDrawer()" v-if="isInsideApp" v-bind:class="isInsideApp ? '' : 'color-white' ">
       <q-icon name="fa-ellipsis-v" style="margin-left: 30px;" />
     </q-btn>
 
@@ -26,21 +27,14 @@
 
 
 <style>
-.nav-white {
-  background: white;
-}
+.nav-white {background: white;}
+.nav-default-fao {background:rgb(5, 116, 169); color:#ffffff;}
 
-.nav-transparent {
-  background: transparent;
-}
+.nav-transparent {background: transparent;}
 
-.color-white {
-  color: white;
-}
+.color-white {color: white;}
 
-.color-primary {
-  color: rgb(14, 109, 165);
-}
+.color-primary {color: rgb(5, 116, 169);}
 </style>
 
 <script>

@@ -17,7 +17,7 @@
       <q-card-main>
 
         <q-btn flat @click="togglePages" icon="menu" style="color:black;" v-if="_isWizard"></q-btn>
-        <q-icon name="thumb_up" />
+        <!--<q-icon name="thumb_up" />-->
         <q-tabs inverted id="contentForm">
           <!-- Tabs - notice slot="title" -->
 

@@ -9,6 +9,7 @@
             <div class="row">
 
               <div class="form-group has-feedback formio-component formio-component-radio" v-if="typeof forms !== 'undefined'">
+                <h1 class="_control-label-title">Collected Data</h1>
                 <h3 class="control-label" style="color: #525f7f; font-weight: 300;">{{ $t('Please select the version that you want to access') }} : </h3>
                 <div class="input-group">
                   <div class="radio">
