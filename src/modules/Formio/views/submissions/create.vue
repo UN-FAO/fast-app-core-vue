@@ -509,7 +509,9 @@ export default {
         "groupId",
         undefined
       );
-      let options = await Submission.local().getGroups(this.$route.params.idForm);
+      let options = await Submission.local().getGroups(
+        this.$route.params.idForm
+      );
       let customOptions = {};
       options.forEach(option => {
         customOptions[option.groupId] = option.groupName;
@@ -694,3 +696,76 @@ export default {
   }
 };
 </script>
+<style SCOPED>
+@media only screen and (max-width: 760px),
+  (min-device-width: 768px) and (max-device-width: 1024px) {
+  .formio-component-datagrid {
+    overflow-x: unset;
+    margin-left: -55px;
+    width: 330px !important;
+  }
+  .formio-component-datagrid div.row {
+    display: block;
+  }
+  div.formio-component-datagrid {
+    overflow-x: unset;
+    transform: scale(0.9);
+  }
+  .table-responsive {
+    overflow-x: unset;
+    margin-left: -90px;
+    width: 370px !important;
+    transform: scale(0.92);
+  }
+  .table-responsive .choices__item.choices__item--selectable {
+    display: table;
+    font-size: small;
+  }
+
+  .table-responsive
+    .choices__list.choices__list--dropdown.is-active
+    .choices__item.choices__item--selectable {
+    display: table;
+    font-size: large;
+  }
+
+  .table-responsive input.form-control {
+    min-width: 40px !important;
+    max-width: 60px !important;
+    font-size: smaller;
+  }
+  .table-responsive p {
+    font-size: 9px;
+  }
+
+  .table-responsive td,
+  th {
+    width: 46px !important;
+  }
+
+  .table-responsive .input-group {
+    min-width: 40px !important;
+    max-width: 60px !important;
+    font-size: smaller;
+  }
+
+  .table-responsive label.control-label {
+    font-size: smaller !important;
+  }
+
+  .table-responsive .form-control {
+    min-width: 40px !important;
+    max-width: 60px !important;
+    font-size: smaller;
+  }
+
+  .table-responsive .input-group-addon {
+    padding: 0px;
+    font-size: 10px;
+  }
+
+  fieldset div.row {
+    display: block;
+  }
+}
+</style>
