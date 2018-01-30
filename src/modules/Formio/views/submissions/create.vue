@@ -75,17 +75,6 @@ import {
   NAVIGATION_AUTOCLOSE_ON_SELECTION
 } from "config/env";
 import { mapActions } from "vuex";
-<<<<<<< HEAD
-=======
-import Auth from "modules/Auth/api/Auth";
-import formio from "modules/Formio/components/formio/formio";
-import LocalSubmission from "database/collections/scopes/LocalSubmission";
-import LocalForm from 'database/collections/scopes/LocalForm';
-import { APP_URL, LOCAL_DRAFT_ENABLED, PARALLEL_SURVEYS } from "config/env";
-import uuidv4 from "uuid/v4";
-import Formio from "formiojs";
-import OFFLINE_PLUGIN from "modules/Formio/components/formio/src/offlinePlugin";
->>>>>>> LockiJS
 import {
   QCard,
   QCardTitle,
@@ -121,6 +110,7 @@ import FormioUtils from "formiojs/utils";
 import Auth from "modules/Auth/api/Auth";
 import formio from "modules/Formio/components/formio/formio";
 import Submission from "database/models/Submission";
+import Form from "database/models/Form";
 import OFFLINE_PLUGIN from "modules/Formio/components/formio/src/offlinePlugin";
 export default {
   components: {
@@ -165,7 +155,7 @@ export default {
       this.currentQuestion = -1;
       window.scrollTo(0, 0);
     });
-    this.currentForm = await LocalForm.findOne({
+    this.currentForm = await Form.local().findOne({
       "data.path": this.$route.params.idForm
     });
 

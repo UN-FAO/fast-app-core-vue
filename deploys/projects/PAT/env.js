@@ -20,8 +20,8 @@ exports.FAST_VERSION = '0.5.13'
 | forms asociated with it.
 |
 */
-exports.APP_URL = 'https://xuvjhcydbqrxtjx.form.io'
-exports.APP_NAME = 'xuvjhcydbqrxtjx'
+exports.APP_URL = 'https://tknrqdvfbuczudk.form.io'
+exports.APP_NAME = 'tknrqdvfbuczudk'
 /*
 |--------------------------------------------------------------------------
 | APP CONFIGURATION
@@ -34,6 +34,7 @@ exports.APP_NAME = 'xuvjhcydbqrxtjx'
 */
 exports.APP_FANTACY_NAME = 'PAT'
 exports.APP_PHRASE = 'Plant Breeding Analysis'
+exports.APP_ABOUT_NAME = 'PAT'
 /*
 |--------------------------------------------------------------------------
 | MD5 KEY

@@ -1,8 +1,8 @@
 {
   "name": "fast",
   "version": "0.5.16",
-  "deployAppName": "FAW",
-  "deployAppID": "5a65a0b902b5450001fbc4cd",
+  "deployAppName": "PAT",
+  "deployAppID": "5a65f5d5d772bf00015a3dc3",
   "description": "A data collection application for FORM.io",
   "author": "Ignacio Cabrera <ignacio.cabrera@fao.org>",
   "scripts": {
@@ -21,7 +21,7 @@
     "set:sharp": "sh deploys/setEnv.sh SHARP SHARP+ 59b112c7678919000775f921",
     "set:faw": "sh deploys/setEnv.sh FAW FAW 5a65a0b902b5450001fbc4cd",
     "set:drip": "sh deploys/setEnv.sh DRIP DRIP 5a108b1feb180900018bced5",
-    "set:pat": "sh deploys/setEnv.sh PAT PAT 5964faf3135d36007ee633be",
+    "set:pat": "sh deploys/setEnv.sh PAT PAT 5a65f5d5d772bf00015a3dc3",
     "set:ssfk": "sh deploys/setEnv.sh SSFK SSFK 5a5f08a63f90fd000121aef5",
     "set:dev": "sh deploys/setEnv.sh DEV DEV 59b136fb2f12080007487131",
     "get:roles": "sh deploys/getAppRoles.sh"
