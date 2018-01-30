@@ -1,4 +1,3 @@
-import baseModel from './baseModel'
 import _map from 'lodash/map'
 import _cloneDeep from 'lodash/cloneDeep'
 import _filter from 'lodash/filter'
@@ -6,14 +5,108 @@ import _orderBy from 'lodash/orderBy'
 import _uniqBy from 'lodash/uniqBy'
 import _get from 'lodash/get'
 import Auth from 'modules/Auth/api/Auth'
+import * as Database from 'database/Database';
+import uuidv4 from 'uuid/v4'
 
-const Submission = class extends baseModel {
+
+const Submission = class {
+  /**
+   * [getOwnName description]
+   * @return {[type]} [description]
+   */
+  static getOwnName() {
+    return 'Submission'
+  }
+  /**
+   * [remote description]
+   * @return {[type]} [description]
+   */
+  static remote() {
+    Submission.getFrom = 'remote'
+    return Submission
+  }
+  /**
+   * [local description]
+   * @return {[type]} [description]
+   */
+  static local() {
+    Submission.getFrom = 'local'
+    return Submission
+  }
+  /**
+   * [getModel description]
+   * @return {[type]} [description]
+   */
+  static async getModel() {
+    const DB = await Database.get()
+    return DB.getCollection(Submission.getOwnName())
+  }
+  /**
+   * [find description]
+   * @param  {[type]} filter [description]
+   * @return {[type]}        [description]
+   */
+  static async find(filter) {
+    const model = await Submission.getModel()
+    return model.find(filter);
+  }
+  /**
+   * [findOne description]
+   * @param  {[type]} filter [description]
+   * @return {[type]}        [description]
+   */
+  static async findOne(filter) {
+    const model = await Submission.getModel()
+    return model.findOne(filter);
+  }
+  /**
+   * [remove description]
+   * @param  {[type]} document [description]
+   * @return {[type]}          [description]
+   */
+  static async remove(document) {
+    const model = await Submission.getModel()
+    return model.remove(document);
+  }
+  /**
+   * [insert description]
+   * @param  {[type]} element [description]
+   * @return {[type]}         [description]
+   */
+  static async insert(element) {
+    const model = await Submission.getModel()
+    element._id = uuidv4() + '_local'
+    return model.insert(element);
+  }
+  /**
+   * [update description]
+   * @param  {[type]} document [description]
+   * @return {[type]}          [description]
+   */
+  static async update(document) {
+    const model = await Submission.getModel()
+    return model.update(document);
+  }
+
+  static async updateOrCreate(document) {
+    const model = await Submission.getModel()
+    let role = await model.findOne(document)
+    if (!role) {
+      model.insert(document)
+    }
+  }
+
+  static async findAndRemove(filter) {
+    const model = await Submission.getModel()
+    return model.findAndRemove(filter);
+  }
+
   static async get(id) {
     id = id.replace(/\s/g, '')
-    let offline = await this.findOne({
+    let offline = await Submission.findOne({
       '_id': id
     })
-    let online = await this.findOne({
+    let online = await Submission.findOne({
       'data._id': id
     })
     if (online) {
@@ -29,7 +122,7 @@ const Submission = class extends baseModel {
   }
 
   static async offline(formId) {
-    let filter = await this.find({
+    let filter = await Submission.find({
       'data.user_email': Auth.userEmail(),
       'data.formio.formId': formId
     })
@@ -42,7 +135,7 @@ const Submission = class extends baseModel {
   }
 
   static async stored(formId) {
-    return this
+    return Submission
       .find({
         'data.formio.formId': formId,
         'data.owner': Auth.user()._id
@@ -50,7 +143,7 @@ const Submission = class extends baseModel {
   }
 
   static async getUnsync() {
-    let unsynced = await this.find({
+    let unsynced = await Submission.find({
       'data.sync': false
     })
     // updated incomplete submission
@@ -63,7 +156,7 @@ const Submission = class extends baseModel {
   }
 
   static async sFind(vm, filter) {
-    let localSubmissions = await this.find(filter)
+    let localSubmissions = await Submission.find(filter)
     let submissions = _cloneDeep(localSubmissions)
 
     submissions = _filter(submissions, function (o) {
@@ -101,7 +194,7 @@ const Submission = class extends baseModel {
   }
 
   static async getParallelParticipants(idForm, idSubmission) {
-    let currentSubmission = await this.find({
+    let currentSubmission = await Submission.find({
       '_id': idSubmission
     })
 
@@ -110,7 +203,7 @@ const Submission = class extends baseModel {
 
     groupId = groupId && groupId !== '[object Object]' ? JSON.parse(groupId).groupId : undefined
 
-    let submissions = await this.find({
+    let submissions = await Submission.find({
       'data.formio.formId': idForm
     })
 
@@ -157,16 +250,16 @@ const Submission = class extends baseModel {
   }
 
   static async getGroups(formId) {
-    let submissions = await this.find();
+    let submissions = await Submission.find();
 
     submissions = formId ? submissions.filter((submission) => {
       return submission.data.formio.formId === formId
     }) : submissions
 
     let groups = submissions.map((submission) => {
-      return this.getParallelSurvey(submission) ? {
-        groupId: this.getParallelSurvey(submission).groupId,
-        groupName: this.getParallelSurvey(submission).groupName
+      return Submission.getParallelSurvey(submission) ? {
+        groupId: Submission.getParallelSurvey(submission).groupId,
+        groupName: Submission.getParallelSurvey(submission).groupName
       } : undefined
     })
 
@@ -178,7 +271,7 @@ const Submission = class extends baseModel {
   }
 
   static async getGroup(id) {
-    let groups = await this.getGroups()
+    let groups = await Submission.getGroups()
     groups = groups.filter((group) => {
       return group.groupId === id
     })
@@ -188,20 +281,20 @@ const Submission = class extends baseModel {
   static async removeFromGroup(submission) { }
 
   static async assingToGroup(submissionId, groupId) {
-    let group = await this.getGroup(groupId[0])
-    let submission = await this.get(submissionId)
+    let group = await Submission.getGroup(groupId[0])
+    let submission = await Submission.get(submissionId)
 
-    let parallelData = this.getParallelSurvey(submission)
+    let parallelData = Submission.getParallelSurvey(submission)
 
     let parallelSurvey = {
       ...parallelData,
       groupId: group.groupId,
       groupName: group.groupName
     };
-    submission.data.data.parallelSurvey = this.setParallelSurvey(
+    submission.data.data.parallelSurvey = Submission.setParallelSurvey(
       parallelSurvey
     );
-    await this.update(submission)
+    await Submission.update(submission)
   }
 }
 export default Submission

@@ -7,23 +7,23 @@ const baseModel = class {
    * @return {[type]} [description]
    */
   static getOwnName() {
-    return this.name
+    return 'baseModel'
   }
   /**
    * [remote description]
    * @return {[type]} [description]
    */
   static remote() {
-    this.getFrom = 'remote'
-    return this
+    baseModel.getFrom = 'remote'
+    return baseModel
   }
   /**
    * [local description]
    * @return {[type]} [description]
    */
   static local() {
-    this.getFrom = 'local'
-    return this
+    baseModel.getFrom = 'local'
+    return baseModel
   }
   /**
    * [getModel description]
@@ -31,7 +31,7 @@ const baseModel = class {
    */
   static async getModel() {
     const DB = await Database.get()
-    return DB.getCollection(this.getOwnName())
+    return DB.getCollection(baseModel.getOwnName())
   }
   /**
    * [find description]
@@ -39,7 +39,7 @@ const baseModel = class {
    * @return {[type]}        [description]
    */
   static async find(filter) {
-    const model = await this.getModel()
+    const model = await baseModel.getModel()
     return model.find(filter);
   }
   /**
@@ -48,7 +48,7 @@ const baseModel = class {
    * @return {[type]}        [description]
    */
   static async findOne(filter) {
-    const model = await this.getModel()
+    const model = await baseModel.getModel()
     return model.findOne(filter);
   }
   /**
@@ -57,7 +57,7 @@ const baseModel = class {
    * @return {[type]}          [description]
    */
   static async remove(document) {
-    const model = await this.getModel()
+    const model = await baseModel.getModel()
     return model.remove(document);
   }
   /**
@@ -66,7 +66,7 @@ const baseModel = class {
    * @return {[type]}         [description]
    */
   static async insert(element) {
-    const model = await this.getModel()
+    const model = await baseModel.getModel()
     element._id = uuidv4() + '_local'
     return model.insert(element);
   }
@@ -76,12 +76,12 @@ const baseModel = class {
    * @return {[type]}          [description]
    */
   static async update(document) {
-    const model = await this.getModel()
+    const model = await baseModel.getModel()
     return model.update(document);
   }
 
   static async updateOrCreate(document) {
-    const model = await this.getModel()
+    const model = await baseModel.getModel()
     let role = await model.findOne(document)
     if (!role) {
       model.insert(document)
@@ -89,7 +89,7 @@ const baseModel = class {
   }
 
   static async findAndRemove(filter) {
-    const model = await this.getModel()
+    const model = await baseModel.getModel()
     return model.findAndRemove(filter);
   }
 }
