@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid">
     <div class="row">
-      <div class="landing col-lg-6  col-md-6 col-sm-12">
+      <div class="landing col-lg-10  col-md-10 col-sm-12">
         <div class="base">
           <div class="copy">
 

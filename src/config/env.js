@@ -8,8 +8,8 @@
 | understand whats are your users looking at!
 |
 */
-exports.APP_ENV = 'dev'
-exports.FAST_VERSION = '0.5.14'
+exports.APP_ENV = 'prod'
+exports.FAST_VERSION = '0.5.18'
 /*
 |--------------------------------------------------------------------------
 | FORM.IO CONFIGURATION
