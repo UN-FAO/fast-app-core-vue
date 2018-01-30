@@ -1,1 +1,1 @@
-> A Quasar project
+> A Quasar proj
