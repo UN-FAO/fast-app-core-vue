@@ -5,9 +5,9 @@ import Auth from 'modules/Auth/api/Auth'
 import Connection from 'modules/Wrappers/Connection'
 import FormioJS from 'formiojs'
 import Promise from 'bluebird'
-import LocalForm from 'database/collections/scopes/LocalForm'
-import LocalUser from 'database/collections/scopes/LocalUser'
-import LocalSubmission from 'database/collections/scopes/LocalSubmission'
+import Form from 'database/models/Form'
+import User from 'database/models/User'
+import Submission from 'database/models/Submission'
 import _forEach from 'lodash/forEach'
 import _map from 'lodash/map'
 import _unionBy from 'lodash/unionBy'
@@ -26,9 +26,9 @@ const actions = {
   }) {
     let model = ''
     if (collection === 'forms') {
-      model = LocalForm
+      model = Form
     } else if (collection === 'users') {
-      model = LocalUser
+      model = User
     }
     // let offlinePlugin = FormioJS.getPlugin('offline')
     var formio = new FormioJS('https://' + data.appName + '.form.io')
@@ -144,7 +144,7 @@ const actions = {
     commit
   }, {
     currentForm,
-    vm
+      vm
   }) {
     FormioJS.setToken(Auth.user().x_jwt_token)
     let isOnline = Connection.isOnline()
@@ -152,7 +152,7 @@ const actions = {
 
     let formio = new FormioJS(formUrl)
 
-    let localUnSyncSubmissions = await LocalSubmission.offline(currentForm.data.path)
+    let localUnSyncSubmissions = await Submission.local().offline(currentForm.data.path)
 
     FormioJS.clearCache()
 
@@ -166,7 +166,7 @@ const actions = {
       o.formio = formio
     })
 
-    let localSubmissions = await LocalSubmission.stored(currentForm.data.path)
+    let localSubmissions = await Submission.local().stored(currentForm.data.path)
 
     var Localresult = _unionBy(localSubmissions, localUnSyncSubmissions, '_id')
     let sync = SyncHelper.offlineOnlineSync({
@@ -176,7 +176,7 @@ const actions = {
     })
     // For every new or updated entry
     _forEach(sync, async function (submission, key) {
-      let localSubmissions = await LocalSubmission.find({
+      let localSubmissions = await Submission.local().find({
         'data._id': submission._id
       })
       let localSubmission = {}
@@ -184,14 +184,14 @@ const actions = {
       _forEach(localSubmissions, function (local) {
         localSubmission = local
         if (!(localSubmission.data.sync === false || localSubmission.data.draft === false)) {
-          LocalSubmission.remove(localSubmission)
+          Submission.local().remove(localSubmission)
         }
       })
       let isRepleaceble = localSubmission.data && !(localSubmission.data.sync === false || localSubmission.data.draft === false)
       let isNotLocal = typeof localSubmission.data === 'undefined'
       if (isRepleaceble || isNotLocal) {
         // Inser the new or updated entry
-        await LocalSubmission.insert({
+        await Submission.local().insert({
           data: submission
         })
       }
@@ -219,10 +219,11 @@ const actions = {
     commit
   }, {
     formSubmission,
-    formio,
-    User
+      formio,
+      User
   }) {
-    let submission = { ...formSubmission,
+    let submission = {
+      ...formSubmission,
       sync: false,
       user_email: User.email,
       formio: formio
@@ -231,45 +232,48 @@ const actions = {
 
     // If we are updating the submission
     if (formSubmission._id) {
-      submission = { ...submission,
+      submission = {
+        ...submission,
         type: 'update',
         updated: moment().format()
       }
 
-      let localSubmission = await LocalSubmission.get(formSubmission._id)
+      let localSubmission = await Submission.local().get(formSubmission._id)
 
       // Cases where we want to update
       let submitting = submission.draft === false
       let localDraft = localSubmission.data.draft === false
-      let submissionNotDraft = submission.draft === true
+      let submissionNotDraft = submission.draft === false
       let autoSave = submission.trigger === 'autoSaveAsDraft'
       let isSynced = !!(localSubmission.data.access && Array.isArray(localSubmission.data.access))
-      let hasError = localSubmission.data.syncError !== '' && typeof localSubmission.data.syncError !== 'undefined'
+      let hasError = localSubmission.data.syncError !== false && typeof localSubmission.data.syncError !== 'undefined'
+      localSubmission.data = submission
       // Check cases
       if (((submitting || (localDraft && submissionNotDraft)) && !autoSave) || (!isSynced && autoSave && !hasError)) {
-        localSubmission.data = submission
-        await LocalSubmission.update(localSubmission)
+        await Submission.local().update(localSubmission)
       }
+      // await Submission.local().update(localSubmission)
       return localSubmission
     }
-
     // If we are creating a new draft from scratch or a resource
     submission.created = moment().format()
-    let newSubmission = await LocalSubmission.insert({
+    let newSubmission = await Submission.local().insert({
       data: submission
     })
 
     switch (formSubmission.trigger) {
+      case 'importSubmission':
       case 'createLocalDraft':
       case 'resourceCreation':
         return newSubmission
         break;
       case 'createParalelSurvey':
         newSubmission.trigger = 'createParalelSurvey'
-        newSubmission.data.data.parallelSurvey = LocalSubmission.setParallelSurvey({ ...LocalSubmission.getParallelSurvey(newSubmission),
+        newSubmission.data.data.parallelSurvey = Submission.local().setParallelSurvey({
+          ...Submission.local().getParallelSurvey(newSubmission),
           submissionId: newSubmission._id
         })
-        await LocalSubmission.update(newSubmission)
+        await Submission.local().update(newSubmission)
         return newSubmission
         break;
     }
@@ -297,10 +301,10 @@ const actions = {
           data: offlineSubmission.data.data
         }
         offlineSubmission.data.queuedForSync = true
-        let model = LocalSubmission
+        let model = Submission.local()
 
         if (offlineSubmission.data.formio.formId === 'userregister') {
-          model = LocalUser
+          model = User
         }
         await model.update(offlineSubmission)
 
@@ -345,7 +349,8 @@ const actions = {
           }
         }
       }).then((result) => {
-        if (vm && vm.$eventHub) {
+        if (vm) {
+          console.log('The data was synced', vm)
           vm.$eventHub.emit('FAST-DATA_SYNCED', {
             count: syncedSubmissionsCount,
             data: syncedSubmissions

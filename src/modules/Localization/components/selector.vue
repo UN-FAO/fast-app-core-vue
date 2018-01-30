@@ -1,6 +1,6 @@
 <template>
 <q-btn ref="target" flat="true" v-if="show">
-    <q-icon name="language" v-bind:class="isInsideApp ? 'color-primary' : 'color-white' " />
+    <q-icon name="language" v-bind:class="isInsideApp ? 'color-white' : 'color-white' " />
   <!-- Direct child of target -->
   <q-popover ref="popover">
     <q-list item-separator link>
@@ -12,13 +12,6 @@
       >
       {{lenguage.label}}
       </q-item>
-
-      <!--
-       <q-item-separator />
-      <q-item  @click="getTranslations(), $refs.popover.close()">
-          <q-icon name="fa-language" /> Sync
-      </q-item>
-      -->
 
     </q-list>
   </q-popover>
@@ -47,7 +40,7 @@ import {
   QItemSeparator
 } from "quasar";
 import Localization from "../Localization";
-import LocalTranslation from "database/collections/scopes/LocalTranslation";
+import Translation from "database/models/Translation";
 
 export default {
   name: "localization",
@@ -66,16 +59,16 @@ export default {
     QCardMain
   },
   async mounted() {
-    this.lenguages = await LocalTranslation.supportedLanguages();
+    this.lenguages = await Translation.local().supportedLanguages();
     this.rerender();
 
     this.$eventHub.on("Translation:languageAdded", async data => {
-      this.lenguages = await LocalTranslation.supportedLanguages();
+      this.lenguages = await Translation.local().supportedLanguages();
       this.rerender();
     });
 
     this.$eventHub.on("Translation:updated", async data => {
-      this.lenguages = await LocalTranslation.supportedLanguages();
+      this.lenguages = await Translation.local().supportedLanguages();
       this.rerender();
     });
   },

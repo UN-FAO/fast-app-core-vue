@@ -1,4 +1,4 @@
-import * as Database from 'database/Database'
+import baseModel from './baseModel'
 import _map from 'lodash/map'
 import _cloneDeep from 'lodash/cloneDeep'
 import _filter from 'lodash/filter'
@@ -6,46 +6,14 @@ import _orderBy from 'lodash/orderBy'
 import _uniqBy from 'lodash/uniqBy'
 import _get from 'lodash/get'
 import Auth from 'modules/Auth/api/Auth'
-import uuidv4 from 'uuid/v4'
 
-
-const LocalSubmission = class {
-  static async getModel() {
-    const DB = await Database.get()
-    return DB.getCollection("submissions")
-  }
-
-  static async find(filter) {
-    const model = await LocalSubmission.getModel()
-    return model.find(filter);
-  }
-
-  static async findOne(filter) {
-    const model = await LocalSubmission.getModel()
-    return model.findOne(filter);
-  }
-
-  static async insert(element) {
-    const model = await LocalSubmission.getModel()
-    element._id = uuidv4() + '_local'
-    return model.insert(element);
-  }
-
-  static async remove(document) {
-    const model = await LocalSubmission.getModel()
-    return model.remove(document);
-  }
-  /**
-   * [get description]
-   * @param  {[type]} id [description]
-   * @return {[type]}    [description]
-   */
+const Submission = class extends baseModel {
   static async get(id) {
     id = id.replace(/\s/g, '')
-    let offline = await LocalSubmission.findOne({
+    let offline = await this.findOne({
       '_id': id
     })
-    let online = await LocalSubmission.findOne({
+    let online = await this.findOne({
       'data._id': id
     })
     if (online) {
@@ -60,13 +28,8 @@ const LocalSubmission = class {
     }
   }
 
-  static async update(document) {
-    const model = await LocalSubmission.getModel()
-    return model.update(document);
-  }
-
   static async offline(formId) {
-    let filter = await LocalSubmission.find({
+    let filter = await this.find({
       'data.user_email': Auth.userEmail(),
       'data.formio.formId': formId
     })
@@ -79,7 +42,7 @@ const LocalSubmission = class {
   }
 
   static async stored(formId) {
-    return LocalSubmission
+    return this
       .find({
         'data.formio.formId': formId,
         'data.owner': Auth.user()._id
@@ -87,7 +50,7 @@ const LocalSubmission = class {
   }
 
   static async getUnsync() {
-    let unsynced = await LocalSubmission.find({
+    let unsynced = await this.find({
       'data.sync': false
     })
     // updated incomplete submission
@@ -100,16 +63,15 @@ const LocalSubmission = class {
   }
 
   static async sFind(vm, filter) {
-    let localSubmissions = await LocalSubmission.find(filter)
+    let localSubmissions = await this.find(filter)
     let submissions = _cloneDeep(localSubmissions)
-    
+
     submissions = _filter(submissions, function (o) {
       return (
         (o.data.owner && o.data.owner === Auth.user()._id) ||
         (o.data.user_email && o.data.user_email === Auth.userEmail())
       )
     })
-    console.log('Sfind submissions', submissions)
 
     submissions = _map(submissions, function (submission) {
       let data = submission.data.data
@@ -120,7 +82,6 @@ const LocalSubmission = class {
         Humancreated: vm.humanizeDate(submission.data.created),
         id_submision: submission.data._id ? submission.data._id : submission._id,
         local: !submission.data._id,
-        id_submision_state: submission.data.sync ? submission.data.data.id_submision : submission.data.data.id_submision + '(Offline)',
         status: submission.data.sync === false ? 'offline' : 'online',
         draft: submission.data.draft,
         fullSubmission: data,
@@ -129,19 +90,18 @@ const LocalSubmission = class {
       }
       return submission
     })
-
     submissions = _map(submissions, 'data')
     submissions = _map(submissions, 'data')
     submissions = _orderBy(submissions, [
       'created'
     ], [
-      'desc'
-    ])
+        'desc'
+      ])
     return submissions
   }
 
   static async getParallelParticipants(idForm, idSubmission) {
-    let currentSubmission = await LocalSubmission.find({
+    let currentSubmission = await this.find({
       '_id': idSubmission
     })
 
@@ -150,7 +110,7 @@ const LocalSubmission = class {
 
     groupId = groupId && groupId !== '[object Object]' ? JSON.parse(groupId).groupId : undefined
 
-    let submissions = await LocalSubmission.find({
+    let submissions = await this.find({
       'data.formio.formId': idForm
     })
 
@@ -186,8 +146,8 @@ const LocalSubmission = class {
 
     parallelsurveyInfo =
       (parallelsurveyInfo && parallelsurveyInfo !== "[object Object]") ?
-      JSON.parse(parallelsurveyInfo) :
-      undefined;
+        JSON.parse(parallelsurveyInfo) :
+        undefined;
 
     return parallelsurveyInfo
   }
@@ -202,7 +162,7 @@ const LocalSubmission = class {
     submissions = formId ? submissions.filter((submission) => {
       return submission.data.formio.formId === formId
     }) : submissions
-    
+
     let groups = submissions.map((submission) => {
       return this.getParallelSurvey(submission) ? {
         groupId: this.getParallelSurvey(submission).groupId,
@@ -225,7 +185,7 @@ const LocalSubmission = class {
     return groups[0]
   }
 
-  static async removeFromGroup(submission) {}
+  static async removeFromGroup(submission) { }
 
   static async assingToGroup(submissionId, groupId) {
     let group = await this.getGroup(groupId[0])
@@ -233,17 +193,15 @@ const LocalSubmission = class {
 
     let parallelData = this.getParallelSurvey(submission)
 
-     let parallelSurvey = { ...parallelData,
-        groupId: group.groupId,
-        groupName: group.groupName
-     };
-
-    console.log('parallelSurvey', parallelSurvey)
-
-      submission.data.data.parallelSurvey = this.setParallelSurvey(
-        parallelSurvey
-      );
-      await this.update(submission)
+    let parallelSurvey = {
+      ...parallelData,
+      groupId: group.groupId,
+      groupName: group.groupName
+    };
+    submission.data.data.parallelSurvey = this.setParallelSurvey(
+      parallelSurvey
+    );
+    await this.update(submission)
   }
 }
-export default LocalSubmission
+export default Submission

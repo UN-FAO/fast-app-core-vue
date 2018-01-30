@@ -1,5 +1,12 @@
 <template>
-  <q-layout ref="layout" :view="layoutStore.view" :left-breakpoint="layoutStore.leftBreakpoint" :right-breakpoint="layoutStore.rightBreakpoint" :reveal="layoutStore.reveal" v-bind:class="isInsideApp ? 'background-app' : 'background-login' ">
+  <q-layout ref="layout"
+    :view="layoutStore.view"
+    :left-breakpoint="layoutStore.leftBreakpoint"
+    :right-breakpoint="layoutStore.rightBreakpoint"
+    :reveal="layoutStore.reveal"
+    v-bind:class="isInsideApp ? 'background-app' : 'background-login'"
+    :dir="ltr ? 'ltr' : 'rtl' "
+    >
     <toolbar slot="header"></toolbar>
     <template v-if="isInsideApp">
       <leftdrawer slot="left"></leftdrawer>
@@ -20,9 +27,7 @@
   import {
     mapActions
   } from "vuex";
-  import {
-    sync
-  } from "database/Database";
+  import Sync from "database/repositories/Database/Sync";
   import Connection from "modules/Wrappers/Connection";
   import {
     SYNC_INTERVAL
@@ -77,8 +82,8 @@
     },
     methods: {
       ...mapActions(["sendOfflineData"]),
-      toggleRtl: function(lenguageDirecction) {
-        this.ltr = lenguageDirecction === "ltr";
+      toggleRtl: function(lenguage) {
+        this.ltr = lenguage.direction === "ltr";
       },
       /**
        * [setSyncInterval description]
@@ -103,7 +108,7 @@
           };
         };
         rInterval(() => {
-          return sync(this);
+          return Sync.now(this);
         }, SYNC_INTERVAL);
       }
     },
@@ -136,8 +141,8 @@
   };
 </script>
 
-<style>
+<style lang="scss">
   @import url("../node_modules/bootstrap/dist/css/bootstrap.min.css");
   @import url("../node_modules/formiojs/dist/formio.full.min.css");
-  @import url("./assets/css/main.css");
+  @import url("./assets/css/main.scss");
 </style>

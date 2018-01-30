@@ -9,6 +9,7 @@ import AuthRoutes from 'modules/Auth/routes'
 import DashboardRoutes from 'modules/Dashboard/routes'
 import FormioRoutes from 'modules/Formio/routes'
 import SettingsRoutes from 'modules/Settings/routes'
+import TableauRoutes from 'modules/Tableau/routes'
 
 Vue.use(VueRouter)
 /*
@@ -24,7 +25,7 @@ Vue.use(VueRouter)
  |   routes.push({path: '/somePath', component: someComponent, name: 'someName'})
  |
  */
-let routes = setRoutes([AuthRoutes, DashboardRoutes, FormioRoutes, SettingsRoutes])
+let routes = setRoutes([AuthRoutes, DashboardRoutes, FormioRoutes, SettingsRoutes, TableauRoutes])
 
 // Default 404
 const Error404 = r =>

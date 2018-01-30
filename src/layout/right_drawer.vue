@@ -71,7 +71,7 @@ import _forEach from "lodash/forEach";
 // import _isEmpty from "lodash/isEmpty";
 // import _orderBy from "lodash/orderBy";
 // import _filter from "lodash/filter";
-import LocalSubmission from "database/collections/scopes/LocalSubmission";
+import Submission from "database/models/Submission";
 import moment from "moment";
 // import Auth from "modules/Auth/api/Auth";
 import FormioUtils from "formiojs/utils";
@@ -138,7 +138,6 @@ export default {
 
     this.$eventHub.on("formio.change", data => {
       let scorePanels = [];
-      console.log("data", data);
       // This should only be called if this is a Wizard
       // Search all of the Score components in different pages
       if (data.formio && data.formio.pages) {
@@ -179,23 +178,18 @@ export default {
           });
         }
       }
-      console.log("scorePanels", scorePanels);
       this.scorePanels = scorePanels;
     });
     await this.updateUnsyncedSubmissions();
   },
   methods: {
-    changeSelectedPage() {
-      // let ref = 'page-' + this.currentPage
-      // let listPage = this.$refs[ref]
-    },
     humanizeDate(givenDate) {
       let start = moment(givenDate);
       let end = moment();
       return end.to(start);
     },
     async updateUnsyncedSubmissions() {
-      this.Unsynced = await LocalSubmission.getUnsync();
+      this.Unsynced = await Submission.getUnsync();
     }
   }
 };

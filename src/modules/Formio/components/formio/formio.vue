@@ -238,6 +238,7 @@ export default {
       } else {
         this.formIO = new FormioForm(this.$refs.formIO, translations);
       }
+      this.formIO.url = this.formURL
     },
     /**
       * [mountFormIOForm description]
@@ -380,12 +381,12 @@ export default {
            */
           this.formIO.on("submit", submission => {
             let formSubmission = {
-              data: this.formIO.data
+              data: this.formIO.data,
+              draft: false,
+              redirect: true,
+              trigger: "formioSubmit",
+              syncError: false
             };
-            formSubmission.draft = false;
-            formSubmission.redirect = true;
-            formSubmission.trigger = "formioSubmit";
-            formSubmission.syncError = false;
             this.save(formSubmission);
             this.$swal("Sent!", "Your submission has been sent!", "success");
           });

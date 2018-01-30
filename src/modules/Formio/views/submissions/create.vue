@@ -2,7 +2,7 @@
 <div class="container-fluid">
   <div class="row FormioContainer">
 
-    <q-card style="background-color: white; max-height: fit-content;" class="col-lg-3  col-md-3 col-sm-3" v-if="_isWizard && showPages">
+    <q-card style="background-color: white; max-height: fit-content;" class="col-lg-3  col-md-12 col-sm-12" v-if="_isWizard && showPages">
       <q-card-main>
         <q-list separator style="border: none !important">
 
@@ -16,9 +16,8 @@
     <q-card color="white" v-bind:class="getFormClass" style="position:inherit !important;">
       <q-card-main>
 
-        <q-btn flat @click="togglePages" icon="menu" style="color:black;" v-if="_isWizard"></q-btn>
-        <q-icon name="thumb_up" />
-        <q-tabs inverted id="contentForm">
+        <!--<q-icon name="thumb_up" />-->
+        <q-tabs inverted id="contentForm" >
           <!-- Tabs - notice slot="title" -->
 
           <q-tab v-bind:class="!PARRALEL_SURVEYS ? 'hidden' : ''" default slot="title" name="tab-1" icon="person" :label="participantName" :color="saved ? 'primary' : 'red'" />
@@ -36,14 +35,16 @@
       </q-card-main>
     </q-card>
 
-    <q-fixed-position corner="top-right" :offset="[18, 18]">
-      <q-fab color="red" icon="add" direction="left">
-        <q-fab-action color="secondary" @click="exportPDF" icon="print"></q-fab-action>
+    <q-fixed-position corner="bottom-right" :offset="[18, 18]">
+      <q-fab color="red" icon="add" direction="up">
+
 
         <q-fab-action v-bind:class="!PARRALEL_SURVEYS ? 'hidden' : ''" color="purple-6" @click="groupConfig()" icon="fa-users"></q-fab-action>
         <q-fab-action v-bind:class="!PARRALEL_SURVEYS ? 'hidden' : ''" color="amber" @click="addSurvey()" icon="person_add"></q-fab-action>
 
         <q-fab-action color="primary" @click="saveAsDraft()" icon="fa-floppy-o"></q-fab-action>
+         <q-fab-action color="secondary" @click="openRightDrawer()" icon="assessment"></q-fab-action>
+        <q-fab-action color="secondary" @click="togglePages" icon="menu" v-if="_isWizard"></q-fab-action>
 
       </q-fab>
     </q-fixed-position>
@@ -108,7 +109,8 @@ import _debounce from "lodash/debounce";
 import FormioUtils from "formiojs/utils";
 import Auth from "modules/Auth/api/Auth";
 import formio from "modules/Formio/components/formio/formio";
-import LocalSubmission from "database/collections/scopes/LocalSubmission";
+import Submission from "database/models/Submission";
+import Form from "database/models/Form";
 import OFFLINE_PLUGIN from "modules/Formio/components/formio/src/offlinePlugin";
 export default {
   components: {
@@ -152,6 +154,9 @@ export default {
       this.currentPage = data.prevPage.page;
       this.currentQuestion = -1;
       window.scrollTo(0, 0);
+    });
+    this.currentForm = await Form.local().findOne({
+      "data.path": this.$route.params.idForm
     });
 
     this.$eventHub.on("formio.render", data => {
@@ -205,7 +210,7 @@ export default {
     submission: {
       get() {
         if (this.$route.params.idSubmission) {
-          return LocalSubmission.get(this.$route.params.idSubmission);
+          return Submission.local().get(this.$route.params.idSubmission);
         } else {
           return undefined;
         }
@@ -216,7 +221,7 @@ export default {
     },
     participants: {
       get() {
-        return LocalSubmission.getParallelParticipants(
+        return Submission.local().getParallelParticipants(
           this.$route.params.idForm,
           this.$route.params.idSubmission
         );
@@ -250,7 +255,7 @@ export default {
     getFormClass() {
       let className = "";
       if (this.showPages && this._isWizard) {
-        className = "col-lg-8  col-md-8 col-sm-8";
+        className = "col-lg-8  col-md-12 col-sm-12";
       } else {
         className =
           "col-xl-10 col-lg-10  col-md-12 col-sm-12 col-lg-offset-1 col-md-offset-1 col-xl-offset-1";
@@ -349,23 +354,184 @@ export default {
       this.showPages = !this.showPages;
     },
     exportPDF() {
-      let element = document.querySelector("#contentForm");
-      /*
-            let body = document.body
-            let html = document.documentElement
-            let height = Math.max(body.scrollHeight, body.offsetHeight,
-                             html.clientHeight, html.scrollHeight, html.offsetHeight)
-
-            let heightCM = height / 35.35
-
-            function myCallback(pdf) {
-              console.log('The pdf was generated!!', pdf)
+      // var lfrom represents the current form
+      // var indexr = 1;
+      var linesOfPage = 0;
+      var indexPage = 1;
+      var limitLinesOfPage = 33;
+      var lForm = this.currentForm.data;
+      var currentPanel = "";
+      // var element represents the htmo page thats became pdf document
+      // we use styles directly on dom elements
+      var element = "";
+      // the construction of the page
+      element += "<html>";
+      element += "<head>";
+      element += "<title>Survey</title>";
+      element += "<head>";
+      element += "<body>";
+      element += "<div id='printableSurvey'>";
+      element += "<div  style='text-align: center;'>";
+      element +=
+        "<br><br><img src='statics/faoHeader.jpg' width='275' height='112'></div>";
+      element += "<br><br><br><br><br><br>";
+      element +=
+        "<div style='text-align: center; font-family: Helvetica; font-size: 40px;color: #b3b3ff;text-shadow: 1px 1px 1px #000000;'>GIPB Planning and Assessment Tool</div>";
+      element +=
+        "<div style='text-align: center; font-family: Helvetica; font-size: 40px;color: #b3b3ff;text-shadow: 1px 1px 1px #000000;'>(PAT) for Plant Breeding Capacity</div>";
+      element +=
+        "<div style='text-align: center; font-family: Helvetica; font-size: 40px;color: #b3b3ff;text-shadow: 1px 1px 1px #000000;'>OUTPUT</div>";
+      element += "<br><br><br><br><br><br>";
+      element +=
+        "<table width='100%' style='font-family:verdana;font-size: 16px;'><tr><td width='40%'>Assessment undertaken by</td><td>&nbsp;Country:</td></tr>";
+      element += "<tr><td width='40%'></td><td>&nbsp;Organization:</td></tr>";
+      element +=
+        "<tr><td width='40%'></td><td>&nbsp;Information team:</td></tr>";
+      element += "<tr><td width='40%'>&nbsp;</td><td></td></tr>";
+      element += "<tr><td width='40%'></td><td>&nbsp;</td></tr>";
+      element += "<tr><td width='40%'>&nbsp;</td><td></td></tr>";
+      element += "<tr><td width='40%'>Date:</td><td></td></tr>";
+      element += "</table>";
+      element += "<br><br><br><br><br><br><br><br>";
+      element +=
+        "<div style='text-align: right; font-family: Helvetica; font-size: 19px;color: #b3b3ff;text-shadow: 1px 1px 1px #000000;'>A framework to support Building Plant Breeding Capacity for</div>";
+      element +=
+        "<div style='text-align: right; font-family: Helvetica; font-size: 19px;color: #b3b3ff;text-shadow: 1px 1px 1px #000000;'>Sustainable Crop Improvement</div>";
+      element += "<table width='100%'>";
+      // we using tables because is a requisite from client
+      FormioUtils.eachComponent(
+        lForm.components,
+        component => {
+          if (
+            component.title !== undefined &&
+            currentPanel.toLowerCase() !== component.title.toLowerCase()
+          ) {
+            currentPanel = component.title;
+            element += "<tr>";
+            element += "<td>";
+            element += "&nbsp;";
+            element += "</td></tr>";
+            element += "<tr>";
+            element +=
+              "<td style='font-weight: bold;font-family: Verdana;font-size: 18px;color: #b3b3ff;' colspan='3'>";
+            element += currentPanel;
+            element += "</td></tr>";
+            element += "<tr>";
+            element += "<td colspan='3' valign='top'>";
+            element += "<hr>";
+            element += "</td></tr>";
+            linesOfPage += 2;
+          }
+          // the loop eachComponent just render the fields filled and not render buttons
+          if (
+            FormioUtils.getValue(this.currentSubmission, component.key) &&
+            component.type !== "button"
+          ) {
+            if (linesOfPage < limitLinesOfPage) {
+              // total of lines of one page based on letter size
+              if (component.type === "datetime") {
+                element += "<tr>";
+                element +=
+                  "<td style='font-family: Verdana;font-size: 12px' colspan='3'>";
+                element += component.label;
+                element += "<ul><li>";
+                element += FormioUtils.getValue(
+                  this.currentSubmission,
+                  component.key
+                ).substring(0, 10);
+                element += "</li></ul></td></tr>";
+                linesOfPage += 2;
+              } else if (component.type === "select") {
+                var valueObject = FormioUtils.getValue(
+                  this.currentSubmission,
+                  component.key
+                ).toString();
+                var list = [];
+                if (valueObject.indexOf(",") > 0) {
+                  list = valueObject.split(",");
+                } else {
+                  list = [valueObject];
+                }
+                element += "<tr>";
+                element +=
+                  "<td style='font-family: Verdana;font-size: 12px' colspan='3'>";
+                element += component.label;
+                element += "<ul>";
+                linesOfPage += 1;
+                for (var i = 0; i < list.length; i++) {
+                  element += "<li><i>&nbsp;-&nbsp;";
+                  element += list[i];
+                  element += "</i></li>";
+                  linesOfPage += 1;
+                }
+                element += "</ul>";
+                element += "</td></tr>";
+              } else {
+                element += "<tr>";
+                element +=
+                  "<td style='font-family: Verdana;font-size: 12px' colspan='3'>";
+                element += component.label;
+                element += "<ul><li>";
+                element += FormioUtils.getValue(
+                  this.currentSubmission,
+                  component.key
+                );
+                element += "</li></ul></td></tr>";
+                linesOfPage += 2;
+              }
+              // indexr++;
+            } else {
+              // the else block prints the footer of page with page number and starts a new page
+              element += " <tr><td colspan='2' > &nbsp; </td></tr>";
+              element += " <tr><td colspan='2' > &nbsp; </td></tr>";
+              element += " <tr><td colspan='2' > &nbsp; </td></tr>";
+              element += " <tr><td colspan='2' > <hr></td></tr>";
+              element +=
+                " <tr><td>PAT Survey</td><td align='right'> Page " +
+                indexPage +
+                "</td></tr>";
+              element += " <tr><td colspan='2' > &nbsp; </td></tr>";
+              element += " <tr><td colspan='2' > &nbsp; </td></tr>";
+              element += " <tr><td colspan='2' > &nbsp; </td></tr>";
+              element += " <tr><td colspan='2' > &nbsp; </td></tr>";
+              element += "<tr>";
+              element += "<td style='font-family: Verdana;font-size: 12px'>";
+              element += component.label;
+              element += "<ul><li>";
+              element += FormioUtils.getValue(
+                this.currentSubmission,
+                component.key
+              );
+              element += "</li></ul></td></tr>";
+              // indexr = 1;
+              linesOfPage = 1;
+              indexPage++;
             }
-            */
+          }
+        },
+        true
+      ); //  this boolean parameter defines includeall components
+      // sadfaf
+      if (linesOfPage < limitLinesOfPage) {
+        var diferenceLines = limitLinesOfPage - linesOfPage;
+        for (var x = 0; x < diferenceLines; x++) {
+          element += " <tr><td colspan='2' > &nbsp; </td></tr>";
+        }
+      }
+      element += " <tr><td colspan='2' > &nbsp; </td></tr>";
+      element += " <tr><td colspan='2' > <hr></td></tr>";
+      element +=
+        " <tr><td>PAT Survey</td><td align='right'> Page " +
+        indexPage +
+        "</td></tr>";
+      element += "</table>";
+      element += "</div>";
+      element += "</body>";
+      element += "</html>";
+      // use of the html2pdf component for generate the pdf
       html2pdf(element, {
         margin: 1,
         filename: "export.pdf",
-        // pdfCallback: myCallback,
         html2canvas: {
           dpi: 192,
           letterRendering: true
@@ -376,6 +542,9 @@ export default {
           format: "letter"
         }
       });
+      // console.log(element);
+      // var element became undefined for the case when de user generate another report  on the same session
+      element = undefined;
     },
     reloadPage() {
       this.$swal({
@@ -408,6 +577,9 @@ export default {
       this.displayUp = !(this.currentQuestion <= 0);
       this.displayDown = true;
     },
+    openRightDrawer() {
+      this.$eventHub.$emit("openRightDrawer");
+    },
     draftStatusChanged(e) {
       if (e.detail.data === false) {
         this.saved = false;
@@ -417,7 +589,7 @@ export default {
     },
     addSurvey() {
       let groupId = _get(
-        LocalSubmission.getParallelSurvey(this.currentSubmission),
+        Submission.local().getParallelSurvey(this.currentSubmission),
         "groupId",
         undefined
       );
@@ -480,22 +652,22 @@ export default {
             participantName: result[1],
             submissionId: this.currentSubmission._id
           };
-          this.currentSubmission.data.parallelSurvey = LocalSubmission.setParallelSurvey(
+          this.currentSubmission.data.parallelSurvey = Submission.local().setParallelSurvey(
             parallelSurvey
           );
           surveyData = {
-            parallelSurvey: LocalSubmission.setParallelSurvey({
+            parallelSurvey: Submission.local().setParallelSurvey({
               ...parallelSurvey,
               participantName: result[2]
             })
           };
         } else {
-          let parallelsurveyInfo = LocalSubmission.getParallelSurvey(
+          let parallelsurveyInfo = Submission.local().getParallelSurvey(
             this.currentSubmission
           );
           parallelsurveyInfo.participantName = result[0];
           surveyData = {
-            parallelSurvey: LocalSubmission.setParallelSurvey(
+            parallelSurvey: Submission.local().setParallelSurvey(
               parallelsurveyInfo
             )
           };
@@ -505,15 +677,22 @@ export default {
     },
     async groupConfig() {
       let groupId = _get(
-        LocalSubmission.getParallelSurvey(this.currentSubmission),
+        Submission.local().getParallelSurvey(this.currentSubmission),
         "groupId",
         undefined
       );
-      let options = await LocalSubmission.getGroups(this.$route.params.idForm);
+      let options = await Submission.local().getGroups(
+        this.$route.params.idForm
+      );
       let customOptions = {};
       options.forEach(option => {
         customOptions[option.groupId] = option.groupName;
       });
+      let currentGroup = await Submission.local().getParallelSurvey(
+        this.currentSubmission
+      );
+      currentGroup = currentGroup.groupId ? currentGroup.groupId : undefined;
+      delete customOptions[currentGroup];
 
       let steps = [];
       let progressSteps = [];
@@ -587,10 +766,13 @@ export default {
 
       this.$swal.queue(steps).then(async result => {
         this.$swal.resetDefaults();
-        await LocalSubmission.assingToGroup(
+        await Submission.local().assingToGroup(
           this.$route.params.idSubmission,
           result
         );
+        setTimeout(function() {
+          window.location.reload(true);
+        }, 1500);
       });
     },
     createNewSurvey(surveyData) {
@@ -686,3 +868,110 @@ export default {
   }
 };
 </script>
+<style SCOPED>
+@media only screen and (max-width: 760px),
+  (min-device-width: 768px) and (orientation: portrait) {
+  .q-tabs-head {
+    min-height: none !important;
+  }
+  .formio-component-datagrid {
+    overflow-x: unset;
+    margin-left: -90px;
+    width: 80vw !important;
+  }
+  .formio-component-datagrid div.row {
+    display: block;
+  }
+
+  div.formio-component-datagrid {
+    overflow-x: unset;
+  }
+
+  .formio-component-datagrid fieldset div.row {
+    display: block;
+    margin-left: 0px;
+  }
+  .formio-component-datagrid fieldset {
+    margin-left: 0px;
+  }
+
+  legend,
+  .card-header.panel-heading {
+    margin-left: 15px;
+  }
+
+  .table-responsive {
+    overflow-x: unset;
+    margin-left: -123px !important;
+    width: 100vw !important;
+    transform: scale(0.92);
+  }
+  .table-responsive .choices__item.choices__item--selectable {
+    display: table;
+    font-size: x-small;
+    margin-left: -12px;
+  }
+
+  .table-responsive
+    .choices__list.choices__list--dropdown.is-active
+    .choices__item.choices__item--selectable {
+    display: table;
+    font-size: large;
+    margin-left: 0px;
+  }
+
+  .table-responsive input.form-control {
+    min-width: 16vw !important;
+    max-width: 16vw !important;
+    font-size: smaller;
+  }
+  .table-responsive p {
+    font-size: 9px;
+  }
+
+  .table-responsive td,
+  th {
+    width: 16vw !important;
+  }
+
+  .table-responsive .input-group {
+    min-width: 16vw !important;
+    max-width: 16vw !important;
+    font-size: smaller;
+  }
+
+  .table-responsive label.control-label {
+    font-size: smaller !important;
+    margin-left: -17vw;
+    margin-top: 10px;
+  }
+
+  .table-responsive .form-control {
+    min-width: 16vw !important;
+    max-width: 16vw !important;
+    font-size: smaller;
+  }
+
+  .table-responsive .input-group-addon {
+    padding: 0px;
+    font-size: 9px;
+  }
+
+  .formio-component-fieldset {
+    margin-top: 0px;
+  }
+
+  fieldset div.row {
+    display: block;
+    margin-left: -100px;
+  }
+  fieldset {
+    margin-left: -80px;
+  }
+
+  .card-header.panel-heading {
+    width: 85vw;
+    margin-left: -70px;
+  }
+}
+</style>

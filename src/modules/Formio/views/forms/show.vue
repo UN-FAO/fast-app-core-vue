@@ -2,7 +2,9 @@
   <div class="row" style="background:#f3f3f5">
     <div>
       <q-card color="white" style="bottom: unset;margin-top: 30px;" class="col-lg-10 col-lg-offset-1 col-md-offset-1 col-md-10 col-sm-10 col-sm-offset-1 col-xs-offset-0 col-xs-12  centered relative-position">
-        <q-card-main>
+
+          <q-card-main>
+        <h1 class="_control-label-title">Collected Data</h1>
           <q-transition appear enter="fadeIn" leave="fadeOut">
 
             <data-tables :data="submissions" :search-def="searchDef" :action-col-def="getRowActionsDef()" action-col-label="Actions"
@@ -14,9 +16,9 @@
               <el-table-column label="status" prop="Status" width="90" sortable fixed="left">
                 <template scope="scope">
                   <el-tag :type="getIconColor(scope.row)" close-transition>
-                    <i class="material-icons">{{scope.row.status === 'offline' ? 'cloud_off' : 'cloud_done'}}</i>
+                    <i class="material-icons">{{scope.row.status === 'offline' ? 'remove_circle_outline' : 'check_circle'}}</i>
                   </el-tag>
-                  <i class="material-icons" style="color: red;font-size: x-large; cursor: pointer;" v-if="scope.row.syncError && scope.row.syncError !=='Unauthorized' " @click="displayError(scope.row.syncError)">error_outline</i>
+                  <i class="material-icons" style="color: red;font-size: x-large; cursor: pointer;" v-if="scope.row.syncError && scope.row.syncError !=='Unauthorized' " @click="displayError(scope.row.syncError)">block</i>
                   <i class="material-icons" style="color: red;font-size: x-large; cursor: pointer;" v-if="scope.row.syncError && scope.row.syncError ==='Unauthorized' " @click="displayError(scope.row.syncError)">lock</i>
                 </template>
               </el-table-column>
@@ -37,7 +39,8 @@
 
               <el-table-column fixed="right" label="Actions" width="120">
                 <template scope="scope">
-                  <el-button @click="handleEdit(scope)" type="text">{{$t('Edit')}}</el-button>
+                  <!--<el-button @click="handleEdit(scope)" type="text">{{$t('Edit')}}</el-button>-->
+                    <el-button @click="handleEdit(scope)" type="text"><i class="material-icons edit">edit</i></el-button>
                 </template>
               </el-table-column>
 
@@ -49,8 +52,8 @@
         </q-inner-loading>
       </q-card>
     </div>
-    <q-fixed-position corner="top-right" :offset="[18, 18]">
-      <q-fab color="red" icon="add" direction="left" push>
+    <q-fixed-position corner="bottom-right" :offset="[18, 18]">
+      <q-fab color="red" icon="add" direction="up" push>
 
         <q-fab-action color="secondary" @click="importSubmission()" icon="fa-upload">
           <q-tooltip>
@@ -63,6 +66,7 @@
              {{$t('New Submission')}}
           </q-tooltip>
         </q-fab-action>
+
       </q-fab>
     </q-fixed-position>
   </div>
@@ -70,6 +74,7 @@
 
 <script>
 import DataTables from "vue-data-tables";
+import OFFLINE_PLUGIN from "modules/Formio/components/formio/src/offlinePlugin";
 import _forEach from "lodash/forEach";
 import _map from "lodash/map";
 import lang from "element-ui/lib/locale/lang/en";
@@ -92,27 +97,32 @@ import {
   QInnerLoading,
   QTooltip
 } from "quasar";
-import LocalSubmission from "database/collections/scopes/LocalSubmission";
-import LocalForm from "database/collections/scopes/LocalForm";
+import Submission from "database/models/Submission";
+import Form from 'database/models/Form'
 import FormioUtils from "formiojs/utils";
+import Formio from "formiojs";
+import { APP_URL } from "config/env";
 locale.use(lang);
 
 export default {
   async mounted() {
     if (this.$route.params.idForm === "*") {
-      this.submissions = await LocalSubmission.sFind(this, {});
+      this.submissions = await Submission.local().sFind(this, {});
     } else {
-      this.submissions = await LocalSubmission.sFind(this, {
+      this.submissions = await Submission.local().sFind(this, {
         "data.formio.formId": this.$route.params.idForm
       });
-      console.log(this.submissions);
     }
 
-    this.currentForm = await LocalForm.findOne({
+    this.currentForm = await Form.local().findOne({
       "data.path": this.$route.params.idForm
     });
 
     this.$eventHub.on("FAST-DATA_SYNCED", async data => {
+      await this.updateLocalSubmissions();
+    });
+
+    this.$eventHub.on("FAST-DATA_IMPORTED", async data => {
       await this.updateLocalSubmissions();
     });
 
@@ -198,7 +208,7 @@ export default {
             icon: "document",
             buttonProps: {
               type: "text",
-              size: "medium"
+              size: "large"
             }
           },
           {
@@ -209,7 +219,7 @@ export default {
             icon: "delete",
             buttonProps: {
               type: "text",
-              size: "small"
+              size: "large"
             }
           }
         ]
@@ -292,11 +302,11 @@ export default {
         })
         .then(async () => {
           _forEach(rows, async submission => {
-            let online = await LocalSubmission.findOne({
+            let online = await Submission.local().findOne({
               "data._id": submission.id_submision
             });
 
-            let offline = await LocalSubmission.findOne({
+            let offline = await Submission.local().findOne({
               _id: submission.id_submision
             });
 
@@ -304,7 +314,7 @@ export default {
             if (online) {
               deleteSubmission = online;
             }
-            await LocalSubmission.remove(deleteSubmission);
+            await Submission.local().remove(deleteSubmission);
             await this.updateLocalSubmissions();
           });
 
@@ -464,11 +474,65 @@ export default {
         ]
       };
     },
+    async importSubmission() {
+      const file = await this.$swal({
+        title: this.$t("Select you JSON file"),
+        input: "file",
+        inputAttributes: {
+          accept: ".json",
+          "aria-label": this.$t("Upload your JSON File")
+        }
+      });
+
+      if (file) {
+        var reader = new FileReader();
+        let self = this;
+        // Closure to capture the file information.
+        reader.onload = (function(theFile) {
+          return function(e) {
+            let json;
+            try {
+              json = JSON.parse(e.target.result);
+            } catch (ex) {
+              throw new Error("The Json file could not be parsed");
+            }
+            json.forEach(row => {
+              if (row.id || row._id) {
+                delete row.id;
+                delete row._id;
+              }
+              let formSubmission = {
+                data: row,
+                redirect: false,
+                syncError: false,
+                draft: true,
+                trigger: "importSubmission"
+              };
+              let formUrl = APP_URL + "/" + self.currentForm.data.path;
+              Formio.deregisterPlugin("offline");
+              Formio.registerPlugin(
+                OFFLINE_PLUGIN.getPlugin(
+                  self.currentForm.data.path,
+                  undefined,
+                  false,
+                  self.$eventHub
+                ),
+                "offline"
+              );
+              let formio = new Formio(formUrl);
+              formio.saveSubmission(formSubmission);
+            });
+          };
+        })(file);
+
+        reader.readAsText(file);
+      }
+    },
     async updateLocalSubmissions() {
       if (this.$route.params.idForm === "*") {
-        this.submissions = await LocalSubmission.sFind(this, {});
+        this.submissions = await Submission.local().sFind(this, {});
       } else {
-        this.submissions = await LocalSubmission.sFind(this, {
+        this.submissions = await Submission.local().sFind(this, {
           "data.formio.formId": this.$route.params.idForm
         });
       }
@@ -480,16 +544,46 @@ export default {
       });
     },
     displayError(error) {
-      let errorString = "<ul>";
+      let errorString =
+        '<div style="overflow-x:auto;"><table class="restable"><thead> <tr><th scope="col">' +
+        this.$t("Label") +
+        '</th><th scope="col">' +
+        this.$t("Code") +
+        '</th><th scope="col">' +
+        this.$t("Module") +
+        "</th></tr></thead><tbody>";
+
       error.details.forEach(detail => {
         let component = FormioUtils.getComponent(
           this.currentForm.data.components,
           detail.path[0]
         );
         let label = component ? this.$t(component.label) + ": " : "";
-        errorString = errorString + "<li>" + label + detail.message + "</li>";
+        errorString = errorString + "<tr>";
+        errorString =
+          errorString +
+          "<td data-label=" +
+          this.$t("Label") +
+          ">" +
+          label +
+          "</td>";
+        errorString =
+          errorString +
+          "<td data-label=" +
+          this.$t("Code") +
+          ">" +
+          detail.message +
+          "</td>";
+        errorString =
+          errorString +
+          "<td data-label=" +
+          this.$t("Module") +
+          ">" +
+          detail.message +
+          "</td>";
+        errorString = errorString + "</tr>";
       });
-      errorString = errorString + "<ul>";
+      errorString = errorString + "</tbody></table></div>";
 
       this.$swal({
         title: error.name,
@@ -503,3 +597,6 @@ export default {
   }
 };
 </script>
+
+
+

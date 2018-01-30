@@ -93,8 +93,9 @@
 </style>
 
 <script>
-import LocalForm from "database/collections/scopes/LocalForm";
-import LocalTranslation from "database/collections/scopes/LocalTranslation";
+import Form from 'database/models/Form'
+import FormLabels from 'database/repositories/Form/Labels'
+import Translation from "database/models/Translation";
 import Localization from "modules/Localization/Localization";
 import { mapActions } from "vuex";
 import {
@@ -141,8 +142,8 @@ export default {
       this.createTranslations()
     });
 
-    this.formNameFilters = await LocalForm.find();
-    this.languageNameFilters = await LocalTranslation.supportedLanguages();
+    this.formNameFilters = await Form.local().find();
+    this.languageNameFilters = await Translation.local().supportedLanguages();
     this.selection = _map(this.formNameFilters, "data.title");
     this.languageSelection = _map(this.languageNameFilters, "code");
   },
@@ -220,7 +221,7 @@ export default {
       this.selection = [];
     },
     async filterTable() {
-      this.translations = await LocalForm.getAllLabels(
+      this.translations = await FormLabels.get(
         this.selection,
         this.languageSelection
       );
@@ -286,13 +287,13 @@ export default {
         appName: this.$store.state.authStore.appName
       });
       await Localization.getTranslations();
-      this.translations = await LocalForm.getAllLabels(
+      this.translations = await Form.local().getAllLabels(
         this.selection,
         this.languageSelection
       );
     },
     async addLanguage() {
-      let options = LocalTranslation.getIsoLanguages();
+      let options = Translation.local().getIsoLanguages();
       let customOptions = {};
       _forEach(options, option => {
         customOptions[option.code] = option.label;

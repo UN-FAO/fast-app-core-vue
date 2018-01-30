@@ -86,6 +86,11 @@
       <q-item-main :label="$t('Logout')" />
     </q-item>
 
+      <div class="text-center light text-italic">
+      {{userEmail()}}
+    </div>
+    <p>
+
     <div class="fixed-bottom text-center light text-italic">
       v {{fastVersion}}
     </div>
@@ -95,7 +100,7 @@
 import Localization from "modules/Localization/Localization";
 import { mapState, mapActions } from "vuex";
 import Auth from "modules/Auth/api/Auth";
-import LocalForm from "database/collections/scopes/LocalForm";
+import Form from 'database/models/Form'
 import {
   QScrollArea,
   QSideLink,
@@ -130,7 +135,7 @@ export default {
     QItemSeparator
   },
   mounted: async function() {
-    LocalForm.sAll(this, "forms");
+    Form.local().sAll(this, "forms");
   },
   data() {
     return {
@@ -155,7 +160,7 @@ export default {
       this.$refs.leftDrawer.close();
     },
     async syncApp() {
-      this.getResources({
+      await this.getResources({
         appName: this.$store.state.authStore.appName
       });
       await Localization.getTranslations();
@@ -182,6 +187,9 @@ export default {
     },
     isAdmin() {
       return Auth.hasRole("Administrator");
+    },
+    userEmail() {
+        return Auth.userEmail()
     }
   }
 };

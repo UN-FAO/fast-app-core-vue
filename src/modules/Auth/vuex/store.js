@@ -1,4 +1,4 @@
-import LocalUser from 'database/collections/scopes/LocalUser'
+import User from 'database/models/User'
 import SyncHelper from 'database/helpers/SyncHelper'
 import {
   APP_URL,
@@ -90,7 +90,7 @@ const actions = {
   storeUserLocally: async({
     commit
   }, formIoUser) => {
-    let user = await LocalUser.findOne({
+    let user = await User.local().findOne({
       'data.data.email': formIoUser.data.email
     })
 
@@ -101,10 +101,10 @@ const actions = {
     if (isUserAlreadyStored) {
       user.data = formIoUser
       //  update the user with the updated information
-      LocalUser.update(user)
+      User.local().update(user)
     } else {
       //  Insert the new user
-      await LocalUser.insert({
+      await User.local().insert({
         data: formIoUser
       })
     }
