@@ -9,7 +9,7 @@
     <q-toolbar-title @click="$router.push({name: 'dashboard'})" style="cursor: pointer;"  v-bind:class="isInsideApp ? '' : 'color-white' ">
       {{ appName }}
     </q-toolbar-title>
-	<div class="q-toolbar-fao-logo"><img src="http://www.fao.org/fileadmin/templates/faoweb/images/FAO-logo-3lines-en-w.png"></div>
+	<div class="q-toolbar-fao-logo"><img src="statics/2000px-FAO_logo_reverse.png" style="max-height: 40px; max-width: 40px;" /> </div>
 
     <localization/>
     <wifiDisplay/>

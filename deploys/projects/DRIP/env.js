@@ -34,6 +34,7 @@ exports.APP_NAME = 'qumqhkjyyrhislq'
 */
 exports.APP_FANTACY_NAME = 'DRIP'
 exports.APP_PHRASE = 'Dryland Restoration Initiative Platform'
+exports.APP_ABOUT_NAME = 'DRIP'
 /*
 |--------------------------------------------------------------------------
 | MD5 KEY
