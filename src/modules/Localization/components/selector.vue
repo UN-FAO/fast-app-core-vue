@@ -1,6 +1,6 @@
 <template>
 <q-btn ref="target" flat="true" v-if="show">
-    <q-icon name="language" v-bind:class="isInsideApp ? 'color-primary' : 'color-white' " />
+    <q-icon name="language" v-bind:class="isInsideApp ? 'color-white' : 'color-white' " />
   <!-- Direct child of target -->
   <q-popover ref="popover">
     <q-list item-separator link>

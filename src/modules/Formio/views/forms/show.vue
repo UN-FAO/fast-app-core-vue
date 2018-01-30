@@ -2,9 +2,9 @@
   <div class="row" style="background:#f3f3f5">
     <div>
       <q-card color="white" style="bottom: unset;margin-top: 30px;" class="col-lg-10 col-lg-offset-1 col-md-offset-1 col-md-10 col-sm-10 col-sm-offset-1 col-xs-offset-0 col-xs-12  centered relative-position">
-        
+
           <q-card-main>
-        <h1 class="_control-label-title">Collected Data</h1>  
+        <h1 class="_control-label-title">Collected Data</h1>
           <q-transition appear enter="fadeIn" leave="fadeOut">
 
             <data-tables :data="submissions" :search-def="searchDef" :action-col-def="getRowActionsDef()" action-col-label="Actions"
@@ -52,8 +52,8 @@
         </q-inner-loading>
       </q-card>
     </div>
-    <q-fixed-position corner="top-right" :offset="[18, 18]">
-      <q-fab color="red" icon="add" direction="left" push>
+    <q-fixed-position corner="bottom-right" :offset="[18, 18]">
+      <q-fab color="red" icon="add" direction="up" push>
 
         <q-fab-action color="secondary" @click="importSubmission()" icon="fa-upload">
           <q-tooltip>

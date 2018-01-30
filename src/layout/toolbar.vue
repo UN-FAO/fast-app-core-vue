@@ -10,15 +10,10 @@
       {{ appName }}
     </q-toolbar-title>
 	<div class="q-toolbar-fao-logo"><img src="http://www.fao.org/fileadmin/templates/faoweb/images/FAO-logo-3lines-en-w.png"></div>
-    <div v-if="isInsideApp" class="">
-      {{userEmail()}}
-    </div>
+
     <localization/>
     <wifiDisplay/>
 
-    <q-btn flat @click="openRightDrawer()" v-if="isInsideApp" v-bind:class="isInsideApp ? '' : 'color-white' ">
-      <q-icon name="fa-ellipsis-v" style="margin-left: 30px;" />
-    </q-btn>
 
   </q-toolbar>
 

@@ -16,7 +16,6 @@
     <q-card color="white" v-bind:class="getFormClass" style="position:inherit !important;">
       <q-card-main>
 
-        <q-btn flat @click="togglePages" icon="menu" style="color:black;" v-if="_isWizard"></q-btn>
         <!--<q-icon name="thumb_up" />-->
         <q-tabs inverted id="contentForm">
           <!-- Tabs - notice slot="title" -->
@@ -36,14 +35,16 @@
       </q-card-main>
     </q-card>
 
-    <q-fixed-position corner="top-right" :offset="[18, 18]">
-      <q-fab color="red" icon="add" direction="left">
-        <q-fab-action color="secondary" @click="exportPDF" icon="print"></q-fab-action>
+    <q-fixed-position corner="bottom-right" :offset="[18, 18]">
+      <q-fab color="red" icon="add" direction="up">
+
 
         <q-fab-action v-bind:class="!PARRALEL_SURVEYS ? 'hidden' : ''" color="purple-6" @click="groupConfig()" icon="fa-users"></q-fab-action>
         <q-fab-action v-bind:class="!PARRALEL_SURVEYS ? 'hidden' : ''" color="amber" @click="addSurvey()" icon="person_add"></q-fab-action>
 
         <q-fab-action color="primary" @click="saveAsDraft()" icon="fa-floppy-o"></q-fab-action>
+         <q-fab-action color="secondary" @click="openRightDrawer()" icon="assessment"></q-fab-action>
+        <q-fab-action color="secondary" @click="togglePages" icon="menu" v-if="_isWizard"></q-fab-action>
 
       </q-fab>
     </q-fixed-position>
@@ -408,6 +409,9 @@ export default {
       this.displayUp = !(this.currentQuestion <= 0);
       this.displayDown = true;
     },
+    openRightDrawer() {
+      this.$eventHub.$emit("openRightDrawer");
+    },
     draftStatusChanged(e) {
       if (e.detail.data === false) {
         this.saved = false;
@@ -698,7 +702,7 @@ export default {
 </script>
 <style SCOPED>
 @media only screen and (max-width: 760px),
-  (min-device-width: 768px) and (orientation:portrait) {
+  (min-device-width: 768px) and (orientation: portrait) {
   .formio-component-datagrid {
     overflow-x: unset;
     margin-left: -56px;
@@ -727,14 +731,14 @@ export default {
 
   .table-responsive {
     overflow-x: unset;
-    margin-left: -90px;
+    margin-left: -123px !important;
     width: 100vw !important;
     transform: scale(0.92);
   }
   .table-responsive .choices__item.choices__item--selectable {
     display: table;
     font-size: x-small;
-    margin-left:-12px;
+    margin-left: -12px;
   }
 
   .table-responsive
@@ -742,7 +746,7 @@ export default {
     .choices__item.choices__item--selectable {
     display: table;
     font-size: large;
-    margin-left:0px;
+    margin-left: 0px;
   }
 
   .table-responsive input.form-control {
@@ -767,6 +771,8 @@ export default {
 
   .table-responsive label.control-label {
     font-size: smaller !important;
+    margin-left:-17vw;
+    margin-top: 10px;
   }
 
   .table-responsive .form-control {
@@ -780,8 +786,8 @@ export default {
     font-size: 9px;
   }
 
-  .formio-component-fieldset{
-    margin-top: 0px
+  .formio-component-fieldset {
+    margin-top: 0px;
   }
 
   fieldset div.row {
@@ -791,6 +797,5 @@ export default {
   fieldset {
     margin-left: -50px;
   }
-
 }
 </style>

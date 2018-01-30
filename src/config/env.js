@@ -8,8 +8,8 @@
 | understand whats are your users looking at!
 |
 */
-exports.APP_ENV = 'prod'
-exports.FAST_VERSION = '0.5.16'
+exports.APP_ENV = 'dev'
+exports.FAST_VERSION = '0.5.14'
 /*
 |--------------------------------------------------------------------------
 | FORM.IO CONFIGURATION
@@ -125,4 +125,4 @@ exports.PARALLEL_SURVEYS = false
 |
 */
 exports.NAVIGATION_OPENED = true
-exports.NAVIGATION_AUTOCLOSE_ON_SELECTION = true
+exports.NAVIGATION_AUTOCLOSE_ON_SELECTION = false

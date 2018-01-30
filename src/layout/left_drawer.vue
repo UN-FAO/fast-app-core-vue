@@ -86,6 +86,11 @@
       <q-item-main :label="$t('Logout')" />
     </q-item>
 
+      <div class="text-center light text-italic">
+      {{userEmail()}}
+    </div>
+    <p>
+
     <div class="fixed-bottom text-center light text-italic">
       v {{fastVersion}}
     </div>
@@ -182,6 +187,9 @@ export default {
     },
     isAdmin() {
       return Auth.hasRole("Administrator");
+    },
+    userEmail() {
+        return Auth.userEmail()
     }
   }
 };
