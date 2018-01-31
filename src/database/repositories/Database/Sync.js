@@ -12,10 +12,10 @@ let Sync = class {
    */
   static async now(vm) {
     const isOnline = Connection.isOnline()
-    if (Auth.check() && isOnline) {
+    if (isOnline) {
       await this.syncUsers({ isOnline })
     }
-    if (isOnline) {
+    if (isOnline && Auth.check()) {
       await this.syncSubmission(vm)
     }
   }
