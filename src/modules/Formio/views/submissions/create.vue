@@ -176,7 +176,11 @@ export default {
 
     this.$eventHub.$on("formio.error", error => {
       console.log(error);
-      if (error.error.message === "Cannot read property 'notice' of null") {
+      if (
+        error.error.message === "Cannot read property 'notice' of null" ||
+        error.error.message ===
+          "Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node."
+      ) {
       } else {
         this.$swal({
           type: "error",

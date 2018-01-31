@@ -1,87 +1,13 @@
+import Formio from 'formiojs'
+import _forEach from 'lodash/forEach'
 import Form from 'database/models/Form'
+import Auth from 'modules/Auth/api/Auth'
 import Submission from 'database/models/Submission'
 import Translation from 'database/models/Translation'
-import Formio from 'formiojs'
-import router from 'config/router'
-import store from 'config/store'
-import md5 from 'md5'
-import {
-  MD5_KEY
-} from 'config/env'
-import Auth from 'modules/Auth/api/Auth'
-import _debounce from 'lodash/debounce'
-import _forEach from 'lodash/forEach'
-import FORMIOAPI from 'modules/Formio/api/Formio'
 import GetRequest from './repositories/offlinePlugin/GetRequest'
+import PostRequest from './repositories/offlinePlugin/PostRequest'
 
 const OFFLINE_PLUGIN = class {
-  static storeForm(formSubmission, formio, redirect, hashField, formId, eventHub) {
-    if ((typeof hashField !== 'undefined')) {
-      formSubmission.data.hashedPassword = md5(formSubmission.data.password, MD5_KEY)
-      store.dispatch('storeUserLocally', {
-        data: formSubmission.data,
-        sync: false,
-        formio: formio
-      })
-        .then(() => {
-          router.push({
-            path: '/login'
-          })
-        })
-        .catch((error) => {
-          console.log(error)
-        })
-    } else {
-      store.dispatch('addSubmission', {
-        formSubmission: formSubmission,
-        formio: formio,
-        User: Auth.user().data
-      }).then((created) => {
-        if (!created) {
-          return
-        }
-
-        if (created.trigger && created.trigger === 'resourceCreation') {
-          console.log('We got a resource creation')
-          return
-        }
-
-        var draftStatus = new CustomEvent('draftStatus', {
-          'detail': {
-            'data': created,
-            'text': 'Draft Saved'
-          }
-        })
-        document.dispatchEvent(draftStatus)
-        if (formSubmission._id) {
-          if (formSubmission.redirect === true) {
-            router.push({
-              name: 'formio_form_show',
-              params: {
-                idForm: formId
-              }
-            })
-          }
-        } else if (created.data && created.data.trigger && created.data.trigger === "importSubmission") {
-          eventHub.emit("FAST-DATA_IMPORTED");
-          return
-        } else {
-          router.push({
-            name: 'formio_submission_update',
-            params: {
-              idForm: formId,
-              idSubmission: created._id
-            }
-          })
-        }
-        return created
-      })
-        .catch((error) => {
-          console.log(error)
-        })
-    }
-  }
-
   static getPlugin(formioURL, hashField, redirect, eventHub) {
     let formId = formioURL.split("/").pop();
     let plugin = {
@@ -152,34 +78,10 @@ const OFFLINE_PLUGIN = class {
           return result
         }
 
-        // If we are trying to get submissions from that form
-        if ((args.method === 'POST' || args.method === 'PUT') && args.type === 'submission') {
-          let form = await Form.local().get(args.formio.formId)
-
-          let formioPath = 'https://' + form.machineName.split(':')[0] + '.form.io/' + form.path
-
-          let formio = new Formio(formioPath)
-
-          let dStoreForm = _debounce(this.storeForm, 1000)
-
-          let dataToSubmit = args.data
-          if (args.data && !args.data.trigger) {
-            let formSubmission = {
-              data: args.data.data,
-              redirect: false,
-              draft: false,
-              trigger: 'resourceCreation'
-            }
-            dataToSubmit = formSubmission
-          }
-
-          dStoreForm(dataToSubmit, formio, redirect, hashField, formId, eventHub)
-          return args.data
-        }
-
-        // If we are calling internally to formio
-        if (args.url.indexOf('form.io') !== -1 && args.method === 'GET') {
-          return FORMIOAPI.getSubmissionsURL(args.url)
+        // If we are trying to save a submission
+        if ((args.method === 'POST' || args.method === 'PUT')) {
+          let submission = await PostRequest.handle(args, redirect, hashField, formId, eventHub)
+          return submission
         }
       }
     }

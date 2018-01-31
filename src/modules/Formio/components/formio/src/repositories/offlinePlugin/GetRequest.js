@@ -3,6 +3,7 @@ import Auth from 'modules/Auth/api/Auth'
 import Submission from 'database/models/Submission'
 import { SHARE_DATA_BETWEEN_USERS } from 'config/env'
 
+
 const GetRequest = class {
   /**
    *
@@ -11,17 +12,17 @@ const GetRequest = class {
   static async handle(args) {
     // If we are making a request to a external API (NOT FORM.io)
     if (args.url.indexOf('form.io') === -1) {
-      return this.handleExternalAPI(args)
+      return GetRequest.handleExternalAPI(args)
     }
     // If we are trying to get a form we load it locally
     // This action will get triggered when we create a
     // resource from inside of another Form
     if (args.type === 'form') {
-      return this.handleLocalForm(args)
+      return GetRequest.handleLocalForm(args)
     }
     // Calling to an internal Form.io route from Select component
     if (args.type === 'select' && args.url.indexOf('form.io') !== -1) {
-      return this.handleInternalResource(args)
+      return GetRequest.handleInternalResource(args)
     }
   }
   /**
