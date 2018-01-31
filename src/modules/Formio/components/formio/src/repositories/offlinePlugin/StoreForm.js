@@ -5,15 +5,6 @@ import { MD5_KEY } from 'config/env'
 import Auth from 'modules/Auth/api/Auth'
 
 let StoreForm = class {
-  /**
-    *
-    * @param {*} formSubmission
-    * @param {*} formio
-    * @param {*} redirect
-    * @param {*} hashField
-    * @param {*} formId
-    * @param {*} eventHub
-    */
   static handle(formSubmission, formio, redirect, hashField, formId, eventHub) {
     if ((typeof hashField !== 'undefined')) {
          StoreForm.storeUser(formSubmission, formio, redirect, hashField, formId, eventHub)
@@ -25,11 +16,6 @@ let StoreForm = class {
    *
    */
   static storeSubmission(formSubmission, formio, redirect, hashField, formId, eventHub) {
-    console.log('We are going to store a submission', {
-        formSubmission: formSubmission,
-        formio: formio,
-        User: Auth.user().data
-      })
     store.dispatch('addSubmission', {
         formSubmission: formSubmission,
         formio: formio,
@@ -40,9 +26,8 @@ let StoreForm = class {
           return
         }
 
-        if (created.trigger && created.trigger === 'resourceCreation') {
-          console.log('We got a resource creation')
-          return
+        if (formSubmission.trigger && formSubmission.trigger === 'resourceCreation') {
+          console.log('formSubmission', formSubmission)
         }
 
         var draftStatus = new CustomEvent('draftStatus', {

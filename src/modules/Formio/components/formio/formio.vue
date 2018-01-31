@@ -77,9 +77,9 @@ export default {
   },
   methods: {
     /**
-         * [renderForm description]
-         * @return {[type]} [description]
-         */
+     * [renderForm description]
+     * @return {[type]} [description]
+     */
     renderForm() {
       // Offline plugin functionallity
       this.registerOfflinePlugin();
@@ -93,17 +93,17 @@ export default {
       this.mountFormIOForm();
     },
     /**
-         * [loadExternalResources description]
-         * @param  {[type]} Components [description]
-         * @return {[type]}            [description]
-         */
+     * [loadExternalResources description]
+     * @param  {[type]} Components [description]
+     * @return {[type]}            [description]
+     */
     loadExternalResources(Components) {
       // return OFFLINE_PLUGIN.externalResources(Components)
     },
     /**
-         * [setTranslations description]
-         * @param {[type]} Components [description]
-         */
+     * [setTranslations description]
+     * @param {[type]} Components [description]
+     */
     setTranslations(Components) {
       let comps = FormioUtils.findComponents(Components, {
         tag: "p"
@@ -116,9 +116,9 @@ export default {
       return Components;
     },
     /**
-      * [registerOfflinePlugin description]
-      * @return {[type]} [description]
-      */
+     * [registerOfflinePlugin description]
+     * @return {[type]} [description]
+     */
     registerOfflinePlugin() {
       // De register if there was a previous registration
       Formio.deregisterPlugin("offline");
@@ -238,12 +238,12 @@ export default {
       } else {
         this.formIO = new FormioForm(this.$refs.formIO, translations);
       }
-      this.formIO.url = this.formURL
+      this.formIO.url = this.formURL;
     },
     /**
-      * [mountFormIOForm description]
-      * @return {[type]} [description]
-      */
+     * [mountFormIOForm description]
+     * @return {[type]} [description]
+     */
     async mountFormIOForm(savedSubmission) {
       // Optional parameter (If we want to stay on
       // the same page after submission)

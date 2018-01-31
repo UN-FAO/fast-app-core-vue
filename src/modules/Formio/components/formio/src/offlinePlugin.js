@@ -24,12 +24,8 @@ const OFFLINE_PLUGIN = class {
         if (formArray[5] && formArray[5] === 'form') {
           localformId = formArray[6] ? formArray[6] : ''
         }
-
         let form = await Form.local().get(localformId)
-
-        console.log('THe form is ', form)
         // If its a external call outside FORM.io (Local Resources)
-
         if (args.url.indexOf('form.io') === -1 && args.method === 'GET') {
           let a = {
             'count': 811,
@@ -37,26 +33,7 @@ const OFFLINE_PLUGIN = class {
             'results': [{
               'url': 'https://pokeapi.co/api/v2/pokemon/1/',
               'name': 'aaa'
-            }, {
-              'url': 'https://pokeapi.co/api/v2/pokemon/2/',
-              'name': 'ivysaur'
-            }, {
-              'url': 'https://pokeapi.co/api/v2/pokemon/3/',
-              'name': 'venusaur'
-            }, {
-              'url': 'https://pokeapi.co/api/v2/pokemon/4/',
-              'name': 'charmander'
-            }, {
-              'url': 'https://pokeapi.co/api/v2/pokemon/5/',
-              'name': 'charmeleon'
-            }, {
-              'url': 'https://pokeapi.co/api/v2/pokemon/12/',
-              'name': 'butterfree'
-            }, {
-              'url': 'https://pokeapi.co/api/v2/pokemon/20/',
-              'name': 'raticate'
-            }],
-            'next': 'https://pokeapi.co/api/v2/pokemon/?offset=20'
+            }]
           }
           return a
         }
@@ -89,15 +66,15 @@ const OFFLINE_PLUGIN = class {
   }
 
   /**
-   * Transforms the Local RxDB submissions that
+   * Transforms the Local Lockijs submissions that
    * are dinamic, to an static array so we
    * can use it as Json input for the
    * selects
-   * @param {[type]} rxDBData [description]
+   * @param {[type]} lockiJSData [description]
    */
-  static LocalToJson(rxDBData) {
+  static LocalToJson(lockiJSData) {
     let transformedArray = []
-    _forEach(rxDBData, function (element) {
+    _forEach(lockiJSData, function (element) {
       transformedArray.push(element.data)
     })
     return transformedArray
