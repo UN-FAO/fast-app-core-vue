@@ -34,7 +34,7 @@
                 </template>
               </el-table-column>
 
-              <el-table-column :label="$t('Created at')" prop="Humancreated" sortable fixed="left" width="140">
+              <el-table-column :label="$t('Updated at')" prop="HumanUpdated" sortable fixed="left" width="140">
               </el-table-column>
 
               <el-table-column fixed="right" label="Actions" width="120">
@@ -98,10 +98,11 @@ import {
   QTooltip
 } from "quasar";
 import Submission from "database/models/Submission";
-import Form from 'database/models/Form'
+import Form from "database/models/Form";
 import FormioUtils from "formiojs/utils";
 import Formio from "formiojs";
 import { APP_URL } from "config/env";
+import Papa from "papaparse";
 locale.use(lang);
 
 export default {
@@ -201,8 +202,37 @@ export default {
                 if (err) {
                   return console.log(err);
                 }
+                let labelsRow = [];
+                let parserCsv = Papa.parse(csv);
+                let columns = parserCsv.data[0];
+                columns.forEach(c => {
+                  let newLabel = "";
+                  let innerLabels = c.split(".");
+                  innerLabels.forEach((innerLabel, idx) => {
+                    if (isNaN(innerLabel)) {
+                      let correspondingLabel = exported.labels.find(label => {
+                        return label.apiKey === innerLabel;
+                      });
+                      let matchingLabel =
+                        (correspondingLabel && correspondingLabel.label) ||
+                        innerLabel;
+                      newLabel = newLabel + matchingLabel;
+                    } else {
+                      if (idx === innerLabels.length - 1) {
+                        newLabel = newLabel + "." + innerLabel;
+                      } else {
+                        newLabel = newLabel + "." + innerLabel + ".";
+                      }
+                    }
+                  });
+                  labelsRow.push(newLabel);
+                });
+                let newCSV = Papa.unparse(
+                  { fields: labelsRow, data: parserCsv.data },
+                  { header: true, delimiter: ";" }
+                );
                 let name = "backup_" + exported.date + ".csv";
-                this.download(csv, name, "text/csv;encoding:utf-8");
+                this.download(newCSV, name, "text/csv;encoding:utf-8");
               });
             },
             icon: "document",
@@ -231,8 +261,10 @@ export default {
   },
   methods: {
     loadExportData(type) {
+      let self = this;
       let json = [];
       let dataExport;
+      let labels = [];
       dataExport =
         this.selectedRows.length === 0 ? this.submissions : this.selectedRows;
       _forEach(dataExport, function(submission) {
@@ -244,6 +276,17 @@ export default {
           .forEach(function(key) {
             ordered[key] = record[key];
           });
+
+        Object.keys(record).forEach(key => {
+          let component = FormioUtils.getComponent(
+            self.currentForm.data.components,
+            key
+          );
+          let label = component ? component.label : null;
+          if (label) {
+            labels.push({ apiKey: key, label: self.$t(label) });
+          }
+        });
         json.push(flatten(ordered));
       });
 
@@ -267,7 +310,8 @@ export default {
         .replace(/T/g, "_")
         .replace(/:/g, "_")
         .slice(0, 19);
-      return { date: date, data: dataExport };
+
+      return { date: date, data: dataExport, labels: labels };
     },
     handleEdit(data) {
       let self = this;

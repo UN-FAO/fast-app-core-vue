@@ -9,7 +9,7 @@
 |
 */
 exports.APP_ENV = 'dev'
-exports.FAST_VERSION = '0.5.13'
+exports.FAST_VERSION = '0.5.20'
 exports.SHARE_DATA_BETWEEN_USERS = false
 /*
 |--------------------------------------------------------------------------
@@ -21,8 +21,8 @@ exports.SHARE_DATA_BETWEEN_USERS = false
 | forms asociated with it.
 |
 */
-exports.APP_URL = 'https://qumqhkjyyrhislq.form.io'
-exports.APP_NAME = 'qumqhkjyyrhislq'
+exports.APP_URL = 'https://oibowengifayqed.form.io'
+exports.APP_NAME = 'oibowengifayqed'
 /*
 |--------------------------------------------------------------------------
 | APP CONFIGURATION

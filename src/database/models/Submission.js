@@ -171,8 +171,9 @@ const Submission = class {
       let formio = submission.data.formio
       submission = _cloneDeep(submission)
       submission.data.data = {
-        created: submission.data.created,
-        Humancreated: vm.humanizeDate(submission.data.created),
+        created: submission.meta.created,
+        Humancreated: vm.humanizeDate(submission.meta.created),
+        HumanUpdated: vm.humanizeDate(submission.meta.updated),
         id_submision: submission.data._id ? submission.data._id : submission._id,
         local: !submission.data._id,
         status: submission.data.sync === false ? 'offline' : 'online',

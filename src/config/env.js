@@ -8,8 +8,8 @@
 | understand whats are your users looking at!
 |
 */
-exports.APP_ENV = 'dev'
-exports.FAST_VERSION = '0.5.13'
+exports.APP_ENV = 'prod'
+exports.FAST_VERSION = '0.5.20'
 exports.SHARE_DATA_BETWEEN_USERS = false
 /*
 |--------------------------------------------------------------------------
@@ -21,8 +21,8 @@ exports.SHARE_DATA_BETWEEN_USERS = false
 | forms asociated with it.
 |
 */
-exports.APP_URL = 'https://tknrqdvfbuczudk.form.io'
-exports.APP_NAME = 'tknrqdvfbuczudk'
+exports.APP_URL = 'https://oibowengifayqed.form.io'
+exports.APP_NAME = 'oibowengifayqed'
 /*
 |--------------------------------------------------------------------------
 | APP CONFIGURATION
@@ -33,9 +33,9 @@ exports.APP_NAME = 'tknrqdvfbuczudk'
 | in the app.
 |
 */
-exports.APP_FANTACY_NAME = 'PAT'
-exports.APP_PHRASE = 'Plant Breeding Analysis'
-exports.APP_ABOUT_NAME = 'PAT'
+exports.APP_FANTACY_NAME = 'DRIP'
+exports.APP_PHRASE = 'Dryland Restoration Initiative Platform'
+exports.APP_ABOUT_NAME = 'DRIP'
 /*
 |--------------------------------------------------------------------------
 | MD5 KEY

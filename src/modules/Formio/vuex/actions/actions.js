@@ -260,7 +260,6 @@ const actions = {
     let newSubmission = await Submission.local().insert({
       data: submission
     })
-
     switch (formSubmission.trigger) {
       case 'importSubmission':
       case 'createLocalDraft':

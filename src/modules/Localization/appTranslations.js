@@ -1,4 +1,5 @@
 exports.TRANSLATIONS = [
+  'Updated at',
   'Language',
   'Translations',
   'New language created: ',
