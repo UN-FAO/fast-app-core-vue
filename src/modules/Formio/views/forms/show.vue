@@ -520,7 +520,7 @@ export default {
     },
     async importSubmission() {
       const file = await this.$swal({
-        title: this.$t("Select you JSON file"),
+        title: this.$t("Select your JSON file"),
         input: "file",
         inputAttributes: {
           accept: ".json",
