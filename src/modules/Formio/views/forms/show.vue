@@ -16,7 +16,7 @@
               <el-table-column label="status" prop="Status" width="90" sortable fixed="left">
                 <template scope="scope">
                   <el-tag :type="getIconColor(scope.row)" close-transition>
-                    <i class="material-icons">{{scope.row.status === 'offline' ? 'remove_circle_outline' : 'check_circle'}}</i>
+                    <i class="material-icons">{{scope.row.status === 'offline' ? 'description' : 'check_circle'}}</i>
                   </el-tag>
                   <i class="material-icons" style="color: red;font-size: x-large; cursor: pointer;" v-if="scope.row.syncError && scope.row.syncError !=='Unauthorized' " @click="displayError(scope.row.syncError)">block</i>
                   <i class="material-icons" style="color: red;font-size: x-large; cursor: pointer;" v-if="scope.row.syncError && scope.row.syncError ==='Unauthorized' " @click="displayError(scope.row.syncError)">lock</i>
@@ -74,7 +74,7 @@
 
 <script>
 import DataTables from "vue-data-tables";
-import OFFLINE_PLUGIN from "modules/Formio/components/formio/src/offlinePlugin";
+
 import _forEach from "lodash/forEach";
 import _map from "lodash/map";
 import lang from "element-ui/lib/locale/lang/en";
@@ -100,9 +100,9 @@ import {
 import Submission from "database/models/Submission";
 import Form from "database/models/Form";
 import FormioUtils from "formiojs/utils";
-import Formio from "formiojs";
-import { APP_URL } from "config/env";
+
 import Papa from "papaparse";
+import ImportSubmission from 'database/repositories/Submission/ImportSubmission'
 locale.use(lang);
 
 export default {
@@ -460,12 +460,12 @@ export default {
       }
     },
     getIconColor: function(row) {
-      if (row.draft) {
-        return "primary";
+      if (row.draft && row.draft === true) {
+        return "grey";
       } else if (row.status === "offline") {
-        return "danger";
+        return "offline";
       } else {
-        return "success";
+        return "green";
       }
     },
     humanizeDate(givenDate) {
@@ -527,49 +527,8 @@ export default {
           "aria-label": this.$t("Upload your JSON File")
         }
       });
-
       if (file) {
-        var reader = new FileReader();
-        let self = this;
-        // Closure to capture the file information.
-        reader.onload = (function(theFile) {
-          return function(e) {
-            let json;
-            try {
-              json = JSON.parse(e.target.result);
-            } catch (ex) {
-              throw new Error("The Json file could not be parsed");
-            }
-            json.forEach(row => {
-              if (row.id || row._id) {
-                delete row.id;
-                delete row._id;
-              }
-              let formSubmission = {
-                data: row,
-                redirect: false,
-                syncError: false,
-                draft: true,
-                trigger: "importSubmission"
-              };
-              let formUrl = APP_URL + "/" + self.currentForm.data.path;
-              Formio.deregisterPlugin("offline");
-              Formio.registerPlugin(
-                OFFLINE_PLUGIN.getPlugin(
-                  self.currentForm.data.path,
-                  undefined,
-                  false,
-                  self.$eventHub
-                ),
-                "offline"
-              );
-              let formio = new Formio(formUrl);
-              formio.saveSubmission(formSubmission);
-            });
-          };
-        })(file);
-
-        reader.readAsText(file);
+        ImportSubmission.fromJsonFile(file, this)
       }
     },
     async updateLocalSubmissions() {
