@@ -2,8 +2,14 @@ import Formio from "formiojs";
 import { APP_URL } from "config/env";
 import OFFLINE_PLUGIN from "modules/Formio/components/formio/src/offlinePlugin";
 import Promise from 'bluebird'
+import { Loading } from 'quasar'
 
 let ImportSubmission = class {
+  /**
+   *
+   * @param {*} file
+   * @param {*} vm
+   */
   static fromJsonFile(file, vm) {
     var reader = new FileReader();
     // Closure to capture the file information.
@@ -15,15 +21,26 @@ let ImportSubmission = class {
         } catch (ex) {
           throw new Error("The Json file could not be parsed");
         }
-        Promise.each(json, async function (row) {
-          let submission = ImportSubmission.prepareSubmission(row)
-          await ImportSubmission.saveSubmission(submission, vm)
-        }).then(() => {
-            console.log('Import Finished')
-        })
+        ImportSubmission.parseJson(json, vm)
       };
     })(file);
     reader.readAsText(file);
+  }
+  /**
+   *
+   * @param {*} json
+   * @param {*} vm
+   */
+  static async parseJson(json, vm) {
+    let totalSubmissions = json.length
+    Loading.show({ message: 'Importing ' + totalSubmissions + ' submissions' })
+    Promise.each(json, async function (row, index) {
+      Loading.show({ message: 'Importing submission ' + (index + 1) + ' out of ' + totalSubmissions })
+      let submission = ImportSubmission.prepareSubmission(row)
+      await ImportSubmission.saveSubmission(submission, vm)
+    }).then(() => {
+      Loading.hide()
+    })
   }
   /**
    *
@@ -71,7 +88,6 @@ let ImportSubmission = class {
     formio.saveSubmission(submission, vm);
     return new Promise((resolve, reject) => {
       vm.$eventHub.on("FAST-DATA_IMPORTED", () => {
-        console.log('Submission Saved')
         resolve()
       })
     })
