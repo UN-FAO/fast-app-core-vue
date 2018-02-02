@@ -76,7 +76,7 @@
 import DataTables from "vue-data-tables";
 
 import _forEach from "lodash/forEach";
-import _map from "lodash/map";
+// import _map from "lodash/map";
 import lang from "element-ui/lib/locale/lang/en";
 import locale from "element-ui/lib/locale";
 import moment from "moment";
@@ -102,7 +102,8 @@ import Form from "database/models/Form";
 import FormioUtils from "formiojs/utils";
 
 import Papa from "papaparse";
-import ImportSubmission from 'database/repositories/Submission/ImportSubmission'
+import Import from "database/repositories/Submission/Import";
+import _flattenDeep from "lodash/flattenDeep";
 locale.use(lang);
 
 export default {
@@ -180,8 +181,14 @@ export default {
           {
             name: "JSON",
             handler: () => {
+              var t0 = performance.now();
               let exported = this.loadExportData("json");
+              var t1 = performance.now();
+              console.log(
+                "Call to doSomething took " + (t1 - t0) / 1000 + " seconds."
+              );
               let name = "backup_" + exported.date + ".json";
+              console.log(exported.data);
               this.download(
                 JSON.stringify(exported.data),
                 name,
@@ -265,44 +272,30 @@ export default {
       let json = [];
       let dataExport;
       let labels = [];
+      let allKeys = [];
       dataExport =
         this.selectedRows.length === 0 ? this.submissions : this.selectedRows;
       _forEach(dataExport, function(submission) {
         let record = submission.fullSubmission;
         record.id = submission.id_submision;
-        const ordered = {};
-        Object.keys(record)
-          .sort()
-          .forEach(function(key) {
-            ordered[key] = record[key];
-          });
-
-        Object.keys(record).forEach(key => {
-          let component = FormioUtils.getComponent(
-            self.currentForm.data.components,
-            key
-          );
-          let label = component ? component.label : null;
-          if (label) {
-            labels.push({ apiKey: key, label: self.$t(label) });
-          }
-        });
-        json.push(flatten(ordered));
+        json.push(flatten(record));
+        allKeys.push(Object.keys(record));
       });
 
-      let orderedJsonOut = _map(
-        _map(dataExport, "fullSubmission"),
-        submission => {
-          const ordered = {};
-          Object.keys(submission)
-            .sort()
-            .forEach(function(key) {
-              ordered[key] = submission[key];
-            });
-          return ordered;
+      allKeys = Array.from(new Set(_flattenDeep(allKeys)));
+
+      allKeys.forEach(key => {
+        let component = FormioUtils.getComponent(
+          self.currentForm.data.components,
+          key
+        );
+        let label = component ? component.label : null;
+        if (label) {
+          labels.push({ apiKey: key, label: self.$t(label) });
         }
-      );
-      dataExport = type && type === "csv" ? json : orderedJsonOut;
+      });
+
+      dataExport = type && type === "csv" ? json : dataExport;
 
       let date = new Date()
         .toJSON()
@@ -381,6 +374,7 @@ export default {
       mimeType = mimeType || "application/octet-stream";
       var self = this;
       let successDownload = function() {
+        // Loading.hide();
         self.$swal("Exported!", "The file has been exported.", "success");
       };
 
@@ -449,6 +443,7 @@ export default {
             type: mimeType
           });
           fileWriter.write(blob);
+          // Loading.hide();
           self.$swal(
             "Exported!",
             "The file has been exported to: " +
@@ -528,7 +523,7 @@ export default {
         }
       });
       if (file) {
-        ImportSubmission.fromJsonFile(file, this)
+        Import.fromJsonFile(file, this);
       }
     },
     async updateLocalSubmissions() {

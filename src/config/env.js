@@ -9,7 +9,7 @@
 |
 */
 exports.APP_ENV = 'prod'
-exports.FAST_VERSION = '0.5.20'
+exports.FAST_VERSION = '0.5.22'
 exports.SHARE_DATA_BETWEEN_USERS = false
 /*
 |--------------------------------------------------------------------------

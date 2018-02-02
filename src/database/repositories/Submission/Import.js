@@ -4,7 +4,7 @@ import OFFLINE_PLUGIN from "modules/Formio/components/formio/src/offlinePlugin";
 import Promise from 'bluebird'
 import { Loading } from 'quasar'
 
-let ImportSubmission = class {
+let Import = class {
   /**
    *
    * @param {*} file
@@ -21,7 +21,7 @@ let ImportSubmission = class {
         } catch (ex) {
           throw new Error("The Json file could not be parsed");
         }
-        ImportSubmission.parseJson(json, vm)
+        Import.parseJson(json, vm)
       };
     })(file);
     reader.readAsText(file);
@@ -36,8 +36,8 @@ let ImportSubmission = class {
     Loading.show({ message: 'Importing ' + totalSubmissions + ' submissions' })
     Promise.each(json, async function (row, index) {
       Loading.show({ message: 'Importing submission ' + (index + 1) + ' out of ' + totalSubmissions })
-      let submission = ImportSubmission.prepareSubmission(row)
-      await ImportSubmission.saveSubmission(submission, vm)
+      let submission = Import.prepareSubmission(row)
+      await Import.saveSubmission(submission, vm)
     }).then(() => {
       Loading.hide()
     })
@@ -84,7 +84,7 @@ let ImportSubmission = class {
    * @param {*} vm
    */
   static async saveSubmission(submission, vm) {
-    let formio = ImportSubmission.getFormIOInstance(vm)
+    let formio = Import.getFormIOInstance(vm)
     formio.saveSubmission(submission, vm);
     return new Promise((resolve, reject) => {
       vm.$eventHub.on("FAST-DATA_IMPORTED", () => {
@@ -94,4 +94,4 @@ let ImportSubmission = class {
   }
 }
 
-export default ImportSubmission
+export default Import

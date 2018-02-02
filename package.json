@@ -1,6 +1,6 @@
 {
   "name": "fast",
-  "version": "0.5.18",
+  "version": "0.5.22",
   "deployAppName": "DRIP",
   "deployAppID": "5a5f69664fa5170001ce5a65",
   "description": "A data collection application for FORM.io",
