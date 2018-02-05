@@ -155,9 +155,22 @@ const Submission = class {
     return unsynced
   }
 
-  static async sFind(vm, filter) {
-    let localSubmissions = await Submission.find(filter)
-    let submissions = _cloneDeep(localSubmissions)
+  static async sFind(vm, filter, pagination) {
+    let page = (pagination && pagination.page) || 1
+    let limit = (pagination && pagination.limit) || 400
+    let paginationInfo = {}
+    let local = await Submission.find(filter)
+
+    if (limit > 0) {
+      let totalRecords = local.length
+      let pages = Math.ceil(totalRecords / limit)
+      let firstRecord = (limit * page) - (limit - 1)
+      let lastRecord = (limit * page)
+      paginationInfo = { total: totalRecords, pages: pages, currentPage: page, limit: limit }
+      local = local.slice(firstRecord - 1, lastRecord);
+    }
+
+    let submissions = _cloneDeep(local)
 
     submissions = _filter(submissions, function (o) {
       return (
@@ -191,7 +204,9 @@ const Submission = class {
     ], [
         'desc'
       ])
-    return submissions
+
+    let paginated = { results: submissions, pagination: paginationInfo }
+    return paginated
   }
 
   static async getParallelParticipants(idForm, idSubmission) {

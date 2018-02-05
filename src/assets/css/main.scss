@@ -838,9 +838,10 @@ th, th.field-required {
 .q-card-container {padding: 50px; padding-top: 65px;}
 /*.q-card-main {text-align: left;}
 .q-card-main {text-align: center;} */
-.q-card-main .q-icon {color: #136b95; font-size: 6em;}
-
-
+.q-card-main.mainActions .q-icon {
+  color: #136b95;
+  font-size:7em;
+}
 
 .form-group .q-field-content,
 .formio-component-email,
@@ -869,14 +870,24 @@ th, th.field-required {
 .el-table th>.cell {height: 30px; }
 
 .el-table .el-tag {background-color: transparent !important; border: none;}
-.el-table .el-tag.el-tag--grey i {font-size: 2.2em; color: grey;}
-.el-table .el-tag.el-tag--green i {font-size: 2.2em; color: #2cb924;}
-.el-table .el-tag.el-tag--offline i {font-size: 2.2em; color: #2460b9;}
+i.material-icons.tag--green {
+    color: #2cb924;
+    font-size: 2.23em;
+}
+i.material-icons.tag--grey {
+    color: rgb(190, 189, 189);
+    font-size: 2.23em;
+}
 
+i.material-icons.tag--offline {
+    color: #2460b9;
+    font-size: 2.23em;
+}
 .q-loading {
     background: rgba(0,0,0,0.4);
     z-index: 9999;
 }
 
 @import 'custom/custom.scss';
+@import 'qDataTable.scss';
 @import 'errorResponsiveTable.scss';

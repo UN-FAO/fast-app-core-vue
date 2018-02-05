@@ -4,47 +4,49 @@
       <q-card color="white" style="bottom: unset;margin-top: 30px;" class="col-lg-10 col-lg-offset-1 col-md-offset-1 col-md-10 col-sm-10 col-sm-offset-1 col-xs-offset-0 col-xs-12  centered relative-position">
 
           <q-card-main>
-        <h1 class="_control-label-title">Collected Data</h1>
+        <h1 class="_control-label-title">{{formTitle}}</h1>
+
           <q-transition appear enter="fadeIn" leave="fadeOut">
+             <q-data-table
+              :data="submissions"
+              :config="config"
+              :columns="columns"
+              @refresh="updateLocalSubmissions"
+              @selection="handleSelectionChange"
+            >
+             <template slot="col-status" scope="scope">
+                <div v-if="scope.row.status === 'offline' && scope.row.draft">
+                  <i class="material-icons tag--grey">description</i>
+                  <q-tooltip>{{$t('Draft')}}</q-tooltip>
+                </div>
+                <div v-else-if="scope.row.status === 'offline'">
+                  <i class="material-icons tag--offline">description</i>
+                  <q-tooltip>{{$t('Offline submission')}}</q-tooltip>
+                </div>
+                <div v-else>
+                  <i class="material-icons tag--green">check_circle</i>
+                  <q-tooltip>{{$t('Online submission')}}</q-tooltip>
+                </div>
+                 <i class="material-icons" style="color: red;font-size: x-large; cursor: pointer;" v-if="scope.row.syncError && scope.row.syncError !=='Unauthorized' " @click="displayError(scope.row.syncError)">block</i>
+                  <i class="material-icons" style="color: red;font-size: x-large; cursor: pointer;" v-if="scope.row.syncError && scope.row.syncError ==='Unauthorized' " @click="displayError(scope.row.syncError)">block</i>
+            </template>
 
-            <data-tables :data="submissions" :search-def="searchDef" :action-col-def="getRowActionsDef()" action-col-label="Actions"
-              :actions-def="actionsDef" max-height="250" height="250" v-if="typeof submissions !== 'undefined'" @selection-change="handleSelectionChange">
+              <template slot='col-action' scope='scope'>
+                <q-btn color="primary" round small  @click='handleEdit(scope)'> <i class="material-icons edit" >edit</i>
+                  <q-tooltip>{{$t('Edit')}}</q-tooltip>
+                </q-btn>
 
-              <el-table-column type="selection" width="55" fixed="left">
-              </el-table-column>
+              </template>
 
-              <el-table-column label="status" prop="Status" width="90" sortable fixed="left">
-                <template scope="scope">
-                  <el-tag :type="getIconColor(scope.row)" close-transition>
-                    <i class="material-icons">{{scope.row.status === 'offline' ? 'description' : 'check_circle'}}</i>
-                  </el-tag>
-                  <i class="material-icons" style="color: red;font-size: x-large; cursor: pointer;" v-if="scope.row.syncError && scope.row.syncError !=='Unauthorized' " @click="displayError(scope.row.syncError)">block</i>
-                  <i class="material-icons" style="color: red;font-size: x-large; cursor: pointer;" v-if="scope.row.syncError && scope.row.syncError ==='Unauthorized' " @click="displayError(scope.row.syncError)">lock</i>
-                </template>
-              </el-table-column>
 
-              <!--
-              <el-table-column label="ID" prop="id_submision" sortable min-width="230">
-              </el-table-column>
-              -->
+              <template slot="selection" slot-scope="props">
+              <q-btn flat color="primary" @click="handleDelete(props)">
+                <q-icon name="delete" />
+              </q-btn>
+            </template>
+            </q-data-table>
 
-              <el-table-column :label="$t(column.label)" sortable v-for="column in visibleColumns" :key="column.key" min-width="180">
-                <template scope="scope">
-                  {{typeof scope.row.fullSubmission[column.key] === 'object' ? '' : scope.row.fullSubmission[column.key] }}
-                </template>
-              </el-table-column>
 
-              <el-table-column :label="$t('Updated at')" prop="HumanUpdated" sortable fixed="left" width="140">
-              </el-table-column>
-
-              <el-table-column fixed="right" label="Actions" width="120">
-                <template scope="scope">
-                  <!--<el-button @click="handleEdit(scope)" type="text">{{$t('Edit')}}</el-button>-->
-                    <el-button @click="handleEdit(scope)" type="text"><i class="material-icons edit">edit</i></el-button>
-                </template>
-              </el-table-column>
-
-            </data-tables>
           </q-transition>
         </q-card-main>
         <q-inner-loading :visible="typeof submissions === 'undefined'">
@@ -52,18 +54,22 @@
         </q-inner-loading>
       </q-card>
     </div>
-    <q-fixed-position corner="bottom-right" :offset="[18, 18]">
-      <q-fab color="red" icon="add" direction="up" push>
+    <q-fixed-position corner="top-right" :offset="[18, 18]">
+      <q-fab color="red" icon="add" direction="down" push>
+        <q-btn  color="primary" round @click='createSubmission()'> <i class="material-icons edit" style="font-size: 1.7em;" >add</i>
+                  <q-tooltip>{{$t('New Submission')}}</q-tooltip>
+        </q-btn>
+
+        <q-btn  color="positive" round small  @click='exportCSV()'>  <i class="material-icons edit" style="font-size: 1.3em;" >file_download</i><span style="font-size: 0.6em;">CSV</span>
+                  <q-tooltip>{{$t('Export CSV')}}</q-tooltip>
+                </q-btn>
+                <q-btn  color="positive" round small @click='exportJson()'> <i class="material-icons edit" style="font-size: 1.3em;" >file_download</i><span style="font-size: 0.6em;">JSON</span>
+                  <q-tooltip>{{$t('Export Json')}}</q-tooltip>
+                </q-btn>
 
         <q-fab-action color="secondary" @click="importSubmission()" icon="fa-upload">
           <q-tooltip>
              {{$t('Import Submissions')}}
-          </q-tooltip>
-        </q-fab-action>
-
-            <q-fab-action color="primary" @click="createSubmission()" icon="add">
-          <q-tooltip>
-             {{$t('New Submission')}}
           </q-tooltip>
         </q-fab-action>
 
@@ -73,21 +79,21 @@
 </template>
 
 <script>
-import DataTables from "vue-data-tables";
-
-import _forEach from "lodash/forEach";
-// import _map from "lodash/map";
-import lang from "element-ui/lib/locale/lang/en";
-import locale from "element-ui/lib/locale";
-import moment from "moment";
-import jsonexport from "jsonexport";
-import flatten from "flat";
 import {
+  QDataTable,
+  QField,
+  QInput,
+  QCheckbox,
+  QSelect,
+  QSlider,
+  QIcon,
+  QCollapsible,
   QCard,
   QCardTitle,
   QCardSeparator,
   QCardMain,
   QFab,
+  QBtn,
   QFabAction,
   QFixedPosition,
   QPullToRefresh,
@@ -97,24 +103,22 @@ import {
   QInnerLoading,
   QTooltip
 } from "quasar";
+import _forEach from "lodash/forEach";
+import _map from "lodash/map";
+import moment from "moment";
+import jsonexport from "jsonexport";
+import flatten from "flat";
 import Submission from "database/models/Submission";
 import Form from "database/models/Form";
 import FormioUtils from "formiojs/utils";
-
+import Promise from "bluebird";
 import Papa from "papaparse";
 import Import from "database/repositories/Submission/Import";
 import _flattenDeep from "lodash/flattenDeep";
-locale.use(lang);
 
 export default {
   async mounted() {
-    if (this.$route.params.idForm === "*") {
-      this.submissions = await Submission.local().sFind(this, {});
-    } else {
-      this.submissions = await Submission.local().sFind(this, {
-        "data.formio.formId": this.$route.params.idForm
-      });
-    }
+    this.updateLocalSubmissions();
 
     this.currentForm = await Form.local().findOne({
       "data.path": this.$route.params.idForm
@@ -127,16 +131,6 @@ export default {
     this.$eventHub.on("FAST-DATA_IMPORTED", async data => {
       await this.updateLocalSubmissions();
     });
-
-    this.visibleColumns = FormioUtils.findComponents(
-      this.currentForm.data.components,
-      {
-        input: true,
-        tableView: true
-      }
-    );
-
-    this.visibleColumns = this.visibleColumns.slice(0, 20);
   },
   computed: {
     formTitle() {
@@ -145,12 +139,85 @@ export default {
         title = this.currentForm.data ? this.currentForm.data.title : "";
       }
       return title;
+    },
+    columns() {
+      this.visibleColumns = FormioUtils.findComponents(
+        this.currentForm.data.components,
+        {
+          input: true,
+          tableView: true
+        }
+      );
+      this.visibleColumns = this.visibleColumns.slice(0, 20);
+      let columns = [];
+      columns.push(
+        {
+          label: "Status",
+          field: "status",
+          filter: true,
+          sort: true,
+          width: "90px"
+        },
+        {
+          label: "Updated at",
+          field: "HumanUpdated",
+          filter: true,
+          sort: true,
+          width: "200px"
+        }
+      );
+      this.visibleColumns = this.visibleColumns.filter(c => {
+        return !!(c.label !== "");
+      });
+      this.visibleColumns.forEach((column, index) => {
+        let visibleColum = {
+          label: this.$t(column.label),
+          field: column.key,
+          filter: true,
+          sort: true,
+          width: "250px",
+          format(value, row) {
+            return typeof row.fullSubmission[column.key] === "object"
+              ? ""
+              : row.fullSubmission[column.key];
+          }
+        };
+        let isEven =
+          Number(index) === 0 || !!(Number(index) && !(Number(index) % 2));
+        visibleColum.classes = isEven ? "bg-grey-4" : "";
+        columns.push(visibleColum);
+      });
+
+      columns.push(
+        {
+          label: this.$t("Created at"),
+          field: "HumanUpdated",
+          filter: true
+        },
+        {
+          label: this.$t("Action"),
+          field: "action",
+          filter: false,
+          width: "90px"
+        }
+      );
+      return columns;
     }
   },
   components: {
+    QDataTable,
+    QField,
+    QInput,
+    QCheckbox,
+    QSelect,
+    QSlider,
+    QBtn,
+    QIcon,
+    QTooltip,
+    QCollapsible,
     QInnerLoading,
     QTransition,
-    DataTables,
+    // DataTables,
     QCard,
     QCardTitle,
     QCardSeparator,
@@ -159,120 +226,92 @@ export default {
     QFabAction,
     QFixedPosition,
     QPullToRefresh,
-    QSpinnerAudio,
-    QTooltip
+    QSpinnerAudio
   },
   data() {
     return {
+      config: {
+        refresh: true,
+        noHeader: false,
+        columnPicker: true,
+        leftStickyColumns: 1,
+        rightStickyColumns: 1,
+        rowHeight: "70px",
+        responsive: true,
+        pagination: {
+          rowsPerPage: 15,
+          options: [5, 10, 15, 30, 50, 500]
+        },
+        selection: "multiple"
+      },
+      pagination: true,
+      rowHeight: 50,
+      bodyHeightProp: "maxHeight",
+      bodyHeight: 500,
       selectedRows: [],
       currentForm: {},
       submissions: undefined,
-      visibleColumns: [],
-      searchDef: {
-        colProps: {
-          span: 9
-        }
-      },
-      actionsDef: {
-        colProps: {
-          span: 14
-        },
-        def: [
-          {
-            name: "JSON",
-            handler: () => {
-              var t0 = performance.now();
-              let exported = this.loadExportData("json");
-              var t1 = performance.now();
-              console.log(
-                "Call to doSomething took " + (t1 - t0) / 1000 + " seconds."
-              );
-              let name = "backup_" + exported.date + ".json";
-              console.log(exported.data);
-              this.download(
-                JSON.stringify(exported.data),
-                name,
-                "text/json;encoding:utf-8"
-              );
-            },
-            icon: "document",
-            buttonProps: {
-              type: "text",
-              size: "large"
-            }
-          },
-          {
-            name: "CSV",
-            handler: (selection, something) => {
-              let exported = this.loadExportData("csv");
-              jsonexport(exported.data, (err, csv) => {
-                if (err) {
-                  return console.log(err);
-                }
-                let labelsRow = [];
-                let parserCsv = Papa.parse(csv);
-                let columns = parserCsv.data[0];
-                columns.forEach(c => {
-                  let newLabel = "";
-                  let innerLabels = c.split(".");
-                  innerLabels.forEach((innerLabel, idx) => {
-                    if (isNaN(innerLabel)) {
-                      let correspondingLabel = exported.labels.find(label => {
-                        return label.apiKey === innerLabel;
-                      });
-                      let matchingLabel =
-                        (correspondingLabel && correspondingLabel.label) ||
-                        innerLabel;
-                      newLabel = newLabel + matchingLabel;
-                    } else {
-                      if (idx === innerLabels.length - 1) {
-                        newLabel = newLabel + "." + innerLabel;
-                      } else {
-                        newLabel = newLabel + "." + innerLabel + ".";
-                      }
-                    }
-                  });
-                  labelsRow.push(newLabel);
-                });
-                let newCSV = Papa.unparse(
-                  { fields: labelsRow, data: parserCsv.data },
-                  { header: true, delimiter: ";" }
-                );
-                let name = "backup_" + exported.date + ".csv";
-                this.download(newCSV, name, "text/csv;encoding:utf-8");
-              });
-            },
-            icon: "document",
-            buttonProps: {
-              type: "text",
-              size: "large"
-            }
-          },
-          {
-            name: this.$t("DELETE"),
-            handler: () => {
-              this.handleDelete(this.selectedRows);
-            },
-            icon: "delete",
-            buttonProps: {
-              type: "text",
-              size: "large"
-            }
-          }
-        ]
-      }
+      visibleColumns: []
     };
   },
   beforeDestroy() {
     this.$eventHub.off("FAST-DATA_SYNCED");
   },
   methods: {
+    exportCSV() {
+      let exported = this.loadExportData("csv");
+      jsonexport(exported.data, (err, csv) => {
+        if (err) {
+          return console.log(err);
+        }
+        let labelsRow = [];
+        let parserCsv = Papa.parse(csv);
+        let columns = parserCsv.data[0];
+        columns.forEach(c => {
+          let newLabel = "";
+          let innerLabels = c.split(".");
+          innerLabels.forEach((innerLabel, idx) => {
+            if (isNaN(innerLabel)) {
+              let correspondingLabel = exported.labels.find(label => {
+                return label.apiKey === innerLabel;
+              });
+              let matchingLabel =
+                (correspondingLabel && correspondingLabel.label) || innerLabel;
+              newLabel = newLabel + matchingLabel;
+            } else {
+              if (idx === innerLabels.length - 1) {
+                newLabel = newLabel + "." + innerLabel;
+              } else {
+                newLabel = newLabel + "." + innerLabel + ".";
+              }
+            }
+          });
+          labelsRow.push(newLabel);
+        });
+        let newCSV = Papa.unparse(
+          { fields: labelsRow, data: parserCsv.data },
+          { header: true, delimiter: ";" }
+        );
+        let name = "backup_" + exported.date + ".csv";
+        this.download(newCSV, name, "text/csv;encoding:utf-8");
+      });
+    },
+    exportJson() {
+      let exported = this.loadExportData("json");
+      let name = "backup_" + exported.date + ".json";
+      this.download(
+        JSON.stringify(exported.data),
+        name,
+        "text/json;encoding:utf-8"
+      );
+    },
     loadExportData(type) {
       let self = this;
       let json = [];
       let dataExport;
       let labels = [];
       let allKeys = [];
+
       dataExport =
         this.selectedRows.length === 0 ? this.submissions : this.selectedRows;
       _forEach(dataExport, function(submission) {
@@ -289,13 +328,16 @@ export default {
           self.currentForm.data.components,
           key
         );
+
         let label = component ? component.label : null;
         if (label) {
           labels.push({ apiKey: key, label: self.$t(label) });
         }
       });
 
-      dataExport = type && type === "csv" ? json : dataExport;
+      let orderedJsonOut = _map(dataExport, "fullSubmission");
+
+      dataExport = type && type === "csv" ? json : orderedJsonOut;
 
       let date = new Date()
         .toJSON()
@@ -317,7 +359,8 @@ export default {
         }
       });
     },
-    handleDelete(rows) {
+    handleDelete(props) {
+      let rows = this.selectedRows;
       let self = this;
       if (rows.length === 0) {
         self.$swal({
@@ -338,7 +381,7 @@ export default {
           confirmButtonText: "Yes, delete it!"
         })
         .then(async () => {
-          _forEach(rows, async submission => {
+          Promise.each(rows, async submission => {
             let online = await Submission.local().findOne({
               "data._id": submission.id_submision
             });
@@ -352,14 +395,14 @@ export default {
               deleteSubmission = online;
             }
             await Submission.local().remove(deleteSubmission);
+          }).then(async () => {
             await this.updateLocalSubmissions();
+            self.$swal(
+              "Deleted!",
+              "Your submission has been deleted.",
+              "success"
+            );
           });
-
-          self.$swal(
-            "Deleted!",
-            "Your submission has been deleted.",
-            "success"
-          );
         });
     },
     download: function(content, fileName, mimeType) {
@@ -484,8 +527,10 @@ export default {
         }
       });
     },
-    handleSelectionChange(rows) {
-      this.selectedRows = rows;
+    handleSelectionChange(number, rows) {
+      this.selectedRows = rows.map(r => {
+        return r.data;
+      });
     },
     getRowActionsDef() {
       let self = this;
@@ -526,13 +571,19 @@ export default {
         Import.fromJsonFile(file, this);
       }
     },
-    async updateLocalSubmissions() {
+    async updateLocalSubmissions(done) {
       if (this.$route.params.idForm === "*") {
-        this.submissions = await Submission.local().sFind(this, {});
+        let submissions = await Submission.local().sFind(this, {});
+        this.submissions = submissions.results;
       } else {
-        this.submissions = await Submission.local().sFind(this, {
+        let submissions = await Submission.local().sFind(this, {
           "data.formio.formId": this.$route.params.idForm
         });
+        console.log("submissions", submissions);
+        this.submissions = submissions.results;
+      }
+      if (done) {
+        done();
       }
     },
     async pullSubmissions() {

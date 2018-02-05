@@ -5,7 +5,7 @@
       <q-card class="col-sm-offset-2 col-md-4 col-md-offset-2 col-lg-4 col-lg-offset-3 col-xl-3" style="margin-top: 30px;">
 
 
-        <q-card-main @click="$router.push({name: 'newSurvey'})" style="cursor: pointer; text-align: center;">
+        <q-card-main @click="$router.push({name: 'newSurvey'})" style="cursor: pointer; text-align: center;" class="mainActions">
           <!--<q-icon name="fa-plus-square-o fa-5x" />-->
           <q-icon class="material-icons">playlist_add</q-icon>
           <h1>{{$t("Start survey") }}</h1>
@@ -34,7 +34,7 @@
 
       <q-card class="col-md-4 col-lg-4 col-xl-3" style="margin-top: 30px; margin-left: 30px;">
 
-        <q-card-main @click="$router.push({name: 'CollectedData'})" style="cursor: pointer; text-align: center;">
+        <q-card-main @click="$router.push({name: 'CollectedData'})" style="cursor: pointer; text-align: center;" class="mainActions">
           <!--<q-icon name="fa-database fa-5x" />-->
           <q-icon class="material-icons">storage</q-icon>
           <h1> {{ $t("Collected Data") }}
@@ -73,7 +73,7 @@
 
     <div class="row">
       <q-card class="col-sm-offset-2 col-md-4 col-md-offset-2 col-lg-4 col-lg-offset-3 col-xl-3" style="margin-top: 30px;">
-        <q-card-main @click="$router.push({name: 'About'})" style="cursor: pointer; text-align: center;">
+        <q-card-main @click="$router.push({name: 'About'})" style="cursor: pointer; text-align: center;" class="mainActions">
           <!--<q-icon name="fa-tablet fa-5x" />-->
           <q-icon class="material-icons">tablet_mac</q-icon>
           <h1> {{ $t("About") }}
@@ -83,7 +83,7 @@
       </q-card>
 
       <q-card v-if="isAdmin()" class="col-md-4 col-lg-4 col-xl-3" style="margin-top: 30px; margin-left: 30px;">
-          <q-card-main @click="$router.push({name: 'settings'})" style="cursor: pointer; text-align: center;">
+          <q-card-main @click="$router.push({name: 'settings'})" style="cursor: pointer; text-align: center;" class="mainActions">
           <!--<q-icon name="fa-cog fa-5x" />-->
           <q-icon class="material-icons">settings</q-icon>
           <h1>{{ $t("Application Settings") }}</h1>
