@@ -1,4 +1,7 @@
 exports.TRANSLATIONS = [
+  'Upload your JSON File',
+  'Select your JSON file',
+  'Updated at',
   'Language',
   'Translations',
   'New language created: ',

@@ -14,11 +14,11 @@
             <div class="wrap">
                 <p class="form-title">
                     {{appName}}
-                  <div class="form-subtitle"> {{appPhrase}}</div>
+                 <div class="form-subtitle"> {{appPhrase}}</div>
                 </p>
 
 
-                <div class="form-login" >
+                <div class="form-login" id="registerForm" >
                   <br>
                         <formio
                           :formURL="formURL"

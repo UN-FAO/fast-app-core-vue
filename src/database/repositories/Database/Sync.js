@@ -12,10 +12,10 @@ let Sync = class {
    */
   static async now(vm) {
     const isOnline = Connection.isOnline()
-    if (Auth.check() && isOnline) {
+    if (isOnline) {
       await this.syncUsers({ isOnline })
     }
-    if (isOnline) {
+    if (isOnline && Auth.check()) {
       await this.syncSubmission(vm)
     }
   }
@@ -30,7 +30,6 @@ let Sync = class {
     if (!usersAreSync) { return }
 
     let unsyncSubmissions = await Submission.getUnsync()
-    console.log('unsyncSubmissions', unsyncSubmissions)
     if (unsyncSubmissions.length > 0) {
       store.dispatch('sendOfflineData', {
         offlineSubmissions: unsyncSubmissions,

@@ -603,7 +603,7 @@ body {
 
 p.form-title {
   font-family: 'Open Sans', sans-serif;
-  font-size: 6em;
+  font-size: 4em;
   text-align: center;
   color: #FFFFFF;
   margin-top: 5%;
@@ -612,7 +612,7 @@ p.form-title {
 }
 
 .form-subtitle {
-  font-size: 1.9em;
+  font-size: 1.5em;
   font-weight: 400;
   text-align: center;
   color: #FFFFFF;
@@ -659,12 +659,9 @@ p.form-title {
 }
 
 .form-login input[type="submit"] {
-  width: 20%;
   font-size: 1.2em;
   text-transform: uppercase;
   font-weight: 400;
-  margin-top: 25px;
-  margin-bottom: 35px;
   outline: 0;
   cursor: pointer;
   height: 40px;
@@ -826,88 +823,6 @@ th, th.field-required {
     color: black;
 }
 
-table.restable {
-  border: 1px solid #ccc;
-  border-collapse: collapse;
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  table-layout: fixed;
-}
-
-table.restable caption {
-  font-size: 1.5em;
-  margin: 0.5em 0 0.75em;
-}
-
-table.restable tr {
-  background: #f8f8f8;
-  border: 1px solid #ddd;
-  padding: 0.35em;
-}
-
-table.restable th,
-table.restable td {
-  padding: 0.625em;
-  text-align: center;
-}
-
-table.restable th {
-  font-size: 0.85em;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-@media screen and (max-width: 600px) {
-  table.restable {
-    border: 0;
-  }
-
-  table.restable caption {
-    font-size: 1.3em;
-  }
-
-  table.restable thead {
-    border: none;
-    clip: rect(0 0 0 0);
-    height: 1px;
-    margin: -1px;
-    overflow: hidden;
-    padding: 0;
-    position: absolute;
-    width: 1px;
-  }
-
-  table.restable tr {
-    border-bottom: 3px solid #ddd;
-    display: block;
-    margin-bottom: 0.625em;
-  }
-
-  table.restable td {
-    border-bottom: 1px solid #ddd;
-    display: block;
-    font-size: 0.8em;
-    text-align: right;
-  }
-
-  table.restable td:before {
-    /*
-    * aria-label has no advantage, it won't be read inside a table
-    content: attr(aria-label);
-    */
-    content: attr(data-label);
-    float: left;
-    font-weight: bold;
-    text-transform: uppercase;
-  }
-
-  table.restable td:last-child {
-    border-bottom: 0;
-  }
-}
-
-
 /* custom dvd */
 
 .q-btn-standard .q-icon {font-size: 35px;}
@@ -954,5 +869,14 @@ table.restable th {
 .el-table th>.cell {height: 30px; }
 
 .el-table .el-tag {background-color: transparent !important; border: none;}
-.el-table .el-tag i {font-size: 2.2em; color: #2cb924;}
+.el-table .el-tag.el-tag--grey i {font-size: 2.2em; color: grey;}
+.el-table .el-tag.el-tag--green i {font-size: 2.2em; color: #2cb924;}
+.el-table .el-tag.el-tag--offline i {font-size: 2.2em; color: #2460b9;}
 
+.q-loading {
+    background: rgba(0,0,0,0.4);
+    z-index: 9999;
+}
+
+@import 'custom/custom.scss';
+@import 'errorResponsiveTable.scss';

@@ -27,6 +27,18 @@ node ./node_modules/json/lib/json.js -I -f package.json -e "this.deployAppID='${
 	cp ./deploys/projects/${1}/env.js ./src/config/env.js
 
 ###################################################
+# Copy the projects about into their dev locations
+#
+  rm -rf ./src/modules/Dashboard/views/about.vue
+  cp ./deploys/projects/${1}/about.vue ./src/modules/Dashboard/views/about.vue
+
+###################################################
+# Copy the projects custom CSS into their dev locations
+#
+  rm -rf ./src/assets/css/custom
+	cp -R ./deploys/projects/${1}/css/custom ./src/assets/css
+
+###################################################
 # Copy the projects CNAME into their dev locations
 #
   rm -rf ./deploys/web/CNAME
