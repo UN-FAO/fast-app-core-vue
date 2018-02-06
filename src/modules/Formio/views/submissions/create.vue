@@ -35,8 +35,8 @@
       </q-card-main>
     </q-card>
 
-    <q-fixed-position corner="bottom-right" :offset="[18, 18]">
-      <q-fab color="red" icon="add" direction="up">
+    <q-fixed-position corner="top-right" :offset="[18, 18]">
+      <q-fab color="red" icon="add" direction="down">
 
 
         <q-fab-action v-bind:class="!PARRALEL_SURVEYS ? 'hidden' : ''" color="purple-6" @click="groupConfig()" icon="fa-users"></q-fab-action>

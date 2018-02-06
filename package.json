@@ -49,7 +49,7 @@
     "moment": "^2.18.1",
     "papaparse": "^4.3.7",
     "quasar-extras": "0.0.8",
-    "quasar-framework": "^0.14.7",
+    "quasar-framework": "^0.14.9",
     "raven-js": "^3.21.0",
     "text-mask-all": "github:text-mask/text-mask",
     "uuid": "^3.1.0",
