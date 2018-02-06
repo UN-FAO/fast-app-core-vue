@@ -8,8 +8,8 @@
 | understand whats are your users looking at!
 |
 */
-exports.APP_ENV = 'prod'
-exports.FAST_VERSION = '0.5.22'
+exports.APP_ENV = 'dev'
+exports.FAST_VERSION = '0.5.13'
 exports.SHARE_DATA_BETWEEN_USERS = false
 /*
 |--------------------------------------------------------------------------
@@ -21,8 +21,8 @@ exports.SHARE_DATA_BETWEEN_USERS = false
 | forms asociated with it.
 |
 */
-exports.APP_URL = 'https://oibowengifayqed.form.io'
-exports.APP_NAME = 'oibowengifayqed'
+exports.APP_URL = 'https://uiorzjzflxyccmo.form.io'
+exports.APP_NAME = 'uiorzjzflxyccmo'
 /*
 |--------------------------------------------------------------------------
 | APP CONFIGURATION
@@ -33,9 +33,8 @@ exports.APP_NAME = 'oibowengifayqed'
 | in the app.
 |
 */
-exports.APP_FANTACY_NAME = 'DRIP'
-exports.APP_PHRASE = 'Dryland Restoration Initiative Platform'
-exports.APP_ABOUT_NAME = 'DRIP'
+exports.APP_FANTACY_NAME = 'SHARP+'
+exports.APP_PHRASE = 'Self-evaluation and Holistic Assessment of climate Resilence of Farmers and Pastoralists'
 /*
 |--------------------------------------------------------------------------
 | MD5 KEY
@@ -125,5 +124,5 @@ exports.PARALLEL_SURVEYS = false
 | open the left hand wizard navigation while on create
 |
 */
-exports.NAVIGATION_OPENED = true
-exports.NAVIGATION_AUTOCLOSE_ON_SELECTION = false
+exports.NAVIGATION_OPENED = false
+exports.NAVIGATION_AUTOCLOSE_ON_SELECTION = true

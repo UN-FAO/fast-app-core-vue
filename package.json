@@ -1,8 +1,8 @@
 {
   "name": "fast",
   "version": "0.5.22",
-  "deployAppName": "DRIP",
-  "deployAppID": "5a5f69664fa5170001ce5a65",
+  "deployAppName": "SHARP+",
+  "deployAppID": "59b112c7678919000775f921",
   "description": "A data collection application for FORM.io",
   "author": "Ignacio Cabrera <ignacio.cabrera@fao.org>",
   "scripts": {
@@ -34,6 +34,7 @@
     "bootstrap": "^3.3.7",
     "bootstrap-rtl-ondemand": "^3.3.4",
     "chart.js": "^2.7.1",
+    "choices.js": "^3.0.3",
     "deep-diff": "^0.3.8",
     "element-ui": "^1.4.3",
     "fastclick": "^1.0.6",

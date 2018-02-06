@@ -16,7 +16,7 @@
               <el-table-column label="status" prop="Status" width="90" sortable fixed="left">
                 <template scope="scope">
                   <el-tag :type="getIconColor(scope.row)" close-transition>
-                    <i class="material-icons">{{scope.row.status === 'offline' ? 'description' : 'check_circle'}}</i>
+                    <i class="material-icons">{{scope.row.status === 'offline' ? 'remove_circle_outline' : 'check_circle'}}</i>
                   </el-tag>
                   <i class="material-icons" style="color: red;font-size: x-large; cursor: pointer;" v-if="scope.row.syncError && scope.row.syncError !=='Unauthorized' " @click="displayError(scope.row.syncError)">block</i>
                   <i class="material-icons" style="color: red;font-size: x-large; cursor: pointer;" v-if="scope.row.syncError && scope.row.syncError ==='Unauthorized' " @click="displayError(scope.row.syncError)">lock</i>
@@ -34,13 +34,14 @@
                 </template>
               </el-table-column>
 
-              <el-table-column :label="$t('Updated at')" prop="HumanUpdated" sortable fixed="left" width="140">
+              <el-table-column :label="$t('Created at')" prop="Humancreated" sortable fixed="left" width="140">
               </el-table-column>
 
               <el-table-column fixed="right" label="Actions" width="120">
                 <template scope="scope">
                   <!--<el-button @click="handleEdit(scope)" type="text">{{$t('Edit')}}</el-button>-->
                     <el-button @click="handleEdit(scope)" type="text"><i class="material-icons edit">edit</i></el-button>
+                    <el-button @click="handleReport(scope)" type="text"><i class="material-icons assignment">assignment</i></el-button>
                 </template>
               </el-table-column>
 
@@ -74,9 +75,9 @@
 
 <script>
 import DataTables from "vue-data-tables";
-
+import OFFLINE_PLUGIN from "modules/Formio/components/formio/src/offlinePlugin";
 import _forEach from "lodash/forEach";
-// import _map from "lodash/map";
+import _map from "lodash/map";
 import lang from "element-ui/lib/locale/lang/en";
 import locale from "element-ui/lib/locale";
 import moment from "moment";
@@ -98,12 +99,10 @@ import {
   QTooltip
 } from "quasar";
 import Submission from "database/models/Submission";
-import Form from "database/models/Form";
+import Form from 'database/models/Form'
 import FormioUtils from "formiojs/utils";
-
-import Papa from "papaparse";
-import Import from "database/repositories/Submission/Import";
-import _flattenDeep from "lodash/flattenDeep";
+import Formio from "formiojs";
+import { APP_URL } from "config/env";
 locale.use(lang);
 
 export default {
@@ -181,14 +180,8 @@ export default {
           {
             name: "JSON",
             handler: () => {
-              var t0 = performance.now();
               let exported = this.loadExportData("json");
-              var t1 = performance.now();
-              console.log(
-                "Call to doSomething took " + (t1 - t0) / 1000 + " seconds."
-              );
               let name = "backup_" + exported.date + ".json";
-              console.log(exported.data);
               this.download(
                 JSON.stringify(exported.data),
                 name,
@@ -209,37 +202,8 @@ export default {
                 if (err) {
                   return console.log(err);
                 }
-                let labelsRow = [];
-                let parserCsv = Papa.parse(csv);
-                let columns = parserCsv.data[0];
-                columns.forEach(c => {
-                  let newLabel = "";
-                  let innerLabels = c.split(".");
-                  innerLabels.forEach((innerLabel, idx) => {
-                    if (isNaN(innerLabel)) {
-                      let correspondingLabel = exported.labels.find(label => {
-                        return label.apiKey === innerLabel;
-                      });
-                      let matchingLabel =
-                        (correspondingLabel && correspondingLabel.label) ||
-                        innerLabel;
-                      newLabel = newLabel + matchingLabel;
-                    } else {
-                      if (idx === innerLabels.length - 1) {
-                        newLabel = newLabel + "." + innerLabel;
-                      } else {
-                        newLabel = newLabel + "." + innerLabel + ".";
-                      }
-                    }
-                  });
-                  labelsRow.push(newLabel);
-                });
-                let newCSV = Papa.unparse(
-                  { fields: labelsRow, data: parserCsv.data },
-                  { header: true, delimiter: ";" }
-                );
                 let name = "backup_" + exported.date + ".csv";
-                this.download(newCSV, name, "text/csv;encoding:utf-8");
+                this.download(csv, name, "text/csv;encoding:utf-8");
               });
             },
             icon: "document",
@@ -268,34 +232,35 @@ export default {
   },
   methods: {
     loadExportData(type) {
-      let self = this;
       let json = [];
       let dataExport;
-      let labels = [];
-      let allKeys = [];
       dataExport =
         this.selectedRows.length === 0 ? this.submissions : this.selectedRows;
       _forEach(dataExport, function(submission) {
         let record = submission.fullSubmission;
         record.id = submission.id_submision;
-        json.push(flatten(record));
-        allKeys.push(Object.keys(record));
+        const ordered = {};
+        Object.keys(record)
+          .sort()
+          .forEach(function(key) {
+            ordered[key] = record[key];
+          });
+        json.push(flatten(ordered));
       });
 
-      allKeys = Array.from(new Set(_flattenDeep(allKeys)));
-
-      allKeys.forEach(key => {
-        let component = FormioUtils.getComponent(
-          self.currentForm.data.components,
-          key
-        );
-        let label = component ? component.label : null;
-        if (label) {
-          labels.push({ apiKey: key, label: self.$t(label) });
+      let orderedJsonOut = _map(
+        _map(dataExport, "fullSubmission"),
+        submission => {
+          const ordered = {};
+          Object.keys(submission)
+            .sort()
+            .forEach(function(key) {
+              ordered[key] = submission[key];
+            });
+          return ordered;
         }
-      });
-
-      dataExport = type && type === "csv" ? json : dataExport;
+      );
+      dataExport = type && type === "csv" ? json : orderedJsonOut;
 
       let date = new Date()
         .toJSON()
@@ -303,14 +268,24 @@ export default {
         .replace(/T/g, "_")
         .replace(/:/g, "_")
         .slice(0, 19);
-
-      return { date: date, data: dataExport, labels: labels };
+      return { date: date, data: dataExport };
     },
     handleEdit(data) {
       let self = this;
       let submission = data.row;
       self.$router.push({
         name: "formio_submission_update",
+        params: {
+          idForm: submission.formio.formId,
+          idSubmission: submission.id_submision
+        }
+      });
+    },
+    handleReport(data) {
+      let self = this;
+      let submission = data.row;
+      self.$router.push({
+        name: "formio_submission_report",
         params: {
           idForm: submission.formio.formId,
           idSubmission: submission.id_submision
@@ -374,7 +349,6 @@ export default {
       mimeType = mimeType || "application/octet-stream";
       var self = this;
       let successDownload = function() {
-        // Loading.hide();
         self.$swal("Exported!", "The file has been exported.", "success");
       };
 
@@ -443,7 +417,6 @@ export default {
             type: mimeType
           });
           fileWriter.write(blob);
-          // Loading.hide();
           self.$swal(
             "Exported!",
             "The file has been exported to: " +
@@ -455,12 +428,12 @@ export default {
       }
     },
     getIconColor: function(row) {
-      if (row.draft && row.draft === true) {
-        return "grey";
+      if (row.draft) {
+        return "primary";
       } else if (row.status === "offline") {
-        return "offline";
+        return "danger";
       } else {
-        return "green";
+        return "success";
       }
     },
     humanizeDate(givenDate) {
@@ -515,15 +488,56 @@ export default {
     },
     async importSubmission() {
       const file = await this.$swal({
-        title: this.$t("Select your JSON file"),
+        title: this.$t("Select you JSON file"),
         input: "file",
         inputAttributes: {
           accept: ".json",
           "aria-label": this.$t("Upload your JSON File")
         }
       });
+
       if (file) {
-        Import.fromJsonFile(file, this);
+        var reader = new FileReader();
+        let self = this;
+        // Closure to capture the file information.
+        reader.onload = (function(theFile) {
+          return function(e) {
+            let json;
+            try {
+              json = JSON.parse(e.target.result);
+            } catch (ex) {
+              throw new Error("The Json file could not be parsed");
+            }
+            json.forEach(row => {
+              if (row.id || row._id) {
+                delete row.id;
+                delete row._id;
+              }
+              let formSubmission = {
+                data: row,
+                redirect: false,
+                syncError: false,
+                draft: true,
+                trigger: "importSubmission"
+              };
+              let formUrl = APP_URL + "/" + self.currentForm.data.path;
+              Formio.deregisterPlugin("offline");
+              Formio.registerPlugin(
+                OFFLINE_PLUGIN.getPlugin(
+                  self.currentForm.data.path,
+                  undefined,
+                  false,
+                  self.$eventHub
+                ),
+                "offline"
+              );
+              let formio = new Formio(formUrl);
+              formio.saveSubmission(formSubmission);
+            });
+          };
+        })(file);
+
+        reader.readAsText(file);
       }
     },
     async updateLocalSubmissions() {
@@ -595,6 +609,3 @@ export default {
   }
 };
 </script>
-
-
-
