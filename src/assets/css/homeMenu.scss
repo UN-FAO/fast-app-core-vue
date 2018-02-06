@@ -1,0 +1,32 @@
+@media screen and (max-height: 749px){
+   .mainCards {
+      height:20vh;
+    }
+    .q-card {background-color: #fff;}
+    .q-card-container {padding: 0px; padding-top: 0px;}
+
+    .q-card-main.mainActions .q-icon {
+      color: #136b95;
+      font-size:7vh;
+    }
+    .q-card-main.mainActions h1 {
+      font-size:4vh;
+    }
+}
+ @media screen and (min-height: 750px){
+    .mainCards {
+      height:35vh;
+
+    }
+    .q-card {background-color: #fff;}
+    .q-card-container {padding: 40px; padding-top: 65px;}
+
+    .q-card-main.mainActions .q-icon {
+      color: #136b95;
+      font-size:7vh;
+    }
+    .q-card-main.mainActions h1 {
+      font-size:4vh;
+    }
+}
+

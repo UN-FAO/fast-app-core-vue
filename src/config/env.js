@@ -9,7 +9,7 @@
 |
 */
 exports.APP_ENV = 'prod'
-exports.FAST_VERSION = '0.5.22'
+exports.FAST_VERSION = '0.5.23'
 exports.SHARE_DATA_BETWEEN_USERS = false
 /*
 |--------------------------------------------------------------------------
@@ -21,8 +21,8 @@ exports.SHARE_DATA_BETWEEN_USERS = false
 | forms asociated with it.
 |
 */
-exports.APP_URL = 'https://oibowengifayqed.form.io'
-exports.APP_NAME = 'oibowengifayqed'
+exports.APP_URL = 'https://vbemsizlqbxmzzk.form.io'
+exports.APP_NAME = 'vbemsizlqbxmzzk'
 /*
 |--------------------------------------------------------------------------
 | APP CONFIGURATION
@@ -33,9 +33,9 @@ exports.APP_NAME = 'oibowengifayqed'
 | in the app.
 |
 */
-exports.APP_FANTACY_NAME = 'DRIP'
-exports.APP_PHRASE = 'Dryland Restoration Initiative Platform'
-exports.APP_ABOUT_NAME = 'DRIP'
+exports.APP_FANTACY_NAME = 'FAMEWS'
+exports.APP_ABOUT_NAME = 'Fall Armyworm'
+exports.APP_PHRASE = 'Fall Armyworm Monitoring and Early Warning System'
 /*
 |--------------------------------------------------------------------------
 | MD5 KEY

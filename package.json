@@ -1,8 +1,8 @@
 {
   "name": "fast",
-  "version": "0.5.22",
-  "deployAppName": "DRIP",
-  "deployAppID": "5a5f69664fa5170001ce5a65",
+  "version": "0.5.23",
+  "deployAppName": "FAW",
+  "deployAppID": "5a65a0b902b5450001fbc4cd",
   "description": "A data collection application for FORM.io",
   "author": "Ignacio Cabrera <ignacio.cabrera@fao.org>",
   "scripts": {
