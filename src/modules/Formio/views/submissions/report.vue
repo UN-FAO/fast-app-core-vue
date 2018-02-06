@@ -45,7 +45,6 @@ import {
 } from "quasar";
 import Submission from "database/models/Submission";
 import mybar from "./bar";
-import table from "./table.json";
 export default {
   components: {
     QCard,
@@ -161,45 +160,9 @@ export default {
       return data;
     }
   },
-  data2: function() {
-    // this.submissions = await Submission.local().get(this.$route.params.idSubmission);
-    // var element = this.submissions.data.data['S0-info-name'];
-    return {
-      data2: [
-        {
-          content: "Test",
-          flow_no: "FW201601010001",
-          flow_type: "Repair",
-          flow_type_code: "repair"
-        },
-        {
-          content: "Lock broken",
-          flow_no: "FW201601010002",
-          flow_type: "Repair",
-          flow_type_code: "repair"
-        },
-        {
-          content: "Help to buy some drinks",
-          flow_no: "FW201601010003",
-          flow_type: "Help",
-          flow_type_code: "help"
-        }
-      ],
-      titles: [
-        {
-          prop: "flow_no",
-          label: "Module"
-        },
-        {
-          prop: "content",
-          label: "Average score (individual)"
-        }
-      ]
-    };
-  },
   data() {
     return {
-      table: table,
+      table: this.getRelativeResilience,
       config: {
         title: "Data Table",
         refresh: true,
