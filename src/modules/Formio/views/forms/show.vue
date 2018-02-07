@@ -80,6 +80,7 @@
 
 <script>
 import {
+  Loading,
   QDataTable,
   QField,
   QInput,
@@ -127,9 +128,10 @@ export default {
     this.$eventHub.on("FAST-DATA_SYNCED", async data => {
       await this.updateLocalSubmissions();
     });
-
     this.$eventHub.on("FAST-DATA_IMPORTED", async data => {
       await this.updateLocalSubmissions();
+      Loading.hide();
+      this.$swal("Imported!", "Your submission were imported", "success");
     });
   },
   computed: {
@@ -256,6 +258,7 @@ export default {
   },
   beforeDestroy() {
     this.$eventHub.off("FAST-DATA_SYNCED");
+    this.$eventHub.off("FAST-DATA_IMPORTED");
   },
   methods: {
     exportCSV() {
@@ -574,6 +577,7 @@ export default {
     async updateLocalSubmissions(done) {
       if (this.$route.params.idForm === "*") {
         let submissions = await Submission.local().sFind(this, {});
+        console.log("inside the page submissions", submissions);
         this.submissions = submissions.results;
       } else {
         let submissions = await Submission.local().sFind(this, {

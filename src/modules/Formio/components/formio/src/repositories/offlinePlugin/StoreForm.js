@@ -7,81 +7,76 @@ import Auth from 'modules/Auth/api/Auth'
 let StoreForm = class {
   static handle(formSubmission, formio, redirect, hashField, formId, eventHub) {
     if ((typeof hashField !== 'undefined')) {
-         StoreForm.storeUser(formSubmission, formio, redirect, hashField, formId, eventHub)
+      StoreForm.storeUser(formSubmission, formio, redirect, hashField, formId, eventHub)
     } else {
-        StoreForm.storeSubmission(formSubmission, formio, redirect, hashField, formId, eventHub)
+      StoreForm.storeSubmission(formSubmission, formio, redirect, hashField, formId, eventHub)
     }
   }
   /**
    *
    */
-  static storeSubmission(formSubmission, formio, redirect, hashField, formId, eventHub) {
-    store.dispatch('addSubmission', {
+  static async storeSubmission(formSubmission, formio, redirect, hashField, formId, eventHub) {
+    let created = await store.dispatch('addSubmission', {
         formSubmission: formSubmission,
         formio: formio,
         User: Auth.user().data
       })
-      .then((created) => {
-        if (!created) {
-          return
-        }
 
-        if (formSubmission.trigger && formSubmission.trigger === 'resourceCreation') {
-          console.log('formSubmission', formSubmission)
-        }
+    if (!created) {
+      return
+    }
 
-        var draftStatus = new CustomEvent('draftStatus', {
-          'detail': {
-            'data': created,
-            'text': 'Draft Saved'
+    if (formSubmission.trigger && formSubmission.trigger === 'resourceCreation') {
+      console.log('formSubmission', formSubmission)
+    }
+
+    var draftStatus = new CustomEvent('draftStatus', {
+      'detail': {
+        'data': created,
+        'text': 'Draft Saved'
+      }
+    })
+    document.dispatchEvent(draftStatus)
+    if (formSubmission._id) {
+      if (formSubmission.redirect === true) {
+        router.push({
+          name: 'formio_form_show',
+          params: {
+            idForm: formId
           }
         })
-        document.dispatchEvent(draftStatus)
-        if (formSubmission._id) {
-          if (formSubmission.redirect === true) {
-            router.push({
-              name: 'formio_form_show',
-              params: {
-                idForm: formId
-              }
-            })
-          }
-        } else if (created.data && created.data.trigger && created.data.trigger === "importSubmission") {
-          eventHub.emit("FAST-DATA_IMPORTED");
-          return
-        } else {
-          router.push({
-            name: 'formio_submission_update',
-            params: {
-              idForm: formId,
-              idSubmission: created._id
-            }
-          })
+      }
+    } else if (created.data && created.data.trigger && created.data.trigger === "importSubmission") {
+      return
+    } else {
+      router.push({
+        name: 'formio_submission_update',
+        params: {
+          idForm: formId,
+          idSubmission: created._id
         }
-        return created
       })
-        .catch((error) => {
-          console.log(error)
-        })
+    }
+    return created
   }
   /**
    *
    */
   static storeUser(formSubmission, formio, redirect, hashField, formId, eventHub) {
     formSubmission.data.hashedPassword = md5(formSubmission.data.password, MD5_KEY)
-      store.dispatch('storeUserLocally', {
-        data: formSubmission.data,
-        sync: false,
-        formio: formio
+    store.dispatch('storeUserLocally', {
+      data: formSubmission.data,
+      sync: false,
+      formio: formio
+    })
+      .then(() => {
+        router.push({
+          path: '/login'
+        })
       })
-        .then(() => {
-          router.push({
-            path: '/login'
-          })
-        })
-        .catch((error) => {
-          console.log(error)
-        })
+      .catch((error) => {
+        console.log(error)
+      })
   }
 }
 export default StoreForm

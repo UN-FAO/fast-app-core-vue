@@ -322,7 +322,7 @@ export default {
   line-height: 1;
   margin-bottom: 30px;
   margin-left: -3px;
-  background: linear-gradient(
+  background-image: linear-gradient(
     45deg,
     rgb(14, 109, 165),
     rgb(14, 109, 165)
@@ -361,7 +361,7 @@ export default {
 }
 
 .base.overlay .title {
-  background: linear-gradient(0, #fff, #fff);
+  background-image: linear-gradient(0, #fff, #fff);
 }
 
 li {

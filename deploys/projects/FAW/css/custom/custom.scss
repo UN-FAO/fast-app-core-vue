@@ -5,8 +5,9 @@
   }
   .formio-component-datagrid {
     overflow-x: unset;
-    margin-left: -90px;
-    width: 80vw !important;
+    margin-left: -55px;
+    width: 99vw !important;
+    transform: scale(0.92);
   }
   .formio-component-datagrid div.row {
     display: block;
@@ -31,9 +32,9 @@
 
   .table-responsive {
     overflow-x: unset;
-    margin-left: -123px !important;
+    margin-left: -75px !important;
     width: 100vw !important;
-    transform: scale(0.92);
+    transform: scale(0.88);
   }
   .table-responsive .choices__item.choices__item--selectable {
     display: table;
@@ -72,7 +73,7 @@
   .table-responsive label.control-label {
     font-size: smaller !important;
     margin-left: -17vw;
-    margin-top: 10px;
+    margin-top: 40px;
   }
 
   .table-responsive .form-control {
@@ -95,11 +96,11 @@
     margin-left: -100px;
   }
   fieldset {
-    margin-left: -80px;
+    margin-left: -30px;
   }
 
   .card-header.panel-heading {
     width: 85vw;
-    margin-left: -70px;
+    margin-left: -25px;
   }
 }

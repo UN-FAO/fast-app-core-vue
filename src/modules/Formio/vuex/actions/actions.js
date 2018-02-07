@@ -231,7 +231,6 @@ const actions = {
       formio: formio
     }
     submission = SyncHelper.deleteNulls(submission)
-
     // If we are updating the submission
     if (formSubmission._id) {
       submission = {
@@ -239,7 +238,6 @@ const actions = {
         type: 'update',
         updated: moment().format()
       }
-
       let localSubmission = await Submission.local().get(formSubmission._id)
       // Cases where we want to update
       let sendingSubmission = submission.draft === false

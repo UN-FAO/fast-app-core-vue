@@ -23,7 +23,7 @@ const _create = function () {
     var db = new Loki(APP_FANTACY_NAME, {
       adapter: pa,
       autosave: true,
-      autosaveInterval: 2000,
+      autosaveInterval: 1000,
       autoload: true,
       autoloadCallback: databaseInitialize
     });
