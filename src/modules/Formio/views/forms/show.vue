@@ -109,7 +109,7 @@ import moment from "moment";
 import jsonexport from "jsonexport";
 import flatten from "flat";
 import Submission from "database/models/Submission";
-import Form from 'database/models/Form'
+import Form from "database/models/Form";
 import FormioUtils from "formiojs/utils";
 import Promise from "bluebird";
 import Papa from "papaparse";
@@ -306,6 +306,7 @@ export default {
       );
     },
     loadExportData(type) {
+      let self = this;
       let json = [];
       let dataExport;
       let labels = [];
@@ -316,13 +317,8 @@ export default {
       _forEach(dataExport, function(submission) {
         let record = submission.fullSubmission;
         record.id = submission.id_submision;
-        const ordered = {};
-        Object.keys(record)
-          .sort()
-          .forEach(function(key) {
-            ordered[key] = record[key];
-          });
-        json.push(flatten(ordered));
+        json.push(flatten(record));
+        allKeys.push(Object.keys(record));
       });
 
       allKeys = Array.from(new Set(_flattenDeep(allKeys)));
@@ -337,8 +333,7 @@ export default {
         if (label) {
           labels.push({ apiKey: key, label: self.$t(label) });
         }
-      );
-      dataExport = type && type === "csv" ? json : orderedJsonOut;
+      });
 
       let orderedJsonOut = _map(dataExport, "fullSubmission");
 
@@ -350,7 +345,8 @@ export default {
         .replace(/T/g, "_")
         .replace(/:/g, "_")
         .slice(0, 19);
-      return { date: date, data: dataExport };
+
+      return { date: date, data: dataExport, labels: labels };
     },
     handleEdit(data) {
       let self = this;
@@ -421,6 +417,7 @@ export default {
       mimeType = mimeType || "application/octet-stream";
       var self = this;
       let successDownload = function() {
+        // Loading.hide();
         self.$swal("Exported!", "The file has been exported.", "success");
       };
 
@@ -489,6 +486,7 @@ export default {
             type: mimeType
           });
           fileWriter.write(blob);
+          // Loading.hide();
           self.$swal(
             "Exported!",
             "The file has been exported to: " +
@@ -500,12 +498,12 @@ export default {
       }
     },
     getIconColor: function(row) {
-      if (row.draft) {
-        return "primary";
+      if (row.draft && row.draft === true) {
+        return "grey";
       } else if (row.status === "offline") {
-        return "danger";
+        return "offline";
       } else {
-        return "success";
+        return "green";
       }
     },
     humanizeDate(givenDate) {
@@ -562,56 +560,15 @@ export default {
     },
     async importSubmission() {
       const file = await this.$swal({
-        title: this.$t("Select you JSON file"),
+        title: this.$t("Select your JSON file"),
         input: "file",
         inputAttributes: {
           accept: ".json",
           "aria-label": this.$t("Upload your JSON File")
         }
       });
-
       if (file) {
-        var reader = new FileReader();
-        let self = this;
-        // Closure to capture the file information.
-        reader.onload = (function(theFile) {
-          return function(e) {
-            let json;
-            try {
-              json = JSON.parse(e.target.result);
-            } catch (ex) {
-              throw new Error("The Json file could not be parsed");
-            }
-            json.forEach(row => {
-              if (row.id || row._id) {
-                delete row.id;
-                delete row._id;
-              }
-              let formSubmission = {
-                data: row,
-                redirect: false,
-                syncError: false,
-                draft: true,
-                trigger: "importSubmission"
-              };
-              let formUrl = APP_URL + "/" + self.currentForm.data.path;
-              Formio.deregisterPlugin("offline");
-              Formio.registerPlugin(
-                OFFLINE_PLUGIN.getPlugin(
-                  self.currentForm.data.path,
-                  undefined,
-                  false,
-                  self.$eventHub
-                ),
-                "offline"
-              );
-              let formio = new Formio(formUrl);
-              formio.saveSubmission(formSubmission);
-            });
-          };
-        })(file);
-
-        reader.readAsText(file);
+        Import.fromJsonFile(file, this);
       }
     },
     async updateLocalSubmissions(done) {

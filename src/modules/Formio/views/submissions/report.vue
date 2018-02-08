@@ -7,18 +7,25 @@
         <q-card-separator />
         <q-card-main>
             Card Content
-           
-<div class="layout-padding">
+
+<div style="maxWidth: 450px">
     <q-data-table
       :data="table"
       :config="config"
       :columns="columns"
     >
-  
-    </q-data-table>
+</q-data-table>
 </div>
-
-
+<br>
+<br>
+<div style="maxWidth: 450px">
+    <q-data-table
+      :data="naModules"
+      :config="config"
+      :columns="columns"
+    >
+</q-data-table>
+</div>
 
             <mybar :chartData="_chartComputedInfo" :options="reportOptions"></mybar>
         </q-card-main>
@@ -64,35 +71,42 @@ export default {
     QCollapsible
   },
   async mounted() {
-    //  let id = this.$route.params.idForm;
-    // this.submission = await Submission.local().get(id);
-    // this.submission = await Submission.local().sFind(this, {
-    //   "data.formio.formId": this.$route.params.idForm
-    // });
-    this.submissions = await Submission.local().get(
-      this.$route.params.idSubmission
-    );
-    var field = this.submissions.data.data;
-    var element = field["S0-info-name"];
-    console.log("submissions", field, element);
-  },
-  datas: function() {
-    return {
-      ourData: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      reportOptions: {
-        scales: {
-          yAxes: [
-            {
-              ticks: {
-                beginAtZero: true
-              }
-            }
-          ]
-        }
-      }
-    };
+    let resuls = await Submission.local().get(this.$route.params.idSubmission);
+    var rows = [resuls.data.data];
+    var adequacy = ['AG-hh-ac-adq', 'AG-agr-adq', 'EC-iga-adq', 'EN-landac-adq', 'AG-crop-adq', 'AG_inter_adq', 'EN-weed-adq', 'AG-spm-adq', 'EN-slm-adq', 'EN_legum_adq', 'EN-fert-adq', 'AG-animal-adq', 'AG-breed-adq', 'AG-health-adq', 'AG-new-adq', 'EC-input-adq', 'EN-wacc-adq', 'EN-wcp-adq', 'EN-wqa-adq', 'EN-landqa-adq', 'AG-trees-ac-adq', 'EN-lands-adq', 'EN-enerso-adq', 'EN-enercp-adq', 'SO-dist-adq', 'SO-cc-adq', 'AG-infoac-adq', 'EC-ict-adq', 'GO-gov-adq', 'EC-mkt-adq', 'EC-inc-adq', 'EC-ass-adq', 'EC-fin-adq', 'EC-ins-adq', 'SO-coop-adq', 'SO-group-adq', 'SO-meal-adq', 'SO-dmhh-adq', 'SO-dmfarm-adq'];
+    var academic = ['AG-hh-ac-average', 'AG-agr-ac-average', 'EC-iga-ac-average', 'EN-landac-ac-average', 'AG-crop-ac-average', 'AG-inter-ac-average', 'EN-weed-ac-average', 'AG_spm_ac_average', 'EN-slm-ac-average', 'EN_legum_ac_average', 'EN-fert-ac-average', 'AG-animal-ac-average', 'AG-breed-ac-average', 'AG-health-ac-average', 'AG-new-ac-average', 'EC-input-ac-average', 'EN-wacc-ac-average', 'EN-wcp-ac-average', 'EN-wqa-ac-average', 'EN-landqa-ac-average', 'AG-trees-ac-average', 'EN-lands-ac-average', 'EN-enerso-ac-average', 'EN-enercp-ac-average', 'SO-dist-ac-average', 'SO-cc-ac-average', 'AG-infoac-ac-a', 'EC-ict-ac-average', 'GO-gov-ac-average', 'EC-mkt-ac-average', 'EC-inc-ac-average', 'EC-ass-ac-average', 'EC-fin-ac-average', 'EC-ins-ac-average', 'SO-coop-ac-average', 'SO-group-ac-average', 'SO-meal-ac-average', 'SO-dmhh-ac-average', 'SO-dmfarm-ac-average'];
+    console.log("rows", rows);
+    this.getRelativeResilience(rows, academic, adequacy);
+    this.getNAmodules(rows, adequacy);
+
+    console.log("this.table", this.table);
   },
   methods: {
+      getRelativeResilience(rows, academic, adequacy) {
+      for (var i = 0; i < adequacy.length; i++) {
+              var jsonData = {};
+              var aca = academic[i];
+              var adq = adequacy[i];
+              jsonData["module"] = "Module" + (i + 2);
+              var score = rows[0][aca] + (parseFloat(rows[0][adq]) || 0);
+              jsonData["score"] = score <= 20 ? parseFloat(Math.round((score) * 100) / 100).toFixed(2) : 20;
+              this.table.push(jsonData);
+        }
+    },
+     getNAmodules(rows, adequacy) {
+          // var elements = [];
+      for (var i = 0; i < adequacy.length; i++) {
+              var jsonData = {};
+              var adq = adequacy[i];
+              console.log("getNAmodules", adq, rows[0][adq]);
+              if (typeof rows[0][adq] === "undefined") {
+                  jsonData["module"] = "Module" + (i + 2);
+                  // console.log("jsonData ", i, jsonData, this.table[i].module, this.table[i].score);
+                  this.naModules.push(jsonData);
+              }
+        }
+              console.log("jsonData ", i, jsonData, this.naModules);
+    },
     changeData() {
       this.ourData = this.ourData.map(v => {
         return v + Math.random();
@@ -137,110 +151,53 @@ export default {
           }
         ]
       };
-    },
-    getRelativeResilience() {
-      let data = [
-        {
-          source: "Audit",
-          severity: "I",
-          serviceable: "Informational",
-          callhome: "N",
-          isodate: "2015-05-19T08:11:05",
-          system_name: "SN#Y014BG2790EV",
-          event_id: "0000007A",
-          log_number: "4006DC55",
-          message:
-            "Login successful. User ID userid from Web at IP address 10.72.97.94.",
-          event_number: "4001A5AD",
-          cmm_event_id: "",
-          unique_id: 1,
-          timerange: 2
-        }
-      ];
-      return data;
     }
   },
   data() {
     return {
-      table: this.getRelativeResilience,
+      table: [],
+      naModules: [],
       config: {
-        title: "Data Table",
-        refresh: true,
+        title: "Relative resilience",
+        refresh: false,
         noHeader: false,
-        columnPicker: true,
+        columnPicker: false,
         leftStickyColumns: 0,
-        rightStickyColumns: 2,
-        bodyStyle: {
-          maxHeight: "500px"
-        },
-        rowHeight: "50px",
+        rightStickyColumns: 0,
+        rowHeight: "30px",
         responsive: true,
+        bodyStyle: {
+            maxWidth: "450px"
+        },
         pagination: {
           rowsPerPage: 15,
           options: [5, 10, 15, 30, 50, 500]
         },
-        selection: "multiple"
+          messages: {
+            noData: '<i>warning</i> No data available to show.',
+            noDataAfterFiltering: '<i>warning</i> No results. Please refine your search terms.'
+  }
       },
       columns: [
         {
-          label: "Date",
-          field: "isodate",
-          width: "140px",
-          classes: "bg-orange-2",
-          filter: true,
-          sort(a, b) {
-            return new Date(a) - new Date(b);
-          },
-          format(value) {
-            return new Date(value).toLocaleString();
-          }
-        },
-        {
-          label: "Service",
-          field: "serviceable",
-          format(value) {
-            if (value === "Informational") {
-              return '<i class="material-icons text-positive" style="font-size: 22px">info</i>';
-            }
-            return value;
-          },
-          width: "70px"
-        },
-        {
-          label: "Time Range",
-          field: "timerange",
-          width: "80px",
-          sort: true,
-          type: "number"
-        },
-        {
-          label: "Message",
-          field: "message",
-          filter: true,
+          label: "Module",
+          field: "module",
           sort: true,
           type: "string",
-          width: "500px"
+          width: "20px"
         },
         {
-          label: "Source",
-          field: "source",
-          filter: true,
+          label: "Average score (individual)",
+          field: "score",
           sort: true,
           type: "string",
-          width: "120px"
-        },
-        {
-          label: "Log Number",
-          field: "log_number",
-          sort: true,
-          type: "string",
-          width: "100px"
+          width: "20px"
         }
       ],
       pagination: true,
       rowHeight: 50,
       bodyHeightProp: "maxHeight",
-      bodyHeight: 500
+      bodyHeight: 50
     };
   },
   watch: {
