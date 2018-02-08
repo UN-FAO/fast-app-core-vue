@@ -8,9 +8,10 @@
 | understand whats are your users looking at!
 |
 */
-exports.APP_ENV = 'dev'
-exports.FAST_VERSION = '0.5.24'
+exports.APP_ENV = 'prod'
+exports.FAST_VERSION = '0.5.28'
 exports.SHARE_DATA_BETWEEN_USERS = false
+exports.TAB_MENU = true
 /*
 |--------------------------------------------------------------------------
 | FORM.IO CONFIGURATION
@@ -21,8 +22,8 @@ exports.SHARE_DATA_BETWEEN_USERS = false
 | forms asociated with it.
 |
 */
-exports.APP_URL = 'https://uiorzjzflxyccmo.form.io'
-exports.APP_NAME = 'uiorzjzflxyccmo'
+exports.APP_URL = 'https://vbemsizlqbxmzzk.form.io'
+exports.APP_NAME = 'vbemsizlqbxmzzk'
 /*
 |--------------------------------------------------------------------------
 | APP CONFIGURATION
@@ -33,8 +34,9 @@ exports.APP_NAME = 'uiorzjzflxyccmo'
 | in the app.
 |
 */
-exports.APP_FANTACY_NAME = 'SHARP+'
-exports.APP_PHRASE = 'Self-evaluation and Holistic Assessment of climate Resilence of Farmers and Pastoralists'
+exports.APP_FANTACY_NAME = 'FAMEWS'
+exports.APP_ABOUT_NAME = 'Fall Armyworm'
+exports.APP_PHRASE = 'Fall Armyworm Monitoring and Early Warning System'
 /*
 |--------------------------------------------------------------------------
 | MD5 KEY
@@ -124,5 +126,5 @@ exports.PARALLEL_SURVEYS = false
 | open the left hand wizard navigation while on create
 |
 */
-exports.NAVIGATION_OPENED = false
-exports.NAVIGATION_AUTOCLOSE_ON_SELECTION = true
+exports.NAVIGATION_OPENED = true
+exports.NAVIGATION_AUTOCLOSE_ON_SELECTION = false

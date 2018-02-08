@@ -43,6 +43,7 @@ let FormLabels = class {
 
     // Extranct all labels for all available forms
     _forEach(forms, form => {
+      componentLabels.push(form.data.title)
       // Go across every component
       FormioUtils.eachComponent(form.data.components, (component) => {
         if (component.addAnother && component.addAnother !== '') {

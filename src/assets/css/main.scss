@@ -675,6 +675,14 @@ th, th.field-required {
     background: rgba(0,0,0,0.4);
     z-index: 9999;
 }
+.floatingPagination{
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 68px;
+    z-index: 1000;
+}
 
 @import 'custom/custom.scss';
 @import 'qDataTable.scss';

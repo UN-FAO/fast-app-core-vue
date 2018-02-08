@@ -6,6 +6,8 @@ import { Loading } from 'quasar'
 import store from 'config/store'
 import Auth from 'modules/Auth/api/Auth'
 import _debounce from 'lodash/debounce'
+// import PreProcess from './importPreProcess'
+// import Uploader from './Uploader'
 
 let Import = class {
   /**
@@ -38,11 +40,12 @@ let Import = class {
     let totalSubmissions = json.length
     let formio = Import.getFormIOInstance(vm)
     Loading.show({ message: 'Importing ' + totalSubmissions + ' submissions' })
+    // json = json.slice(0, 2);
     Promise.each(json, async function (row, index) {
+      // await Uploader.sendDataToFormIO(row)
       let submission = Import.prepareSubmission(row)
       await Import.saveSubmission(submission, formio, vm)
     }).then(() => {
-      console.log('Finishing the import!')
       let dEmit = _debounce(Import.emitNotification, 2000)
       dEmit(vm)
     })
@@ -93,6 +96,7 @@ let Import = class {
    * @param {*} vm
    */
   static async saveSubmission(submission, formio, vm) {
+    // let processedSubmission = PreProcess.JsonSubmission(submission)
     await store.dispatch('addSubmission', {
       formSubmission: submission,
       formio: formio,

@@ -2,7 +2,7 @@
 <div class="container-fluid">
   <div class="row FormioContainer">
 
-    <q-card style="background-color: white; max-height: fit-content;" class="col-lg-3  col-md-12 col-sm-12" v-if="_isWizard && showPages">
+    <q-card style="background-color: white; max-height: fit-content;" class="col-lg-3  col-md-12 col-sm-12" v-if="_isWizard && showPages && !TAB_MENU">
       <q-card-main>
         <q-list separator style="border: none !important">
 
@@ -13,7 +13,7 @@
       </q-card-main>
     </q-card>
 
-    <q-card color="white" v-bind:class="getFormClass" style="position:inherit !important;">
+    <q-card color="white" v-bind:class="getFormClass" style="position:inherit !important; margin-bottom: 75px">
       <q-card-main>
 
         <!--<q-icon name="thumb_up" />-->
@@ -63,6 +63,20 @@
                       </q-fixed-position>
     -->
   </div>
+  <q-tabs slot="footer" v-model="tab" v-if="TAB_MENU" class="floatingPagination">
+          <q-tab
+           icon="fa-file"
+            slot="title"
+            v-for="(page, index) in _pages"
+            :key="page.title"
+            @click="goToPage(index)"
+            :ref="'page-'+ index + 1"
+            :name="index + 1"
+            v-bind:class="currentPage === index ? 'activePage' : ''"
+            :label="$t(getLabelForPage(page))"
+            >
+          </q-tab>
+      </q-tabs>
   </div>
 </template>
 
@@ -72,7 +86,8 @@ import {
   LOCAL_DRAFT_ENABLED,
   PARALLEL_SURVEYS,
   NAVIGATION_OPENED,
-  NAVIGATION_AUTOCLOSE_ON_SELECTION
+  NAVIGATION_AUTOCLOSE_ON_SELECTION,
+  TAB_MENU
 } from "config/env";
 import { mapActions } from "vuex";
 import {
@@ -87,6 +102,7 @@ import {
   QTabs,
   QTab,
   QTabPane,
+  QRouteTab,
   QCollapsible,
   QBtn,
   QIcon,
@@ -125,6 +141,7 @@ export default {
     QPullToRefresh,
     QTabs,
     QTab,
+    QRouteTab,
     QTabPane,
     QCollapsible,
     QBtn,
@@ -146,12 +163,14 @@ export default {
 
     this.$eventHub.on("formio.nextPage", data => {
       this.currentPage = data.nextPage.page;
+      this.tab = data.nextPage.page + 1
       this.currentQuestion = -1;
       window.scrollTo(0, 0);
     });
 
     this.$eventHub.on("formio.prevPage", data => {
       this.currentPage = data.prevPage.page;
+      this.tab = data.prevPage.page + 1
       this.currentQuestion = -1;
       window.scrollTo(0, 0);
     });
@@ -258,7 +277,7 @@ export default {
     },
     getFormClass() {
       let className = "";
-      if (this.showPages && this._isWizard) {
+      if (this.showPages && this._isWizard && !TAB_MENU) {
         className = "col-lg-8  col-md-12 col-sm-12";
       } else {
         className =
@@ -288,6 +307,7 @@ export default {
       ],
       formioToken: Auth.user().x_jwt_token,
       LOCAL_DRAFT_ENABLED: LOCAL_DRAFT_ENABLED,
+      TAB_MENU: TAB_MENU,
       saved: true,
       errors: {},
       isWizard: false,
@@ -300,7 +320,8 @@ export default {
       PARRALEL_SURVEYS: PARALLEL_SURVEYS,
       parallelSub: [],
       autoCreate: !this.$route.params.idSubmission,
-      readOnly: false
+      readOnly: false,
+      tab: 1
     };
   },
   methods: {
@@ -345,6 +366,7 @@ export default {
         )[0];
         page.click();
         this.currentPage = index;
+        this.tab = index + 1
         this.currentQuestion = -1;
         window.scrollTo(0, 0);
         if (NAVIGATION_AUTOCLOSE_ON_SELECTION) {
