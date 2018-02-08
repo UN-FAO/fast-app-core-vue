@@ -287,7 +287,7 @@ export default {
         appName: this.$store.state.authStore.appName
       });
       await Localization.getTranslations();
-      this.translations = await Form.local().getAllLabels(
+      this.translations = await FormLabels.get(
         this.selection,
         this.languageSelection
       );
