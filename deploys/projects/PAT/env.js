@@ -23,6 +23,7 @@ exports.FAST_VERSION = '0.5.13'
 exports.APP_URL = 'https://tknrqdvfbuczudk.form.io'
 exports.APP_NAME = 'tknrqdvfbuczudk'
 exports.SHARE_DATA_BETWEEN_USERS = false
+exports.TAB_MENU = false
 /*
 |--------------------------------------------------------------------------
 | APP CONFIGURATION

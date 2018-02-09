@@ -1,0 +1,188 @@
+.form-login input[type="text"],
+.form-login input[type="password"],
+.form-login input[type="email"] {
+  height: 45px;
+  width: 100%;
+  margin: 0;
+  padding: 0 20px;
+  vertical-align: middle;
+  background: #fff;
+  border: 3px solid #fff;
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 50px;
+  color: black;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  border-radius: 4px;
+  -moz-box-shadow: none;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  -o-transition: all .3s;
+  -moz-transition: all .3s;
+  -webkit-transition: all .3s;
+  -ms-transition: all .3s;
+  transition: all .3s;
+  margin-top: 4px;
+}
+.form-login input[type="submit"] {
+  font-size: 1.2em;
+  text-transform: uppercase;
+  font-weight: 400;
+  outline: 0;
+  cursor: pointer;
+  height: 40px;
+}
+.form-login input[type="submit"]:hover {
+  transition: background-color 0.5s ease;
+}
+.form-login .remember-forgot {
+  float: left;
+  width: 100%;
+  margin: 10px 0 0 0;
+}
+.form-login .forgot-pass-content {
+  min-height: 20px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.form-login label,
+.form-login a {
+  font-size: 12px;
+  font-weight: 400;
+  color: #FFFFFF;
+}
+.form-login a {
+  transition: color 0.5s ease;
+}
+.form-login a:hover {
+  color: #e2c000;
+  text-decoration: none;
+}
+.form-login .panel {
+  background: transparent
+}
+
+
+.login-main-container {
+  overflow: hidden;
+}
+
+.login-main-container {
+  overflow: hidden;
+}
+
+.login-main-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: visible;
+  display: flex;
+}
+
+.login-main-container {
+  flex-grow: 1;
+  flex-direction: column;
+}
+
+.appTitleHolder {
+  text-align: center;
+}
+
+.login-form-container {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-main-container .big-logo {
+  opacity: 0.25;
+}
+
+.login-main-container .big-logo {
+  opacity: 0.15;
+  display: block;
+}
+
+.login-main-container .big-logo {
+  position: absolute;
+  height: 1124px;
+  width: 1124px;
+  display: none;
+  opacity: 0;
+  left: -562px;
+  z-index: -1;
+  text-align: center;
+}
+
+.fao-logo-login {
+  height: 59px;
+  width: 300px;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.login-form-holder {
+  min-width: -webkit-fill-available;
+}
+
+.login-form-holder h1 {
+  font-size: 5em;
+  color: #065276;
+}
+
+.login-form-holder h4 {
+  font-size: 2.5em;
+  color: #065276;
+}
+
+.login-form-holder button {
+  height: 45px;
+}
+
+@media screen and (max-height: 749px){
+    .form-login {
+      width: 100%;
+      margin: 0 auto;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 25px 25px 50px 25px;
+      text-align: center;
+      position: relative;
+      height: 360px;
+      overflow-y: scroll;
+  }
+}
+ @media screen and (min-height: 750px){
+     .form-login {
+      width: 100%;
+      margin: 0 auto;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 25px 25px 50px 25px;
+      text-align: center;
+      position: relative;
+      max-height: 600px;
+      overflow-y: scroll;
+  }
+}
+
+.form-login .q-if-control {
+  cursor: pointer;
+  margin-left: 8px;
+  color: white;
+  font-size: 24px;
+}
+
+.form-login .q-if-label.ellipsis.full-width.absolute.self-start.q-if-label-above {
+  font-size: large !important;
+  font-weight: 350 !important;
+  color: white;
+}
+
+.form-login .segment-title {
+  font-size: 20px;
+  color: white;
+  text-align: -webkit-center;
+  text-transform: uppercase;
+}

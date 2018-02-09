@@ -3,6 +3,11 @@ import { APP_URL } from "config/env";
 import OFFLINE_PLUGIN from "modules/Formio/components/formio/src/offlinePlugin";
 import Promise from 'bluebird'
 import { Loading } from 'quasar'
+import store from 'config/store'
+import Auth from 'modules/Auth/api/Auth'
+import _debounce from 'lodash/debounce'
+// import PreProcess from './importPreProcess'
+// import Uploader from './Uploader'
 
 let Import = class {
   /**
@@ -33,14 +38,21 @@ let Import = class {
    */
   static async parseJson(json, vm) {
     let totalSubmissions = json.length
+    let formio = Import.getFormIOInstance(vm)
     Loading.show({ message: 'Importing ' + totalSubmissions + ' submissions' })
+    // json = json.slice(0, 2);
     Promise.each(json, async function (row, index) {
-      Loading.show({ message: 'Importing submission ' + (index + 1) + ' out of ' + totalSubmissions })
+      // await Uploader.sendDataToFormIO(row)
       let submission = Import.prepareSubmission(row)
-      await Import.saveSubmission(submission, vm)
+      await Import.saveSubmission(submission, formio, vm)
     }).then(() => {
-      Loading.hide()
+      let dEmit = _debounce(Import.emitNotification, 2000)
+      dEmit(vm)
     })
+  }
+
+  static emitNotification(vm) {
+    vm.$eventHub.emit("FAST-DATA_IMPORTED");
   }
   /**
    *
@@ -83,13 +95,12 @@ let Import = class {
    *
    * @param {*} vm
    */
-  static async saveSubmission(submission, vm) {
-    let formio = Import.getFormIOInstance(vm)
-    formio.saveSubmission(submission, vm);
-    return new Promise((resolve, reject) => {
-      vm.$eventHub.on("FAST-DATA_IMPORTED", () => {
-        resolve()
-      })
+  static async saveSubmission(submission, formio, vm) {
+    // let processedSubmission = PreProcess.JsonSubmission(submission)
+    await store.dispatch('addSubmission', {
+      formSubmission: submission,
+      formio: formio,
+      User: Auth.user().data
     })
   }
 }

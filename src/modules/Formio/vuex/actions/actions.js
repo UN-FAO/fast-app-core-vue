@@ -12,6 +12,7 @@ import _forEach from 'lodash/forEach'
 import _map from 'lodash/map'
 import _unionBy from 'lodash/unionBy'
 import _isEmpty from 'lodash/isEmpty'
+import _cloneDeep from 'lodash/cloneDeep'
 import Raven from 'config/raven'
 import {
   Toast
@@ -222,14 +223,14 @@ const actions = {
       formio,
       User
   }) {
-    let submission = {
-      ...formSubmission,
+    let submission = _cloneDeep(formSubmission)
+    submission = {
+      ...submission,
       sync: false,
       user_email: User.email,
       formio: formio
     }
     submission = SyncHelper.deleteNulls(submission)
-
     // If we are updating the submission
     if (formSubmission._id) {
       submission = {
@@ -237,19 +238,16 @@ const actions = {
         type: 'update',
         updated: moment().format()
       }
-
       let localSubmission = await Submission.local().get(formSubmission._id)
-
       // Cases where we want to update
-      let submitting = submission.draft === false
-      let localDraft = localSubmission.data.draft === false
-      let submissionNotDraft = submission.draft === false
+      let sendingSubmission = submission.draft === false
+      let fromDraftToSubmission = (localSubmission.data.draft === false) && (submission.draft === false)
       let autoSave = submission.trigger === 'autoSaveAsDraft'
       let isSynced = !!(localSubmission.data.access && Array.isArray(localSubmission.data.access))
       let hasError = localSubmission.data.syncError !== false && typeof localSubmission.data.syncError !== 'undefined'
-      localSubmission.data = submission
       // Check cases
-      if (((submitting || (localDraft && submissionNotDraft)) && !autoSave) || (!isSynced && autoSave && !hasError)) {
+      if (((sendingSubmission || (fromDraftToSubmission)) && !autoSave) || (!isSynced && autoSave && !hasError)) {
+        localSubmission.data = submission
         await Submission.local().update(localSubmission)
       }
       // await Submission.local().update(localSubmission)

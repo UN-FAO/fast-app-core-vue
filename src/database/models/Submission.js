@@ -1,5 +1,4 @@
 import _map from 'lodash/map'
-import _cloneDeep from 'lodash/cloneDeep'
 import _filter from 'lodash/filter'
 import _orderBy from 'lodash/orderBy'
 import _uniqBy from 'lodash/uniqBy'
@@ -7,6 +6,7 @@ import _get from 'lodash/get'
 import Auth from 'modules/Auth/api/Auth'
 import * as Database from 'database/Database';
 import uuidv4 from 'uuid/v4'
+import _cloneDeep from 'lodash/cloneDeep'
 
 
 const Submission = class {
@@ -156,8 +156,9 @@ const Submission = class {
   }
 
   static async sFind(vm, filter, pagination) {
+    var t0 = performance.now();
     let page = (pagination && pagination.page) || 1
-    let limit = (pagination && pagination.limit) || 400
+    let limit = (pagination && pagination.limit) || 600
     let paginationInfo = {}
     let local = await Submission.find(filter)
 
@@ -169,21 +170,29 @@ const Submission = class {
       paginationInfo = { total: totalRecords, pages: pages, currentPage: page, limit: limit }
       local = local.slice(firstRecord - 1, lastRecord);
     }
+    var t1 = performance.now();
+    console.log("Create pagination " + (t1 - t0) / 1000 + " seconds.");
+    t0 = performance.now();
 
-    let submissions = _cloneDeep(local)
-
-    submissions = _filter(submissions, function (o) {
+    local = _filter(local, function (o) {
       return (
         (o.data.owner && o.data.owner === Auth.user()._id) ||
         (o.data.user_email && o.data.user_email === Auth.userEmail())
       )
     })
-
-    submissions = _map(submissions, function (submission) {
+    local = _orderBy(local, [
+      'created'
+    ], [
+        'desc'
+      ])
+    t1 = performance.now();
+    console.log("Clone filter and ordering " + (t1 - t0) / 1000 + " seconds.");
+    t0 = performance.now();
+    let submissions = _map(local, function (submission) {
       let data = submission.data.data
       let formio = submission.data.formio
       submission = _cloneDeep(submission)
-      submission.data.data = {
+      let tableRow = {
         created: submission.meta.created,
         Humancreated: vm.humanizeDate(submission.meta.created),
         HumanUpdated: vm.humanizeDate(submission.meta.updated),
@@ -195,16 +204,10 @@ const Submission = class {
         formio: formio,
         syncError: submission.data.syncError ? submission.data.syncError : false
       }
-      return submission
+      return tableRow
     })
-    submissions = _map(submissions, 'data')
-    submissions = _map(submissions, 'data')
-    submissions = _orderBy(submissions, [
-      'created'
-    ], [
-        'desc'
-      ])
-
+    t1 = performance.now();
+    console.log("Map and add new values " + (t1 - t0) / 1000 + " seconds.");
     let paginated = { results: submissions, pagination: paginationInfo }
     return paginated
   }

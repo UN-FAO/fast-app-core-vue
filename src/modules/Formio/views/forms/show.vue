@@ -2,11 +2,11 @@
   <div class="row" style="background:#f3f3f5">
     <div>
       <q-card color="white" style="bottom: unset;margin-top: 30px;" class="col-lg-10 col-lg-offset-1 col-md-offset-1 col-md-10 col-sm-10 col-sm-offset-1 col-xs-offset-0 col-xs-12  centered relative-position">
-
           <q-card-main>
         <h1 class="_control-label-title">{{formTitle}}</h1>
 
           <q-transition appear enter="fadeIn" leave="fadeOut">
+            <!-- This should be extracted to its own component -->
              <q-data-table
               :data="submissions"
               :config="config"
@@ -45,15 +45,19 @@
               </q-btn>
             </template>
             </q-data-table>
-
+           <!--Until Here      -->
 
           </q-transition>
         </q-card-main>
+          <!-- This should be extracted to its own component -->
         <q-inner-loading :visible="typeof submissions === 'undefined'">
           <q-spinner-audio size="50px" color="primary"></q-spinner-audio>
         </q-inner-loading>
+         <!--Until Here      -->
       </q-card>
     </div>
+
+    <!-- This should be extracted to its own component -->
     <q-fixed-position corner="top-right" :offset="[18, 18]">
       <q-fab color="red" icon="add" direction="down" push>
         <q-btn  color="primary" round @click='createSubmission()'> <i class="material-icons edit" style="font-size: 1.7em;" >add</i>
@@ -75,11 +79,13 @@
 
       </q-fab>
     </q-fixed-position>
+      <!--Until Here      -->
   </div>
 </template>
 
 <script>
 import {
+  Loading,
   QDataTable,
   QField,
   QInput,
@@ -127,9 +133,10 @@ export default {
     this.$eventHub.on("FAST-DATA_SYNCED", async data => {
       await this.updateLocalSubmissions();
     });
-
     this.$eventHub.on("FAST-DATA_IMPORTED", async data => {
       await this.updateLocalSubmissions();
+      Loading.hide();
+      this.$swal("Imported!", "Your submission were imported", "success");
     });
   },
   computed: {
@@ -170,6 +177,7 @@ export default {
         return !!(c.label !== "");
       });
       this.visibleColumns.forEach((column, index) => {
+        let self = this;
         let visibleColum = {
           label: this.$t(column.label),
           field: column.key,
@@ -177,6 +185,22 @@ export default {
           sort: true,
           width: "250px",
           format(value, row) {
+            if (column.key === "dataCollected") {
+              if (
+                row.fullSubmission[column.key].scouting &&
+                row.fullSubmission[column.key].traps
+              ) {
+                let text =
+                  self.$t("Field scouting") +
+                  " and " +
+                  self.$t("Pheromone traps");
+                return text;
+              } else if (row.fullSubmission[column.key].scouting) {
+                return self.$t("Field scouting");
+              } else if (row.fullSubmission[column.key].traps) {
+                return self.$t("Pheromone traps");
+              }
+            }
             return typeof row.fullSubmission[column.key] === "object"
               ? ""
               : row.fullSubmission[column.key];
@@ -256,6 +280,7 @@ export default {
   },
   beforeDestroy() {
     this.$eventHub.off("FAST-DATA_SYNCED");
+    this.$eventHub.off("FAST-DATA_IMPORTED");
   },
   methods: {
     exportCSV() {
@@ -574,6 +599,7 @@ export default {
     async updateLocalSubmissions(done) {
       if (this.$route.params.idForm === "*") {
         let submissions = await Submission.local().sFind(this, {});
+        console.log("inside the page submissions", submissions);
         this.submissions = submissions.results;
       } else {
         let submissions = await Submission.local().sFind(this, {
