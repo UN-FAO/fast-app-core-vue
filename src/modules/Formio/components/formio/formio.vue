@@ -388,7 +388,7 @@ export default {
               syncError: false
             };
             this.save(formSubmission);
-            this.$swal("Sent!", "Your submission has been sent!", "success");
+            this.$swal(this.t("Sent!"), this.t("Your submission has been sent!"), "success");
           });
         }
       });

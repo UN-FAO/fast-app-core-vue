@@ -1,4 +1,6 @@
 exports.TRANSLATIONS = [
+  'Your submission has been sent!',
+  'Sent!',
   'Upload your JSON File',
   'Select your JSON file',
   'Updated at',

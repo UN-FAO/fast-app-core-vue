@@ -1,6 +1,6 @@
 {
   "name": "fast",
-  "version": "0.5.28",
+  "version": "0.5.30",
   "deployAppName": "FAW",
   "deployAppID": "5a65a0b902b5450001fbc4cd",
   "description": "A data collection application for FORM.io",

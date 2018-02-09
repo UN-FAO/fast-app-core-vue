@@ -9,9 +9,10 @@
 |
 */
 exports.APP_ENV = 'prod'
-exports.FAST_VERSION = '0.5.28'
+exports.FAST_VERSION = '0.5.30'
 exports.SHARE_DATA_BETWEEN_USERS = false
 exports.TAB_MENU = true
+exports.HAS_SCORES = false
 /*
 |--------------------------------------------------------------------------
 | FORM.IO CONFIGURATION
@@ -35,7 +36,7 @@ exports.APP_NAME = 'vbemsizlqbxmzzk'
 |
 */
 exports.APP_FANTACY_NAME = 'FAMEWS'
-exports.APP_ABOUT_NAME = 'Fall Armyworm'
+exports.APP_ABOUT_NAME = 'FAMEWS'
 exports.APP_PHRASE = 'Fall Armyworm Monitoring and Early Warning System'
 /*
 |--------------------------------------------------------------------------

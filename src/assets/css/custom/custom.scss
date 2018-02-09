@@ -105,6 +105,6 @@
   }
 }
 
-#registerForm label.control-label.field-required {
-  color: white !important;
+#registerForm label.control-label, #registerForm label.control-label.field-required {
+  color: white
 }

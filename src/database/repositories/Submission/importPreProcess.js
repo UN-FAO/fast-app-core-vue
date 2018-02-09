@@ -1,17 +1,64 @@
 let preProcess = class {
   static JsonSubmission(jsonSubmission) {
-    console.log('We need to pre process this', jsonSubmission)
+    let modifiedSubmission = this.changeAdecuacyAndImportanceValues(jsonSubmission)
+    console.log('modifiedSubmission', modifiedSubmission)
+    modifiedSubmission = this.changeLabels(modifiedSubmission)
+    console.log('modifiedSubmission2', modifiedSubmission)
+    return jsonSubmission
+  }
+
+  static changeLabels(jsonSubmission) {
+    let changes = preProcess.getChanges()
+    changes.forEach(change => {
+      console.log('jsonSubmission.data[change.previous]', jsonSubmission.data[change.previous])
+      if (jsonSubmission.data[change.previous]) {
+        console.log('We are changing', change.previous, ' to ', change.new)
+        console.log('jsonSubmission.data[change.previous]', jsonSubmission.data[change.previous])
+        jsonSubmission.data[change.new] = jsonSubmission.data[change.previous]
+        console.log('jsonSubmission.data[change.new]', jsonSubmission.data[change.new])
+        delete jsonSubmission.data[change.previous]
+      }
+    });
+    return jsonSubmission
+  }
+
+  static getChanges() {
+    return [
+      {
+        previous: 'page32EC-mktEC-mkt-whyNot',
+        new: 'EC-mkt-whyNot'
+      },
+      {
+        previous: 'S0-infoS0-info-ID',
+        new: 'S0-info-ID'
+      },
+      {
+        previous: 'S0-infoS0-info-indigenous',
+        new: 'S0-info-indigenous'
+      }, {
+        previous: 'S0-infoS0-info-indigenous-other',
+        new: 'S0-info-indigenous-other'
+      },
+      {
+        previous: 'S0-infoS0-info-language',
+        new: 'S0-info-language'
+      },
+      {
+        previous: 'S0-infoS0-info-language-other',
+        new: 'S0-info-language-other'
+      }
+    ]
+  }
+
+  static changeAdecuacyAndImportanceValues(jsonSubmission) {
     let ImportanceQuestions = preProcess.getImportanceQuestions()
     ImportanceQuestions.forEach((q) => {
-      console.log('Previous Value ImportanceQuestions', jsonSubmission.data[q], q)
-      // jsonSubmission.data[q] = preProcess.getImportanceModifiedValue(jsonSubmission.data[q])
-      console.log('New Value ImportanceQuestions', preProcess.getImportanceModifiedValue(jsonSubmission.data[q]))
+      jsonSubmission.data[q] = preProcess.getImportanceModifiedValue(jsonSubmission.data[q])
     })
+
     let AdecuacyQuestions = preProcess.getAdecuacyQuestions()
     AdecuacyQuestions.forEach((q) => {
-      console.log('Previous Value AdecuacyQuestions', jsonSubmission.data[q], q)
-      // jsonSubmission.data[q] = preProcess.getAdecuacyModifiedValue(jsonSubmission.data[q])
-      console.log('New Value AdecuacyQuestions', preProcess.getAdecuacyModifiedValue(jsonSubmission.data[q]))
+      jsonSubmission.data[q] = preProcess.getAdecuacyModifiedValue(jsonSubmission.data[q])
     })
     return jsonSubmission
   }

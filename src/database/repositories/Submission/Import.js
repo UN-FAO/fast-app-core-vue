@@ -6,7 +6,7 @@ import { Loading } from 'quasar'
 import store from 'config/store'
 import Auth from 'modules/Auth/api/Auth'
 import _debounce from 'lodash/debounce'
-// import PreProcess from './importPreProcess'
+import PreProcess from './importPreProcess'
 // import Uploader from './Uploader'
 
 let Import = class {
@@ -96,9 +96,9 @@ let Import = class {
    * @param {*} vm
    */
   static async saveSubmission(submission, formio, vm) {
-    // let processedSubmission = PreProcess.JsonSubmission(submission)
+    let processedSubmission = PreProcess.JsonSubmission(submission)
     await store.dispatch('addSubmission', {
-      formSubmission: submission,
+      formSubmission: processedSubmission,
       formio: formio,
       User: Auth.user().data
     })

@@ -104,3 +104,7 @@
     margin-left: -25px;
   }
 }
+
+#registerForm label.control-label, #registerForm label.control-label.field-required {
+  color: white
+}

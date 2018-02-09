@@ -121,7 +121,7 @@ button.btn.btn-primary.btn-wizard-nav-previous {
   background-color: whitesmoke;
   border-color: #337ab7;
   height: 60px;
-  width: 200px;
+  width: 30vw;
 }
 
 button.btn.btn-primary.btn-wizard-nav-next:hover,
@@ -129,17 +129,18 @@ button.btn.btn-primary.btn-wizard-nav-previous:hover,
 button.btn.btn-primary.btn-wizard-nav-next:active,
 button.btn.btn-primary.btn-wizard-nav-previous:active {
   background-color: #337ab7;
-  color: white;
+  color: white !important;
 }
 
 button.btn.btn-primary.btn-wizard-nav-submit,
 button.btn.btn-primary.submitForm {
-  color: #ffffff !important;
-  background-color: rgb(5, 116, 169);
-  border-color: none;
-  height: 60px;
-  width: 200px;
-  font-size: 1.5em;
+    color: #ffffff !important;
+    background-color: rgb(5, 116, 169);
+    border-color: none;
+    height: 60px;
+    width: 40vw;
+    font-size: 1.3em;
+    text-transform: uppercase;
 }
 button.btn.btn-default.saveAsDraft:hover,
 button.btn.btn-primary.btn-wizard-nav-submit:hover {
