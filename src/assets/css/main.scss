@@ -685,6 +685,20 @@ th, th.field-required {
     z-index: 1000;
 }
 
+.choices__list--multiple .choices__item {
+    display: inline-block;
+    vertical-align: middle;
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 500;
+    margin-right: 3.75px;
+    margin-bottom: 3.75px;
+    background-color: #0e6da5;
+    border: none;
+    color: #fff;
+    word-break: break-all;
+}
+
 @import 'custom/custom.scss';
 @import 'qDataTable.scss';
 @import 'errorResponsiveTable.scss';

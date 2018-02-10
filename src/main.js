@@ -56,6 +56,9 @@ import Localization from 'modules/Localization/Localization'
 import VueAsyncProperties from 'vue-async-properties'
 Vue.use(VueAsyncProperties)
 
+import Moment from 'database/repositories/Date/moment'
+Moment.setLocales()
+
 Vue.config.productionTip = false
 
 Vue.prototype.$http = axios

@@ -138,6 +138,10 @@ export default {
       Loading.hide();
       this.$swal("Imported!", "Your submission were imported", "success");
     });
+
+    this.$eventHub.on("lenguageSelection", async data => {
+      await this.updateLocalSubmissions();
+    });
   },
   computed: {
     formTitle() {
@@ -159,14 +163,14 @@ export default {
       let columns = [];
       columns.push(
         {
-          label: "Status",
+          label: this.$t("Status"),
           field: "status",
           filter: true,
           sort: true,
           width: "90px"
         },
         {
-          label: "Updated at",
+          label: this.$t("Updated at"),
           field: "HumanUpdated",
           filter: true,
           sort: true,
@@ -266,7 +270,24 @@ export default {
           rowsPerPage: 15,
           options: [5, 10, 15, 30, 50, 500]
         },
-        selection: "multiple"
+        selection: "multiple",
+        messages: {
+          noData: '<i>warning</i> ' + this.$t("No data available to show."),
+          noDataAfterFiltering: '<i>warning</i> ' + this.$t("No results. Please refine your search terms.")
+        },
+        // (optional) Override default labels. Useful for I18n.
+        labels: {
+          columns: this.$t("Columns"),
+          allCols: this.$t('All Columns'),
+          rows: this.$t('Rows'),
+          selected: {
+            singular: this.$t('item selected.'),
+            plural: this.$t('items selected.')
+          },
+          clear: this.$t('clear'),
+          search: this.$t('Search'),
+          all: this.$t('All')
+        }
       },
       pagination: true,
       rowHeight: 50,
@@ -281,6 +302,7 @@ export default {
   beforeDestroy() {
     this.$eventHub.off("FAST-DATA_SYNCED");
     this.$eventHub.off("FAST-DATA_IMPORTED");
+    this.$eventHub.off("lenguageSelection");
   },
   methods: {
     exportCSV() {
@@ -533,8 +555,7 @@ export default {
     },
     humanizeDate(givenDate) {
       let start = moment(givenDate);
-      let end = moment();
-      return end.to(start);
+      return start.fromNow();
     },
     scrollToEnd: function(ID) {
       var container = this.$el.querySelector("#container");
