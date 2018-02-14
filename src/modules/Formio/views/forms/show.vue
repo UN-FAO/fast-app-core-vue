@@ -35,9 +35,10 @@
                 <q-btn color="primary" round small  @click='handleEdit(scope)'> <i class="material-icons edit" >edit</i>
                   <q-tooltip>{{$t('Edit')}}</q-tooltip>
                 </q-btn>
-
+                <q-btn color="primary" round small  @click='handleReport(scope)'> <i class="material-icons assignment" >report</i>
+                  <q-tooltip>{{$t('Report')}}</q-tooltip>
+                </q-btn>
               </template>
-
 
               <template slot="selection" slot-scope="props">
               <q-btn flat color="primary" @click="handleDelete(props)">
@@ -378,6 +379,17 @@ export default {
       let submission = data.row;
       self.$router.push({
         name: "formio_submission_update",
+        params: {
+          idForm: submission.formio.formId,
+          idSubmission: submission.id_submision
+        }
+      });
+    },
+    handleReport(data) {
+      let self = this;
+      let submission = data.row;
+      self.$router.push({
+        name: "formio_submission_report",
         params: {
           idForm: submission.formio.formId,
           idSubmission: submission.id_submision

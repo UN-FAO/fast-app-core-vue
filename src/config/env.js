@@ -8,15 +8,10 @@
 | understand whats are your users looking at!
 |
 */
-<<<<<<< HEAD
 exports.APP_ENV = 'dev'
 exports.FAST_VERSION = '0.5.13'
-=======
-exports.APP_ENV = 'prod'
-exports.FAST_VERSION = '0.5.28'
->>>>>>> master
 exports.SHARE_DATA_BETWEEN_USERS = false
-exports.TAB_MENU = true
+exports.TAB_MENU = false
 /*
 |--------------------------------------------------------------------------
 | FORM.IO CONFIGURATION
@@ -27,13 +22,8 @@ exports.TAB_MENU = true
 | forms asociated with it.
 |
 */
-<<<<<<< HEAD
 exports.APP_URL = 'https://uiorzjzflxyccmo.form.io'
 exports.APP_NAME = 'uiorzjzflxyccmo'
-=======
-exports.APP_URL = 'https://vbemsizlqbxmzzk.form.io'
-exports.APP_NAME = 'vbemsizlqbxmzzk'
->>>>>>> master
 /*
 |--------------------------------------------------------------------------
 | APP CONFIGURATION
@@ -44,14 +34,8 @@ exports.APP_NAME = 'vbemsizlqbxmzzk'
 | in the app.
 |
 */
-<<<<<<< HEAD
 exports.APP_FANTACY_NAME = 'SHARP+'
 exports.APP_PHRASE = 'Self-evaluation and Holistic Assessment of climate Resilence of Farmers and Pastoralists'
-=======
-exports.APP_FANTACY_NAME = 'FAMEWS'
-exports.APP_ABOUT_NAME = 'Fall Armyworm'
-exports.APP_PHRASE = 'Fall Armyworm Monitoring and Early Warning System'
->>>>>>> master
 /*
 |--------------------------------------------------------------------------
 | MD5 KEY

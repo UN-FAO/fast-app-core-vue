@@ -75,9 +75,11 @@ export default {
     var rows = [resuls.data.data];
     var adequacy = ['AG-hh-ac-adq', 'AG-agr-adq', 'EC-iga-adq', 'EN-landac-adq', 'AG-crop-adq', 'AG_inter_adq', 'EN-weed-adq', 'AG-spm-adq', 'EN-slm-adq', 'EN_legum_adq', 'EN-fert-adq', 'AG-animal-adq', 'AG-breed-adq', 'AG-health-adq', 'AG-new-adq', 'EC-input-adq', 'EN-wacc-adq', 'EN-wcp-adq', 'EN-wqa-adq', 'EN-landqa-adq', 'AG-trees-ac-adq', 'EN-lands-adq', 'EN-enerso-adq', 'EN-enercp-adq', 'SO-dist-adq', 'SO-cc-adq', 'AG-infoac-adq', 'EC-ict-adq', 'GO-gov-adq', 'EC-mkt-adq', 'EC-inc-adq', 'EC-ass-adq', 'EC-fin-adq', 'EC-ins-adq', 'SO-coop-adq', 'SO-group-adq', 'SO-meal-adq', 'SO-dmhh-adq', 'SO-dmfarm-adq'];
     var academic = ['AG-hh-ac-average', 'AG-agr-ac-average', 'EC-iga-ac-average', 'EN-landac-ac-average', 'AG-crop-ac-average', 'AG-inter-ac-average', 'EN-weed-ac-average', 'AG_spm_ac_average', 'EN-slm-ac-average', 'EN_legum_ac_average', 'EN-fert-ac-average', 'AG-animal-ac-average', 'AG-breed-ac-average', 'AG-health-ac-average', 'AG-new-ac-average', 'EC-input-ac-average', 'EN-wacc-ac-average', 'EN-wcp-ac-average', 'EN-wqa-ac-average', 'EN-landqa-ac-average', 'AG-trees-ac-average', 'EN-lands-ac-average', 'EN-enerso-ac-average', 'EN-enercp-ac-average', 'SO-dist-ac-average', 'SO-cc-ac-average', 'AG-infoac-ac-a', 'EC-ict-ac-average', 'GO-gov-ac-average', 'EC-mkt-ac-average', 'EC-inc-ac-average', 'EC-ass-ac-average', 'EC-fin-ac-average', 'EC-ins-ac-average', 'SO-coop-ac-average', 'SO-group-ac-average', 'SO-meal-ac-average', 'SO-dmhh-ac-average', 'SO-dmfarm-ac-average'];
-    console.log("rows", rows);
+    var importance = ['AG-hh-ac-imp', 'AG-agr-imp', 'EC-iga-imp', 'EN-landac-imp', 'AG-crop-imp', 'AG_inter_imp', 'EN-weed-imp', 'AG-spm-imp', 'EN-slm-imp', 'EN_legum_imp', 'EN-fert-imp', 'AG-animal-imp', 'AG-breed-imp', 'AG-health-imp', 'AG-new-imp', 'EC-input-imp', 'EN-wacc-imp', 'EN-wcp-imp', 'EN-wqa-imp', 'EN-landqa-imp', 'AG-trees-ac-imp', 'EN-lands-imp', 'EN-enerso-imp', 'EN-enercp-imp', 'SO-dist-imp', 'SO-cc-imp', 'AG-infoac-imp', 'EC-ict-imp', 'GO-gov-imp', 'EC-mkt-imp', 'EC-inc-imp', 'EC-ass-imp', 'EC-fin-imp', 'EC-ins-imp', 'SO-coop-imp', 'SO-group-imp', 'SO-meal-imp', 'SO-dmhh-imp', 'SO-dmfarm-imp'];
+console.log("rows", rows);
     this.getRelativeResilience(rows, academic, adequacy);
     this.getNAmodules(rows, adequacy);
+    this.getImportanceLevel(rows, importance);
 
     console.log("this.table", this.table);
   },
@@ -106,6 +108,36 @@ export default {
               }
         }
               console.log("jsonData ", i, jsonData, this.naModules);
+    },
+    getImportanceLevel(rows, importance) {
+      var notAtAll = [];
+      var little = [];
+      var avg = [];
+      var aLot = [];
+      var very = [];
+      for (var i = 0; i < importance.length; i++) {
+            var imp = importance[i];
+            var impLevel = rows[0][imp];
+            if (impLevel === 'notAtAll') {
+              notAtAll.push(i + 2);
+            } else if (impLevel === 'aLittle') {
+              little.push(i + 2);
+            } else if (impLevel === 'average') {
+              avg.push(i + 2);
+            } else if (impLevel === 'aLot') {
+              aLot.push(i + 2);
+            } else if (impLevel === 'very') {
+              very.push(i + 2);
+            }
+        }
+        var impElements = ["Not at all", "A little", "Average", "A lot", "Very"];
+        for (var j = 0; j < impElements.length; j++) {
+        var jsonData = {};
+              jsonData["module"] = impElements[j];
+              var score = notAtAll.join();
+              jsonData["score"] = score;
+              this.table.push(jsonData);
+        }
     },
     changeData() {
       this.ourData = this.ourData.map(v => {
