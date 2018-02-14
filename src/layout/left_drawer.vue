@@ -100,7 +100,7 @@
 import Localization from "modules/Localization/Localization";
 import { mapState, mapActions } from "vuex";
 import Auth from "modules/Auth/api/Auth";
-import Form from 'database/models/Form'
+import Form from "database/models/Form";
 import {
   QScrollArea,
   QSideLink,
@@ -160,24 +160,38 @@ export default {
       this.$refs.leftDrawer.close();
     },
     async syncApp() {
-      await this.getResources({
-        appName: this.$store.state.authStore.appName
-      });
-      await Localization.getTranslations();
       this.$eventHub.$emit("openLeftDrawer");
+
       this.$swal({
-        title: this.$t("Localizations Synced"),
+        title: "Updating...",
         text: this.$t(
-          "You need to reload the page to see them. Want to do it now?"
+          "Wait until the App is Updated. This can take a couple minutes..."
         ),
-        type: "success",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonClass: "modalCancel",
-        confirmButtonText: this.$t("Yes, reaload it!"),
-        cancelButtonText: this.$t("No, Later")
-      }).then(async () => {
-        window.location.reload(true);
+        showCancelButton: false,
+        onOpen: async () => {
+          this.$swal.showLoading();
+
+          await Localization.getTranslations();
+
+          await this.getResources({
+            appName: this.$store.state.authStore.appName
+          });
+          this.$swal.close();
+          this.$swal({
+            title: this.$t("App Updated"),
+            text: this.$t(
+              "You need to reload the page to see the changes. Want to do it now?"
+            ),
+            type: "success",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonClass: "modalCancel",
+            confirmButtonText: this.$t("Yes, reaload it!"),
+            cancelButtonText: this.$t("No, Later")
+          }).then(async () => {
+            window.location.reload(true);
+          });
+        }
       });
     },
     handleLogout() {
@@ -189,7 +203,7 @@ export default {
       return Auth.hasRole("Administrator");
     },
     userEmail() {
-        return Auth.userEmail()
+      return Auth.userEmail();
     }
   }
 };

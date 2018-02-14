@@ -94,12 +94,12 @@ const actions = {
         commit
       }, data)
     ]
-
     if (Auth.check()) {
       promises.push(actions.getUsers({
         commit
       }, data))
     }
+
     await Promise.all(promises)
   },
 
@@ -112,7 +112,7 @@ const actions = {
   async getUsers({
     commit
   }, data) {
-    actions.updateLocalResource({
+    await actions.updateLocalResource({
       data,
       collection: 'users',
       label: 'users'
@@ -128,7 +128,7 @@ const actions = {
   async getForms({
     commit
   }, data) {
-    actions.updateLocalResource({
+    await actions.updateLocalResource({
       data,
       collection: 'forms',
       label: 'forms'

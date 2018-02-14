@@ -269,8 +269,6 @@
               </div>
 
 
-
-
               <div class="copy" v-if="selectedLanguage === 'fr'">
                   <div style="text-align: right; color: rgb(14, 109, 165); font-size: 16px;">
                     <small>
@@ -293,7 +291,7 @@
                         Au sujet de FAW
                     </div>
                     <div class="title">
-                      <small>VOUS NE DEVRIEZ PAS PANIQUER  </small>AU SIGNE DE FAW DANS VOTRE DOMAINE
+                      <small>VOUS NE DEVRIEZ PAS PANIQUER  </small>AU SIGNE DE FAW DANS VOTRE FERME
                     </div>
 
                     <div class="title">

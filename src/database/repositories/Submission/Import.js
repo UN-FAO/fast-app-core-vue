@@ -40,7 +40,7 @@ let Import = class {
     let totalSubmissions = json.length
     let formio = Import.getFormIOInstance(vm)
     Loading.show({ message: 'Importing ' + totalSubmissions + ' submissions' })
-    // json = json.slice(0, 2);
+    json = json.slice(0, 2);
     Promise.each(json, async function (row, index) {
       // await Uploader.sendDataToFormIO(row)
       let submission = Import.prepareSubmission(row)
@@ -63,8 +63,9 @@ let Import = class {
       delete row.id;
       delete row._id;
     }
+    let data = row.data ? row.data : row
     let formSubmission = {
-      data: row,
+      data: data,
       redirect: false,
       syncError: false,
       draft: true,
