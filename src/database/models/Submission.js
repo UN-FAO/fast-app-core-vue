@@ -7,6 +7,7 @@ import Auth from 'modules/Auth/api/Auth'
 import * as Database from 'database/Database';
 import uuidv4 from 'uuid/v4'
 import _cloneDeep from 'lodash/cloneDeep'
+import moment from 'moment'
 
 
 const Submission = class {
@@ -156,7 +157,6 @@ const Submission = class {
   }
 
   static async sFind(vm, filter, pagination) {
-    var t0 = performance.now();
     let page = (pagination && pagination.page) || 1
     let limit = (pagination && pagination.limit) || 600
     let paginationInfo = {}
@@ -170,10 +170,6 @@ const Submission = class {
       paginationInfo = { total: totalRecords, pages: pages, currentPage: page, limit: limit }
       local = local.slice(firstRecord - 1, lastRecord);
     }
-    var t1 = performance.now();
-    console.log("Create pagination " + (t1 - t0) / 1000 + " seconds.");
-    t0 = performance.now();
-
     local = _filter(local, function (o) {
       return (
         (o.data.owner && o.data.owner === Auth.user()._id) ||
@@ -185,17 +181,15 @@ const Submission = class {
     ], [
         'desc'
       ])
-    t1 = performance.now();
-    console.log("Clone filter and ordering " + (t1 - t0) / 1000 + " seconds.");
-    t0 = performance.now();
     let submissions = _map(local, function (submission) {
       let data = submission.data.data
       let formio = submission.data.formio
       submission = _cloneDeep(submission)
       let tableRow = {
         created: submission.meta.created,
-        Humancreated: vm.humanizeDate(submission.meta.created),
-        HumanUpdated: vm.humanizeDate(submission.meta.updated),
+        updated: submission.meta.updated,
+        Humancreated: moment(submission.meta.created).fromNow(),
+        HumanUpdated: moment(submission.meta.updated).fromNow(),
         id_submision: submission.data._id ? submission.data._id : submission._id,
         local: !submission.data._id,
         status: submission.data.sync === false ? 'offline' : 'online',
@@ -206,8 +200,7 @@ const Submission = class {
       }
       return tableRow
     })
-    t1 = performance.now();
-    console.log("Map and add new values " + (t1 - t0) / 1000 + " seconds.");
+    submissions = _orderBy(submissions, ['updated'], ['desc'])
     let paginated = { results: submissions, pagination: paginationInfo }
     return paginated
   }

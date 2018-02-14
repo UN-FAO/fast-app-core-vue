@@ -6,14 +6,11 @@
           <div class="copy">
 
             <div style="text-align: right; color: rgb(14, 109, 165); font-size: 16px;">
-              <small>
-
-              <div v-if="!show">
-               <span>ABOUT</span><span @click="togglePage(true)"  v-bind:class="[show ? 'showing' : '', 'notShowing']"> Fall Armyworm</span>
-              </div>
-
-               <span v-if="show">ABOUT</span> <span @click="togglePage(false)" v-if="show" v-bind:class="[!show ? 'showing' : '', 'notShowing']"> FAMEWS</span> </small>
-         </div>
+              <small>ABOUT
+                <span @click="togglePage(true)"  v-bind:class="[show ? 'showing' : '', 'notShowing']">Fall Armyworm</span>
+                /
+                <span @click="togglePage(false)" v-bind:class="[!show ? 'showing' : '', 'notShowing']">FAMEWS</span> </small>
+            </div>
 
             <div id="FallArmy" v-if="show">
               <div class="title">
@@ -239,16 +236,12 @@
               </div>
             </div>
 
-          <div style="text-align: right; color: rgb(14, 109, 165); font-size: 16px;">
-              <small>
-
-              <div v-if="!show">
-               <span>ABOUT</span><span @click="togglePage(true)"  v-bind:class="[show ? 'showing' : '', 'notShowing']"> Fall Armyworm</span>
-              </div>
-
-               <span v-if="show">ABOUT</span> <span @click="togglePage(false)" v-if="show" v-bind:class="[!show ? 'showing' : '', 'notShowing']"> FAMEWS</span> </small>
-         </div>
-
+             <div style="text-align: right; color: rgb(14, 109, 165); font-size: 16px;">
+              <small>ABOUT
+                <span @click="togglePage(true)"  v-bind:class="[show ? 'showing' : '', 'notShowing']">Fall Armyworm</span>
+                /
+                <span @click="togglePage(false)" v-bind:class="[!show ? 'showing' : '', 'notShowing']">FAMEWS</span> </small>
+            </div>
 
           </div>
         </div>

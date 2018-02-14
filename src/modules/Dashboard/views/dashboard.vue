@@ -22,8 +22,7 @@
         <q-card-main @click="$router.push({name: 'About'})" style="cursor: pointer; text-align: center;" class="mainActions">
           <!--<q-icon name="fa-tablet fa-5x" />-->
           <q-icon class="material-icons">tablet_mac</q-icon>
-          <h1> {{ $t("About") }}
-           <br>{{APP_ABOUT_NAME}} </h1>
+          <h1> {{ $t("About") }} {{APP_ABOUT_NAME}} </h1>
         </q-card-main>
 
       </q-card>

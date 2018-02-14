@@ -33,8 +33,12 @@
                     {{$t('Version')}}   {{fastVersion}}
                     <q-icon name="fa-cog" color="white" @click="adminLogin" style="cursor:pointer;"/>
                   </p>
-
                 </div>
+
+                     <div class="sponsors" >
+
+                     </div>
+
             </div>
         </div>
     </div>

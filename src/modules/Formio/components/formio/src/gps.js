@@ -17,7 +17,7 @@ const GPS = class {
     // Register the event listeners for this functionallity
     document.addEventListener('gpsRequested', (e) => {
       Loading.show({
-        message: 'Getting GPS information',
+        message: vm.$t('Getting GPS information'),
         spinnerSize: 100
       })
     })
@@ -25,8 +25,8 @@ const GPS = class {
     document.addEventListener('gpsError', (e) => {
       Loading.hide()
       vm.$swal(
-        'GPS Error!',
-        'We could not get your GPS position',
+        vm.$t('GPS Error!'),
+        vm.$t('We could not get your GPS position'),
         'error'
       )
     })
@@ -35,8 +35,8 @@ const GPS = class {
       Loading.hide()
       // vm.renderForm()
       vm.$swal(
-        'GPS Registered!',
-        'Your GPS position was detected',
+        vm.$t('GPS Registered!'),
+        vm.$t('Your GPS position was detected'),
         'success'
       )
     })

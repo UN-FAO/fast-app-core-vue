@@ -8,10 +8,11 @@
 | understand whats are your users looking at!
 |
 */
-exports.APP_ENV = 'dev'
-exports.FAST_VERSION = '0.5.13'
+exports.APP_ENV = 'prod'
+exports.FAST_VERSION = '0.5.28'
 exports.SHARE_DATA_BETWEEN_USERS = false
 exports.TAB_MENU = false
+exports.HAS_SCORES = true
 /*
 |--------------------------------------------------------------------------
 | FORM.IO CONFIGURATION
@@ -36,6 +37,7 @@ exports.APP_NAME = 'uiorzjzflxyccmo'
 */
 exports.APP_FANTACY_NAME = 'SHARP+'
 exports.APP_PHRASE = 'Self-evaluation and Holistic Assessment of climate Resilence of Farmers and Pastoralists'
+exports.APP_ABOUT_NAME = 'SHARP+'
 /*
 |--------------------------------------------------------------------------
 | MD5 KEY

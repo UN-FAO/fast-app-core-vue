@@ -111,7 +111,6 @@ import {
 } from "quasar";
 import _forEach from "lodash/forEach";
 import _map from "lodash/map";
-import moment from "moment";
 import jsonexport from "jsonexport";
 import flatten from "flat";
 import Submission from "database/models/Submission";
@@ -138,6 +137,10 @@ export default {
       Loading.hide();
       this.$swal("Imported!", "Your submission were imported", "success");
     });
+
+    this.$eventHub.on("lenguageSelection", async data => {
+      await this.updateLocalSubmissions();
+    });
   },
   computed: {
     formTitle() {
@@ -145,7 +148,7 @@ export default {
       if (this.currentForm) {
         title = this.currentForm.data ? this.currentForm.data.title : "";
       }
-      return title;
+      return this.$t(title);
     },
     columns() {
       this.visibleColumns = FormioUtils.findComponents(
@@ -159,14 +162,14 @@ export default {
       let columns = [];
       columns.push(
         {
-          label: "Status",
+          label: this.$t("Status"),
           field: "status",
           filter: true,
           sort: true,
           width: "90px"
         },
         {
-          label: "Updated at",
+          label: this.$t("Updated at"),
           field: "HumanUpdated",
           filter: true,
           sort: true,
@@ -192,7 +195,7 @@ export default {
               ) {
                 let text =
                   self.$t("Field scouting") +
-                  " and " +
+                  ", " +
                   self.$t("Pheromone traps");
                 return text;
               } else if (row.fullSubmission[column.key].scouting) {
@@ -206,9 +209,6 @@ export default {
               : row.fullSubmission[column.key];
           }
         };
-        let isEven =
-          Number(index) === 0 || !!(Number(index) && !(Number(index) % 2));
-        visibleColum.classes = isEven ? "bg-grey-4" : "";
         columns.push(visibleColum);
       });
 
@@ -266,7 +266,24 @@ export default {
           rowsPerPage: 15,
           options: [5, 10, 15, 30, 50, 500]
         },
-        selection: "multiple"
+        selection: "multiple",
+        messages: {
+          noData: this.$t("No data available to show."),
+          noDataAfterFiltering: this.$t("No results. Please refine your search terms.")
+        },
+        // (optional) Override default labels. Useful for I18n.
+        labels: {
+          columns: this.$t("Columns"),
+          allCols: this.$t('All Columns'),
+          rows: this.$t('Rows'),
+          selected: {
+            singular: this.$t('item selected.'),
+            plural: this.$t('items selected.')
+          },
+          clear: this.$t('clear'),
+          search: this.$t('Search'),
+          all: this.$t('All')
+        }
       },
       pagination: true,
       rowHeight: 50,
@@ -281,6 +298,7 @@ export default {
   beforeDestroy() {
     this.$eventHub.off("FAST-DATA_SYNCED");
     this.$eventHub.off("FAST-DATA_IMPORTED");
+    this.$eventHub.off("lenguageSelection");
   },
   methods: {
     exportCSV() {
@@ -389,21 +407,22 @@ export default {
       let self = this;
       if (rows.length === 0) {
         self.$swal({
-          title: "No row selected",
-          text: "You must select at least one row to delete",
+          title: this.$t("No row selected"),
+          text: this.$t("You must select at least one row to delete"),
           type: "error"
         });
         return;
       }
       self
         .$swal({
-          title: "Are you sure?",
-          text: "You won't be able to revert this!",
+          title: this.$t("Are you sure?"),
+          text: this.$t("You won't be able to revert this!"),
           type: "warning",
           showCancelButton: true,
           confirmButtonColor: "#3085d6",
           cancelButtonColor: "#d33",
-          confirmButtonText: "Yes, delete it!"
+          confirmButtonText: this.$t("Yes, delete it!"),
+          cancelButtonText: this.$t("Cancel")
         })
         .then(async () => {
           Promise.each(rows, async submission => {
@@ -423,8 +442,8 @@ export default {
           }).then(async () => {
             await this.updateLocalSubmissions();
             self.$swal(
-              "Deleted!",
-              "Your submission has been deleted.",
+              this.$t("Deleted!"),
+              this.$t("Your submission has been deleted."),
               "success"
             );
           });
@@ -531,11 +550,6 @@ export default {
         return "green";
       }
     },
-    humanizeDate(givenDate) {
-      let start = moment(givenDate);
-      let end = moment();
-      return end.to(start);
-    },
     scrollToEnd: function(ID) {
       var container = this.$el.querySelector("#container");
       container.scrollTop = container.scrollHeight;
@@ -598,14 +612,12 @@ export default {
     },
     async updateLocalSubmissions(done) {
       if (this.$route.params.idForm === "*") {
-        let submissions = await Submission.local().sFind(this, {});
-        console.log("inside the page submissions", submissions);
+        let submissions = await Submission.local().sFind({});
         this.submissions = submissions.results;
       } else {
-        let submissions = await Submission.local().sFind(this, {
+        let submissions = await Submission.local().sFind({
           "data.formio.formId": this.$route.params.idForm
         });
-        console.log("submissions", submissions);
         this.submissions = submissions.results;
       }
       if (done) {

@@ -9,9 +9,10 @@
 |
 */
 exports.APP_ENV = 'dev'
-exports.FAST_VERSION = '0.5.28'
+exports.FAST_VERSION = '0.5.32'
 exports.SHARE_DATA_BETWEEN_USERS = false
 exports.TAB_MENU = true
+exports.HAS_SCORES = false
 /*
 |--------------------------------------------------------------------------
 | FORM.IO CONFIGURATION
