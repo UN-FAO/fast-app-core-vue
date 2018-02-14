@@ -46,6 +46,12 @@ let FormLabels = class {
       componentLabels.push(form.data.title)
       // Go across every component
       FormioUtils.eachComponent(form.data.components, (component) => {
+        if (component.suffix && component.suffix !== '') {
+          componentLabels.push(component.suffix)
+        }
+        if (component.prefix && component.prefix !== '') {
+          componentLabels.push(component.prefix)
+        }
         if (component.addAnother && component.addAnother !== '') {
           componentLabels.push(component.addAnother)
         }

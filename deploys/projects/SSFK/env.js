@@ -12,6 +12,7 @@ exports.APP_ENV = 'dev'
 exports.FAST_VERSION = '0.5.13'
 exports.SHARE_DATA_BETWEEN_USERS = true
 exports.TAB_MENU = false
+exports.HAS_SCORES = false
 /*
 |--------------------------------------------------------------------------
 | FORM.IO CONFIGURATION

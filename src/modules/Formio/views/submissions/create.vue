@@ -43,8 +43,8 @@
         <q-fab-action v-bind:class="!PARRALEL_SURVEYS ? 'hidden' : ''" color="amber" @click="addSurvey()" icon="person_add"></q-fab-action>
 
         <q-fab-action color="primary" @click="saveAsDraft()" icon="fa-floppy-o"></q-fab-action>
-         <q-fab-action color="secondary" @click="openRightDrawer()" icon="assessment"></q-fab-action>
-        <q-fab-action color="secondary" @click="togglePages" icon="menu" v-if="_isWizard"></q-fab-action>
+         <q-fab-action color="secondary" @click="openRightDrawer()" icon="assessment" v-if="HAS_SCORES"></q-fab-action>
+        <q-fab-action color="secondary" @click="togglePages" icon="menu" v-if="_isWizard && !TAB_MENU"></q-fab-action>
 
       </q-fab>
     </q-fixed-position>
@@ -87,7 +87,8 @@ import {
   PARALLEL_SURVEYS,
   NAVIGATION_OPENED,
   NAVIGATION_AUTOCLOSE_ON_SELECTION,
-  TAB_MENU
+  TAB_MENU,
+  HAS_SCORES
 } from "config/env";
 import { mapActions } from "vuex";
 import {
@@ -308,6 +309,7 @@ export default {
       formioToken: Auth.user().x_jwt_token,
       LOCAL_DRAFT_ENABLED: LOCAL_DRAFT_ENABLED,
       TAB_MENU: TAB_MENU,
+      HAS_SCORES: HAS_SCORES,
       saved: true,
       errors: {},
       isWizard: false,

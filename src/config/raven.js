@@ -1,6 +1,7 @@
 import {
   APP_FANTACY_NAME,
-  FAST_VERSION
+  FAST_VERSION,
+  APP_ENV
 } from './env'
 import Raven from 'raven-js';
 import Auth from 'modules/Auth/api/Auth'
@@ -10,8 +11,9 @@ let ravenClient = {};
 
 const Rav = class {
   static set(Vue) {
+    let DNS = APP_ENV === 'dev' ? '' : 'https://d323daae5b4d4ecb836e7a640115011a@sentry.io/270179'
     ravenClient = Raven
-      .config('https://d323daae5b4d4ecb836e7a640115011a@sentry.io/270179', {
+      .config(DNS, {
         release: FAST_VERSION,
         logger: APP_FANTACY_NAME
       })

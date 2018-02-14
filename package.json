@@ -1,6 +1,10 @@
 {
   "name": "fast",
+<<<<<<< HEAD
   "version": "0.5.28",
+=======
+  "version": "0.5.35",
+>>>>>>> master
   "deployAppName": "SHARP+",
   "deployAppID": "59b112c7678919000775f921",
   "description": "A data collection application for FORM.io",

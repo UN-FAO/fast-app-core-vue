@@ -125,7 +125,7 @@ button.btn.btn-primary.btn-wizard-nav-previous {
   background-color: whitesmoke;
   border-color: #337ab7;
   height: 60px;
-  width: 200px;
+  width: 30vw;
 }
 
 button.btn.btn-primary.btn-wizard-nav-next:hover,
@@ -133,17 +133,18 @@ button.btn.btn-primary.btn-wizard-nav-previous:hover,
 button.btn.btn-primary.btn-wizard-nav-next:active,
 button.btn.btn-primary.btn-wizard-nav-previous:active {
   background-color: #337ab7;
-  color: white;
+  color: white !important;
 }
 
 button.btn.btn-primary.btn-wizard-nav-submit,
 button.btn.btn-primary.submitForm {
-  color: #ffffff !important;
-  background-color: rgb(5, 116, 169);
-  border-color: none;
-  height: 60px;
-  width: 200px;
-  font-size: 1.5em;
+    color: #ffffff !important;
+    background-color: rgb(5, 116, 169);
+    border-color: none;
+    height: 60px;
+    width: 30vw;
+    font-size: 1em;
+    text-transform: uppercase;
 }
 button.btn.btn-default.saveAsDraft:hover,
 button.btn.btn-primary.btn-wizard-nav-submit:hover {
@@ -686,6 +687,20 @@ th, th.field-required {
     right: 0;
     height: 68px;
     z-index: 1000;
+}
+
+.choices__list--multiple .choices__item {
+    display: inline-block;
+    vertical-align: middle;
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 500;
+    margin-right: 3.75px;
+    margin-bottom: 3.75px;
+    background-color: #0e6da5;
+    border: none;
+    color: #fff;
+    word-break: break-all;
 }
 
 @import 'custom/custom.scss';

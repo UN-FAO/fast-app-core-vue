@@ -40,10 +40,7 @@ let StoreForm = class {
     if (formSubmission._id) {
       if (formSubmission.redirect === true) {
         router.push({
-          name: 'formio_form_show',
-          params: {
-            idForm: formId
-          }
+          name: 'dashboard'
         })
       }
     } else if (created.data && created.data.trigger && created.data.trigger === "importSubmission") {

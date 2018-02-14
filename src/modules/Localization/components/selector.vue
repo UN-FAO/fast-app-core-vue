@@ -41,6 +41,7 @@ import {
 } from "quasar";
 import Localization from "../Localization";
 import Translation from "database/models/Translation";
+import Moment from 'database/repositories/Date/moment'
 
 export default {
   name: "localization",
@@ -121,6 +122,7 @@ export default {
     setLanguage(lenguage) {
       this.$i18n.locale = lenguage.code;
       this.lenguage = lenguage.code;
+      Moment.changeLanguage(lenguage.code)
       localStorage.setItem("defaultLenguage", lenguage.code);
       this.$eventHub.$emit("lenguageSelection", lenguage);
       this.$swal({
