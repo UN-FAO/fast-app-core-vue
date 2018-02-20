@@ -156,20 +156,22 @@ const Submission = class {
     return unsynced
   }
 
-  static async sFind(vm, filter, pagination) {
+  static async sFind(filter, pagination) {
     let page = (pagination && pagination.page) || 1
-    let limit = (pagination && pagination.limit) || 600
+    let limit = (pagination && pagination.limit) || 500
     let paginationInfo = {}
     let local = await Submission.find(filter)
 
     if (limit > 0) {
       let totalRecords = local.length
       let pages = Math.ceil(totalRecords / limit)
-      let firstRecord = (limit * page) - (limit - 1)
-      let lastRecord = (limit * page)
+      // let firstRecord = (limit * page) - (limit - 1)
+      // let lastRecord = (limit * page)
       paginationInfo = { total: totalRecords, pages: pages, currentPage: page, limit: limit }
-      local = local.slice(firstRecord - 1, lastRecord);
+      // local = local.slice(firstRecord - 1, lastRecord);
     }
+
+    // local = local.slice(400, 450);
     local = _filter(local, function (o) {
       return (
         (o.data.owner && o.data.owner === Auth.user()._id) ||

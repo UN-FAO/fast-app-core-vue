@@ -1,7 +1,8 @@
 let preProcess = class {
   static JsonSubmission(jsonSubmission) {
     console.log('jsonSubmission', jsonSubmission)
-    let modifiedSubmission = jsonSubmission // preProcess.changeAdecuacyAndImportanceValues(jsonSubmission)
+    console.log('pre', jsonSubmission.data['S0-info-climaticSeason'])
+    let modifiedSubmission = preProcess.changeAdecuacyAndImportanceValues(jsonSubmission)
 
     modifiedSubmission = preProcess.changeLabels(modifiedSubmission)
 
@@ -9,6 +10,10 @@ let preProcess = class {
     // This change needs to come second, as it will have the modify value
     // Of the Datagrid Array, then we can modify its inner keys
     modifiedSubmission = preProcess.changeDatagridKeys(modifiedSubmission)
+
+    modifiedSubmission = preProcess.changeCheckboxValues(modifiedSubmission)
+    console.log('modified', modifiedSubmission)
+    console.log('after', jsonSubmission.data['S0-info-climaticSeason'])
     return modifiedSubmission
   }
 
@@ -20,14 +25,49 @@ let preProcess = class {
         delete jsonSubmission.data[change.previous]
       }
     });
+
     jsonSubmission.data['S0-info-climaticSeason'] = preProcess.changeClimaticSeason(jsonSubmission.data['S0-info-climaticSeason'])
     jsonSubmission.data['EN-landqa-doesTheWater'] = preProcess.waterFallsinSoil(jsonSubmission.data['EN-landqa-doesTheWater'])
-    jsonSubmission.data['EN-enercp-importantEnergySaving'] = preProcess.fixImportanceQuestions(jsonSubmission.data['EN-enercp-importantEnergySaving'])
+    jsonSubmission.data['EN-enercp-importantEnergySaving'] = preProcess.getImportanceModifiedValue(jsonSubmission.data['EN-enercp-importantEnergySaving'])
     jsonSubmission.data['SO-dist-householdEffectedShock'] = preProcess.numericTrueFalseToString(jsonSubmission.data['SO-dist-householdEffectedShock'])
     jsonSubmission.data['SO-dist-behaviourChanged'] = preProcess.numericTrueFalseToString(jsonSubmission.data['SO-dist-behaviourChanged'])
-    jsonSubmission.data['GO-gov-importantSupportLivelihood'] = preProcess.fixImportanceQuestions(jsonSubmission.data['GO-gov-importantSupportLivelihood'])
-    jsonSubmission.data['SO-coop-adequacy'] = preProcess.fixAdequacyQuestions(jsonSubmission.data['SO-coop-adequacy'])
-    console.log('AG-health-imp-health', jsonSubmission.data['AG-health-imp-health'])
+    jsonSubmission.data['GO-gov-importantSupportLivelihood'] = preProcess.getAdecuacyModifiedValue(jsonSubmission.data['GO-gov-importantSupportLivelihood'])
+    // jsonSubmission.data['SO-coop-adequacy'] = preProcess.fixAdequacyQuestions(jsonSubmission.data['SO-coop-adequacy'])
+
+    // Module 11 Animal Health Adecuacy/Importance  questions
+    if (jsonSubmission.data['AG-health-actionAnimalDesease']) {
+      jsonSubmission.data['AG-health-adq-house'] = jsonSubmission.data['AG-health-actionAnimalDesease']['CombinationOfSupplementFeed'] ? jsonSubmission.data['AG-health-actionAnimalDesease']['CombinationOfSupplementFeed'] : undefined
+      jsonSubmission.data['AG-health-adq-health'] = jsonSubmission.data['AG-health-actionAnimalDesease']['ManageDiseaseAnimals'] ? jsonSubmission.data['AG-health-actionAnimalDesease']['ManageDiseaseAnimals'] : undefined
+    }
+    if (jsonSubmission.data['AG-health-howImportant']) {
+      jsonSubmission.data['AG-health-imp-house'] = jsonSubmission.data['AG-health-howImportant']['howImportantDisease'] ? jsonSubmission.data['AG-health-howImportant']['howImportantDisease'] : undefined
+      jsonSubmission.data['AG-health-imp-health'] = jsonSubmission.data['AG-health-howImportant']['toWhatExtentWouldHavingBetterAccessToVeterinaryServicesAndMedicinesImproveYourHouseholdFoodSecurityAndRevenues'] ? jsonSubmission.data['AG-health-howImportant']['toWhatExtentWouldHavingBetterAccessToVeterinaryServicesAndMedicinesImproveYourHouseholdFoodSecurityAndRevenues'] : undefined
+    }
+
+    if (!jsonSubmission.data['EN-landqa-doesTheWater']) {
+      jsonSubmission.data['EN-landqa-doesTheWater'] = 'notApplicable'
+    }
+    if (jsonSubmission.data['AG-health-noHousedReason'] && typeof jsonSubmission.data['AG-health-noHousedReason'] === 'string') {
+      let text = jsonSubmission.data['AG-health-noHousedReason']
+      jsonSubmission.data['AG-health-noHousedReason'] = {}
+      jsonSubmission.data['AG-health-noHousedReason'][text] = true
+    }
+    if (jsonSubmission.data['AG-infoac-cropInformationType'] && typeof jsonSubmission.data['AG-infoac-cropInformationType'] === 'string') {
+      let text = jsonSubmission.data['AG-infoac-cropInformationType']
+      jsonSubmission.data['AG-infoac-cropInformationType'] = {}
+      jsonSubmission.data['AG-infoac-cropInformationType'][text] = true
+    }
+
+
+    if (jsonSubmission.data['AG-health-mainAnimalsIncome']) {
+      jsonSubmission.data['AG-health-mainAnimalsIncome'].map((e) => {
+        if (typeof e['AG-health-foodType'] === 'string') {
+          let value = e['AG-health-foodType']
+          e['AG-health-foodType'] = [];
+          e['AG-health-foodType'].push(value)
+        }
+      })
+    }
     return jsonSubmission
   }
 
@@ -96,12 +136,6 @@ let preProcess = class {
         new: 'EN-wacc-agricoltureSourceChanged',
         previous: 'EN-wacc-agricultureSourceChanged'
       }
-      /*
-      {
-        new: 'AG-health-NoHousedReasonn',
-        previous: 'AG-health-noHousedReason'
-      }
-      */
     ]
   }
 
@@ -123,22 +157,50 @@ let preProcess = class {
       }
     ]
   }
+
   static changeDatagridKeys(jsonSubmission) {
     let changes = preProcess.getDatagridKeysChanged()
     changes.forEach((change) => {
-      jsonSubmission.data[change.datagridName].forEach(row => {
-        row[change.new] = row[change.previous]
-        delete row[change.previous]
-      })
+      if (jsonSubmission.data[change.datagridName]) {
+        jsonSubmission.data[change.datagridName].forEach(row => {
+          row[change.new] = row[change.previous]
+          delete row[change.previous]
+        })
+      }
     })
     return jsonSubmission
   }
 
   static getDatagridKeysChanged() {
+    return [
+      {
+        new: 'SO-dist-howLongDisturbance',
+        previous: 'soDistDatagridHowlongdidthemostimportantdisturbancelastfor',
+        datagridName: 'SO-distDatagrid'
+      }
+    ]
+  }
+
+  static changeCheckboxValues(jsonSubmission) {
+    let changes = preProcess.getCheckboxChanged()
+    changes.forEach((change) => {
+      if (jsonSubmission.data[change.checkboxName]) {
+        jsonSubmission.data[change.checkboxName][change.new] = jsonSubmission.data[change.checkboxName][change.previous]
+      }
+      // delete jsonSubmission.data[change.checkboxName][change.previous]
+    })
+    return jsonSubmission
+  }
+  static getCheckboxChanged() {
     return [{
-      new: 'SO-dist-howLongDisturbance',
-      previous: 'soDistDatagridHowlongdidthemostimportantdisturbancelastfor',
-      datagridName: 'SO-distDatagrid'
+      new: 'employmentLabourOutsideAgriculture',
+      previous: 'employmentLabourInAnotherFarm',
+      checkboxName: 'EC-iga-whichOnes'
+    },
+    {
+      new: 'notDoneAnything',
+      previous: 'iDidNotDoAnything',
+      checkboxName: 'EN-wcp-technique'
     }]
   }
 
@@ -147,7 +209,7 @@ let preProcess = class {
     ImportanceQuestions.forEach((q) => {
       jsonSubmission.data[q] = preProcess.getImportanceModifiedValue(jsonSubmission.data[q])
       if (!jsonSubmission.data[q]) {
-        console.log('jsonSubmission.data[q]', q)
+        // console.log('jsonSubmission.data[q]', q)
       }
     })
 
@@ -423,7 +485,7 @@ let preProcess = class {
     }
     switch (oldValue) {
       case 10:
-        return 'notAtall'
+        return 'notAtAll'
         break;
       case 7.5:
         return 'aLittle'
@@ -441,7 +503,9 @@ let preProcess = class {
         return 'aLot'
         break;
       case 0:
-        return 'completely'
+        return 'very'
+      case undefined:
+        return 'notAtAll'
         break;
     }
   }
@@ -452,7 +516,7 @@ let preProcess = class {
     }
     switch (oldValue) {
       case 0:
-        return 'notAtall'
+        return 'notAtAll'
         break;
       case 2.5:
         return 'aLittle'
@@ -472,6 +536,9 @@ let preProcess = class {
       case 10:
         return 'completely'
         break;
+      case undefined:
+        return 'notAtAll'
+        break;
     }
   }
 
@@ -482,6 +549,10 @@ let preProcess = class {
         break;
       case 'dry':
         return 'drySeason'
+        break;
+      default:
+        return oldValue
+        break;
     }
   }
 

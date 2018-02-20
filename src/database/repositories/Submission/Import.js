@@ -40,7 +40,7 @@ let Import = class {
     let totalSubmissions = json.length
     let formio = Import.getFormIOInstance(vm)
     Loading.show({ message: 'Importing ' + totalSubmissions + ' submissions' })
-    json = json.slice(0, 2);
+    // json = json.slice(0, 3);
     Promise.each(json, async function (row, index) {
       // await Uploader.sendDataToFormIO(row)
       let submission = Import.prepareSubmission(row)
@@ -49,6 +49,10 @@ let Import = class {
       let dEmit = _debounce(Import.emitNotification, 2000)
       dEmit(vm)
     })
+      .catch(error => {
+        Loading.hide(error)
+        vm.$swal(vm.$t("Import Error!"), vm.$t("Your submission could not be Imported. Please check the format of your Json file."), "error");
+      })
   }
 
   static emitNotification(vm) {

@@ -9,10 +9,11 @@
 |
 */
 exports.APP_ENV = 'prod'
-exports.FAST_VERSION = '0.5.34'
+exports.FAST_VERSION = '0.6.1'
 exports.SHARE_DATA_BETWEEN_USERS = false
 exports.TAB_MENU = false
 exports.HAS_SCORES = true
+exports.SAVE_REDIRECT = 'collected'
 /*
 |--------------------------------------------------------------------------
 | FORM.IO CONFIGURATION

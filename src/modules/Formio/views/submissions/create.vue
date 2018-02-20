@@ -15,6 +15,11 @@
 
     <q-card color="white" v-bind:class="getFormClass" style="position:inherit !important; margin-bottom: 75px">
       <q-card-main>
+        <q-btn @click="singleNext()" class="pull-right primary" color="primary">Next Page</q-btn>
+          <q-btn @click="clickNext()" class="pull-right primary" color="primary">Full review</q-btn>
+
+          <q-btn @click="submitForm()" class="pull-right primary" color="danger">Submit</q-btn>
+
 
         <!--<q-icon name="thumb_up" />-->
         <q-tabs inverted id="contentForm" >
@@ -164,14 +169,14 @@ export default {
 
     this.$eventHub.on("formio.nextPage", data => {
       this.currentPage = data.nextPage.page;
-      this.tab = data.nextPage.page + 1
+      this.tab = data.nextPage.page + 1;
       this.currentQuestion = -1;
       window.scrollTo(0, 0);
     });
 
     this.$eventHub.on("formio.prevPage", data => {
       this.currentPage = data.prevPage.page;
-      this.tab = data.prevPage.page + 1
+      this.tab = data.prevPage.page + 1;
       this.currentQuestion = -1;
       window.scrollTo(0, 0);
     });
@@ -240,6 +245,7 @@ export default {
         }
       },
       transform(result) {
+        console.log("The data is: ", result.data.data["SO-distDatagrid"]);
         return result;
       }
     },
@@ -368,7 +374,7 @@ export default {
         )[0];
         page.click();
         this.currentPage = index;
-        this.tab = index + 1
+        this.tab = index + 1;
         this.currentQuestion = -1;
         window.scrollTo(0, 0);
         if (NAVIGATION_AUTOCLOSE_ON_SELECTION) {
@@ -376,6 +382,29 @@ export default {
         }
       } catch (e) {
         this.$swal("Complete the required fields");
+      }
+    },
+    singleNext() {
+      let button1 = document.querySelectorAll(".btn-wizard-nav-next")[0];
+      button1.click();
+    },
+    clickNext() {
+      this.goToPage(0);
+      for (var i = 1; i <= 30; ++i) {
+        setDelay(i);
+      }
+
+      function setDelay(i) {
+        setTimeout(function() {
+          let button1 = document.querySelectorAll(".btn-wizard-nav-next")[0];
+          button1.click();
+        }, 300);
+      }
+    },
+    submitForm() {
+      let submit = document.querySelectorAll(".btn-wizard-nav-submit")[0];
+      if (submit) {
+        submit.click();
       }
     },
     togglePages() {
@@ -609,6 +638,13 @@ export default {
       this.$eventHub.$emit("openRightDrawer");
     },
     draftStatusChanged(e) {
+      if (e.detail.data.isSubmit) {
+        this.$swal(
+          this.$t("Sent!"),
+          this.$t("Your submission has been sent!"),
+          "success"
+        );
+      }
       if (e.detail.data === false) {
         this.saved = false;
       } else {

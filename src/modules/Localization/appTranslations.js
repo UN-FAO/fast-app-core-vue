@@ -1,4 +1,6 @@
 exports.TRANSLATIONS = [
+  "Import Error!",
+  "Your submission could not be Imported. Please check the format of your Json file.",
   "You must select at least one row to delete",
   "No row selected",
   "Deleted!",

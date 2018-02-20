@@ -107,7 +107,8 @@ import {
   QTransition,
   Platform,
   QInnerLoading,
-  QTooltip
+  QTooltip,
+  Toast
 } from "quasar";
 import _forEach from "lodash/forEach";
 import _map from "lodash/map";
@@ -131,6 +132,7 @@ export default {
 
     this.$eventHub.on("FAST-DATA_SYNCED", async data => {
       await this.updateLocalSubmissions();
+      Toast.create.positive({ html: "Your data was uploaded!" });
     });
     this.$eventHub.on("FAST-DATA_IMPORTED", async data => {
       await this.updateLocalSubmissions();
@@ -194,9 +196,7 @@ export default {
                 row.fullSubmission[column.key].traps
               ) {
                 let text =
-                  self.$t("Field scouting") +
-                  ", " +
-                  self.$t("Pheromone traps");
+                  self.$t("Field scouting") + ", " + self.$t("Pheromone traps");
                 return text;
               } else if (row.fullSubmission[column.key].scouting) {
                 return self.$t("Field scouting");
@@ -263,26 +263,28 @@ export default {
         rowHeight: "70px",
         responsive: true,
         pagination: {
-          rowsPerPage: 15,
-          options: [5, 10, 15, 30, 50, 500]
+          rowsPerPage: 100,
+          options: [10, 30, 50, 100]
         },
         selection: "multiple",
         messages: {
           noData: this.$t("No data available to show."),
-          noDataAfterFiltering: this.$t("No results. Please refine your search terms.")
+          noDataAfterFiltering: this.$t(
+            "No results. Please refine your search terms."
+          )
         },
         // (optional) Override default labels. Useful for I18n.
         labels: {
           columns: this.$t("Columns"),
-          allCols: this.$t('All Columns'),
-          rows: this.$t('Rows'),
+          allCols: this.$t("All Columns"),
+          rows: this.$t("Rows"),
           selected: {
-            singular: this.$t('item selected.'),
-            plural: this.$t('items selected.')
+            singular: this.$t("item selected."),
+            plural: this.$t("items selected.")
           },
-          clear: this.$t('clear'),
-          search: this.$t('Search'),
-          all: this.$t('All')
+          clear: this.$t("clear"),
+          search: this.$t("Search"),
+          all: this.$t("All")
         }
       },
       pagination: true,

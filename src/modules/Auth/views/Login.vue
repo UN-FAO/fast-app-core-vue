@@ -12,13 +12,14 @@
                         <div class="segment-title">{{$t('User Login')}}</div>
                     <q-field >
                     <q-input v-model="credentials.username"
-                    :stack-label="$t('Email')" :placeholder="$t('Email')" />
+                    :stack-label="$t('Email')" :placeholder="$t('Email')" name="Email" />
                     </q-field>
                   </div>
                   <div class="form-group">
 
                     <q-field>
                               <q-input v-model="credentials.password"
+                                      name="password"
                                        type="password"
                                        :stack-label="$t('Password')"
                                        :placeholder="$t('Password')"
@@ -26,7 +27,7 @@
                             </q-field>
                   </div>
 
-                <input type="submit" :value="$t('Login')" class="btn btn-success btn-sm" @click="handleLogin" />
+                <input type="submit" :value="$t('Login')" class="btn btn-success btn-sm" @click="handleLogin" name="LOGIN" />
                   <br>
                   <p class="text-center _new-user"><router-link :to="{ path: 'register' }">{{$t('New user')}}?</router-link></p>
                   <p class="text-center" style="color: grey !important">

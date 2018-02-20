@@ -1,7 +1,7 @@
 import md5 from 'md5'
 import store from 'config/store'
 import router from 'config/router'
-import { MD5_KEY } from 'config/env'
+import { MD5_KEY, SAVE_REDIRECT } from 'config/env'
 import Auth from 'modules/Auth/api/Auth'
 
 let StoreForm = class {
@@ -17,16 +17,21 @@ let StoreForm = class {
    */
   static async storeSubmission(formSubmission, formio, redirect, hashField, formId, eventHub) {
     let created = await store.dispatch('addSubmission', {
-        formSubmission: formSubmission,
-        formio: formio,
-        User: Auth.user().data
-      })
+      formSubmission: formSubmission,
+      formio: formio,
+      User: Auth.user().data
+    })
 
     if (!created) {
       return
     }
 
     if (formSubmission.trigger && formSubmission.trigger === 'resourceCreation') {
+      console.log('formSubmission', formSubmission)
+    }
+    console.log('formSubmission', formSubmission)
+    if (formSubmission.trigger && formSubmission.trigger === 'formioSubmit') {
+      created.isSubmit = true
       console.log('formSubmission', formSubmission)
     }
 
@@ -39,9 +44,26 @@ let StoreForm = class {
     document.dispatchEvent(draftStatus)
     if (formSubmission._id) {
       if (formSubmission.redirect === true) {
-        router.push({
-          name: 'dashboard'
-        })
+        switch (SAVE_REDIRECT) {
+          case 'dashboard':
+            router.push({
+              name: 'dashboard'
+            })
+            break;
+          case 'collected':
+            router.push({
+              name: 'formio_form_show',
+              params: {
+                idForm: formId
+              }
+            })
+            break;
+          default:
+            router.push({
+              name: 'dashboard'
+            })
+            break;
+        }
       }
     } else if (created.data && created.data.trigger && created.data.trigger === "importSubmission") {
       return
