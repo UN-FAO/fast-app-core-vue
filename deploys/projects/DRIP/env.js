@@ -8,11 +8,12 @@
 | understand whats are your users looking at!
 |
 */
-exports.APP_ENV = 'dev'
-exports.FAST_VERSION = '0.5.20'
+exports.APP_ENV = 'prod'
+exports.FAST_VERSION = '0.6.2'
 exports.SHARE_DATA_BETWEEN_USERS = false
 exports.TAB_MENU = false
-exports.HAS_SCORES = false
+exports.HAS_SCORES = true
+exports.SAVE_REDIRECT = 'collected'
 /*
 |--------------------------------------------------------------------------
 | FORM.IO CONFIGURATION
