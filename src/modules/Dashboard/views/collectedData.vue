@@ -2,7 +2,8 @@
 
   <div class="row" style="background:#f3f3f5">
     <div>
-      <q-card color="white" style="bottom: unset; margin-top: 30px; background-color: white" class="col-lg-6 col-lg-offset-2 col-md-6 col-md-offset-2 centered relative-position shadow-2">
+      <!--<q-card color="white" style="bottom: unset; margin-top: 30px; background-color: white" class="col-lg-6 col-lg-offset-2 col-md-6 col-md-offset-2 centered relative-position shadow-2">-->
+      <q-card color="white" style="bottom: unset; margin-top: 30px;background-color: white" class="col-lg-10 col-md-11 centered relative-position shadow-2">
         <q-card-main>
           <q-transition appear enter="fadeIn" leave="fadeOut">
 
@@ -10,7 +11,7 @@
 
               <div class="form-group has-feedback formio-component formio-component-radio" v-if="typeof forms !== 'undefined'">
                 <h1 class="_control-label-title">Collected Data</h1>
-                <h3 class="control-label" style="color: #525f7f; font-weight: 300;">{{ $t('Please select the version that you want to access') }} : </h3>
+                <h3 class="control-label" style="font-size: 2.5vh; font-weight: 300;">{{ $t('Please select the version that you want to access') }} : </h3>
                 <div class="input-group">
                   <div class="radio">
                     <label class="control-label" for="S0-info-headOfHousehold-you">

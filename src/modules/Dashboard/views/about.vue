@@ -1,10 +1,11 @@
 <template>
   <div class="container-fluid">
     <div class="row">
-      <div class="landing col-lg-10  col-md-10 col-sm-12">
+      <div class="landing col-lg-10 col-md-12 col-sm-12">
+          
         <div class="base">
           <div class="copy">
-
+           <!--
             <div style="text-align: right; color: rgb(14, 109, 165); font-size: 16px;">
               <small>ABOUT
                 <span @click="togglePage(true)"  v-bind:class="[show ? 'showing' : '', 'notShowing']">Fall Armyworm</span>
@@ -12,156 +13,56 @@
                 <span @click="togglePage(false)" v-bind:class="[!show ? 'showing' : '', 'notShowing']">FAMEWS</span> </small>
             </div>
 
-            <div id="FallArmy" v-if="show">
-              <div class="title">
-                <small>YOU SHOULD NOT PANIC </small>AT THE SIGN OF FAW IN YOUR FIELD
-              </div>
+            <div class="title"></div>
+           -->
+            <div class="row">
+                
+                <div class="col-lg-5 col-md-5 col-sm-12"> 
+                </div>
+                <div class="col-lg-7 col-md-7 col-sm-12" id="FallArmy" v-if="show">
+                    <h1>About SHARP+</h1>
+                </div>   
+            </div> 
+           <div class="row">
+            <div class="col-lg-5 col-md-5 col-sm-12"> 
+                <div class="image">
+                    <img src=../../../assets/imgs/timeline.png> 
+                </div>
+            </div>
+              
+            <div class="col-lg-7 col-md-7 col-sm-12" id="FallArmy" v-if="show">
+                  <div class="text">
+                      <p>
+                          The <b>Self and Holistic Assessment of Resilience for farmers and Pastoralists</b> (SHARP) tool was developed by FAO to collect, share and analyse information, concerns and interests of farmers and pastoralists in a participatory self-assessment manner in the context of climate change. Since 2015, SHARP has been included in several projects in <span class="highlight">18 different countries</span> and collected information on <span class="highlight">more than 3500 households</span>, providing <b>training workshops</b> to FAO country offices, governments, researchers, facilitators, enumerators and farmers.
+                      </p><br>
+                      <p>
+                          <b>SHARP</b> highlights the priorities for <b>strengthening climate resilience in rural communities</b> across the agronomic, environmental, social and economic components of assessed households.  SHARP is both an <b>assessment</b> and a <b>monitoring & evaluation tool</b>, which identifies areas of poor resilience and provides a baseline for intervention in the field, enabling comparison within and across communities, providing meaningful contextualized data which can be used to support farmers and pastoralists. 
+                    </p><br>
+                    <p>
+                        After incorporating the lessons learned in the field in the past 3 years and technically reviewing the tool, <b>SHARP+</b> arises as an improved version of the SHARP former tool and it is released to the public in 2018. The SHARP+ application contains <b>better targeted and focused questions, new modules,</b> as well as more <b>robust scoring system</b> that jointly allow for a more accurate resilience assessment and understanding of small-scale agricultural producer’s livelihoods in the context of climate change. 
+                    </p><br>
+                    <p>
+                        If you wish to know more about SHARP and SHARP+, you can go to:	                   
+                    </p>
+                        <ul class="fa-ul">
+                            <li><i style="color:rgb(14, 109, 165)" class="fa-li fa fa-link"></i>
+                                <p><a href="http://www.fao.org/in-action/sharp/en/">SHARP Website</a></p>
+                            </li>
+                            <li><i style="color:rgb(14, 109, 165)" class="fa-li fa fa-google"></i>
+                                <p><a href="http://www.fao.org/in-action/sharp/en/">Google Play Store</a></p>
+                            </li>
+                            <li><i style="color:rgb(14, 109, 165)" class="fa-li fa fa-flickr"></i>
+                                <p><a href="http://www.fao.org/in-action/sharp/en/">Flickr album</a></p>
+                            </li>
+                            <li><i style="color:rgb(14, 109, 165)" class="fa-li fa fa-envelope-o"></i>
+                                <p>Or contact us at: <a href="mailto:SHARP@fao.org">SHARP@fao.org</a></p>
+                            </li>
+                         </ul>
+                  </div>
 
-              <div class="title">
-                <small>IMMEDIATE ACTION TO TAKE</small>
-              </div>
-
-
-              <div class="text">
-                <ul class="fa-ul">
-                  <li>
-                    <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-check-square">
-                    </i> Check your fields as soon as seedlings appear and continue at least two times per week until tasselling
-                  </li>
-                  <li>
-                    <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-check-square">
-                    </i> Use your fingers to squash any whitish or greyish egg masses (about the size of your thumb) and young larvae (worms) on top and bottom of the leaves
-
-                  </li>
-                  <li>
-                    <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-check-square">
-                    </i> Sprinkling ash, sand or dirt into whorls has been done by some farmers, others use soap or local botanical solutions
-                  </li>
-                  <li>
-                    <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-check-square">
-                    </i> Some botanical insecticides (e.g. Neem) and pathogens (virus, bacteria, fungi) known to be effective
-                  </li>
-                  <li>
-                    <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-check-square">
-                    </i> Application directly into the whorls of plants that show FAW damage can be very effective
-                  </li>
-                  <li>
-                    <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-check-square">
-                    </i> Pheromone traps can be used to help detect the presence, buildup and movement of FAW in your area
-                  </li>
-                </ul>
-              </div>
-
-
-
-
-
-
-              <div class="title">
-                <small>CAUTION</small>
-              </div>
-
-
-              <div class="text">
-                <ul class="fa-ul">
-                  <li>
-                    <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-exclamation">
-                    </i> Spraying insecticides early in the crop cycle will kill off the natural enemies and may not be economical
-
-                  </li>
-                  <li>
-                    <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-exclamation">
-                    </i> Older pesticides may be hazardous to human health and may be banned in other countries
-
-                  </li>
-                  <li>
-                    <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-exclamation">
-                    </i> Effectiveness of insecticides against FAW depends on the application technique, dose and formulation
-
-                  </li>
-                  <li>
-                    <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-exclamation">
-                    </i> Once FAW is down in the whorl, the insecticides must reach them there
-                  </li>
-                  <li>
-                    <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-exclamation">
-                    </i> Spraying with backpack sprayers without delivering insecticides directly into the whorl is often ineffective
-                  </li>
-                  <li>
-                    <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-exclamation">
-                    </i> Spraying insecticides several times can dramatically increase the costs of production, making the maize economically unviable
-
-                  </li>
-
-                  <li>
-                    <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-exclamation">
-                    </i> Maize plants have a capacity to compensate for lower-level FAW infestation. Not all FAW damage causes significant maize yield reduction.
-
-                  </li>
-                </ul>
-              </div>
-
-
-
-
-              <div class="title">
-                <small>FAW FACTS</small>
-              </div>
-
-
-              <div class="text">
-                <ul class="fa-ul">
-                  <li>
-                    <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
-                    </i> A native of the Americas, FAW is now in Africa to stay
-                  </li>
-                  <li>
-                    <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
-                    </i> A pest of more than 80 plant species
-                  </li>
-                  <li>
-                    <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
-                    </i> FAW lives about 35–61 days
-
-                  </li>
-                  <li>
-                    <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
-                    </i> Adult females lay eggs directly on maize leaves and hatch in 3–5 days
-                  </li>
-                  <li>
-                    <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
-                    </i> The larvae (worm or caterpillar) develop in 14–28 days, moving from the leaf to the whorl and sometimes to the maize ear
-                  </li>
-                  <li>
-                    <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
-                    </i> After development, larvae drop to the ground to pupate in the soil for 7–14 days
-                  </li>
-
-                  <li>
-                    <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
-                    </i> The moth appears and lives as an adult for 11–14 days, and can fly up to 100 km per night
-                  </li>
-                  <li>
-                    <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
-                    </i> FAW can breed continuously, causing several generations per year
-                  </li>
-                  <li>
-                    <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
-                    </i> In the Americas natural biological control (predators, parasitoids and pathogens) kill up to 50% of FAW in unsprayed maize fields
-                  </li>
-                  <li>
-                    <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
-                    </i> Planting date is very important – late planted maize gets attacked much more than early-planted maize
-                  </li>
-                  <li>
-                    <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
-                    </i> Increasing plant diversity (such as intercropping) can reduce FAW oviposition and increase natural enemy populations
-                  </li>
-                </ul>
-              </div>
             </div>
 
-
+        <!--
             <div id="FAMEWS" v-if="!show">
               <div class="title">
                 <small>ABOUT</small>FAMEWS
@@ -173,76 +74,20 @@
               </div>
               <p>
 
-              <div class="text">
-                <ul class="fa-ul">
-                  <li>
-                    <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
-                    </i> The app is to be used every time fields are checked (scouting) and pheromone traps are counted for Fall Armyworm (FAW), Africa Armyworm (AAW) and Stem Borer
-
-                  </li>
-                  <li>
-                    <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
-                    </i> The primary target user is the farmer, supplemented by community focal persons, extension agents and plant protection officers when the farmer does not have a smart phone
-
-                  </li>
-                  <li>
-                    <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
-                    </i> Relying solely on extension agents or plant protection officers may not give the desired coverage as they are unlikely to be able to visit all farms on a regular and timely basis
-
-
-                  </li>
-                  <li>
-                    <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
-                    </i> The app has three sections: General information, Field scouting and Pheromone traps
-
-                  </li>
-                  <li>
-                    <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
-                    </i> Some information is required (indicated by a red asterisk) that must be entered before continuing
-
-                  </li>
-                  <li>
-                    <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
-                    </i> The app is multilingual – initially English and French
-
-                  </li>
-
-                  <li>
-                    <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
-                    </i> The app should be used in conjunction with the FAO Guidance Notes on Scouting and Trapping
-
-                  </li>
-                  <li>
-                    <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
-                    </i> Data can be transmitted immediately or stored and sent once a connection becomes available
-
-                  </li>
-                  <li>
-                    <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
-                    </i> The app allows users to monitor FAW, AAW and Stem Borer
-
-                  </li>
-                  <li>
-                    <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
-                    </i> Data from the app provides farmers, communities and countries with early warning and advice on changes in FAW population levels and distribution in order to protect their crops
-
-                  </li>
-                  <li>
-                    <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
-                    </i> The app is very intuitive and easy to use – it should take about 10 minutes to learn
-
-                  </li>
-                </ul>
-              </div>
+              <div class="text"></div>
             </div>
+              
+              
 
              <div style="text-align: right; color: rgb(14, 109, 165); font-size: 16px;">
               <small>ABOUT
                 <span @click="togglePage(true)"  v-bind:class="[show ? 'showing' : '', 'notShowing']">Fall Armyworm</span>
                 /
                 <span @click="togglePage(false)" v-bind:class="[!show ? 'showing' : '', 'notShowing']">FAMEWS</span> </small>
-            </div>
-
+             </div>
+        -->
+              
+             </div> 
           </div>
         </div>
       </div>
@@ -301,7 +146,7 @@ export default {
   z-index: 1;
   width: 100%;
   height: 100%;
-  padding: 38px;
+  padding: 5px;
   color: #082352;
   background: #fff;
 }
@@ -340,12 +185,21 @@ export default {
   display: block;
   text-indent: 3px;
 }
+    .copy .image {margin-bottom: 30px;}
+    .copy .image img {width: 100%; max-width: 450px;}
 
-.copy .text {
-  color: #282652;
-  width: 80%;
-  font-size: 100%;
-}
+    .copy .text {
+      color: #282652;
+      font-size: 100%;
+    }
+    
+    .copy .text .highlight {font-size:1.4em; color:#b70509; font-weight: 500; letter-spacing: -0.25px;}
+    
+    .copy .text ul {margin-top: 20px; margin-bottom: 30px;}
+    .copy .text li {margin-bottom: 15px;}
+    .copy .text li i {font-size: 1.4em;}
+    
+    .copy .text p {font-size: inherit;} 
 
 .copy .cta {
   cursor: pointer;
@@ -364,7 +218,4 @@ export default {
   background-image: linear-gradient(0, #fff, #fff);
 }
 
-li {
-  margin-bottom: 20px;
-}
 </style>

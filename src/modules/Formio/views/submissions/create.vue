@@ -2,7 +2,7 @@
 <div class="container-fluid">
   <div class="row FormioContainer">
 
-    <q-card style="background-color: white; max-height: fit-content;" class="col-lg-3  col-md-12 col-sm-12" v-if="_isWizard && showPages && !TAB_MENU">
+    <q-card style="background-color: white; max-height: fit-content;" class="col-lg-3 col-md-12 col-sm-12" v-if="_isWizard && showPages && !TAB_MENU">
       <q-card-main>
         <q-list separator style="border: none !important">
 
@@ -18,8 +18,8 @@
         <!--
         <q-btn @click="singleNext()" class="pull-right primary" color="primary">Next Page</q-btn>
           <q-btn @click="clickNext()" class="pull-right primary" color="primary">Full review</q-btn>
-
           <q-btn @click="submitForm()" class="pull-right primary" color="danger">Submit</q-btn>
+           -->
 
         -->
         <!--<q-icon name="thumb_up" />-->
@@ -56,17 +56,17 @@
     </q-fixed-position>
 
     <!--
-                        <q-fixed-position v-if="displayDown" style="margin: 18px;position: sticky;z-index: 100;width: 100%;min-height: 63px;" corner="bottom-right" :offset="[18, 18]">
-                        <q-btn round color="primary" @click="nextQuestion" class="pull-right">
-                          <q-icon name="fa-arrow-circle-down" />
-                        </q-btn>
-                      </q-fixed-position>
+        <q-fixed-position v-if="displayDown" style="margin: 18px;position: sticky;z-index: 100;width: 100%;min-height: 63px;" corner="bottom-right" :offset="[18, 18]">
+        <q-btn round color="primary" @click="nextQuestion" class="pull-right">
+        <q-icon name="fa-arrow-circle-down" />
+        </q-btn>
+        </q-fixed-position>
 
-                        <q-fixed-position v-if="displayUp" style="margin: 18px;position: sticky;z-index: 99;width: 100%;min-height: 63px;    padding-bottom: 70px;" corner="bottom-right" :offset="[18, 18]">
-                        <q-btn round color="primary" @click="prevQuestion" class="pull-right">
-                          <q-icon name="fa-arrow-circle-up" />
-                        </q-btn>
-                      </q-fixed-position>
+        <q-fixed-position v-if="displayUp" style="margin: 18px;position: sticky;z-index: 99;width: 100%;min-height: 63px;    padding-bottom: 70px;" corner="bottom-right" :offset="[18, 18]">
+        <q-btn round color="primary" @click="prevQuestion" class="pull-right">
+        <q-icon name="fa-arrow-circle-up" />
+        </q-btn>
+        </q-fixed-position>
     -->
   </div>
   <q-tabs slot="footer" v-model="tab" v-if="TAB_MENU" class="floatingPagination">
@@ -84,7 +84,52 @@
           </q-tab>
       </q-tabs>
   </div>
+
 </template>
+
+<style>
+    
+    .q-card-container {padding: 0px;}
+    .q-item {padding: 8px 0px; font-size: 2vh !important;}
+        
+    .activePage {background-color: #0e6da5; color: white; margin: 0px -10px; padding: 0px 10px !important; border-radius: 0px !important;}
+    
+    input[type="radio"]+span, input[type="checkbox"]+span  {background-color: rgb(169, 223, 249);}
+    label.control-label {color:#2d2d2d;} 
+    
+    .panel-warning>.panel-heading {background-color:transparent; border-color:#f7952a; color:#ea6d00;}
+    
+    label.control-label {font-weight: 450 !important;}
+    .form-group {margin-bottom: 25px;}
+    
+    .formio-component-fieldset legend {color:#ea6d00 !important; border-color:#f7952a; font-size: large !important; padding-bottom: 5px; font-weight: 450;}
+    .formio-component-panelFieldsetAddGpsLocation {}
+
+    /* .formContainer {position: relative !important;}
+    .form-group.saveAsDraft {position: absolute; bottom: 0px; right: 0px; } */
+
+    div.saveAsDraft {text-align: center; float: none !important; margin-top: 50px;}
+    button.saveAsDraft {background-color: #a2a2a2 !important; color: #ffffff !important; border: none; height: auto !important; text-transform: uppercase; padding: 10px 90px; margin: 0 auto; font-weight: 400; float: none !important; width: auto !important; font-size: 1.8vh !important; }
+    
+    ul.list-inline {text-align: center;}
+    .list-inline>li {padding-right: 10px; padding-left: 10px;}
+    
+    
+    
+    button.btn.btn-primary.btn-wizard-nav-next, 
+    button.btn.btn-primary.btn-wizard-nav-previous {background-color: #dcdcdc; color: #2f2f2f !important; border: none; font-size: 1.8vh; text-transform: uppercase; height: 45px; width: 30vw; font-weight: 500;}
+    
+
+    
+    
+</style>
+
+
+
+
+
+
+
 
 <script>
 import {

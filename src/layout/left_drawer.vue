@@ -1,6 +1,6 @@
 <template>
   <q-scroll-area style="width: 100%; height: 100%">
-    <q-list-header class="bg-primary text-white">
+    <q-list-header class="bg-primary text-white" style="padding-left: 0px; height: 50px; background:#00293c !important;">
       <center>
         <img src="statics/2000px-FAO_logo_reverse.png" style="max-height: 40px; max-width: 40px;" /> {{appName}}
       </center>
@@ -16,10 +16,10 @@
       <q-item-main :label="$t('Home')" />
     </q-side-link>
     <q-item-separator />
-    <q-list-header class="text-white">{{ $t("Sync Application") }}
+    <q-list-header class="text-yellow">{{ $t("Sync Application") }}
 
       <q-btn flat color="primary" @click="syncApp()">
-        <q-icon name="cloud_download" class="cloud-item text-white" />
+        <q-icon name="cloud_download" class="cloud-item text-yellow" />
         <q-tooltip anchor="center right" self="center left" :offset="[10, 0]">
           <strong>{{ $t("Sync app") }}</strong>
         </q-tooltip>
@@ -86,7 +86,7 @@
       <q-item-main :label="$t('Logout')" />
     </q-item>
 
-      <div class="text-center light text-italic">
+      <div class="light text-italic" style="padding-left: 65px;">
       {{userEmail()}}
     </div>
     <p>
@@ -96,6 +96,24 @@
     </div>
   </q-scroll-area>
 </template>
+
+<style>
+    .layout-aside-left {opacity: 0.9; background:#03405f !important;}
+    .layout-aside-left .q-list-header center {font-size: 1.6em; font-weight: 400; padding-top: 5px;}
+    
+    .q-item-icon {font-size: 26px;}
+    
+    .q-list-header {font-size: 2vh !important; font-weight: normal;}
+    .q-list-header button {float: left; top: 10px;}
+    .q-list-header button .q-icon {font-size: 27px; padding-right: 3px;}
+
+</style>
+
+
+
+
+
+
 <script>
 import Localization from "modules/Localization/Localization";
 import { mapState, mapActions } from "vuex";

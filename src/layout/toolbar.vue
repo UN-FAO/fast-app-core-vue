@@ -30,6 +30,9 @@
 .color-white {color: white;}
 
 .color-primary {color: rgb(5, 116, 169);}
+    
+.q-toolbar-title {font-size: 1.75em; font-weight: 400;}
+    
 </style>
 
 <script>
