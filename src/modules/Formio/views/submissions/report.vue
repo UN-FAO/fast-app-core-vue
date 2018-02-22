@@ -70,7 +70,8 @@ import {
   QIcon,
   QTooltip,
   QCollapsible,
-  clone
+  clone,
+  QOptionGroup
 } from "quasar";
 import Submission from "database/models/Submission";
 import mybar from "./bar";
@@ -78,6 +79,7 @@ import _chunk from "lodash/chunk";
 import _map from "lodash/map";
 export default {
   components: {
+    QOptionGroup,
     QCard,
     QCardTitle,
     QCardSeparator,

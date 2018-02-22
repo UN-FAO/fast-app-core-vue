@@ -21,7 +21,7 @@
 
           <q-btn @click="submitForm()" class="pull-right primary" color="danger">Submit</q-btn>
 
-          -->
+        -->
         <!--<q-icon name="thumb_up" />-->
         <q-tabs inverted id="contentForm" >
           <!-- Tabs - notice slot="title" -->
