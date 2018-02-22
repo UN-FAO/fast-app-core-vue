@@ -2,7 +2,7 @@
 <div class="container-fluid">
   <div class="row FormioContainer">
 
-    <q-card style="background-color: white; max-height: fit-content;" class="col-lg-3  col-md-12 col-sm-12" v-if="_isWizard && showPages && !TAB_MENU">
+    <q-card style="background-color: white; max-height: fit-content;" class="col-lg-3 col-md-12 col-sm-12" v-if="_isWizard && showPages && !TAB_MENU">
       <q-card-main>
         <q-list separator style="border: none !important">
 
@@ -109,8 +109,8 @@
     /* .formContainer {position: relative !important;}
     .form-group.saveAsDraft {position: absolute; bottom: 0px; right: 0px; } */
 
-    div.saveAsDraft {text-align: center; float: none !important;}
-    button.saveAsDraft {background-color: rgb(230, 135, 81) !important; height: auto !important; color: #ffffff !important; text-transform: uppercase; padding: 15px 70px; margin: 0 auto; font-weight: 500; border: none; float: none !important; width: auto !important; font-size: 1.8vh !important; }
+    div.saveAsDraft {text-align: center; float: none !important; margin-top: 50px;}
+    button.saveAsDraft {background-color: #a2a2a2 !important; color: #ffffff !important; border: none; height: auto !important; text-transform: uppercase; padding: 10px 90px; margin: 0 auto; font-weight: 400; float: none !important; width: auto !important; font-size: 1.8vh !important; }
     
     ul.list-inline {text-align: center;}
     .list-inline>li {padding-right: 10px; padding-left: 10px;}
@@ -118,7 +118,7 @@
     
     
     button.btn.btn-primary.btn-wizard-nav-next, 
-    button.btn.btn-primary.btn-wizard-nav-previous {background-color: #4595bb; color:#ffffff !important; border: none; font-size: 1.8vh; text-transform: uppercase; height: 45px; width: 30vw;}
+    button.btn.btn-primary.btn-wizard-nav-previous {background-color: #dcdcdc; color: #2f2f2f !important; border: none; font-size: 1.8vh; text-transform: uppercase; height: 45px; width: 30vw; font-weight: 500;}
     
 
     
