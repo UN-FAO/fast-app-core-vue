@@ -105,7 +105,7 @@ export default {
       this.credentials.password = this.credentials.password.trim();
       this.credentials.username = this.credentials.username.trim();
       // Try to authenticate the User
-      Auth.attempt(this.credentials, this.$store.state.authStore.appURL)
+      Auth.attempt(this.credentials, this.CONFIG.APP_URL)
         .then(User => {
           this.$store.dispatch("setUserObject", User);
           this.$router.push({
