@@ -2,7 +2,6 @@ import Formio from 'modules/Formio/api/Formio'
 import _forEach from 'lodash/forEach'
 import _map from 'lodash/map'
 import _isEmpty from 'lodash/isEmpty'
-// import messages from 'i18n/translations'
 import Translation from 'database/models/Translation'
 import {
   APP_CONFIG

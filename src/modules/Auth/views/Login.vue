@@ -48,14 +48,16 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
+import { APP_CONFIG } from "config/env";
 import Auth from "modules/Auth/api/Auth";
 import { QField, QInput, QBtn, QIcon } from "quasar";
-import { APP_CONFIG } from "config/env";
-import { mapActions } from "vuex";
+import Configuration from "database/repositories/Configuration/Configuration";
 export default {
   async mounted() {
+    await Configuration.get();
     this.getResources({
-      appName: this.$store.state.authStore.appName
+      appName: this.CONFIG.APP_NAME
     });
   },
   components: {
