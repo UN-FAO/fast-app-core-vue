@@ -35,17 +35,6 @@
     </div>
 </template>
 
-
-<style>
-    input[type="radio"]+span, input[type="checkbox"]+span  {background-color: rgb(169, 223, 249);}
-    label.control-label {color:#2d2d2d;}
-
-</style>
-
-
-
-
-
 <script>
 import {
   QIcon,

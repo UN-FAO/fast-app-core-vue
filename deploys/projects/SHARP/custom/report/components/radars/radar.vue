@@ -2,7 +2,7 @@
 <script>
 import VueCharts from 'vue-chartjs'
 export default {
-    name: 'mybar',
+    name: 'radar',
     extends: VueCharts.Radar,
     mixins: [VueCharts.mixins.reactiveProp],
     props: ['chartData', 'options'],

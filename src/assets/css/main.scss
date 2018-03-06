@@ -688,9 +688,19 @@ th, th.field-required {
     z-index: 1000;
 }
 
+#registerForm label.control-label, #registerForm label.control-label.field-required {
+  color: white
+}
+
+.formio-component-survey {
+    color: black !important;
+}
+
+
 @import 'custom/custom.scss';
 @import 'qDataTable.scss';
 @import 'errorResponsiveTable.scss';
 @import 'loginForm.scss';
 @import 'homeMenu.scss';
 @import 'mainSubmissionsTable.scss';
+@import 'responsiveRadar.scss';

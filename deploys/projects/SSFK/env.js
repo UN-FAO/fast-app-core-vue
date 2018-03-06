@@ -8,11 +8,14 @@
 | understand whats are your users looking at!
 |
 */
-exports.APP_ENV = 'dev'
-exports.FAST_VERSION = '0.5.13'
+exports.APP_ENV = 'prod'
+exports.FAST_VERSION = '0.6.4'
 exports.SHARE_DATA_BETWEEN_USERS = true
 exports.TAB_MENU = false
 exports.HAS_SCORES = false
+exports.HAS_REPORT = false
+exports.HAS_ABOUT = false
+exports.SAVE_REDIRECT = 'collected'
 /*
 |--------------------------------------------------------------------------
 | FORM.IO CONFIGURATION
@@ -23,8 +26,8 @@ exports.HAS_SCORES = false
 | forms asociated with it.
 |
 */
-exports.APP_URL = 'https://yxxyynxtauhaaqp.form.io'
-exports.APP_NAME = 'yxxyynxtauhaaqp'
+exports.APP_URL = 'https://cslxyuxhxebnnxi.form.io'
+exports.APP_NAME = 'cslxyuxhxebnnxi'
 /*
 |--------------------------------------------------------------------------
 | APP CONFIGURATION

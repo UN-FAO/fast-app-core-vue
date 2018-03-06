@@ -39,6 +39,12 @@ node ./node_modules/json/lib/json.js -I -f package.json -e "this.deployAppID='${
 	cp -R ./deploys/projects/${1}/css/custom ./src/assets/css
 
 ###################################################
+# Copy the projects custom report into their dev locations
+#
+  rm -rf ./src/modules/Formio/views/submissions/report
+	cp -R ./deploys/projects/${1}/custom/report ./src/modules/Formio/views/submissions
+
+###################################################
 # Copy the projects CNAME into their dev locations
 #
   rm -rf ./deploys/web/CNAME

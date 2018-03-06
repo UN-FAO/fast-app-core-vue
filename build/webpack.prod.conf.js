@@ -24,6 +24,7 @@ module.exports = merge(baseWebpackConfig, {
   },
   devtool: config.build.productionSourceMap ? '#source-map' : false,
   plugins: [
+     /*
     new UglifyJSPlugin({
       uglifyOptions: {
         ie8: true,
@@ -35,6 +36,7 @@ module.exports = merge(baseWebpackConfig, {
         warnings: false
       }
     }),
+    */
     new webpack.NoEmitOnErrorsPlugin(),
     /*
     new CompressionPlugin({

@@ -16,17 +16,14 @@
       <q-item-main :label="$t('Home')" />
     </q-side-link>
     <q-item-separator />
-    <q-list-header class="text-yellow">{{ $t("Sync Application") }}
-
-      <q-btn flat color="primary" @click="syncApp()">
-        <q-icon name="cloud_download" class="cloud-item text-yellow" />
+    <q-item  style="color:#17ff00" @click="syncApp()">
         <q-tooltip anchor="center right" self="center left" :offset="[10, 0]">
           <strong>{{ $t("Sync app") }}</strong>
         </q-tooltip>
-      </q-btn>
-
-    </q-list-header>
-
+      <q-item-side icon="cloud_download" left style="color:#17ff00"/>
+      <q-item-main :label="$t('Sync Application')" />
+    </q-item>
+     <q-item-separator  />
 
     <q-side-link multiline highlight item :to="{name: 'newSurvey'}" :key="newSurvey">
       <q-item-side icon="playlist_add" />
@@ -45,7 +42,7 @@
     </q-side-link>
 
 
-    <q-side-link multiline highlight item :to="{name: 'About'}" :key="about">
+    <q-side-link multiline highlight item :to="{name: 'About'}" :key="about" v-if="HAS_ABOUT">
       <q-item-side icon="tablet_mac" />
       <q-item-main :label="$t('About') +' '+ appName" />
     </q-side-link>
@@ -100,9 +97,9 @@
 <style>
     .layout-aside-left {opacity: 0.9; background:#03405f !important;}
     .layout-aside-left .q-list-header center {font-size: 1.6em; font-weight: 400; padding-top: 5px;}
-    
+
     .q-item-icon {font-size: 26px;}
-    
+
     .q-list-header {font-size: 2vh !important; font-weight: normal;}
     .q-list-header button {float: left; top: 10px;}
     .q-list-header button .q-icon {font-size: 27px; padding-right: 3px;}
@@ -135,7 +132,7 @@ import {
   QItemSeparator
 } from "quasar";
 import layoutStore from "./layout-store";
-import { FAST_VERSION, APP_FANTACY_NAME } from "config/env";
+import { FAST_VERSION, APP_FANTACY_NAME, HAS_ABOUT } from "config/env";
 export default {
   components: {
     QScrollArea,
@@ -161,7 +158,8 @@ export default {
       subscriptions: [],
       layoutStore,
       fastVersion: FAST_VERSION,
-      appName: APP_FANTACY_NAME
+      appName: APP_FANTACY_NAME,
+      HAS_ABOUT: HAS_ABOUT
     };
   },
   computed: {

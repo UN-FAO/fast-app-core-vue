@@ -9,10 +9,12 @@
 |
 */
 exports.APP_ENV = 'prod'
-exports.FAST_VERSION = '0.5.28'
-exports.SHARE_DATA_BETWEEN_USERS = false
+exports.FAST_VERSION = '0.6.4'
+exports.SHARE_DATA_BETWEEN_USERS = true
 exports.TAB_MENU = false
-exports.HAS_SCORES = true
+exports.HAS_SCORES = false
+exports.HAS_REPORT = false
+exports.HAS_ABOUT = false
 exports.SAVE_REDIRECT = 'collected'
 /*
 |--------------------------------------------------------------------------
@@ -24,8 +26,8 @@ exports.SAVE_REDIRECT = 'collected'
 | forms asociated with it.
 |
 */
-exports.APP_URL = 'https://uiorzjzflxyccmo.form.io'
-exports.APP_NAME = 'uiorzjzflxyccmo'
+exports.APP_URL = 'https://cslxyuxhxebnnxi.form.io'
+exports.APP_NAME = 'cslxyuxhxebnnxi'
 /*
 |--------------------------------------------------------------------------
 | APP CONFIGURATION
@@ -36,9 +38,8 @@ exports.APP_NAME = 'uiorzjzflxyccmo'
 | in the app.
 |
 */
-exports.APP_FANTACY_NAME = 'SHARP+'
-exports.APP_PHRASE = 'Self-evaluation and Holistic Assessment of climate Resilence of Farmers and Pastoralists'
-exports.APP_ABOUT_NAME = 'SHARP+'
+exports.APP_FANTACY_NAME = 'SSFK'
+exports.APP_PHRASE = 'Trinidad and Tobago SSFK POC'
 /*
 |--------------------------------------------------------------------------
 | MD5 KEY
@@ -128,5 +129,5 @@ exports.PARALLEL_SURVEYS = false
 | open the left hand wizard navigation while on create
 |
 */
-exports.NAVIGATION_OPENED = false
-exports.NAVIGATION_AUTOCLOSE_ON_SELECTION = true
+exports.NAVIGATION_OPENED = true
+exports.NAVIGATION_AUTOCLOSE_ON_SELECTION = false

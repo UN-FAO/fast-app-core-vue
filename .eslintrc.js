@@ -18,6 +18,7 @@ module.exports = {
   ],
   globals: {
     'Connection': true,
+    'universalLinks':true,
     'LocalFileSystem': true,
     'cordova': true,
     'html2pdf': true,

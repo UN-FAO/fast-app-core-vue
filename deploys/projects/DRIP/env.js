@@ -9,11 +9,13 @@
 |
 */
 exports.APP_ENV = 'prod'
-exports.FAST_VERSION = '0.6.2'
+exports.FAST_VERSION = '0.6.4'
 exports.SHARE_DATA_BETWEEN_USERS = false
 exports.TAB_MENU = false
-exports.HAS_SCORES = true
-exports.SAVE_REDIRECT = 'collected'
+exports.HAS_SCORES = false
+exports.HAS_REPORT = false
+exports.HAS_ABOUT = true
+exports.SAVE_REDIRECT = 'dashboard'
 /*
 |--------------------------------------------------------------------------
 | FORM.IO CONFIGURATION
@@ -24,8 +26,8 @@ exports.SAVE_REDIRECT = 'collected'
 | forms asociated with it.
 |
 */
-exports.APP_URL = 'https://oibowengifayqed.form.io'
-exports.APP_NAME = 'oibowengifayqed'
+exports.APP_URL = 'https://wppkkmrlqrvbqdj.form.io'
+exports.APP_NAME = 'wppkkmrlqrvbqdj'
 /*
 |--------------------------------------------------------------------------
 | APP CONFIGURATION

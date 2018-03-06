@@ -26,7 +26,30 @@
       font-size:7vh;
     }
     .q-card-main.mainActions h1 {
-      font-size:4vh;
+      font-size:3.3vh;
     }
 }
+
+  .q-card {margin: 0px auto;}
+
+    .q-card-main.mainActions h1 {
+        /* font-size: 3.5vh; */
+        line-height: 4.5vh;
+    }
+
+    .q-card.mainCardsSmall {height: 20vh; background: none !important; box-shadow: none;}
+    .q-card.mainCardsSmall .mainActions {padding: 20px;}
+    .q-card.mainCardsSmall h1 {font-size: 2.5vh;}
+
+    .q-card.Admin {margin-top: 0px !important;}
+
+    .q-card.mainCards {margin-top: 3vh;}
+    .q-card.mainCardsSmall {margin-top: 3vh;}
+
+    @media (min-width: 576px)  {
+
+      .q-card.mainCards {margin-top: 20vh;}
+      .q-card.mainCardsSmall {margin-top: 20vh !important;}
+
+    }
 

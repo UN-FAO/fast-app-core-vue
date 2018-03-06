@@ -8,11 +8,14 @@
 | understand whats are your users looking at!
 |
 */
-exports.APP_ENV = 'dev'
-exports.FAST_VERSION = '0.5.32'
+exports.APP_ENV = 'prod'
+exports.FAST_VERSION = '0.6.4'
 exports.SHARE_DATA_BETWEEN_USERS = false
 exports.TAB_MENU = true
 exports.HAS_SCORES = false
+exports.HAS_REPORT = false
+exports.HAS_ABOUT = true
+exports.SAVE_REDIRECT = 'dashboard'
 /*
 |--------------------------------------------------------------------------
 | FORM.IO CONFIGURATION

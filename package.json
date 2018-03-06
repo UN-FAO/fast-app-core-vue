@@ -1,8 +1,8 @@
 {
   "name": "fast",
-  "version": "0.6.2",
-  "deployAppName": "SHARP+",
-  "deployAppID": "59b112c7678919000775f921",
+  "version": "0.6.4",
+  "deployAppName": "SSFK",
+  "deployAppID": "5a9674e1d27542149fd0cb5c",
   "description": "A data collection application for FORM.io",
   "author": "Ignacio Cabrera <ignacio.cabrera@fao.org>",
   "scripts": {
@@ -20,9 +20,11 @@
     "deploy:all": "sh deploys/deploy_all.sh",
     "set:sharp": "sh deploys/setEnv.sh SHARP SHARP+ 59b112c7678919000775f921",
     "set:faw": "sh deploys/setEnv.sh FAW FAW 5a65a0b902b5450001fbc4cd",
-    "set:drip": "sh deploys/setEnv.sh DRIP DRIP 5a5f69664fa5170001ce5a65",
+    "set:drip": "sh deploys/setEnv.sh DRIP DRIP 5a8ea794201d180001742752",
+    "set:gift": "sh deploys/setEnv.sh GIFT GIFT 5a93ebd213202f0001d68698",
+    "set:medaid": "sh deploys/setEnv.sh MEDAID MEDAID 5a97d0ae8590243a117921ea",
     "set:pat": "sh deploys/setEnv.sh PAT PAT 5a65f5d5d772bf00015a3dc3",
-    "set:ssfk": "sh deploys/setEnv.sh SSFK SSFK 5a5f08a63f90fd000121aef5",
+    "set:ssfk": "sh deploys/setEnv.sh SSFK SSFK 5a9674e1d27542149fd0cb5c",
     "set:dev": "sh deploys/setEnv.sh DEV DEV 59b136fb2f12080007487131",
     "get:roles": "sh deploys/getAppRoles.sh"
   },
@@ -57,7 +59,6 @@
     "vue-async-computed": "^3.3.0",
     "vue-async-properties": "^0.2.3",
     "vue-chartjs": "^3.1.0",
-    "vue-data-tables": "^2.0.3",
     "vue-event-hub": "^1.0.1",
     "vue-handsontable-official": "^1.0.0",
     "vue-i18n": "^7.1.2",

@@ -8,8 +8,14 @@
 | understand whats are your users looking at!
 |
 */
-exports.APP_ENV = 'dev'
-exports.FAST_VERSION = '0.5.13'
+exports.APP_ENV = 'prod'
+exports.FAST_VERSION = '0.6.4'
+exports.SHARE_DATA_BETWEEN_USERS = false
+exports.TAB_MENU = false
+exports.HAS_SCORES = false
+exports.HAS_REPORT = false
+exports.HAS_ABOUT = false
+exports.SAVE_REDIRECT = 'dashboard'
 /*
 |--------------------------------------------------------------------------
 | FORM.IO CONFIGURATION
@@ -23,8 +29,6 @@ exports.FAST_VERSION = '0.5.13'
 exports.APP_URL = 'https://tknrqdvfbuczudk.form.io'
 exports.APP_NAME = 'tknrqdvfbuczudk'
 exports.SHARE_DATA_BETWEEN_USERS = false
-exports.TAB_MENU = true
-exports.HAS_SCORES = false
 /*
 |--------------------------------------------------------------------------
 | APP CONFIGURATION

@@ -88,40 +88,84 @@
 </template>
 
 <style>
-    
-    .q-card-container {padding: 0px;}
-    .q-item {padding: 8px 0px; font-size: 2vh !important;}
-        
-    .activePage {background-color: #0e6da5; color: white; margin: 0px -10px; padding: 0px 10px !important; border-radius: 0px !important;}
-    
-    input[type="radio"]+span, input[type="checkbox"]+span  {background-color: rgb(169, 223, 249);}
-    label.control-label {color:#2d2d2d;} 
-    
+.q-card-container {
+  padding: 0px;
+}
+.q-item {
+  padding: 8px 0px;
+  font-size: 2vh !important;
+}
+
+.activePage {
+  background-color: #0e6da5;
+  color: white;
+  margin: 0px -10px;
+  padding: 0px 10px !important;
+  border-radius: 0px !important;
+}
+
+input[type="radio"] + span,
+input[type="checkbox"] + span {
+  background-color: rgb(226, 233, 236);
+}
+label.control-label {
+  color: #2d2d2d;
+}
+
+label.control-label {
+  font-weight: 450 !important;
+}
+.form-group {
+  margin-bottom: 25px;
+}
+
+/*
     .panel-warning>.panel-heading {background-color:transparent; border-color:#f7952a; color:#ea6d00;}
-    
-    label.control-label {font-weight: 450 !important;}
-    .form-group {margin-bottom: 25px;}
-    
+
+
     .formio-component-fieldset legend {color:#ea6d00 !important; border-color:#f7952a; font-size: large !important; padding-bottom: 5px; font-weight: 450;}
-    .formio-component-panelFieldsetAddGpsLocation {}
 
     /* .formContainer {position: relative !important;}
     .form-group.saveAsDraft {position: absolute; bottom: 0px; right: 0px; } */
 
-    div.saveAsDraft {text-align: center; float: none !important; margin-top: 50px;}
-    button.saveAsDraft {background-color: #a2a2a2 !important; color: #ffffff !important; border: none; height: auto !important; text-transform: uppercase; padding: 10px 90px; margin: 0 auto; font-weight: 400; float: none !important; width: auto !important; font-size: 1.8vh !important; }
-    
-    ul.list-inline {text-align: center;}
-    .list-inline>li {padding-right: 10px; padding-left: 10px;}
-    
-    
-    
-    button.btn.btn-primary.btn-wizard-nav-next, 
-    button.btn.btn-primary.btn-wizard-nav-previous {background-color: #dcdcdc; color: #2f2f2f !important; border: none; font-size: 1.8vh; text-transform: uppercase; height: 45px; width: 30vw; font-weight: 500;}
-    
+div.saveAsDraft {
+  text-align: center;
+  float: none !important;
+  margin-top: 50px;
+}
+button.saveAsDraft {
+  background-color: #a2a2a2 !important;
+  color: #ffffff !important;
+  border: none;
+  height: auto !important;
+  text-transform: uppercase;
+  padding: 10px 90px;
+  margin: 0 auto;
+  font-weight: 400;
+  float: none !important;
+  width: auto !important;
+  font-size: 1.8vh !important;
+}
 
-    
-    
+ul.list-inline {
+  text-align: center;
+}
+.list-inline > li {
+  padding-right: 10px;
+  padding-left: 10px;
+}
+
+button.btn.btn-primary.btn-wizard-nav-next,
+button.btn.btn-primary.btn-wizard-nav-previous {
+  background-color: #dcdcdc;
+  color: #2f2f2f !important;
+  border: none;
+  font-size: 1.8vh;
+  text-transform: uppercase;
+  height: 45px;
+  width: 30vw;
+  font-weight: 500;
+}
 </style>
 
 
@@ -657,7 +701,7 @@ export default {
         showCancelButton: true,
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, reaload it!"
+        confirmButtonText: "Yes, reload it!"
       }).then(async () => {
         window.location.reload(true);
       });
@@ -941,6 +985,10 @@ export default {
             component.validate.required &&
             !component.hidden
           ) {
+            // console.log("component", component);
+            if (component.key === "AG-hh-nHhCultivationGirls015") {
+              // console.log("component", component);
+            }
             let value = data.formio.data[component.key];
             if (
               typeof value === "undefined" ||
@@ -954,6 +1002,7 @@ export default {
                 component: component,
                 pageKey: page.key
               });
+              // console.log("errorCount", errorCount);
             }
           }
         });
@@ -961,6 +1010,7 @@ export default {
       let groupedErrors = _groupBy(errorsByPage, function(b) {
         return b.pageKey;
       });
+      console.log('groupedErrors', groupedErrors)
       this.$eventHub.emit("VALIDATION_ERRORS", {
         count: errorCount,
         components: errors,

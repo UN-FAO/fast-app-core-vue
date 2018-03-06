@@ -35,13 +35,12 @@
                 <q-btn color="primary" round small  @click='handleEdit(scope)'> <i class="material-icons edit" >edit</i>
                   <q-tooltip>{{$t('Edit')}}</q-tooltip>
                 </q-btn>
-                <q-btn color="primary" round small  @click='handleReport(scope)'> <i class="material-icons assignment" >report</i>
+                <div v-if="HAS_REPORT" style="display: -webkit-inline-box;">
+                <q-btn color="primary" round small  @click='handleReport(scope)'> <i class="material-icons assignment" >assignment</i>
                   <q-tooltip>{{$t('Report')}}</q-tooltip>
                 </q-btn>
-
+                </div>
               </template>
-
-
               <template slot="selection" slot-scope="props">
               <q-btn flat color="primary" @click="handleDelete(props)">
                 <q-icon name="delete" />
@@ -113,6 +112,7 @@ import {
   QTooltip,
   Toast
 } from "quasar";
+import {HAS_REPORT} from 'config/env'
 import _forEach from "lodash/forEach";
 import _map from "lodash/map";
 import jsonexport from "jsonexport";
@@ -225,7 +225,7 @@ export default {
           label: this.$t("Action"),
           field: "action",
           filter: false,
-          width: "90px"
+          width: "110px"
         }
       );
       return columns;
@@ -297,7 +297,8 @@ export default {
       selectedRows: [],
       currentForm: {},
       submissions: undefined,
-      visibleColumns: []
+      visibleColumns: [],
+      HAS_REPORT: HAS_REPORT
     };
   },
   beforeDestroy() {

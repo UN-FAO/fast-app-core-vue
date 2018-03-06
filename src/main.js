@@ -21,23 +21,6 @@ import router from 'config/router'
 import store from 'config/store'
 import axios from 'config/axios'
 
-import {
-  Table,
-  TableColumn,
-  Pagination,
-  Tag,
-  Button
-} from 'element-ui';
-
-Vue.use(Table)
-Vue.use(TableColumn)
-Vue.use(Pagination)
-Vue.use(Tag)
-Vue.use(Button)
-
-import DataTables from 'vue-data-tables'
-Vue.use(DataTables)
-
 import VueSweetAlert from 'vue-sweetalert'
 Vue.use(VueSweetAlert)
 
