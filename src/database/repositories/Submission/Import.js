@@ -1,5 +1,5 @@
 import Formio from "formiojs";
-import { APP_URL } from "config/env";
+import { APP_CONFIG } from "config/env";
 import OFFLINE_PLUGIN from "modules/Formio/components/formio/src/offlinePlugin";
 import Promise from 'bluebird'
 import { Loading } from 'quasar'
@@ -81,7 +81,7 @@ let Import = class {
    *
    * @param {*} vm
    */
-  static getFormIOInstance(vm) {
+  static async getFormIOInstance(vm) {
     Formio.deregisterPlugin("offline");
     Formio.registerPlugin(
       OFFLINE_PLUGIN.getPlugin(
@@ -92,6 +92,8 @@ let Import = class {
       ),
       "offline"
     );
+    let config = await APP_CONFIG()
+    let APP_URL = config.APP_URL
     let formUrl = APP_URL + "/" + vm.currentForm.data.path;
     let formio = new Formio(formUrl);
     return formio

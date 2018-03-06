@@ -10,8 +10,8 @@ let SettingsRoutes = [{
   name: 'settings',
   children: [
     {
-      // UserProfile will be rendered inside User's <router-view>
-      // when /user/:id/profile is matched
+      // TRanslations will be renderer inside <router-view>
+      // when /settings/translations is matched
       path: 'translations',
       component: Translations,
       meta: { requiresAuth: true }

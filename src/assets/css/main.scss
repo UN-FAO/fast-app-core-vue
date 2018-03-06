@@ -695,7 +695,67 @@ th, th.field-required {
 .formio-component-survey {
     color: black !important;
 }
+.activePage {
+  background-color: #0e6da5;
+  color: white;
+  margin: 0px -10px;
+  padding: 0px 10px !important;
+  border-radius: 0px !important;
+}
 
+input[type="radio"] + span,
+input[type="checkbox"] + span {
+  background-color: rgb(226, 233, 236);
+}
+label.control-label {
+  color: #2d2d2d;
+}
+
+label.control-label {
+  font-weight: 450 !important;
+}
+.form-group {
+  margin-bottom: 25px;
+}
+
+div.saveAsDraft {
+  text-align: center;
+  float: none !important;
+  margin-top: 50px;
+}
+button.saveAsDraft {
+  background-color: #a2a2a2 !important;
+  color: #ffffff !important;
+  border: none;
+  height: auto !important;
+  text-transform: uppercase;
+  padding: 10px 90px;
+  margin: 0 auto;
+  font-weight: 400;
+  float: none !important;
+  width: auto !important;
+  font-size: 1.8vh !important;
+}
+
+ul.list-inline {
+  text-align: center;
+}
+.list-inline > li {
+  padding-right: 10px;
+  padding-left: 10px;
+}
+
+button.btn.btn-primary.btn-wizard-nav-next,
+button.btn.btn-primary.btn-wizard-nav-previous {
+  background-color: #dcdcdc;
+  color: #2f2f2f !important;
+  border: none;
+  font-size: 1.8vh;
+  text-transform: uppercase;
+  height: 45px;
+  width: 30vw;
+  font-weight: 500;
+}
 
 @import 'custom/custom.scss';
 @import 'qDataTable.scss';

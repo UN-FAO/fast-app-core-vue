@@ -13,15 +13,15 @@
             </div>
             <div class="wrap">
                 <p class="form-title">
-                    {{appName}}
-                 <div class="form-subtitle"> {{appPhrase}}</div>
+                    {{CONFIG.APP_FANTACY_NAME}}
+                 <div class="form-subtitle"> {{CONFIG.APP_PHRASE}}</div>
                 </p>
 
 
                 <div class="form-login" id="registerForm" >
                   <br>
                         <formio
-                          :formURL="formURL"
+                          :formURL="this.CONFIG.APP_URL + '/userregister'"
                           hashField="password"
                         />
                     <br>
@@ -35,18 +35,26 @@
 
 <script>
 import formio from "modules/Formio/components/formio/formio";
-import { APP_URL, APP_FANTACY_NAME, APP_PHRASE } from "config/env";
+import { APP_CONFIG } from "config/env";
 
 export default {
   components: {
     formio
   },
+  asyncData: {
+    CONFIG: {
+      async get() {
+        let config = await APP_CONFIG();
+        return config;
+      },
+      transform(result) {
+        return result;
+      }
+    }
+  },
   data() {
     return {
-      form: null,
-      formURL: APP_URL + "/userregister",
-      appName: APP_FANTACY_NAME,
-      appPhrase: APP_PHRASE
+      form: null
     };
   }
 };

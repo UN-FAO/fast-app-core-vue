@@ -695,6 +695,28 @@ const Formio = class {
         })
     })
   }
+
+  /**
+   * [getSubmissions description]
+   * @param  {[type]} formPath [description]
+   * @return {[type]}          [description]
+   */
+  static getConfiguration(ID_SUBMISSION) {
+    return new Promise((resolve, reject) => {
+      let url = 'https://ydvahgxgqliaeuf.form.io/configuration/submission/' + ID_SUBMISSION
+      AXIOS.get(url)
+        .then(response => {
+          let submissions = response.data
+          resolve(submissions)
+          Loading.hide()
+        })
+        .catch((error) => {
+          Loading.hide()
+          reject(error)
+        })
+    })
+  }
+
   static createTranslation(idMachine, label) {
     return new Promise((resolve, reject) => {
       let url = 'https://' + idMachine + '.form.io/translations/submission'

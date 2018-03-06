@@ -20,7 +20,7 @@
                     </label>
                   </div>
                 </div>
-                <div class="input-group" v-for="(form, index) in forms" :key="index" v-if="form.data.tags.indexOf('visible') > -1 || APP_ENV === 'dev' ">
+                <div class="input-group" v-for="(form, index) in forms" :key="index" v-if="form.data.tags.indexOf('visible') > -1 || CONFIG.APP_ENV === 'dev' ">
                   <div class="radio">
                     <label class="control-label" for="S0-info-headOfHousehold-you">
                       <input name="selectedSurvey" type="radio" class="" lang="en" :value="form.data.title">
@@ -56,7 +56,7 @@ import Form from 'database/models/Form'
 import _sortBy from "lodash/sortBy";
 import _forEach from "lodash/forEach";
 import _orderBy from "lodash/orderBy";
-import {APP_ENV} from "config/env"
+import {APP_CONFIG} from "config/env"
 
 export default {
   name: "card",
@@ -84,11 +84,21 @@ export default {
     QCollapsible,
     QSpinnerAudio
   },
+  asyncData: {
+    CONFIG: {
+      async get() {
+        let config = await APP_CONFIG();
+        return config;
+      },
+      transform(result) {
+        return result
+      }
+    }
+  },
   data: () => {
     return {
       forms: undefined,
-      loading: true,
-      APP_ENV: APP_ENV
+      loading: true
     };
   },
   methods: {

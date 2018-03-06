@@ -4,7 +4,6 @@ import User from 'database/models/User'
 import Auth from 'modules/Auth/api/Auth'
 import Connection from 'modules/Wrappers/Connection'
 import Submission from 'database/models/Submission'
-
 let Sync = class {
   /**
    *

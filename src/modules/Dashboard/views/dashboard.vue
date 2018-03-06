@@ -1,29 +1,36 @@
 <template>
-  <div>
-  <div class="row" >
-      <q-card class="col-sm-5 mainCards">
-        <q-card-main @click="$router.push({name: 'newSurvey'})" style="cursor: pointer; text-align: center;" class="mainActions">
-          <q-icon class="material-icons">playlist_add</q-icon>
-          <h1>{{ $t("Start survey") }}</h1>
-        </q-card-main>
-      </q-card>
-    <q-card class="col-sm-5 mainCards">
-        <q-card-main @click="$router.push({name: 'CollectedData'})" style="cursor: pointer; text-align: center;" class="mainActions">
-          <q-icon class="material-icons">storage</q-icon>
-          <h1> {{ $t("Collected Data") }} </h1>
-        </q-card-main>
-      </q-card>
+ <div class="container-fluid col-lg-offset-1 col-lg-10" >
+    <div class="section-title" style="font-size: 30px;padding-top:30px">
+      Wellcome
+    </div>
+    <hr style="border-top: 1px solid #7f7f7f;">
+     <div>
+
+    <div class="row" style="margin-top:30px;">
+      <div>
+      <span style="margin-left:50px">As administrator, you are allowed to:</span>
+      </div>
+      <br>
+      <ul>
+        <li>
+          <router-link :to='{name: "formio_form_show",params: { idForm: "userregister" }}'>Manage users</router-link>
+        </li>
+        <li>
+          <router-link :to="{ name: 'reference'}">Manage Reference data</router-link>
+        </li>
+        <li>
+          <router-link :to="{ name: 'registries'}">Manage registries</router-link>
+        </li>
+        <li>
+          <router-link :to="{ name: 'user', params: { userId: 123 }}">Manage validation rules</router-link>
+        </li>
+        <li>
+          <router-link :to="{ name: 'user', params: { userId: 123 }}">Manage statistical indicators</router-link>
+        </li>
+      </ul>
     </div>
 
-    <div class="row" v-if="HAS_ABOUT">
-
-    <q-card class="col-sm-5 mainCards mainCardsSmall">
-        <q-card-main @click="$router.push({name: 'About'})" style="cursor: pointer; text-align: center;" class="mainActions ">
-          <q-icon class="material-icons">tablet_mac</q-icon>
-          <h1> {{ $t("About") }} {{APP_ABOUT_NAME}} </h1>
-        </q-card-main>
-      </q-card>
-    </div>
+  </div>
   </div>
 </template>
 <script>
@@ -48,8 +55,7 @@ import {
   QItemSeparator,
   Loading
 } from "quasar";
-import _sortBy from "lodash/sortBy";
-import { HAS_ABOUT, APP_ABOUT_NAME } from "config/env";
+import { APP_CONFIG } from "config/env";
 import Auth from "modules/Auth/api/Auth";
 
 export default {
@@ -75,25 +81,22 @@ export default {
     QItemSeparator,
     Loading
   },
+  asyncData: {
+    CONFIG: {
+      async get() {
+        let config = await APP_CONFIG();
+        return config;
+      },
+      transform(result) {
+        return result
+      }
+    }
+  },
   data: () => {
     return {
       forms: [],
-      subscriptions: [],
-      APP_ABOUT_NAME: APP_ABOUT_NAME,
-      HAS_ABOUT: HAS_ABOUT
+      subscriptions: []
     };
-  },
-  computed: {
-    // a computed getter
-    orderedForms: function() {
-      let ordered = [];
-      if (this.forms.length === 0) {
-        return [];
-      } else {
-        ordered = _sortBy(this.forms, "data.title");
-        return ordered;
-      }
-    }
   },
   methods: {
     isAdmin() {

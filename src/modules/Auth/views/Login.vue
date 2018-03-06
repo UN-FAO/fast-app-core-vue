@@ -4,8 +4,8 @@
         <div class="col-xl-6 col-lg-6 col-md-9 col-sm-12 col-xs-12 col-xl-offset-3 col-lg-offset-3 col-md-offset-3 col-sm-offset-2">
             <div class="wrap">
                 <p class="form-title">
-                     {{$t(appName)}}
-                  <div class="form-subtitle"> {{$t(appPhrase)}}</div>
+                     {{$t(CONFIG.APP_FANTACY_NAME)}}
+                  <div class="form-subtitle"> {{$t(CONFIG.APP_PHRASE)}}</div>
                 </p>
                 <div class="form-login" >
                   <div class="form-group">
@@ -31,7 +31,7 @@
                   <br>
                   <p class="text-center _new-user"><router-link :to="{ path: 'register' }">{{$t('New user')}}?</router-link></p>
                   <p class="text-center" style="color: grey !important">
-                    {{$t('Version')}}   {{fastVersion}}
+                    {{$t('Version')}}   {{CONFIG.FAST_VERSION}}
                     <q-icon name="fa-cog" color="white" @click="adminLogin" style="cursor:pointer;"/>
                   </p>
                 </div>
@@ -50,7 +50,7 @@
 <script>
 import Auth from "modules/Auth/api/Auth";
 import { QField, QInput, QBtn, QIcon } from "quasar";
-import { FAST_VERSION, APP_FANTACY_NAME, APP_PHRASE } from "config/env";
+import { APP_CONFIG } from "config/env";
 import { mapActions } from "vuex";
 export default {
   async mounted() {
@@ -64,10 +64,17 @@ export default {
     QBtn,
     QIcon
   },
-  /**
-   * Data for Login view
-   * @return {[type]} [description]
-   */
+  asyncData: {
+    CONFIG: {
+      async get() {
+        let config = await APP_CONFIG();
+        return config;
+      },
+      transform(result) {
+        return result;
+      }
+    }
+  },
   data() {
     return {
       buttonClass: "normal",
@@ -76,10 +83,7 @@ export default {
         password: ""
       },
       logingIn: false,
-      logInError: false,
-      fastVersion: FAST_VERSION,
-      appName: APP_FANTACY_NAME,
-      appPhrase: APP_PHRASE
+      logInError: false
     };
   },
   /**

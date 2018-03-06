@@ -2,7 +2,7 @@
 <div class="container-fluid">
   <div class="row FormioContainer">
 
-    <q-card style="background-color: white; max-height: fit-content;" class="col-lg-3 col-md-12 col-sm-12" v-if="_isWizard && showPages && !TAB_MENU">
+    <q-card style="background-color: white; max-height: fit-content;" class="col-lg-3 col-md-12 col-sm-12" v-if="_isWizard && showPages && !CONFIG.TAB_MENU">
       <q-card-main>
         <q-list separator style="border: none !important">
 
@@ -26,14 +26,14 @@
         <q-tabs inverted id="contentForm" >
           <!-- Tabs - notice slot="title" -->
 
-          <q-tab v-bind:class="!PARRALEL_SURVEYS ? 'hidden' : ''" default slot="title" name="tab-1" icon="person" :label="participantName" :color="saved ? 'primary' : 'red'" />
+          <q-tab v-bind:class="!CONFIG.PARALLEL_SURVEYS ? 'hidden' : ''" default slot="title" name="tab-1" icon="person" :label="participantName" :color="saved ? 'primary' : 'red'" />
           <!-- Targets -->
           <q-tab slot="title" v-if="participant.submissionId !== $route.params.idSubmission" v-for="participant in participants" :key="participant.submissionId" icon="person" :label="participant.participantName" :color="saved ? 'primary' : 'red'" @click="goToSurvey(participant.submissionId)"
           />
 
           <q-tab-pane name="tab-1" ref="tab1">
 
-            <formio :formURL="formURL" :submission="submission" :formioToken="formioToken" :localDraft="LOCAL_DRAFT_ENABLED" :readOnly="readOnly" :autoCreate="autoCreate" />
+            <formio :formURL="CONFIG.APP_URL + '/' + $route.params.idForm" :submission="submission" :formioToken="formioToken" :localDraft="CONFIG.LOCAL_DRAFT_ENABLED" :readOnly="readOnly" :autoCreate="autoCreate" />
           </q-tab-pane>
 
         </q-tabs>
@@ -45,12 +45,12 @@
       <q-fab color="red" icon="add" direction="down">
 
 
-        <q-fab-action v-bind:class="!PARRALEL_SURVEYS ? 'hidden' : ''" color="purple-6" @click="groupConfig()" icon="fa-users"></q-fab-action>
-        <q-fab-action v-bind:class="!PARRALEL_SURVEYS ? 'hidden' : ''" color="amber" @click="addSurvey()" icon="person_add"></q-fab-action>
+        <q-fab-action v-bind:class="!CONFIG.PARALLEL_SURVEYS ? 'hidden' : ''" color="purple-6" @click="groupConfig()" icon="fa-users"></q-fab-action>
+        <q-fab-action v-bind:class="!CONFIG.PARALLEL_SURVEYS ? 'hidden' : ''" color="amber" @click="addSurvey()" icon="person_add"></q-fab-action>
 
         <q-fab-action color="primary" @click="saveAsDraft()" icon="fa-floppy-o"></q-fab-action>
-         <q-fab-action color="secondary" @click="openRightDrawer()" icon="assessment" v-if="HAS_SCORES"></q-fab-action>
-        <q-fab-action color="secondary" @click="togglePages" icon="menu" v-if="_isWizard && !TAB_MENU"></q-fab-action>
+         <q-fab-action color="secondary" @click="openRightDrawer()" icon="assessment" v-if="CONFIG.HAS_SCORES"></q-fab-action>
+        <q-fab-action color="secondary" @click="togglePages" icon="menu" v-if="_isWizard && !CONFIG.TAB_MENU"></q-fab-action>
 
       </q-fab>
     </q-fixed-position>
@@ -69,7 +69,7 @@
         </q-fixed-position>
     -->
   </div>
-  <q-tabs slot="footer" v-model="tab" v-if="TAB_MENU" class="floatingPagination">
+  <q-tabs slot="footer" v-model="tab" v-if="CONFIG.TAB_MENU" class="floatingPagination">
           <q-tab
            icon="fa-file"
             slot="title"
@@ -86,104 +86,9 @@
   </div>
 
 </template>
-
-<style>
-.q-card-container {
-  padding: 0px;
-}
-.q-item {
-  padding: 8px 0px;
-  font-size: 2vh !important;
-}
-
-.activePage {
-  background-color: #0e6da5;
-  color: white;
-  margin: 0px -10px;
-  padding: 0px 10px !important;
-  border-radius: 0px !important;
-}
-
-input[type="radio"] + span,
-input[type="checkbox"] + span {
-  background-color: rgb(226, 233, 236);
-}
-label.control-label {
-  color: #2d2d2d;
-}
-
-label.control-label {
-  font-weight: 450 !important;
-}
-.form-group {
-  margin-bottom: 25px;
-}
-
-/*
-    .panel-warning>.panel-heading {background-color:transparent; border-color:#f7952a; color:#ea6d00;}
-
-
-    .formio-component-fieldset legend {color:#ea6d00 !important; border-color:#f7952a; font-size: large !important; padding-bottom: 5px; font-weight: 450;}
-
-    /* .formContainer {position: relative !important;}
-    .form-group.saveAsDraft {position: absolute; bottom: 0px; right: 0px; } */
-
-div.saveAsDraft {
-  text-align: center;
-  float: none !important;
-  margin-top: 50px;
-}
-button.saveAsDraft {
-  background-color: #a2a2a2 !important;
-  color: #ffffff !important;
-  border: none;
-  height: auto !important;
-  text-transform: uppercase;
-  padding: 10px 90px;
-  margin: 0 auto;
-  font-weight: 400;
-  float: none !important;
-  width: auto !important;
-  font-size: 1.8vh !important;
-}
-
-ul.list-inline {
-  text-align: center;
-}
-.list-inline > li {
-  padding-right: 10px;
-  padding-left: 10px;
-}
-
-button.btn.btn-primary.btn-wizard-nav-next,
-button.btn.btn-primary.btn-wizard-nav-previous {
-  background-color: #dcdcdc;
-  color: #2f2f2f !important;
-  border: none;
-  font-size: 1.8vh;
-  text-transform: uppercase;
-  height: 45px;
-  width: 30vw;
-  font-weight: 500;
-}
-</style>
-
-
-
-
-
-
-
-
 <script>
 import {
-  APP_URL,
-  LOCAL_DRAFT_ENABLED,
-  PARALLEL_SURVEYS,
-  NAVIGATION_OPENED,
-  NAVIGATION_AUTOCLOSE_ON_SELECTION,
-  TAB_MENU,
-  HAS_SCORES
+  APP_CONFIG
 } from "config/env";
 import { mapActions } from "vuex";
 import {
@@ -326,6 +231,15 @@ export default {
     this.$eventHub.$off("VALIDATION_ERRORS");
   },
   asyncData: {
+     CONFIG: {
+      async get() {
+        let config = await APP_CONFIG();
+        return config;
+      },
+      transform(result) {
+        return result;
+      }
+    },
     submission: {
       get() {
         if (this.$route.params.idSubmission) {
@@ -335,7 +249,6 @@ export default {
         }
       },
       transform(result) {
-        console.log("The data is: ", result.data.data["SO-distDatagrid"]);
         return result;
       }
     },
@@ -374,7 +287,7 @@ export default {
     },
     getFormClass() {
       let className = "";
-      if (this.showPages && this._isWizard && !TAB_MENU) {
+      if (this.showPages && this._isWizard && !this.CONFIG.TAB_MENU) {
         className = "col-lg-8  col-md-12 col-sm-12";
       } else {
         className =
@@ -396,26 +309,21 @@ export default {
   data: function() {
     return {
       form: null,
-      formURL: APP_URL + "/" + this.$route.params.idForm,
       people: [
         {
           name: "P1"
         }
       ],
       formioToken: Auth.user().x_jwt_token,
-      LOCAL_DRAFT_ENABLED: LOCAL_DRAFT_ENABLED,
-      TAB_MENU: TAB_MENU,
-      HAS_SCORES: HAS_SCORES,
       saved: true,
       errors: {},
       isWizard: false,
       pages: [],
       currentPage: 0,
-      showPages: NAVIGATION_OPENED,
+      showPages: this.CONFIG.NAVIGATION_OPENED,
       currentQuestion: -1,
       displayUp: false,
       displayDown: true,
-      PARRALEL_SURVEYS: PARALLEL_SURVEYS,
       parallelSub: [],
       autoCreate: !this.$route.params.idSubmission,
       readOnly: false,
@@ -467,7 +375,7 @@ export default {
         this.tab = index + 1;
         this.currentQuestion = -1;
         window.scrollTo(0, 0);
-        if (NAVIGATION_AUTOCLOSE_ON_SELECTION) {
+        if (this.CONFIG.NAVIGATION_AUTOCLOSE_ON_SELECTION) {
           this.togglePages();
         }
       } catch (e) {
@@ -935,7 +843,7 @@ export default {
       // Register the plugin for offline mode
       Formio.registerPlugin(
         OFFLINE_PLUGIN.getPlugin(
-          this.formURL,
+          this.CONFIG.APP_URL + "/" + this.$route.params.idForm,
           this.hashField,
           false,
           this.$eventHub
@@ -949,7 +857,7 @@ export default {
         draft: true,
         trigger: "createParalelSurvey"
       };
-      let formio = new Formio(this.formURL);
+      let formio = new Formio(this.CONFIG.APP_URL + "/" + this.$route.params.idForm);
       formio.saveSubmission(formSubmission);
     },
     getForms() {
@@ -1010,7 +918,6 @@ export default {
       let groupedErrors = _groupBy(errorsByPage, function(b) {
         return b.pageKey;
       });
-      console.log('groupedErrors', groupedErrors)
       this.$eventHub.emit("VALIDATION_ERRORS", {
         count: errorCount,
         components: errors,

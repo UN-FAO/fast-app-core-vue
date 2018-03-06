@@ -1,3 +1,4 @@
+import CONFIGURATION from 'database/repositories/Configuration/Configuration'
 /*
 |--------------------------------------------------------------------------
 | APP VERSION
@@ -8,6 +9,10 @@
 | understand whats are your users looking at!
 |
 */
+exports.APP_CONFIG_ID = '5a9ec641ed6fd5f497122f05'
+exports.APP_CONFIG = async () => { let config = await CONFIGURATION.getLocal(); return config }
+exports.SYNC_INTERVAL = 2000
+
 exports.APP_ENV = 'prod'
 exports.FAST_VERSION = '0.6.4'
 exports.SHARE_DATA_BETWEEN_USERS = true
@@ -77,7 +82,7 @@ exports.SYNC_URL = 'http://localhost:3000/'
 |
 */
 exports.HEARTBEAT_URL = 'https://dog.ceo/api/breeds/list/all'
-exports.SYNC_INTERVAL = 2000
+
 /*
 |--------------------------------------------------------------------------
 | MULTILANGUAGE

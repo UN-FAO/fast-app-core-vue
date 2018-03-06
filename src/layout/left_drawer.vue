@@ -2,7 +2,7 @@
   <q-scroll-area style="width: 100%; height: 100%">
     <q-list-header class="bg-primary text-white" style="padding-left: 0px; height: 50px; background:#00293c !important;">
       <center>
-        <img src="statics/2000px-FAO_logo_reverse.png" style="max-height: 40px; max-width: 40px;" /> {{appName}}
+        <img src="statics/2000px-FAO_logo_reverse.png" style="max-height: 40px; max-width: 40px;" /> {{CONFIG.APP_FANTACY_NAME}}
       </center>
     </q-list-header>
     <q-list>
@@ -25,15 +25,20 @@
     </q-item>
      <q-item-separator  />
 
-    <q-side-link multiline highlight item :to="{name: 'newSurvey'}" :key="newSurvey">
-      <q-item-side icon="playlist_add" />
-      <q-item-main :label="$t('Start new Collection')" />
+    <q-side-link multiline highlight item :to="{name: 'system'}" :key="system">
+      <q-item-side icon="fa-cog" />
+      <q-item-main :label="$t('Manage System')" />
     </q-side-link>
 
 
-    <q-side-link multiline highlight item :to="{name: 'CollectedData'}" :key="Data">
-      <q-item-side icon="storage" />
-      <q-item-main :label="$t('Collected Data')" />
+    <q-side-link multiline highlight item :to="{name: 'upload'}" :key="upload">
+      <q-item-side icon="fa-upload" />
+      <q-item-main :label="$t('Data Upload')" />
+    </q-side-link>
+
+     <q-side-link multiline highlight item :to="{name: 'upload'}" :key="upload">
+      <q-item-side icon="fa-line-chart" />
+      <q-item-main :label="$t('Reports')" />
     </q-side-link>
 
     <q-side-link v-if="isAdmin()" multiline highlight item :to="{name: 'settings'}" :key="settings">
@@ -42,7 +47,7 @@
     </q-side-link>
 
 
-    <q-side-link multiline highlight item :to="{name: 'About'}" :key="about" v-if="HAS_ABOUT">
+    <q-side-link multiline highlight item :to="{name: 'About'}" :key="about" v-if="CONFIG.HAS_ABOUT">
       <q-item-side icon="tablet_mac" />
       <q-item-main :label="$t('About') +' '+ appName" />
     </q-side-link>
@@ -89,21 +94,38 @@
     <p>
 
     <div class="fixed-bottom text-center light text-italic">
-      v {{fastVersion}}
+      v {{CONFIG.FAST_VERSION}}
     </div>
   </q-scroll-area>
 </template>
 
 <style>
-    .layout-aside-left {opacity: 0.9; background:#03405f !important;}
-    .layout-aside-left .q-list-header center {font-size: 1.6em; font-weight: 400; padding-top: 5px;}
+.layout-aside-left {
+  opacity: 0.9;
+  background: #03405f !important;
+}
+.layout-aside-left .q-list-header center {
+  font-size: 1.6em;
+  font-weight: 400;
+  padding-top: 5px;
+}
 
-    .q-item-icon {font-size: 26px;}
+.q-item-icon {
+  font-size: 26px;
+}
 
-    .q-list-header {font-size: 2vh !important; font-weight: normal;}
-    .q-list-header button {float: left; top: 10px;}
-    .q-list-header button .q-icon {font-size: 27px; padding-right: 3px;}
-
+.q-list-header {
+  font-size: 2vh !important;
+  font-weight: normal;
+}
+.q-list-header button {
+  float: left;
+  top: 10px;
+}
+.q-list-header button .q-icon {
+  font-size: 27px;
+  padding-right: 3px;
+}
 </style>
 
 
@@ -132,7 +154,11 @@ import {
   QItemSeparator
 } from "quasar";
 import layoutStore from "./layout-store";
-import { FAST_VERSION, APP_FANTACY_NAME, HAS_ABOUT } from "config/env";
+import {
+  APP_CONFIG_ID,
+  APP_CONFIG
+} from "config/env";
+import Configuration from "database/repositories/Configuration/Configuration";
 export default {
   components: {
     QScrollArea,
@@ -152,14 +178,22 @@ export default {
   mounted: async function() {
     Form.local().sAll(this, "forms");
   },
+  asyncData: {
+    CONFIG: {
+      async get() {
+        let config = await APP_CONFIG();
+        return config;
+      },
+      transform(result) {
+        return result
+      }
+    }
+  },
   data() {
     return {
       forms: [],
       subscriptions: [],
-      layoutStore,
-      fastVersion: FAST_VERSION,
-      appName: APP_FANTACY_NAME,
-      HAS_ABOUT: HAS_ABOUT
+      layoutStore
     };
   },
   computed: {
@@ -192,6 +226,8 @@ export default {
           await this.getResources({
             appName: this.$store.state.authStore.appName
           });
+          await Configuration.get(APP_CONFIG_ID);
+
           this.$swal.close();
           this.$swal({
             title: this.$t("App Updated"),

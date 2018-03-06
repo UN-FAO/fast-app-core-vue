@@ -4,8 +4,8 @@
       <div class="col-xl-6 col-lg-6 col-md-9 col-sm-12 col-xs-12 col-xl-offset-3 col-lg-offset-3 col-md-offset-3 col-sm-offset-2">
         <div class="wrap">
           <p class="form-title">
-            {{$t(appName)}}
-            <div class="form-subtitle"> {{$t(appPhrase)}}</div>
+            {{$t(CONFIG.APP_FANTACY_NAME)}}
+            <div class="form-subtitle"> {{$t(CONFIG.APP_PHRASE)}}</div>
           </p>
           <div class="form-login">
             <div class="form-group">
@@ -27,7 +27,7 @@
               <router-link :to="{ path: 'register' }">{{$t('New user')}}?</router-link>
             </p>
             <p class="text-center" style="color: grey !important">
-              {{$t('Version')}} {{fastVersion}}
+              {{$t('Version')}} {{CONFIG.FAST_VERSION}}
               <q-icon style="cursor:pointer;" name="fa-arrow-circle-left" color="white" @click="userLogin" />
             </p>
 
@@ -39,95 +39,88 @@
 </template>
 
 <script>
-  import Auth from "modules/Auth/api/Auth";
-  import {
+import Auth from "modules/Auth/api/Auth";
+import { QField, QInput, QBtn, QIcon } from "quasar";
+import { APP_CONFIG } from "config/env";
+import { mapActions } from "vuex";
+
+export default {
+  mounted() {
+    this.getResources({
+      appName: this.$store.state.authStore.appName
+    });
+  },
+  components: {
     QField,
     QInput,
     QBtn,
     QIcon
-  } from "quasar";
-  import {
-    FAST_VERSION,
-    APP_FANTACY_NAME,
-    APP_PHRASE
-  } from "config/env";
-  import {
-    mapActions
-  } from "vuex";
-
-  export default {
-    mounted() {
-      this.getResources({
-        appName: this.$store.state.authStore.appName
-      });
-    },
-    components: {
-      QField,
-      QInput,
-      QBtn,
-      QIcon
-    },
-    /**
-     * Data for Login view
-     * @return {[type]} [description]
-     */
-    data() {
-      return {
-        buttonClass: "normal",
-        credentials: {
-          username: "",
-          password: ""
-        },
-        logingIn: false,
-        logInError: false,
-        fastVersion: FAST_VERSION,
-        appName: APP_FANTACY_NAME,
-        appPhrase: APP_PHRASE
-      };
-    },
-    /**
-     * Available methods for the
-     * Login view
-     * @type {Object}
-     */
-    methods: {
-      ...mapActions(["sendOfflineData", "getResources"]),
-      /**
-       * Response to the login method
-       * sets the layout for the App ON.
-       * @return {[type]} [description]
-       */
-      async handleLogin(event, done) {
-        this.logingIn = true;
-        this.credentials.password = this.credentials.password.trim();
-        this.credentials.username = this.credentials.username.trim();
-        // Try to authenticate the User
-        Auth.attempt(
-            this.credentials,
-            this.$store.state.authStore.appURL,
-            "admin"
-          )
-          .then(async User => {
-            this.$store.dispatch("setUserObject", User);
-            this.$router.push({
-              name: "dashboard"
-            });
-          })
-          .catch(error => {
-            console.log(error);
-            this.logingIn = false;
-            this.$swal(
-              "Wrong Credentials!",
-              "Wrong username or password...try again",
-              "error"
-            );
-          });
+  },
+  asyncData: {
+    CONFIG: {
+      async get() {
+        let config = await APP_CONFIG();
+        return config;
       },
-      userLogin() {
-        this.$router.push({
-          name: "login"
-        });
+      transform(result) {
+        return result;
       }
     }
-  };
+  },
+  data() {
+    return {
+      buttonClass: "normal",
+      credentials: {
+        username: "",
+        password: ""
+      },
+      logingIn: false,
+      logInError: false
+    };
+  },
+  /**
+   * Available methods for the
+   * Login view
+   * @type {Object}
+   */
+  methods: {
+    ...mapActions(["sendOfflineData", "getResources"]),
+    /**
+     * Response to the login method
+     * sets the layout for the App ON.
+     * @return {[type]} [description]
+     */
+    async handleLogin(event, done) {
+      this.logingIn = true;
+      this.credentials.password = this.credentials.password.trim();
+      this.credentials.username = this.credentials.username.trim();
+      // Try to authenticate the User
+      Auth.attempt(
+        this.credentials,
+        this.$store.state.authStore.appURL,
+        "admin"
+      )
+        .then(async User => {
+          this.$store.dispatch("setUserObject", User);
+          this.$router.push({
+            name: "dashboard"
+          });
+        })
+        .catch(error => {
+          console.log(error);
+          this.logingIn = false;
+          this.$swal(
+            "Wrong Credentials!",
+            "Wrong username or password...try again",
+            "error"
+          );
+        });
+    },
+    userLogin() {
+      this.$router.push({
+        name: "login"
+      });
+    }
+  }
+};
 </script>

@@ -43,7 +43,6 @@ import wifiDisplay from "modules/Connection/components/display";
 import { QToolbar, QToolbarTitle, QAjaxBar, QBtn, QIcon } from "quasar";
 import Auth from "modules/Auth/api/Auth";
 import { mapMutations } from "vuex";
-import { APP_FANTACY_NAME } from "config/env";
 export default {
   components: {
     Localization,
@@ -63,11 +62,6 @@ export default {
         this.$route.name !== "adminLogin"
       );
     }
-  },
-  data() {
-    return {
-      appName: APP_FANTACY_NAME
-    };
   },
   methods: {
     ...mapMutations(["setLayoutNeeded", "setIsLoginPage"]),

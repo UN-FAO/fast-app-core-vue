@@ -34,9 +34,13 @@ const _create = function () {
       var translations = db.getCollection("Translation");
       var users = db.getCollection("User");
       var roles = db.getCollection("Role");
+      var configuration = db.getCollection("Configuration");
 
       if (submissions === null) {
         db.addCollection("Submission")
+      }
+      if (configuration === null) {
+        db.addCollection("Configuration")
       }
       if (forms === null) {
         db.addCollection("Form");
