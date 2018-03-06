@@ -9,18 +9,18 @@ import CONFIGURATION from 'database/repositories/Configuration/Configuration'
 | understand whats are your users looking at!
 |
 */
-exports.APP_CONFIG_ID = '5a9ec641ed6fd5f497122f05'
 exports.APP_CONFIG = async () => { let config = await CONFIGURATION.getLocal(); return config }
-exports.SYNC_INTERVAL = 2000
-
-exports.APP_ENV = 'prod'
-exports.FAST_VERSION = '0.6.4'
-exports.SHARE_DATA_BETWEEN_USERS = true
-exports.TAB_MENU = false
-exports.HAS_SCORES = false
-exports.HAS_REPORT = false
-exports.HAS_ABOUT = false
-exports.SAVE_REDIRECT = 'collected'
+exports.APP_CONFIG_ID = '5a9ec641ed6fd5f497122f05'
+exports.CONFIG_URL = 'https://ydvahgxgqliaeuf.form.io/configuration/submission/'
+// exports.SYNC_INTERVAL = 2000
+// exports.APP_ENV = 'prod'
+// exports.FAST_VERSION = '0.6.4'
+// exports.SHARE_DATA_BETWEEN_USERS = true
+// exports.TAB_MENU = false
+// exports.HAS_SCORES = false
+// exports.HAS_REPORT = false
+// exports.HAS_ABOUT = false
+// exports.SAVE_REDIRECT = 'collected'
 /*
 |--------------------------------------------------------------------------
 | FORM.IO CONFIGURATION
@@ -31,8 +31,8 @@ exports.SAVE_REDIRECT = 'collected'
 | forms asociated with it.
 |
 */
-exports.APP_URL = 'https://cslxyuxhxebnnxi.form.io'
-exports.APP_NAME = 'cslxyuxhxebnnxi'
+// exports.APP_URL = 'https://cslxyuxhxebnnxi.form.io'
+// exports.APP_NAME = 'cslxyuxhxebnnxi'
 /*
 |--------------------------------------------------------------------------
 | APP CONFIGURATION
@@ -43,8 +43,8 @@ exports.APP_NAME = 'cslxyuxhxebnnxi'
 | in the app.
 |
 */
-exports.APP_FANTACY_NAME = 'SSFK'
-exports.APP_PHRASE = 'Trinidad and Tobago SSFK POC'
+// exports.APP_FANTACY_NAME = 'SSFK'
+// exports.APP_PHRASE = 'Trinidad and Tobago SSFK POC'
 /*
 |--------------------------------------------------------------------------
 | MD5 KEY
@@ -55,7 +55,7 @@ exports.APP_PHRASE = 'Trinidad and Tobago SSFK POC'
 | hashed version of it.
 |
 */
-exports.MD5_KEY = 'my_super_secure_key'
+// exports.MD5_KEY = 'my_super_secure_key'
 /*
 |--------------------------------------------------------------------------
 | LOCAL DB PASSWORD and SYNC
@@ -67,8 +67,8 @@ exports.MD5_KEY = 'my_super_secure_key'
 | sync LocalDB´s when using multiple Browser Windows.
 |
 */
-exports.LOCAL_DB_PASSWORD = 'onePassword123'
-exports.SYNC_URL = 'http://localhost:3000/'
+// exports.LOCAL_DB_PASSWORD = 'onePassword123'
+// exports.SYNC_URL = 'http://localhost:3000/'
 
 /*
 |--------------------------------------------------------------------------
@@ -81,7 +81,7 @@ exports.SYNC_URL = 'http://localhost:3000/'
 | submissions should run.
 |
 */
-exports.HEARTBEAT_URL = 'https://dog.ceo/api/breeds/list/all'
+// exports.HEARTBEAT_URL = 'https://dog.ceo/api/breeds/list/all'
 
 /*
 |--------------------------------------------------------------------------
@@ -91,7 +91,7 @@ exports.HEARTBEAT_URL = 'https://dog.ceo/api/breeds/list/all'
 | Here you may specify if this application require multilenguage settings
 |
 */
-exports.MULTILANGUAGE = true
+// exports.MULTILANGUAGE = true
 
 /*
 |--------------------------------------------------------------------------
@@ -102,7 +102,7 @@ exports.MULTILANGUAGE = true
 | submissions as local drafts before sending them to FORM.IO
 |
 */
-exports.LOCAL_DRAFT_ENABLED = true
+// exports.LOCAL_DRAFT_ENABLED = true
 /*
 |--------------------------------------------------------------------------
 | OFFLINE FIRST
@@ -112,8 +112,8 @@ exports.LOCAL_DRAFT_ENABLED = true
 | first approach. This means storing every submission locally
 | before submitting the data to FORM.IO
 */
-exports.OFFLINE_FIRST = true
-exports.OFFLINE_USE = true
+// exports.OFFLINE_FIRST = true
+// exports.OFFLINE_USE = true
 
 /*
 |--------------------------------------------------------------------------
@@ -124,7 +124,7 @@ exports.OFFLINE_USE = true
 | have multiple running surveys (group survey)
 |
 */
-exports.PARALLEL_SURVEYS = false
+// exports.PARALLEL_SURVEYS = false
 /*
 |--------------------------------------------------------------------------
 | LEFT HAND WIZARD NAVIGATION
@@ -134,5 +134,5 @@ exports.PARALLEL_SURVEYS = false
 | open the left hand wizard navigation while on create
 |
 */
-exports.NAVIGATION_OPENED = true
-exports.NAVIGATION_AUTOCLOSE_ON_SELECTION = false
+// exports.NAVIGATION_OPENED = true
+// exports.NAVIGATION_AUTOCLOSE_ON_SELECTION = false

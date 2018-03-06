@@ -1,10 +1,12 @@
 import Formio from 'modules/Formio/api/Formio'
-import store from 'config/store'
 import _forEach from 'lodash/forEach'
 import _map from 'lodash/map'
 import _isEmpty from 'lodash/isEmpty'
 // import messages from 'i18n/translations'
 import Translation from 'database/models/Translation'
+import {
+  APP_CONFIG
+} from "config/env";
 
 const Localization = class {
   /**
@@ -90,7 +92,8 @@ const Localization = class {
    * @return {[type]} [description]
    */
   static async getOnlineTranslation() {
-    return Formio.getTranslations(store.getters.getMachineUrl)
+    let config = await APP_CONFIG()
+    return Formio.getTranslations(config.APP_NAME)
   }
 
   /**
@@ -98,11 +101,13 @@ const Localization = class {
    * @return {[type]} [description]
    */
   static async createTranslation(label) {
-    return Formio.createTranslation(store.getters.getMachineUrl, label)
+    let config = await APP_CONFIG()
+    return Formio.createTranslation(config.APP_URL, label)
   }
 
   static async setTranslations(label, translations) {
-    return Formio.setTranslations(store.getters.getMachineUrl, label, translations)
+    let config = await APP_CONFIG()
+    return Formio.setTranslations(config.APP_URL, label, translations)
   }
 }
 export default Localization

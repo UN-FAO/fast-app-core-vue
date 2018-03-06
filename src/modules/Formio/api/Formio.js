@@ -701,9 +701,9 @@ const Formio = class {
    * @param  {[type]} formPath [description]
    * @return {[type]}          [description]
    */
-  static getConfiguration(ID_SUBMISSION) {
+  static getConfiguration(CONFIG_URL, ID_SUBMISSION) {
     return new Promise((resolve, reject) => {
-      let url = 'https://ydvahgxgqliaeuf.form.io/configuration/submission/' + ID_SUBMISSION
+      let url = CONFIG_URL + ID_SUBMISSION
       AXIOS.get(url)
         .then(response => {
           let submissions = response.data

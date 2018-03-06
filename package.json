@@ -56,7 +56,6 @@
     "text-mask-all": "github:text-mask/text-mask",
     "uuid": "^3.1.0",
     "vue": "~2.3.4",
-    "vue-async-computed": "^3.3.0",
     "vue-async-properties": "^0.2.3",
     "vue-chartjs": "^3.1.0",
     "vue-event-hub": "^1.0.1",

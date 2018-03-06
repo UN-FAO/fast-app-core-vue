@@ -127,12 +127,6 @@
   padding-right: 3px;
 }
 </style>
-
-
-
-
-
-
 <script>
 import Localization from "modules/Localization/Localization";
 import { mapState, mapActions } from "vuex";
@@ -155,7 +149,6 @@ import {
 } from "quasar";
 import layoutStore from "./layout-store";
 import {
-  APP_CONFIG_ID,
   APP_CONFIG
 } from "config/env";
 import Configuration from "database/repositories/Configuration/Configuration";
@@ -186,6 +179,13 @@ export default {
       },
       transform(result) {
         return result
+      }
+    }
+  },
+  asyncComputed: {
+    CON: {
+      get() {
+        return APP_CONFIG();
       }
     }
   },
@@ -221,12 +221,13 @@ export default {
         onOpen: async () => {
           this.$swal.showLoading();
 
+          await Configuration.get();
+
           await Localization.getTranslations();
 
           await this.getResources({
-            appName: this.$store.state.authStore.appName
+            appName: this.CONFIG.APP_NAME
           });
-          await Configuration.get(APP_CONFIG_ID);
 
           this.$swal.close();
           this.$swal({
