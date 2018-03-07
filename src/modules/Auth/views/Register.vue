@@ -1,5 +1,4 @@
 <template>
-
 <div class="container">
     <div class="row">
         <div class="col-xl-6 col-lg-6 col-md-9 col-sm-12 col-xs-12 col-xl-offset-3 col-lg-offset-3 col-md-offset-3 col-sm-offset-2">
@@ -13,15 +12,15 @@
             </div>
             <div class="wrap">
                 <p class="form-title">
-                    {{CONFIG.APP_FANTACY_NAME}}
-                 <div class="form-subtitle"> {{CONFIG.APP_PHRASE}}</div>
+                    {{$FAST_CONFIG.APP_FANTACY_NAME}}
+                 <div class="form-subtitle"> {{$FAST_CONFIG.APP_PHRASE}}</div>
                 </p>
 
 
                 <div class="form-login" id="registerForm" >
                   <br>
                         <formio
-                          :formURL="this.CONFIG.APP_URL + '/userregister'"
+                          :formURL="$FAST_CONFIG.APP_URL + '/userregister'"
                           hashField="password"
                         />
                     <br>
@@ -35,22 +34,9 @@
 
 <script>
 import formio from "modules/Formio/components/formio/formio";
-import { APP_CONFIG } from "config/env";
-
 export default {
   components: {
     formio
-  },
-  asyncData: {
-    CONFIG: {
-      async get() {
-        let config = await APP_CONFIG();
-        return config;
-      },
-      transform(result) {
-        return result;
-      }
-    }
   },
   data() {
     return {

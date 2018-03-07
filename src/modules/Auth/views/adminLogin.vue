@@ -4,8 +4,8 @@
       <div class="col-xl-6 col-lg-6 col-md-9 col-sm-12 col-xs-12 col-xl-offset-3 col-lg-offset-3 col-md-offset-3 col-sm-offset-2">
         <div class="wrap">
           <p class="form-title">
-            {{$t(CONFIG.APP_FANTACY_NAME)}}
-            <div class="form-subtitle"> {{$t(CONFIG.APP_PHRASE)}}</div>
+            {{$t($FAST_CONFIG.APP_FANTACY_NAME)}}
+            <div class="form-subtitle"> {{$t($FAST_CONFIG.APP_PHRASE)}}</div>
           </p>
           <div class="form-login">
             <div class="form-group">
@@ -27,7 +27,7 @@
               <router-link :to="{ path: 'register' }">{{$t('New user')}}?</router-link>
             </p>
             <p class="text-center" style="color: grey !important">
-              {{$t('Version')}} {{CONFIG.FAST_VERSION}}
+              {{$t('Version')}} {{$FAST_CONFIG.FAST_VERSION}}
               <q-icon style="cursor:pointer;" name="fa-arrow-circle-left" color="white" @click="userLogin" />
             </p>
 
@@ -41,7 +41,6 @@
 <script>
 import Auth from "modules/Auth/api/Auth";
 import { QField, QInput, QBtn, QIcon } from "quasar";
-import { APP_CONFIG } from "config/env";
 import { mapActions } from "vuex";
 
 export default {
@@ -55,17 +54,6 @@ export default {
     QInput,
     QBtn,
     QIcon
-  },
-  asyncData: {
-    CONFIG: {
-      async get() {
-        let config = await APP_CONFIG();
-        return config;
-      },
-      transform(result) {
-        return result;
-      }
-    }
   },
   data() {
     return {

@@ -55,7 +55,6 @@ import {
   QItemSeparator,
   Loading
 } from "quasar";
-import { APP_CONFIG } from "config/env";
 import Auth from "modules/Auth/api/Auth";
 
 export default {
@@ -80,17 +79,6 @@ export default {
     QItem,
     QItemSeparator,
     Loading
-  },
-  asyncData: {
-    CONFIG: {
-      async get() {
-        let config = await APP_CONFIG();
-        return config;
-      },
-      transform(result) {
-        return result
-      }
-    }
   },
   data: () => {
     return {

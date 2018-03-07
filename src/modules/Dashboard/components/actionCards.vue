@@ -1,7 +1,7 @@
 <template>
 <div>
 <div class="row" v-for="(chunk, index) in _elements" v-bind:key="index" style="padding-top:30px">
-     <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12" v-for="element in chunk" v-bind:key="element.innerCardsTitle" style="padding-top:30px">
+     <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-xs-12" v-for="element in chunk" v-bind:key="element.innerCardsTitle" style="padding-top:30px">
       <q-card>
       <q-card-title>
         <q-item>
@@ -15,7 +15,7 @@
         <span slot="subtitle" class="pull-left">
           {{element.innerCardsSubtitle}}
           <br>
-        <q-btn color="primary" @click="$router.push(element.action)" v-if="action.innerCardsActionsTarget" v-for="action in element.innerCardsActions" v-bind:key="action.innerCardsActionsText">
+        <q-btn color="primary" @click="applyAction(action)" v-if="action.innerCardsActionsTarget" v-for="action in element.innerCardsActions" v-bind:key="action.innerCardsActionsText">
           {{action.innerCardsActionsText}}
         </q-btn>
         </span>
@@ -54,9 +54,7 @@ export default {
   name: "actioncards",
   props: ["page"],
   watch: {
-    page: function(val) {
-      console.log("val val val ", val);
-    }
+    page: function(val) {}
   },
   components: {
     QCard,
@@ -82,8 +80,25 @@ export default {
   },
   computed: {
     _elements() {
-      console.log('this.page', this.page)
       return _chunk(this.page.innerCards, 3);
+    }
+  },
+  methods: {
+    applyAction(action) {
+      if (action.innerCardsActionsForm) {
+        let name = action.innerCardsActionsAction === 'list' ? 'formio_form_show' : 'formio_form_submission'
+        let to = {
+          name: name,
+          params: { idForm: action.innerCardsActionsForm.path }
+        };
+        this.$router.push(to);
+      } else if (action.innerCardsActionsPageName) {
+        let to = {
+            name: "pageManager",
+            params: { pageId: action.innerCardsActionsPageName }
+        };
+        this.$router.push(to);
+      }
     }
   }
 };

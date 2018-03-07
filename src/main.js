@@ -35,6 +35,8 @@ import 'quasar-extras/fontawesome'
 // import 'quasar-extras/animate'
 
 import Localization from 'modules/Localization/Localization'
+import Configuration from "database/repositories/Configuration/Configuration";
+import Pages from "database/repositories/Configuration/Pages";
 
 import VueAsyncProperties from 'vue-async-properties'
 Vue.use(VueAsyncProperties)
@@ -53,6 +55,8 @@ if (__THEME === 'mat') {
 Quasar.start(async() => {
   /* eslint-disable no-new */
   let appTranslations = []
+  await Configuration.get(Vue);
+  await Pages.get();
   appTranslations = await Localization.setLocales()
   let defaultLenguage = localStorage.getItem('defaultLenguage') ? localStorage.getItem('defaultLenguage') : 'en'
 

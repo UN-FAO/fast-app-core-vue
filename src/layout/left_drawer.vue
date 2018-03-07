@@ -2,7 +2,7 @@
   <q-scroll-area style="width: 100%; height: 100%">
     <q-list-header class="bg-primary text-white" style="padding-left: 0px; height: 50px; background:#00293c !important;">
       <center>
-        <img src="statics/2000px-FAO_logo_reverse.png" style="max-height: 40px; max-width: 40px;" /> {{CONFIG.APP_FANTACY_NAME}}
+        <img src="statics/2000px-FAO_logo_reverse.png" style="max-height: 40px; max-width: 40px;" /> {{$FAST_CONFIG.APP_FANTACY_NAME}}
       </center>
     </q-list-header>
     <q-list>
@@ -37,7 +37,7 @@
     </q-side-link>
 
 
-    <q-side-link multiline highlight item :to="{name: 'About'}" :key="about" v-if="CONFIG.HAS_ABOUT">
+    <q-side-link multiline highlight item :to="{name: 'About'}" :key="about" v-if="$FAST_CONFIG.HAS_ABOUT">
       <q-item-side icon="tablet_mac" />
       <q-item-main :label="$t('About') +' '+ appName" />
     </q-side-link>
@@ -55,7 +55,7 @@
     <p>
 
     <div class="fixed-bottom text-center light text-italic">
-      v {{CONFIG.FAST_VERSION}}
+      v {{$FAST_CONFIG.FAST_VERSION}}
     </div>
   </q-scroll-area>
 </template>
@@ -108,9 +108,6 @@ import {
   QItem,
   QItemSeparator
 } from "quasar";
-import {
-  APP_CONFIG
-} from "config/env";
 import pageLinks from "./components/pageLinks"
 import layoutStore from "./layout-store";
 import Localization from "modules/Localization/Localization";
@@ -138,15 +135,6 @@ export default {
     Form.local().sAll(this, "forms");
   },
   asyncData: {
-    CONFIG: {
-      async get() {
-        let config = await APP_CONFIG();
-        return config;
-      },
-      transform(result) {
-        return result
-      }
-    },
       PAGES: {
       async get() {
         let pages = await Pages.getLocal();
@@ -189,14 +177,14 @@ export default {
         onOpen: async () => {
           this.$swal.showLoading();
 
-          await Configuration.get();
+          await Configuration.get(this);
 
           await Pages.get();
 
           await Localization.getTranslations();
 
           await this.getResources({
-            appName: this.CONFIG.APP_NAME
+            appName: this.$FAST_CONFIG.APP_NAME
           });
 
           this.$swal.close();

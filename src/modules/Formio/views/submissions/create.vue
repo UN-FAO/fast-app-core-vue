@@ -2,7 +2,7 @@
 <div class="container-fluid">
   <div class="row FormioContainer">
 
-    <q-card style="background-color: white; max-height: fit-content;" class="col-lg-3 col-md-12 col-sm-12" v-if="_isWizard && showPages && !CONFIG.TAB_MENU">
+    <q-card style="background-color: white; max-height: fit-content;" class="col-lg-3 col-md-12 col-sm-12" v-if="_isWizard && showPages && !$FAST_CONFIG.TAB_MENU">
       <q-card-main>
         <q-list separator style="border: none !important">
 
@@ -26,14 +26,14 @@
         <q-tabs inverted id="contentForm" >
           <!-- Tabs - notice slot="title" -->
 
-          <q-tab v-bind:class="!CONFIG.PARALLEL_SURVEYS ? 'hidden' : ''" default slot="title" name="tab-1" icon="person" :label="participantName" :color="saved ? 'primary' : 'red'" />
+          <q-tab v-bind:class="!$FAST_CONFIG.PARALLEL_SURVEYS ? 'hidden' : ''" default slot="title" name="tab-1" icon="person" :label="participantName" :color="saved ? 'primary' : 'red'" />
           <!-- Targets -->
           <q-tab slot="title" v-if="participant.submissionId !== $route.params.idSubmission" v-for="participant in participants" :key="participant.submissionId" icon="person" :label="participant.participantName" :color="saved ? 'primary' : 'red'" @click="goToSurvey(participant.submissionId)"
           />
 
           <q-tab-pane name="tab-1" ref="tab1">
 
-            <formio :formURL="CONFIG.APP_URL + '/' + $route.params.idForm" :submission="submission" :formioToken="formioToken" :localDraft="CONFIG.LOCAL_DRAFT_ENABLED" :readOnly="readOnly" :autoCreate="autoCreate" />
+            <formio :formURL="$FAST_CONFIG.APP_URL + '/' + $route.params.idForm" :submission="submission" :formioToken="formioToken" :localDraft="$FAST_CONFIG.LOCAL_DRAFT_ENABLED" :readOnly="readOnly" :autoCreate="autoCreate" />
           </q-tab-pane>
 
         </q-tabs>
@@ -45,12 +45,12 @@
       <q-fab color="red" icon="add" direction="down">
 
 
-        <q-fab-action v-bind:class="!CONFIG.PARALLEL_SURVEYS ? 'hidden' : ''" color="purple-6" @click="groupConfig()" icon="fa-users"></q-fab-action>
-        <q-fab-action v-bind:class="!CONFIG.PARALLEL_SURVEYS ? 'hidden' : ''" color="amber" @click="addSurvey()" icon="person_add"></q-fab-action>
+        <q-fab-action v-bind:class="!$FAST_CONFIG.PARALLEL_SURVEYS ? 'hidden' : ''" color="purple-6" @click="groupConfig()" icon="fa-users"></q-fab-action>
+        <q-fab-action v-bind:class="!$FAST_CONFIG.PARALLEL_SURVEYS ? 'hidden' : ''" color="amber" @click="addSurvey()" icon="person_add"></q-fab-action>
 
         <q-fab-action color="primary" @click="saveAsDraft()" icon="fa-floppy-o"></q-fab-action>
-         <q-fab-action color="secondary" @click="openRightDrawer()" icon="assessment" v-if="CONFIG.HAS_SCORES"></q-fab-action>
-        <q-fab-action color="secondary" @click="togglePages" icon="menu" v-if="_isWizard && !CONFIG.TAB_MENU"></q-fab-action>
+         <q-fab-action color="secondary" @click="openRightDrawer()" icon="assessment" v-if="$FAST_CONFIG.HAS_SCORES"></q-fab-action>
+        <q-fab-action color="secondary" @click="togglePages" icon="menu" v-if="_isWizard && !$FAST_CONFIG.TAB_MENU"></q-fab-action>
 
       </q-fab>
     </q-fixed-position>
@@ -69,7 +69,7 @@
         </q-fixed-position>
     -->
   </div>
-  <q-tabs slot="footer" v-model="tab" v-if="CONFIG.TAB_MENU" class="floatingPagination">
+  <q-tabs slot="footer" v-model="tab" v-if="$FAST_CONFIG.TAB_MENU" class="floatingPagination">
           <q-tab
            icon="fa-file"
             slot="title"
@@ -87,9 +87,6 @@
 
 </template>
 <script>
-import {
-  APP_CONFIG
-} from "config/env";
 import { mapActions } from "vuex";
 import {
   QCard,
@@ -124,10 +121,10 @@ import _forEach from "lodash/forEach";
 import _groupBy from "lodash/groupBy";
 import _debounce from "lodash/debounce";
 import FormioUtils from "formiojs/utils";
-import Auth from "modules/Auth/api/Auth";
-import formio from "modules/Formio/components/formio/formio";
-import Submission from "database/models/Submission";
 import Form from "database/models/Form";
+import Auth from "modules/Auth/api/Auth";
+import Submission from "database/models/Submission";
+import formio from "modules/Formio/components/formio/formio";
 import OFFLINE_PLUGIN from "modules/Formio/components/formio/src/offlinePlugin";
 export default {
   components: {
@@ -231,15 +228,6 @@ export default {
     this.$eventHub.$off("VALIDATION_ERRORS");
   },
   asyncData: {
-     CONFIG: {
-      async get() {
-        let config = await APP_CONFIG();
-        return config;
-      },
-      transform(result) {
-        return result;
-      }
-    },
     submission: {
       get() {
         if (this.$route.params.idSubmission) {
@@ -287,7 +275,7 @@ export default {
     },
     getFormClass() {
       let className = "";
-      if (this.showPages && this._isWizard && !this.CONFIG.TAB_MENU) {
+      if (this.showPages && this._isWizard && !this.$FAST_CONFIG.TAB_MENU) {
         className = "col-lg-8  col-md-12 col-sm-12";
       } else {
         className =
@@ -320,7 +308,7 @@ export default {
       isWizard: false,
       pages: [],
       currentPage: 0,
-      showPages: this.CONFIG.NAVIGATION_OPENED,
+      showPages: this.$FAST_CONFIG.NAVIGATION_OPENED,
       currentQuestion: -1,
       displayUp: false,
       displayDown: true,
@@ -375,7 +363,7 @@ export default {
         this.tab = index + 1;
         this.currentQuestion = -1;
         window.scrollTo(0, 0);
-        if (this.CONFIG.NAVIGATION_AUTOCLOSE_ON_SELECTION) {
+        if (this.$FAST_CONFIG.NAVIGATION_AUTOCLOSE_ON_SELECTION) {
           this.togglePages();
         }
       } catch (e) {
@@ -843,7 +831,7 @@ export default {
       // Register the plugin for offline mode
       Formio.registerPlugin(
         OFFLINE_PLUGIN.getPlugin(
-          this.CONFIG.APP_URL + "/" + this.$route.params.idForm,
+          this.$FAST_CONFIG.APP_URL + "/" + this.$route.params.idForm,
           this.hashField,
           false,
           this.$eventHub
@@ -857,7 +845,7 @@ export default {
         draft: true,
         trigger: "createParalelSurvey"
       };
-      let formio = new Formio(this.CONFIG.APP_URL + "/" + this.$route.params.idForm);
+      let formio = new Formio(this.$FAST_CONFIG.APP_URL + "/" + this.$route.params.idForm);
       formio.saveSubmission(formSubmission);
     },
     getForms() {
