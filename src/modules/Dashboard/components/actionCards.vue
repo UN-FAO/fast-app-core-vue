@@ -86,7 +86,10 @@ export default {
   methods: {
     applyAction(action) {
       if (action.innerCardsActionsForm) {
-        let name = action.innerCardsActionsAction === 'list' ? 'formio_form_show' : 'formio_form_submission'
+        let name =
+          action.innerCardsActionsAction === "list"
+            ? "formio_form_show"
+            : "formio_form_submission";
         let to = {
           name: name,
           params: { idForm: action.innerCardsActionsForm.path }
@@ -94,8 +97,8 @@ export default {
         this.$router.push(to);
       } else if (action.innerCardsActionsPageName) {
         let to = {
-            name: "pageManager",
-            params: { pageId: action.innerCardsActionsPageName }
+          name: "pageManager",
+          params: { pageId: action.innerCardsActionsPageName.pagesPageUrl }
         };
         this.$router.push(to);
       }
