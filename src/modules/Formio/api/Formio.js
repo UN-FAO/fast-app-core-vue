@@ -717,6 +717,26 @@ const Formio = class {
     })
   }
 
+  /**
+   * [getSubmissions description]
+   * @param  {[type]} formPath [description]
+   * @return {[type]}          [description]
+   */
+  static getPages(URL) {
+    return new Promise((resolve, reject) => {
+      AXIOS.get(URL)
+        .then(response => {
+          let submissions = response.data
+          resolve(submissions)
+          Loading.hide()
+        })
+        .catch((error) => {
+          Loading.hide()
+          reject(error)
+        })
+    })
+  }
+
   static createTranslation(idMachine, label) {
     return new Promise((resolve, reject) => {
       let url = 'https://' + idMachine + '.form.io/translations/submission'

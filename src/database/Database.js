@@ -35,12 +35,16 @@ const _create = function () {
       var users = db.getCollection("User");
       var roles = db.getCollection("Role");
       var configuration = db.getCollection("Configuration");
+      var pages = db.getCollection("Pages");
 
       if (submissions === null) {
         db.addCollection("Submission")
       }
       if (configuration === null) {
         db.addCollection("Configuration")
+      }
+      if (pages === null) {
+        db.addCollection("Pages")
       }
       if (forms === null) {
         db.addCollection("Form");

@@ -4,12 +4,17 @@ const Dashboard = r =>
 const Survey = r =>
   require.ensure([], () => r(require('./views/newSurvey')), 'offline-module')
 
-  const CollectedData = r =>
+const CollectedData = r =>
   require.ensure([], () => r(require('./views/collectedData')), 'offline-module')
 
 
 const About = r =>
   require.ensure([], () => r(require('./views/about')), 'offline-module')
+
+const PageManeger = r =>
+  require.ensure([], () => r(require('./views/pageManager')), 'offline-module')
+
+
 
 const registries = r =>
   require.ensure([], () => r(require('./views/custom/registries')), 'offline-module')
@@ -30,7 +35,8 @@ let DashboardRoutes = [
   { path: '/registries', component: registries, name: 'registries', meta: { requiresAuth: true } },
   { path: '/manageSystem', component: system, name: 'system', meta: { requiresAuth: true } },
   { path: '/upload', component: upload, name: 'upload', meta: { requiresAuth: true } },
-  { path: '/reference', component: reference, name: 'reference', meta: { requiresAuth: true } }
+  { path: '/reference', component: reference, name: 'reference', meta: { requiresAuth: true } },
+  { path: '/pageManager/pageId/:pageId', component: PageManeger, name: 'pageManager', meta: { requiresAuth: true } }
 ]
 
 export default DashboardRoutes

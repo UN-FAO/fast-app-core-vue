@@ -53,9 +53,11 @@ import { APP_CONFIG } from "config/env";
 import Auth from "modules/Auth/api/Auth";
 import { QField, QInput, QBtn, QIcon } from "quasar";
 import Configuration from "database/repositories/Configuration/Configuration";
+import Pages from "database/repositories/Configuration/Pages";
 export default {
   async mounted() {
     await Configuration.get();
+    await Pages.get();
     this.getResources({
       appName: this.CONFIG.APP_NAME
     });

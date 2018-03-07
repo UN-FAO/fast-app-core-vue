@@ -25,21 +25,11 @@
     </q-item>
      <q-item-separator  />
 
-    <q-side-link multiline highlight item :to="{name: 'system'}" :key="system">
-      <q-item-side icon="fa-cog" />
-      <q-item-main :label="$t('Manage System')" />
-    </q-side-link>
+
+     <pageLinks :pages="PAGES"></pageLinks>
 
 
-    <q-side-link multiline highlight item :to="{name: 'upload'}" :key="upload">
-      <q-item-side icon="fa-upload" />
-      <q-item-main :label="$t('Data Upload')" />
-    </q-side-link>
 
-     <q-side-link multiline highlight item :to="{name: 'upload'}" :key="upload">
-      <q-item-side icon="fa-line-chart" />
-      <q-item-main :label="$t('Reports')" />
-    </q-side-link>
 
     <q-side-link v-if="isAdmin()" multiline highlight item :to="{name: 'settings'}" :key="settings">
       <q-item-side icon="fa-cog" />
@@ -52,37 +42,8 @@
       <q-item-main :label="$t('About') +' '+ appName" />
     </q-side-link>
 
-    <!--
-         <q-side-link multiline highlight  item
-          :to="{name: 'd', params: { idForm: 'idform'}}"
-          :key="lenguage">
-          <q-item-side icon="language" />
-          <q-item-main label="Language Settings"  />
-        </q-side-link>
-          -->
     <q-item-separator />
-    <!--
-         <q-side-link multiline highlight separator item
-          :to="{name: 'e', params: { idForm: 'idform'}}"
-          :key="mysurvey">
-          <q-item-side icon="fa-list" />
-          <q-item-main label="My Survey"  />
-        </q-side-link>
 
-        <q-side-link multiline highlight separator item
-          :to="{name: 'f', params: { idForm: 'idform'}}"
-          :key="mysummary">
-          <q-item-side icon="fa-line-chart" />
-          <q-item-main label="My Summary"  />
-        </q-side-link>
-
-        <q-side-link multiline highlight separator item
-          :to="{name: 'g', params: { idForm: 'idform'}}"
-          :key="editprofile">
-          <q-item-side icon="fa-pencil" />
-          <q-item-main label="Edit your profile"  />
-        </q-side-link>
-          -->
     <q-item @click="handleLogout" style="cursor: pointer">
       <q-item-side icon="ion-log-out" />
       <q-item-main :label="$t('Logout')" />
@@ -128,7 +89,7 @@
 }
 </style>
 <script>
-import Localization from "modules/Localization/Localization";
+
 import { mapState, mapActions } from "vuex";
 import Auth from "modules/Auth/api/Auth";
 import Form from "database/models/Form";
@@ -147,11 +108,15 @@ import {
   QItem,
   QItemSeparator
 } from "quasar";
-import layoutStore from "./layout-store";
 import {
   APP_CONFIG
 } from "config/env";
+import pageLinks from "./components/pageLinks"
+import layoutStore from "./layout-store";
+import Localization from "modules/Localization/Localization";
+import Pages from "database/repositories/Configuration/Pages";
 import Configuration from "database/repositories/Configuration/Configuration";
+
 export default {
   components: {
     QScrollArea,
@@ -166,7 +131,8 @@ export default {
     QTooltip,
     QList,
     QItem,
-    QItemSeparator
+    QItemSeparator,
+    pageLinks
   },
   mounted: async function() {
     Form.local().sAll(this, "forms");
@@ -180,12 +146,14 @@ export default {
       transform(result) {
         return result
       }
-    }
-  },
-  asyncComputed: {
-    CON: {
-      get() {
-        return APP_CONFIG();
+    },
+      PAGES: {
+      async get() {
+        let pages = await Pages.getLocal();
+        return pages;
+      },
+      transform(result) {
+        return result.pages
       }
     }
   },
@@ -222,6 +190,8 @@ export default {
           this.$swal.showLoading();
 
           await Configuration.get();
+
+          await Pages.get();
 
           await Localization.getTranslations();
 
