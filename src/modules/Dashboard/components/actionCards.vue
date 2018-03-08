@@ -2,7 +2,7 @@
 <div>
 <div class="col-lg-12 col-md-12 col-sm-12 ">
   <div class="col-lg-6 col-md-8 col-sm-8 col-xs-8 pull-right">
-  <q-search  inverted v-model="filter" placeholder="Filter results..." />
+  <q-search  v-model="filter" placeholder="Filter results..." />
 </div>
 </div>
 <div v-for="(chunk, index) in _elements" v-bind:key="index" >
@@ -31,6 +31,11 @@
    </div>
 </div>
 </template>
+<style scoped>
+.q-if.row.no-wrap.items-center.relative-position.q-input.q-search.text-primary {
+    border-bottom: 1px solid grey;
+}
+</style>
 <script>
 import _chunk from "lodash/chunk";
 import {
