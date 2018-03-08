@@ -1,5 +1,6 @@
 import * as Database from 'database/Database';
 import uuidv4 from 'uuid/v4'
+import _orderBy from "lodash/orderBy"
 
 const Form = class {
   /**
@@ -124,6 +125,33 @@ const Form = class {
   static async sAll() {
     let allForms = await Form.find()
     return allForms
+  }
+
+  static async cardFormattedForms(action) {
+    let result = await Form.local().sAll();
+    result = result.filter(o => {
+      return o.data.tags.indexOf("visible") > -1;
+    });
+    result = _orderBy(result, "data.title", "asc");
+    result = result.map(f => {
+      return {
+        innerCardsTitle: f.data.title,
+        innerCardsAvatar: action === "create" ? "/statics/customSVG/startSurvey.svg" : "/statics/customSVG/collectedData.svg",
+        innerCardsSubtitle: "",
+        innerCardsActions: [{
+          innerCardsActionsText: action === "create" ? 'Start' : 'View data',
+          innerCardsActionsTarget: "form",
+          innerCardsActionsAction: action,
+          innerCardsActionsForm: {
+            path: f.data.path
+          }
+        }
+        ]
+      }
+    });
+
+    result = { innerCards: result }
+    return result
   }
 }
 export default Form

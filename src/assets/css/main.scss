@@ -301,7 +301,6 @@ input[type="checkbox"]+span {
   max-width: 230px;
   min-height: 30px;
   text-align: left;
-  text-transform: uppercase;
   display: flex;
   justify-content: center;
   align-content: center;
@@ -520,7 +519,7 @@ p.form-title {
   text-align: center;
   color: #FFFFFF;
   margin-top: 5%;
-  text-transform: uppercase;
+  text-transform: initial;
   margin-bottom: 0px;
 }
 
@@ -662,7 +661,7 @@ th, th.field-required {
 .form-group .radio label {margin-right: 15px; margin-left: 15px; padding-left: 0px;}
 
 .input-group {float: left;}
-.input-group .radio span {min-width: 315px;}
+.input-group .radio span {min-width: 315px;text-align: center;}
 
 .sc-table .tool-bar button {margin-right: 3em;}
 

@@ -1,8 +1,8 @@
 {
   "name": "fast",
   "version": "0.6.4",
-  "deployAppName": "SSFK",
-  "deployAppID": "5a9674e1d27542149fd0cb5c",
+  "deployAppName": "SHARP+",
+  "deployAppID": "59b112c7678919000775f921",
   "description": "A data collection application for FORM.io",
   "author": "Ignacio Cabrera <ignacio.cabrera@fao.org>",
   "scripts": {

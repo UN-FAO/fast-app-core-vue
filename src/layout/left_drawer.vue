@@ -26,9 +26,9 @@
      <q-item-separator  />
 
 
-     <pageLinks :pages="PAGES"></pageLinks>
+     <pageLinks :pages="PAGES" v-if="!$FAST_CONFIG.IS_SURVEY"></pageLinks>
 
-
+      <collectionpagelinks v-if="$FAST_CONFIG.IS_SURVEY"></collectionpagelinks>
 
 
     <q-side-link v-if="isAdmin()" multiline highlight item :to="{name: 'settings'}" :key="settings">
@@ -39,7 +39,7 @@
 
     <q-side-link multiline highlight item :to="{name: 'About'}" :key="about" v-if="$FAST_CONFIG.HAS_ABOUT">
       <q-item-side icon="tablet_mac" />
-      <q-item-main :label="$t('About') +' '+ appName" />
+      <q-item-main :label="$t('About') +' '+ $FAST_CONFIG.APP_FANTACY_NAME" />
     </q-side-link>
 
     <q-item-separator />
@@ -89,7 +89,6 @@
 }
 </style>
 <script>
-
 import { mapState, mapActions } from "vuex";
 import Auth from "modules/Auth/api/Auth";
 import Form from "database/models/Form";
@@ -109,6 +108,7 @@ import {
   QItemSeparator
 } from "quasar";
 import pageLinks from "./components/pageLinks"
+import collectionpagelinks from "./components/collectionPageLinks"
 import layoutStore from "./layout-store";
 import Localization from "modules/Localization/Localization";
 import Pages from "database/repositories/Configuration/Pages";
@@ -129,7 +129,8 @@ export default {
     QList,
     QItem,
     QItemSeparator,
-    pageLinks
+    pageLinks,
+    collectionpagelinks
   },
   mounted: async function() {
     Form.local().sAll(this, "forms");
