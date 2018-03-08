@@ -1,5 +1,10 @@
 <template>
 <div>
+<div class="col-lg-12 col-md-12 col-sm-12 ">
+  <div class="col-lg-6 col-md-8 col-sm-8 col-xs-8 pull-right">
+  <q-search  inverted v-model="filter" placeholder="Filter results..." />
+</div>
+</div>
 <div v-for="(chunk, index) in _elements" v-bind:key="index" >
      <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-xs-12" v-for="element in chunk" v-bind:key="element.innerCardsTitle" style="margin:auto;">
       <q-card color="white" class="text-black">
@@ -48,17 +53,24 @@ import {
   QTooltip,
   QList,
   QItem,
-  QItemSeparator
+  QItemSeparator,
+  QSearch
 } from "quasar";
 export default {
   name: "actioncards",
   props: ["page"],
+  data() {
+    return {
+      filter: ""
+    };
+  },
   watch: {
     page: function(val) {
-      this.$forceUpdate()
+      this.$forceUpdate();
     }
   },
   components: {
+    QSearch,
     QCard,
     QCardMedia,
     QItemSide,
@@ -82,7 +94,11 @@ export default {
   },
   computed: {
     _elements() {
-      return _chunk(this.page.innerCards, 3);
+      let cards = this.page.innerCards;
+      cards = cards.filter(c => {
+        return c.innerCardsTitle.toLowerCase().indexOf(this.filter.toLowerCase()) > -1;
+      });
+      return _chunk(cards, 3);
     }
   },
   methods: {
