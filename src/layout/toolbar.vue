@@ -9,10 +9,12 @@
     <q-toolbar-title @click="$router.push({name: 'dashboard'})" style="cursor: pointer;"  v-bind:class="isInsideApp ? '' : 'color-white' ">
 
     </q-toolbar-title>
-	<div class="q-toolbar-fao-logo"><img src="statics/fao-logo-white.svg" style="max-height: 40px; " /> </div>
+  <div class="q-toolbar-fao-logo">
+    <img src="statics/fao-logo-white.svg" style="max-height: 40px; " />
+  </div>
 
-    <localization/>
-    <wifiDisplay/>
+  <localization/>
+  <wifiDisplay/>
 
 
   </q-toolbar>
@@ -31,7 +33,8 @@
 
 .color-primary {color: rgb(5, 116, 169);}
 .q-toolbar-fao-logo{
-margin: auto;
+  margin: auto;
+  text-align: center;
 }
 .q-toolbar-title {font-size: 1.75em; font-weight: 400;display: table;}
 
