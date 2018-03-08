@@ -3,9 +3,7 @@ import _forEach from 'lodash/forEach'
 import _map from 'lodash/map'
 import _isEmpty from 'lodash/isEmpty'
 import Translation from 'database/models/Translation'
-import {
-  APP_CONFIG
-} from "config/env";
+import CONFIGURATION from 'database/repositories/Configuration/Configuration'
 
 const Localization = class {
   /**
@@ -91,7 +89,7 @@ const Localization = class {
    * @return {[type]} [description]
    */
   static async getOnlineTranslation() {
-    let config = await APP_CONFIG()
+    let config = await CONFIGURATION.getLocal();
     return Formio.getTranslations(config.APP_NAME)
   }
 
@@ -100,12 +98,12 @@ const Localization = class {
    * @return {[type]} [description]
    */
   static async createTranslation(label) {
-    let config = await APP_CONFIG()
+    let config = await CONFIGURATION.getLocal();
     return Formio.createTranslation(config.APP_URL, label)
   }
 
   static async setTranslations(label, translations) {
-    let config = await APP_CONFIG()
+    let config = await CONFIGURATION.getLocal();
     return Formio.setTranslations(config.APP_URL, label, translations)
   }
 }

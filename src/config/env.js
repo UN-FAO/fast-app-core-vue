@@ -1,4 +1,3 @@
-import CONFIGURATION from 'database/repositories/Configuration/Configuration'
 /*
 |--------------------------------------------------------------------------
 | APP VERSION
@@ -9,7 +8,6 @@ import CONFIGURATION from 'database/repositories/Configuration/Configuration'
 | understand whats are your users looking at!
 |
 */
-exports.APP_CONFIG = async () => { let config = await CONFIGURATION.getLocal(); return config }
 exports.APP_CONFIG_ID = '5a9ec641ed6fd5f497122f05'
 exports.CONFIG_URL = 'https://ydvahgxgqliaeuf.form.io/configuration/submission/'
 // exports.SYNC_INTERVAL = 2000
