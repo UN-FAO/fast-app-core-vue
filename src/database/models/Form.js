@@ -1,6 +1,7 @@
 import * as Database from 'database/Database';
 import uuidv4 from 'uuid/v4'
 import _orderBy from "lodash/orderBy"
+import moment from 'moment'
 
 const Form = class {
   /**
@@ -136,8 +137,9 @@ const Form = class {
     result = result.map(f => {
       return {
         innerCardsTitle: f.data.title,
+        innerCardsTags: f.data.tags,
         innerCardsAvatar: action === "create" ? "/statics/customSVG/startSurvey.svg" : "/statics/customSVG/collectedData.svg",
-        innerCardsSubtitle: "",
+        innerCardsSubtitle: "Last updated: " + moment(f.data.modified).fromNow(),
         innerCardsActions: [{
           innerCardsActionsText: action === "create" ? 'Start' : 'View data',
           innerCardsActionsTarget: "form",
