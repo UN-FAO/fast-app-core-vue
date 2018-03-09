@@ -292,42 +292,33 @@ table input[type="radio"] {
 
 input[type="radio"]+span,
 input[type="checkbox"]+span {
-  margin: -2px;
   padding: 6px 12px;
-  /* background-color: rgb(231, 231, 231); */
-  background-color: rgb(202, 203, 204);
+  background-color: rgb(231, 231, 231);
   border-radius: 5px;
   min-width: 160px;
   max-width: 230px;
   min-height: 30px;
-  text-align: left;
+  text-align: center;
   display: flex;
   justify-content: center;
   align-content: center;
-  flex-direction: column;
-  margin-bottom: 1px !important;
-  margin-top: 1px !important;
-  font-weight: 600;
+  font-weight: 400;
   font-size: 1.15em;
 }
 
 input[type="radio"]:checked+span,
 input[type="checkbox"]:checked+span {
-  background-image: none;
   background-color: #0e6da5;
   color: white;
-  cursor: pointer;
   padding: 6px 12px;
-  text-decoration: none;
-  display: inline-block;
   border-radius: 5px;
-  text-align: left;
+  min-width: 160px;
+  max-width: 230px;
+  min-height: 30px;
+  text-align: center;
   display: flex;
   justify-content: center;
   align-content: center;
-  flex-direction: column;
-  margin-bottom: 1px !important;
-  margin-top: 1px !important;
   font-weight: 600;
   font-size: 1.15em;
 }
@@ -769,7 +760,6 @@ button.btn.btn-primary.btn-wizard-nav-previous {
     color: #0574a9;
     font-variant: small-caps;
 }
-
 @import 'custom/custom.scss';
 @import 'qDataTable.scss';
 @import 'errorResponsiveTable.scss';
@@ -777,3 +767,6 @@ button.btn.btn-primary.btn-wizard-nav-previous {
 @import 'homeMenu.scss';
 @import 'mainSubmissionsTable.scss';
 @import 'responsiveRadar.scss';
+@import 'formContainer.scss';
+@import 'formNav.scss';
+@import 'formCard.scss';

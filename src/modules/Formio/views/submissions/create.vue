@@ -1,19 +1,21 @@
 <template>
 <div class="container-fluid">
   <div class="row FormioContainer">
+<div class="formPageContainer" style="margin-top:30px; overflow-x:scroll">
 
-    <q-card style="background-color: white; max-height: fit-content;" class="col-lg-3 col-md-12 col-sm-12" v-if="_isWizard && showPages && !$FAST_CONFIG.TAB_MENU">
+
+    <q-card style="background-color: white; max-height: fit-content;" class="formNav" v-if="_isWizard && showPages && !$FAST_CONFIG.TAB_MENU">
       <q-card-main>
         <q-list separator style="border: none !important">
 
-          <q-item class="formioPagination" multiline style="text-align: left; text-transform: uppercase; min-height: 60px; border-radius: 5px;" link v-for="(page, index) in _pages" :key="page.title" @click="goToPage(index)" :ref="'page-'+ index" v-bind:class="currentPage === index ? 'activePage' : ''">
+          <q-item class="formioPagination" multiline style="text-align: left; text-transform: capitalize; min-height: 60px; border-radius: 5px;" link v-for="(page, index) in _pages" :key="page.title" @click="goToPage(index)" :ref="'page-'+ index" v-bind:class="currentPage === index ? 'activePage' : ''">
             <q-item-main style=" margin-top: auto;  margin-bottom: auto;" :label="$t(getLabelForPage(page))" label-lines="3" />
           </q-item>
         </q-list>
       </q-card-main>
     </q-card>
 
-    <q-card color="white" v-bind:class="getFormClass" style="position:inherit !important; margin-bottom: 75px">
+    <q-card color="white" v-bind:class="getFormClass" style="">
       <q-card-main>
         <!--
         <q-btn @click="singleNext()" class="pull-right primary" color="primary">Next Page</q-btn>
@@ -68,6 +70,7 @@
         </q-btn>
         </q-fixed-position>
     -->
+</div>
   </div>
   <q-tabs slot="footer" v-model="tab" v-if="$FAST_CONFIG.TAB_MENU" class="floatingPagination">
           <q-tab
@@ -276,10 +279,7 @@ export default {
     getFormClass() {
       let className = "";
       if (this.showPages && this._isWizard && !this.$FAST_CONFIG.TAB_MENU) {
-        className = "col-lg-8  col-md-12 col-sm-12";
-      } else {
-        className =
-          "col-xl-10 col-lg-10  col-md-12 col-sm-12 col-lg-offset-1 col-md-offset-1 col-xl-offset-1";
+        className = "formNavActive";
       }
       if (!this.saved) {
         className = className + " saving";
