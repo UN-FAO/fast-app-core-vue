@@ -7,7 +7,7 @@
 </div>
 <div v-for="(chunk, index) in _elements" v-bind:key="index" >
      <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-xs-12" v-for="element in chunk" v-bind:key="element.innerCardsTitle" style="margin:auto;">
-      <q-card color="white" class="text-black">
+      <q-card color="white" class="text-black cardRibbon">
       <q-card-title>
         <q-item>
           <q-item-side :avatar="element.innerCardsAvatar" />
@@ -17,10 +17,10 @@
           </q-item-main>
         </q-item>
               <q-card-separator style="background:lightgrey;"/>
-        <span slot="subtitle" class="pull-left text-grey">
+        <span slot="subtitle" class="pull-left text-grey" style="padding-top:10px;">
           {{element.innerCardsSubtitle}}
           <br>
-        <q-btn color="primary" @click="applyAction(action)" v-if="action.innerCardsActionsTarget" v-for="action in element.innerCardsActions" v-bind:key="action.innerCardsActionsText">
+        <q-btn color="primary" style="margin-top:10px" @click="applyAction(action)" v-if="action.innerCardsActionsTarget" v-for="action in element.innerCardsActions" v-bind:key="action.innerCardsActionsText">
           {{action.innerCardsActionsText}}
         </q-btn>
         </span>

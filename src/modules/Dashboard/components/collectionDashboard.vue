@@ -1,12 +1,14 @@
 <template>
 <div class="container-fluid col-lg-offset-1 col-lg-10">
-  <div class="section-title" style="font-size: 30px;padding-top:30px;text-align:center;color: grey;">
+  <div class="section-title pageTitle">
      {{ $t("Home") }}
     </div>
     <hr style="border-top: 1px solid lightgray;">
-<div class="row" >
-     <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-xs-12" style="margin:auto;" >
-      <q-card color="white" class="text-black"  style="cursor: pointer;" @click="$router.push({name: 'newSurvey'})">
+
+    <hr style="1px solid #cec7c7">
+      <div class="row">
+    <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-xs-12" style="margin:auto;" >
+      <q-card color="white" class="text-black cardRibbon"  style="cursor: pointer;" @click="$router.push({name: 'newSurvey'})">
       <q-card-title>
         <q-item>
           <q-item-side avatar="/statics/customSVG/startSurvey.svg" />
@@ -22,10 +24,12 @@
         </span>
       </q-card-title>
     </q-card>
+    </div>
      </div>
 
-      <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-xs-12" style="margin:auto;cursor: pointer;" >
-      <q-card color="white" class="text-black" @click="$router.push({name: 'CollectedData'})">
+  <div class="row">
+    <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-xs-12" style="margin:auto;" >
+       <q-card color="white" class="text-black cardRibbon" @click="$router.push({name: 'CollectedData'})">
       <q-card-title >
         <q-item>
           <q-item-side avatar="/statics/customSVG/collectedData.svg" />
@@ -41,12 +45,12 @@
         </span>
       </q-card-title>
     </q-card>
-     </div>
     </div>
-    <hr style="1px solid #cec7c7">
+     </div>
+
   <div class="row">
     <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-xs-12" style="margin:auto;" >
-      <q-card color="white" class="text-black" @click="$router.push({name: 'About'})">
+      <q-card color="white" class="text-black cardRibbon" @click="$router.push({name: 'About'})">
       <q-card-title>
         <q-item>
           <q-item-side avatar="/statics/customSVG/about.svg" />

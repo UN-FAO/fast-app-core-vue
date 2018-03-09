@@ -756,6 +756,20 @@ button.btn.btn-primary.btn-wizard-nav-previous {
   font-weight: 500;
 }
 
+.cardRibbon {
+  border-left: 22px solid #0574a9;
+}
+.pageTitle{
+  font-size: 30px;
+       padding-top: 30px;
+      text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: bold;
+    color: #0574a9;
+    font-variant: small-caps;
+}
+
 @import 'custom/custom.scss';
 @import 'qDataTable.scss';
 @import 'errorResponsiveTable.scss';
