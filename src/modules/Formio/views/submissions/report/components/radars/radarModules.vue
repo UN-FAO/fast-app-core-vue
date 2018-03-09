@@ -54,7 +54,7 @@ export default {
       scores.forEach((score, index) => {
         if (score.pillar === pillar) {
           modules.push(
-            2 + index + " - " + score.moduleName.substr(0, 14) + "\u2026"
+            2 + index + " - " + score.abbreviation
           );
           let calculatedScore =
             (parseFloat(this.submission[score.academic]) || 0) +

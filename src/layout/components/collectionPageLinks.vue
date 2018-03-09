@@ -2,7 +2,7 @@
 <div style="color:black">
    <q-side-link multiline highlight item :to="{name: 'newSurvey'}" :key="newSurvey">
       <q-item-side avatar="/statics/customSVG/startSurveyWhite.svg" />
-      <q-item-main :label="$t('Start new Collection')" class="text-white" />
+      <q-item-main :label="$t('Start survey')" class="text-white" />
     </q-side-link>
 
 

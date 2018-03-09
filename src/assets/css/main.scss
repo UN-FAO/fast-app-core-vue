@@ -1,6 +1,5 @@
 *:not(i):not(.fa) {
   /* box-sizing: border-box; */
-  cursor: default;
   font-family: 'Open Sans', haptik, Helvetica Neue, Helvetica, sans-serif !important;
   line-height: 1.5;
   text-rendering: optimizeLegibility;
@@ -12,49 +11,12 @@ html {
   height: 100%;
 }
 
-.FormioContainer {
-  background: #f1f5f9;
+.row {
+  margin-right: 0 !important;
+  margin-left: 0 !important;
 }
 
-header.post-header.post-header-enhanced {
-  height: -webkit-fill-available;
-}
-
-.q-toolbar {
-  background: transparent;
-}
-
-.panel-primary>.panel-heading {
-  color: #fff;
-  background-color: #0d6cac !important;
-  border-color: #0d6cac !important;
-}
-
-.panel-danger>.panel-heading {
-  color: #fff;
-  background-color: #ad2121;
-  border-color: #ad2121;
-}
-
-.alert-danger {
-  background-color: transparent;
-  border-color: #f7a4af;
-  color: #fff !important;
-}
-
-.alert {
-  border: none;
-  color: red !important;
-}
-
-.formio-errors .help-block {
-  color: red !important;
-}
-
-.choices__list {
-  color: #000;
-}
-
+/* 09-03-2018
 ul.list-group.list-group-striped {
   color: #666;
 }
@@ -62,15 +24,8 @@ ul.list-group.list-group-striped {
 .fileSelector {
   color: #666;
 }
+*/
 
-.row {
-  margin-right: 0 !important;
-  margin-left: 0 !important;
-}
-
-label {
-  font-size: 0.8rem !important;
-}
 
 legend {
   font-size: 16px !important;
@@ -141,15 +96,17 @@ button.btn.btn-primary.submitForm {
   color: #ffffff !important;
   background-color: rgb(5, 116, 169);
   border-color: none;
-  height: 60px;
   width: 200px;
   font-size: 1.5em;
+  text-transform: capitalize !important;
 }
+f
 button.btn.btn-default.saveAsDraft:hover,
 button.btn.btn-primary.btn-wizard-nav-submit:hover {
   opacity: 0.8;
   color: white;
 }
+
 button.btn.btn-default.saveAsDraft {
   position: inherit !important;
   bottom: 0px;
@@ -264,8 +221,6 @@ label.control-label {
   font-size: medium !important;
   font-weight: 350 !important;
 }
-
-label.control-label:hover {}
 
 .radio label,
 .radio-inline label,
@@ -646,12 +601,12 @@ th, th.field-required {
 .panel-title {font-size: 1.5em;}
 .panel-success>.panel-heading {color: #464646; background-color: #d8e4f0; border-color: #d8e4f0; margin-bottom: 3em;}
 
-/* .form-group {clear: both; margin-top: 30px;} */
 .form-group > div:after {clear: both; display: block; content:'';}
-.form-group .radio {margin-bottom: 0px; margin-top: 10px; margin-bottom: 10px; float: left;}
+
+.form-group .radio {margin-bottom: 0px; margin-top: 10px; margin-bottom: 10px; }
 .form-group .radio label {margin-right: 15px; margin-left: 15px; padding-left: 0px;}
 
-.input-group {float: left;}
+
 .input-group .radio span {min-width: 315px;text-align: center;}
 
 .sc-table .tool-bar button {margin-right: 3em;}
@@ -738,17 +693,26 @@ ul.list-inline {
 button.btn.btn-primary.btn-wizard-nav-next,
 button.btn.btn-primary.btn-wizard-nav-previous {
   background-color: #dcdcdc;
-  color: #2f2f2f !important;
+  color: grey !important;
   border: none;
   font-size: 1.8vh;
   text-transform: uppercase;
   height: 45px;
-  width: 30vw;
+  width: 200px;
   font-weight: 500;
+  margin-right: 70px;
+}
+
+button.btn.btn-primary.btn-wizard-nav-next {
+  background-color: #0e6da5;
+  color: white !important
 }
 
 .cardRibbon {
   border-left: 22px solid #0574a9;
+}
+.cardRibbon:hover{
+  background:#eee !important;
 }
 .pageTitle{
   font-size: 30px;

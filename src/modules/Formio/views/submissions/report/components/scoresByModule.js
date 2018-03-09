@@ -9,7 +9,8 @@ let ScoresByModule = class {
         adequacy: "AG-hh-ac-adq",
         adequacyElements: ["AG-hh-activityNeeds"],
         importanceElements: ["AG-hh-importantActivities"],
-        pillar: "Agronomic"
+        pillar: "Agronomic",
+        abbreviation: "Household"
       },
       {
         moduleNumber: 3,
@@ -19,7 +20,8 @@ let ScoresByModule = class {
         adequacy: "AG-agr-adq",
         adequacyElements: ["AG-agr-suffHouseholdNeeds"],
         importanceElements: ["AG-agr-diversityFarmSystem"],
-        pillar: "Agronomic"
+        pillar: "Agronomic",
+        abbreviation: "Agricultural activities "
       },
       {
         moduleNumber: 4,
@@ -29,7 +31,8 @@ let ScoresByModule = class {
         adequacy: "EC-iga-adq",
         adequacyElements: ["EC-iga-igasSufficient"],
         importanceElements: ["EC-iga-igasLivelihood"],
-        pillar: "Economic"
+        pillar: "Economic",
+        abbreviation: "Non-farm IGA"
       },
       {
         moduleNumber: 5,
@@ -39,7 +42,8 @@ let ScoresByModule = class {
         adequacy: "EN-landac-adq",
         adequacyElements: ["EN-landac-adequateAccess"],
         importanceElements: ["EN-landac-communalLandAccess"],
-        pillar: "Environment"
+        pillar: "Environment",
+        abbreviation: "Land access"
       },
       {
         moduleNumber: 6,
@@ -49,7 +53,8 @@ let ScoresByModule = class {
         adequacy: "AG-crop-adq",
         adequacyElements: ["AG-crop-sufficientFarmSystem"],
         importanceElements: ["AG-crop-importantDifferentCrops"],
-        pillar: "Agronomic"
+        pillar: "Agronomic",
+        abbreviation: "Crop production"
       },
       {
         moduleNumber: 7,
@@ -59,7 +64,8 @@ let ScoresByModule = class {
         adequacy: "AG_inter_adq",
         adequacyElements: ["AG-inter-cropsMeetingNeeds"],
         importanceElements: ["AG-inter-intercroppingFarmSysted"],
-        pillar: "Agronomic"
+        pillar: "Agronomic",
+        abbreviation: "Intercropping"
       },
       {
         moduleNumber: 8,
@@ -69,7 +75,8 @@ let ScoresByModule = class {
         adequacy: "EN-weed-adq",
         adequacyElements: ["EN-weed-curtailingNegativeImpact"],
         importanceElements: ["EN-weed-invasiveWeed"],
-        pillar: "Environment"
+        pillar: "Environment",
+        abbreviation: "Weeds"
       },
       {
         moduleNumber: 9,
@@ -79,7 +86,8 @@ let ScoresByModule = class {
         adequacy: "AG-spm-adq",
         adequacyElements: ["AG-spm-pestControl"],
         importanceElements: ["AG-spm-importantPestControl"],
-        pillar: "Agronomic"
+        pillar: "Agronomic",
+        abbreviation: "Pest"
       },
       {
         moduleNumber: 10,
@@ -89,7 +97,8 @@ let ScoresByModule = class {
         adequacy: "EN-slm-adq",
         adequacyElements: ["EN-slm-improveFarmLand"],
         importanceElements: ["EN-slm-importantPractice"],
-        pillar: "Environment"
+        pillar: "Environment",
+        abbreviation: "Land practices"
       },
       {
         moduleNumber: 11,
@@ -99,7 +108,8 @@ let ScoresByModule = class {
         adequacy: "EN_legum_adq",
         adequacyElements: ["EN-legum-leguminousAffectFarm"],
         importanceElements: ["EN-legum-importanceLeguminous"],
-        pillar: "Environment"
+        pillar: "Environment",
+        abbreviation: "Legumes"
       },
       {
         moduleNumber: 12,
@@ -109,7 +119,8 @@ let ScoresByModule = class {
         adequacy: "EN-fert-adq",
         adequacyElements: ["EN-fert-naturalFertilisers"],
         importanceElements: ["EN-fert-accessNaturalFertilisers"],
-        pillar: "Environment"
+        pillar: "Environment",
+        abbreviation: "Fertilization"
       },
       {
         moduleNumber: 13,
@@ -119,7 +130,8 @@ let ScoresByModule = class {
         adequacy: "AG-animal-adq",
         adequacyElements: ["AG-animal-sufficientLivestock"],
         importanceElements: ["AG-animal-importantLivestock"],
-        pillar: "Agronomic"
+        pillar: "Agronomic",
+        abbreviation: "Animal production"
       },
       {
         moduleNumber: 14,
@@ -129,7 +141,8 @@ let ScoresByModule = class {
         adequacy: "AG-breed-adq",
         adequacyElements: ["AG-breed-ableToImprove"],
         importanceElements: ["AG-breed-importantLivestock"],
-        pillar: "Agronomic"
+        pillar: "Agronomic",
+        abbreviation: "Animal breeding"
       },
       {
         moduleNumber: 15,
@@ -139,7 +152,8 @@ let ScoresByModule = class {
         adequacy: "AG-health-adq",
         adequacyElements: ["AG-health-adq-house", "AG-health-adq-health"],
         importanceElements: ["AG-health-imp-house", "AG-health-imp-health"],
-        pillar: "Agronomic"
+        pillar: "Agronomic",
+        abbreviation: "Animal health"
       },
       {
         moduleNumber: 16,
@@ -155,7 +169,8 @@ let ScoresByModule = class {
           "AG-new-improvingAccessSecurityRevenues",
           "AG-new-improvingAccessBreedsSecurity"
         ],
-        pillar: "Agronomic"
+        pillar: "Agronomic",
+        abbreviation: "Varieties & breeds"
       },
       {
         moduleNumber: 17,
@@ -165,7 +180,8 @@ let ScoresByModule = class {
         adequacy: "EC-input-adq",
         adequacyElements: ["EC-input-accessLocalFarm"],
         importanceElements: ["EC-input-importantAccessLocalFarm"],
-        pillar: "Economic"
+        pillar: "Economic",
+        abbreviation: "Farm inputs"
       },
       {
         moduleNumber: 18,
@@ -175,7 +191,8 @@ let ScoresByModule = class {
         adequacy: "EN-wacc-adq",
         adequacyElements: ["EN-wacc-sufficientAccess"],
         importanceElements: ["EN-wacc-importantWaterAccess"],
-        pillar: "Environment"
+        pillar: "Environment",
+        abbreviation: "Water access"
       },
       {
         moduleNumber: 19,
@@ -185,7 +202,8 @@ let ScoresByModule = class {
         adequacy: "EN-wcp-adq",
         adequacyElements: ["EN-wcp-waterConservationUse"],
         importanceElements: ["EN-wcp-importantWaterConservation"],
-        pillar: "Environment"
+        pillar: "Environment",
+        abbreviation: "Water conservation"
       },
       {
         moduleNumber: 20,
@@ -195,7 +213,8 @@ let ScoresByModule = class {
         adequacy: "EN-wqa-adq",
         adequacyElements: ["EN-wqa-adequacy-Human", "EN-wqa-adequacy-agric"],
         importanceElements: ["EN-wqa-importance"],
-        pillar: "Environment"
+        pillar: "Environment",
+        abbreviation: "Water quality"
       },
       {
         moduleNumber: 21,
@@ -205,7 +224,8 @@ let ScoresByModule = class {
         adequacy: "EN-landqa-adq",
         adequacyElements: ["EN-landqa-richInSoilOrganic"],
         importanceElements: ["EN-landqa-landDegradationImpact"],
-        pillar: "Environment"
+        pillar: "Environment",
+        abbreviation: "Soil quality"
       },
       {
         moduleNumber: 22,
@@ -215,7 +235,8 @@ let ScoresByModule = class {
         adequacy: "AG-trees-ac-adq",
         adequacyElements: ["AG-trees-accessTrees"],
         importanceElements: ["AG-trees-howImportant"],
-        pillar: "Agronomic"
+        pillar: "Agronomic",
+        abbreviation: "Trees"
       },
       {
         moduleNumber: 23,
@@ -225,7 +246,8 @@ let ScoresByModule = class {
         adequacy: "EN-lands-adq",
         adequacyElements: ["EN-lands-yeldLosses"],
         importanceElements: ["EN-lands-importantUnmanagedAreas"],
-        pillar: "Environment"
+        pillar: "Environment",
+        abbreviation: "Landscape"
       },
       {
         moduleNumber: 24,
@@ -235,7 +257,8 @@ let ScoresByModule = class {
         adequacy: "EN-enerso-adq",
         adequacyElements: ["EN-enerso-energySufficient"],
         importanceElements: ["EN-enerso-importantAccessEnergy"],
-        pillar: "Environment"
+        pillar: "Environment",
+        abbreviation: "Energy sources"
       },
       {
         moduleNumber: 25,
@@ -245,7 +268,8 @@ let ScoresByModule = class {
         adequacy: "EN-enercp-adq",
         adequacyElements: ["EN-enercp-methodsSaveEnergy"],
         importanceElements: ["EN-enercp-importantEnergySaving"],
-        pillar: "Environment"
+        pillar: "Environment",
+        abbreviation: "Energy conservation"
       },
       {
         moduleNumber: 26,
@@ -255,7 +279,8 @@ let ScoresByModule = class {
         adequacy: "SO-dist-adq",
         adequacyElements: ["SO-dist-responsesToDistuurbances"],
         importanceElements: ["SO-dist-disturbancesAffect"],
-        pillar: "Social"
+        pillar: "Social",
+        abbreviation: "Disturbances"
       },
       {
         moduleNumber: 27,
@@ -265,7 +290,8 @@ let ScoresByModule = class {
         adequacy: "SO-cc-adq",
         adequacyElements: ["SO-cc-strategiesSatisfaction"],
         importanceElements: ["SO-cc-changingClimatePriority"],
-        pillar: "Social"
+        pillar: "Social",
+        abbreviation: "Climate change"
       },
       {
         moduleNumber: 28,
@@ -276,7 +302,8 @@ let ScoresByModule = class {
         adequacy: "AG-infoac-adq",
         adequacyElements: ["AG-infoac-usefulFarmSystemInfo"],
         importanceElements: ["AG-infoac-climateChangeAdaptation"],
-        pillar: "Agronomic"
+        pillar: "Agronomic",
+        abbreviation: "Information access"
       },
       {
         moduleNumber: 29,
@@ -287,7 +314,8 @@ let ScoresByModule = class {
         adequacy: "EC-ict-adq",
         adequacyElements: ["EC-ict-accessICTfarmSystem"],
         importanceElements: ["EC-ict-importantareICTfarmSystem"],
-        pillar: "Economic"
+        pillar: "Economic",
+        abbreviation: "ICTs"
       },
       {
         moduleNumber: 30,
@@ -298,7 +326,8 @@ let ScoresByModule = class {
         adequacy: "GO-gov-adq",
         adequacyElements: ["GO-gov-helpfulsupportlivelihood"],
         importanceElements: ["GO-gov-importantSupportLivelihood"],
-        pillar: "Goverment"
+        pillar: "Goverment",
+        abbreviation: "Policies & programmes"
       },
       {
         moduleNumber: 31,
@@ -308,7 +337,8 @@ let ScoresByModule = class {
         adequacy: "EC-mkt-adq",
         adequacyElements: ["EC-Mkt-adequacy"],
         importanceElements: ["EC-Mkt-importance"],
-        pillar: "Economic"
+        pillar: "Economic",
+        abbreviation: "Market access"
       },
       {
         moduleNumber: 32,
@@ -318,7 +348,8 @@ let ScoresByModule = class {
         adequacy: "EC-inc-adq",
         adequacyElements: ["EC-inc-incomeSources"],
         importanceElements: ["EC-inc-importantIncomeSources"],
-        pillar: "Economic"
+        pillar: "Economic",
+        abbreviation: "Income"
       },
       {
         moduleNumber: 33,
@@ -328,7 +359,8 @@ let ScoresByModule = class {
         adequacy: "EC-ass-adq",
         adequacyElements: ["EC-ass-assetsAdequate"],
         importanceElements: ["EC-ass-importantProductiveAsset"],
-        pillar: "Economic"
+        pillar: "Economic",
+        abbreviation: "Productive assets"
       },
       {
         moduleNumber: 34,
@@ -338,7 +370,8 @@ let ScoresByModule = class {
         adequacy: "EC-fin-adq",
         adequacyElements: ["EC-fin-adequacy"],
         importanceElements: ["EC-fin-importance"],
-        pillar: "Economic"
+        pillar: "Economic",
+        abbreviation: "Financial services"
       },
       {
         moduleNumber: 35,
@@ -348,7 +381,8 @@ let ScoresByModule = class {
         adequacy: "EC-ins-adq",
         adequacyElements: ["EC-ins-adequacy"],
         importanceElements: ["EC-ins-importance"],
-        pillar: "Economic"
+        pillar: "Economic",
+        abbreviation: "Insurance"
       },
       {
         moduleNumber: 36,
@@ -358,7 +392,8 @@ let ScoresByModule = class {
         adequacy: "SO-coop-adq",
         adequacyElements: ["SO-coop-adequacy"],
         importanceElements: ["SO-coop-importance"],
-        pillar: "Social"
+        pillar: "Social",
+        abbreviation: "Community cooperation"
       },
       {
         moduleNumber: 37,
@@ -368,7 +403,8 @@ let ScoresByModule = class {
         adequacy: "SO-group-adq",
         adequacyElements: ["SO-group-adequacy"],
         importanceElements: ["SO-group-importance"],
-        pillar: "Social"
+        pillar: "Social",
+        abbreviation: "Group membership"
       },
       {
         moduleNumber: 38,
@@ -378,7 +414,8 @@ let ScoresByModule = class {
         adequacy: "SO-meal-adq",
         adequacyElements: ["SO-meal-adequacy"],
         importanceElements: ["SO-meal-importance"],
-        pillar: "Social"
+        pillar: "Social",
+        abbreviation: "Meals"
       },
       {
         moduleNumber: 39,
@@ -388,7 +425,8 @@ let ScoresByModule = class {
         adequacy: "SO-dmhh-adq",
         adequacyElements: ["SO-dmhh-adequacy"],
         importanceElements: ["SO-dmhh-importance"],
-        pillar: "Social"
+        pillar: "Social",
+        abbreviation: "Household decisions"
       },
       {
         moduleNumber: 40,
@@ -401,7 +439,8 @@ let ScoresByModule = class {
           "SO-dmfarm-importance1",
           "SO-dmfarm-importance2"
         ],
-        pillar: "Social"
+        pillar: "Social",
+        abbreviation: "Farm decisions"
       }
     ];
   }

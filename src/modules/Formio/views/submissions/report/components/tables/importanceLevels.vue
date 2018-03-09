@@ -96,7 +96,7 @@ export default {
 
       scores.forEach((score, index) => {
         score.importanceElements.forEach(element => {
-          let module = (index + 2) + " - " + score.moduleName
+          let module = (index + 2) + " - " + score.abbreviation
           switch (submission[element]) {
             case "notAtAll":
               levels.notAtAll.push(module);

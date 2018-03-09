@@ -114,9 +114,6 @@ import Promise from "bluebird";
 import _forEach from "lodash/forEach";
 import _isEmpty from "lodash/isEmpty";
 import _map from "lodash/map";
-// import _uniqBy from "lodash/uniqBy";
-// import _groupBy from "lodash/groupBy";
-// import Formio from "modules/Formio/api/Formio";
 
 export default {
   data: function() {
@@ -284,7 +281,7 @@ export default {
     },
     async updateValues() {
       await this.getResources({
-        appName: this.$store.state.authStore.appName
+        appName: this.$FAST_CONFIG.APP_NAME
       });
       await Localization.getTranslations();
       this.translations = await FormLabels.get(

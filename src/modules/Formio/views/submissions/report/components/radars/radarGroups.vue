@@ -61,7 +61,6 @@ export default {
             : 20;
         results.push(final);
       });
-      console.log("results", results);
       // this.submission
       return {
         labels: uniquePillars,

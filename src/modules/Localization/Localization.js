@@ -99,12 +99,12 @@ const Localization = class {
    */
   static async createTranslation(label) {
     let config = await CONFIGURATION.getLocal();
-    return Formio.createTranslation(config.APP_URL, label)
+    return Formio.createTranslation(config.APP_NAME, label)
   }
 
   static async setTranslations(label, translations) {
     let config = await CONFIGURATION.getLocal();
-    return Formio.setTranslations(config.APP_URL, label, translations)
+    return Formio.setTranslations(config.APP_NAME, label, translations)
   }
 }
 export default Localization

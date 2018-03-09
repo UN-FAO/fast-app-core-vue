@@ -1,6 +1,6 @@
 <template>
 <div>
-  <div class="row">
+  <div class="row customReport">
     <q-card color="white"  class="col-lg-offset-1 col-md-offset-1 col-lg-10 col-md-10 col-sm-12 col-xs-12">
       <q-card-title>
         Relative resilience by domain
@@ -14,7 +14,7 @@
                 </div>
         </q-card-main>
     </q-card>
-    <q-card color="white" class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
+    <q-card color="white" class="col-lg-offset-1 col-md-offset-1 col-lg-10 col-md-10 col-sm-12 col-xs-12">
         <q-card-title>
         Relative resilience by Module
       </q-card-title>
@@ -46,8 +46,6 @@
                  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top:30px">
                     <naquestions :submission="submission"></naquestions>
                 </div>
-
-
         </q-card-main>
     </q-card>
     </div>
@@ -83,7 +81,7 @@ export default {
 };
 </script>
 <style SCOPED>
-.q-card-title {
+.customReport .q-card-title {
   color: white;
   background: #0574a9;
   padding-top: 10px !important;
@@ -93,10 +91,10 @@ export default {
   text-transform: uppercase;
   font-size: x-large;
 }
-.q-card-primary.q-card-container.row.no-wrap {
+.customReport .q-card-primary.q-card-container.row.no-wrap {
   padding: 0px;
 }
-.q-card {
+.customReport .q-card {
   margin-top: 30px;
   padding: 0px !important;
 }

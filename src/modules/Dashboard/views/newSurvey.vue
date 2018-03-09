@@ -86,8 +86,8 @@ export default {
       return o.data.tags.indexOf("visible") > -1;
     });
     if (visible.length === 1 && this.$FAST_CONFIG.APP_ENV !== "dev") {
-      this.goTo({
-        name: "formio_form_show",
+      this.$router.push({
+        name: "formio_form_submission",
         params: { idForm: visible[0].data.path }
       });
     }

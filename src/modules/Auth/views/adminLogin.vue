@@ -46,7 +46,7 @@ import { mapActions } from "vuex";
 export default {
   mounted() {
     this.getResources({
-      appName: this.$store.state.authStore.appName
+      appName: this.$FAST_CONFIG.APP_NAME
     });
   },
   components: {
@@ -85,7 +85,7 @@ export default {
       // Try to authenticate the User
       Auth.attempt(
         this.credentials,
-        this.$store.state.authStore.appURL,
+        this.$FAST_CONFIG.APP_URL,
         "admin"
       )
         .then(async User => {

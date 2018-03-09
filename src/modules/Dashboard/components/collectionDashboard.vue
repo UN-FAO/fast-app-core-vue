@@ -18,7 +18,7 @@
         </q-item>
               <q-card-separator style="background:lightgrey;"/>
         <span slot="subtitle" class="pull-left text-grey">
-          Subtitlt
+          Select this option to start the survey
           <br>
         </span>
       </q-card-title>
@@ -28,7 +28,7 @@
 
   <div class="row">
     <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-xs-12" style="margin:auto;" >
-       <q-card color="white" class="text-black cardRibbon" @click="$router.push({name: 'CollectedData'})">
+       <q-card color="white" class="text-black cardRibbon" style="cursor: pointer;" @click="$router.push({name: 'CollectedData'})">
       <q-card-title >
         <q-item>
           <q-item-side avatar="/statics/customSVG/collectedData.svg" />
@@ -39,7 +39,7 @@
         </q-item>
               <q-card-separator style="background:lightgrey;"/>
         <span slot="subtitle" class="pull-left text-grey">
-          Subtitlt
+          Select this option to check or edit submitted / draft surveys
           <br>
         </span>
       </q-card-title>
@@ -47,9 +47,9 @@
     </div>
      </div>
 
-  <div class="row">
+  <div class="row" v-if="$FAST_CONFIG.HAS_ABOUT">
     <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-xs-12" style="margin:auto;" >
-      <q-card color="white" class="text-black cardRibbon" @click="$router.push({name: 'About'})">
+      <q-card color="white" class="text-black cardRibbon" style="cursor: pointer;" @click="$router.push({name: 'About'})">
       <q-card-title>
         <q-item>
           <q-item-side avatar="/statics/customSVG/about.svg" />
@@ -60,7 +60,7 @@
         </q-item>
               <q-card-separator style="background:lightgrey;"/>
         <span slot="subtitle" class="pull-left text-grey">
-          Subtitlt
+
           <br>
         </span>
       </q-card-title>

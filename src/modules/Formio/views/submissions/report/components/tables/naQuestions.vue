@@ -91,7 +91,7 @@ export default {
               elIndex > 0
                 ? (index + 2).toString() + "." + (elIndex + 1).toString()
                 : (index + 2).toString();
-            jsonData["module"] = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + moduleNumber + " - " + score.moduleName;
+            jsonData["module"] = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + moduleNumber + " - " + score.abbreviation;
             table.push(jsonData);
           }
         });

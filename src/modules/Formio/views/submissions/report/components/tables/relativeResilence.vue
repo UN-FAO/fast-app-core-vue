@@ -111,7 +111,7 @@ export default {
             : undefined;
         let jsonData = {};
         if (moduleNumber) {
-          jsonData["module"] = moduleNumber + " - " + score.moduleName
+          jsonData["module"] = moduleNumber + " - " + score.abbreviation
           jsonData["academic"] = (parseFloat(submission[score.academic]) || 0)
           jsonData["adequacy"] = parseFloat(submission[score.adequacy] || 0)
           let calculatedScore =

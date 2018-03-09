@@ -35,7 +35,7 @@
                 <q-btn color="primary" round small  @click='handleEdit(scope)'> <i class="material-icons edit" >edit</i>
                   <q-tooltip>{{$t('Edit')}}</q-tooltip>
                 </q-btn>
-                <div v-if="HAS_REPORT" style="display: -webkit-inline-box;">
+                <div v-if="$FAST_CONFIG.HAS_REPORT" style="display: -webkit-inline-box;">
                 <q-btn color="primary" round small  @click='handleReport(scope)'> <i class="material-icons assignment" >assignment</i>
                   <q-tooltip>{{$t('Report')}}</q-tooltip>
                 </q-btn>
@@ -112,7 +112,6 @@ import {
   QTooltip,
   Toast
 } from "quasar";
-import {HAS_REPORT} from 'config/env'
 import _forEach from "lodash/forEach";
 import _map from "lodash/map";
 import jsonexport from "jsonexport";
@@ -297,8 +296,7 @@ export default {
       selectedRows: [],
       currentForm: {},
       submissions: undefined,
-      visibleColumns: [],
-      HAS_REPORT: HAS_REPORT
+      visibleColumns: []
     };
   },
   beforeDestroy() {

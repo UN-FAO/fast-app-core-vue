@@ -1,9 +1,7 @@
 <template>
   <q-tabs>
     <!-- Tabs - notice slot="title" -->
-    <q-tab v-if="scorePanels.length > 0 && $route.name === 'formio_submission_update'" slot="title" name="tab-1" icon="assessment" label="Score" />
-    <q-tab default :count="Unsynced.length" slot="title" name="tab-2" icon="signal_wifi_off" :label="$t('Unsynced')" />
-
+    <q-tab default v-if="scorePanels.length > 0 && $route.name === 'formio_submission_update'" slot="title" name="tab-1" icon="assessment" label="Score" />
     <q-tab-pane name="tab-1" v-if="scorePanels.length > 0 && $route.name === 'formio_submission_update'">
       <q-list separator>
         <!-- collapsible to hide sub-level menu entries -->
