@@ -3,14 +3,14 @@
   <q-toolbar style="-webkit-app-region: drag; -webkit-user-select: none;" v-bind:class="isInsideApp ? 'nav-default-fao' : 'nav-transparent' ">
     <q-ajax-bar color="white"></q-ajax-bar>
     <q-btn flat @click="openLeftDrawer()" v-if="isInsideApp"
-      v-bind:class="isInsideApp ? '' : 'color-white' ">
+      v-bind:class="isInsideApp ? '' : 'color-white' " class="absolute-left" style="z-index:999">
       <q-icon name="menu" />
     </q-btn>
     <q-toolbar-title @click="$router.push({name: 'dashboard'})" style="cursor: pointer;"  v-bind:class="isInsideApp ? '' : 'color-white' ">
 
     </q-toolbar-title>
   <div class="q-toolbar-fao-logo">
-    <img src="statics/fao-logo-white.svg" style="max-height: 40px; " />
+    <img src="statics/fao-logo-white.svg" style="max-height: 40px;" class="absolute-center" />
   </div>
 
   <localization/>
@@ -21,25 +21,6 @@
 
 </div>
 </template>
-
-
-<style>
-.nav-white {background: white;}
-.nav-default-fao {background:rgb(5, 116, 169); color:#ffffff;}
-
-.nav-transparent {background: transparent;}
-
-.color-white {color: white;}
-
-.color-primary {color: rgb(5, 116, 169);}
-.q-toolbar-fao-logo{
-  margin: auto;
-  text-align: center;
-}
-.q-toolbar-title {font-size: 1.75em; font-weight: 400;display: table;}
-
-</style>
-
 <script>
 import Localization from "modules/Localization/components/selector";
 import wifiDisplay from "modules/Connection/components/display";

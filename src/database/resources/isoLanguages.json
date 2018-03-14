@@ -850,6 +850,11 @@
     "label": "Ukrainian"
   },
   {
+    "code": "umb",
+    "direction": "ltr",
+    "label": "Umbundu"
+  },
+  {
     "code": "ur",
     "direction": "ltr",
     "label": "Urdu"

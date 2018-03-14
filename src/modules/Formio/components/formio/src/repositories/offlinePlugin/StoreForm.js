@@ -83,6 +83,7 @@ let StoreForm = class {
    */
   static storeUser(formSubmission, formio, redirect, hashField, formId, eventHub) {
     formSubmission.data.hashedPassword = md5(formSubmission.data.password, MD5_KEY)
+
     store.dispatch('storeUserLocally', {
       data: formSubmission.data,
       sync: false,
@@ -94,6 +95,7 @@ let StoreForm = class {
         })
       })
       .catch((error) => {
+        eventHub.emit('FAST:USER:REGISTRATION:ERROR', formSubmission.data);
         console.log(error)
       })
   }

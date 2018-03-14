@@ -10,7 +10,7 @@
       <q-card color="white" class="text-black cardRibbon"  style="cursor: pointer;" @click="$router.push({name: 'newSurvey'})">
       <q-card-title>
         <q-item>
-          <q-item-side avatar="/statics/customSVG/startSurvey.svg" />
+          <q-item-side avatar="statics/customSVG/startSurvey.svg" />
           <q-item-main>
             <q-item-tile label>{{ $t("Start survey") }}</q-item-tile>
 
@@ -31,7 +31,7 @@
        <q-card color="white" class="text-black cardRibbon" style="cursor: pointer;" @click="$router.push({name: 'CollectedData'})">
       <q-card-title >
         <q-item>
-          <q-item-side avatar="/statics/customSVG/collectedData.svg" />
+          <q-item-side avatar="statics/customSVG/collectedData.svg" />
           <q-item-main>
             <q-item-tile label>{{ $t("Collected Data") }}</q-item-tile>
 
@@ -52,7 +52,7 @@
       <q-card color="white" class="text-black cardRibbon" style="cursor: pointer;" @click="$router.push({name: 'About'})">
       <q-card-title>
         <q-item>
-          <q-item-side avatar="/statics/customSVG/about.svg" />
+          <q-item-side avatar="statics/customSVG/about.svg" />
           <q-item-main>
             <q-item-tile label>{{$t('About') +' '+ $FAST_CONFIG.APP_FANTACY_NAME}}</q-item-tile>
 

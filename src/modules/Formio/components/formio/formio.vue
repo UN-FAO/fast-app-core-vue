@@ -59,6 +59,7 @@ export default {
     Lenguage.listen(this);
     GPS.listen(this);
     // SMS.listen(this)
+
     document.addEventListener("saveAsDraft", this.saveAsLocalDraft);
     this.save = _debounce(this.save, 400);
     this.renderForm();

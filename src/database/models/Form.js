@@ -138,7 +138,7 @@ const Form = class {
       return {
         innerCardsTitle: f.data.title,
         innerCardsTags: f.data.tags,
-        innerCardsAvatar: action === "create" ? "/statics/customSVG/startSurvey.svg" : "/statics/customSVG/collectedData.svg",
+        innerCardsAvatar: action === "create" ? "statics/customSVG/startSurvey.svg" : "statics/customSVG/collectedData.svg",
         innerCardsSubtitle: "Last updated: " + moment(f.data.modified).fromNow(),
         innerCardsActions: [{
           innerCardsActionsText: action === "create" ? 'Start' : 'View data',

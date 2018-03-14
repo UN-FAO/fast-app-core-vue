@@ -1,5 +1,6 @@
 import * as Database from 'database/Database';
 import uuidv4 from 'uuid/v4'
+import RemoteUser from '../repositories/User/User'
 
 const User = class {
   /**
@@ -15,7 +16,7 @@ const User = class {
    */
   static remote() {
     User.getFrom = 'remote'
-    return User
+    return RemoteUser
   }
   /**
    * [local description]

@@ -27,7 +27,6 @@ import connectionAlert from "modules/Connection/components/alert";
 import { mapActions } from "vuex";
 import Sync from "database/repositories/Database/Sync";
 import Connection from "modules/Wrappers/Connection";
-import { SYNC_INTERVAL } from "config/env";
 import { QLayout, Toast } from "quasar";
 import layoutStore from "layout/layout-store";
 import FastClick from "fastclick";
@@ -42,6 +41,22 @@ export default {
       },
       false
     );
+
+    let emailValidationMessage = email => {
+      this.$swal(
+        "Email already taken",
+        "The email '" + email + "' is already taken. Try a different one.",
+        "error"
+      );
+    };
+
+    document.addEventListener("FAST:USER:REGISTRATION:ERROR", error => {
+      emailValidationMessage(error.detail.data.submission.email);
+    });
+
+    this.$eventHub.on("FAST:USER:REGISTRATION:ERROR", error => {
+      emailValidationMessage(error.email);
+    });
 
     this.$eventHub.on("lenguageSelection", lenguage => {
       this.toggleRtl(lenguage);
@@ -102,7 +117,7 @@ export default {
       };
       rInterval(() => {
         return Sync.now(this);
-      }, SYNC_INTERVAL);
+      }, 2000);
     }
   },
   data() {

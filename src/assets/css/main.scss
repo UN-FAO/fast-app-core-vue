@@ -584,11 +584,10 @@ th, th.field-required {
 .q-toolbar-title {font-size: 1.5em; font-weight: 300; max-width: auto;}
 .q-toolbar-fao-logo {
   max-width: 100%;
-  text-align: left;
-  -webkit-box-flex: 1;
-  -ms-flex: 1;
-  flex: 1;}
-
+  display: flex;
+}
+.nav-default-fao {background:rgb(5, 116, 169); color:#ffffff;}
+.nav-transparent {background: transparent;}
 .layout-page h1 {margin-top: 10px; margin-bottom: 40px; font-weight: 400; color:#5c5c5c;}
 .layout-page h1:hover {cursor: pointer;}
 
@@ -724,6 +723,22 @@ button.btn.btn-primary.btn-wizard-nav-next {
     color: #0574a9;
     font-variant: small-caps;
 }
+
+
+.formioPagination .q-item-avatar, .q-item-avatar img {
+    width: 50px;
+    height: 60px;
+    border-radius: 50%;
+}
+
+.formioPagination .q-item-icon {
+    font-size: 26px;
+    margin-left: 15px;
+}
+
+
+
+
 @import 'custom/custom.scss';
 @import 'qDataTable.scss';
 @import 'errorResponsiveTable.scss';

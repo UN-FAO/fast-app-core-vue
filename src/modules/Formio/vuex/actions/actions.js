@@ -339,8 +339,21 @@ const actions = {
           offlineSubmission.data.queuedForSync = false
           offlineSubmission.data.syncError = e
 
-          await model.update(offlineSubmission)
-
+          if (offlineSubmission.data.formio.formId === 'userregister') {
+            model.remove(offlineSubmission)
+            var errorEvent = new CustomEvent('FAST:USER:REGISTRATION:ERROR', {
+              'detail': {
+                'data': {
+                  submission: offlineSubmission.data.data,
+                  error: e
+                },
+                'text': 'Validation Error'
+              }
+            })
+            document.dispatchEvent(errorEvent)
+          } else {
+            await model.update(offlineSubmission)
+          }
           if (offlinePlugin) {
             FormioJS.registerPlugin(offlinePlugin, 'offline')
           }

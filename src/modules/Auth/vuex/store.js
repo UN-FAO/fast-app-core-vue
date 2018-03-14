@@ -101,7 +101,9 @@ const actions = {
     if (isUserAlreadyStored) {
       user.data = formIoUser
       //  update the user with the updated information
-      User.local().update(user)
+      let error = new Error('The user email is already taken')
+      throw error
+      // User.local().update(user)
     } else {
       //  Insert the new user
       await User.local().insert({

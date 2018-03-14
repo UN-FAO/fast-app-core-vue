@@ -61,6 +61,10 @@ let Sync = class {
   static async syncUsers({ isOnline }) {
     let users = await this.getUsersToSync()
 
+    users = _filter(users, function (o) {
+      return (o.data.sync === false && !o.data.queuedForSync && !o.data.syncError)
+    })
+
     if (users.length > 0) {
       store.dispatch('sendOfflineData', {
         offlineSubmissions: users,

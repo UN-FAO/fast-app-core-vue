@@ -31,7 +31,7 @@
       <collectionpagelinks v-if="$FAST_CONFIG.IS_SURVEY"></collectionpagelinks>
 
 
-    <q-side-link v-if="isAdmin()" multiline highlight item :to="{name: 'settings'}" :key="settings">
+    <q-side-link v-if="isAdmin()" multiline highlight item :to="{path: '/settings/translations'}" :key="settings">
       <q-item-side icon="fa-cog" />
       <q-item-main :label="$t('Application Settings')"/>
     </q-side-link>

@@ -1,7 +1,7 @@
 <template>
 <div class="container-fluid">
   <div class="row FormioContainer">
-<div class="formPageContainer" style="margin-top:30px; overflow-x:scroll">
+<div class="formPageContainer" style="margin-top:30px; overflow-x:scroll;margin-bottom: 100px;">
 
 
     <q-card style="background-color: white; max-height: fit-content;" class="formNav" v-if="_isWizard && showPages && !$FAST_CONFIG.TAB_MENU">
@@ -46,13 +46,27 @@
     <q-fixed-position corner="top-right" :offset="[18, 18]">
       <q-fab color="red" icon="add" direction="down">
 
+        <q-fab-action color="primary" @click="saveAsDraft()" icon="fa-floppy-o">
+            <q-tooltip>{{$t('Save as draft')}}</q-tooltip>
+        </q-fab-action>
 
-        <q-fab-action v-bind:class="!$FAST_CONFIG.PARALLEL_SURVEYS ? 'hidden' : ''" color="purple-6" @click="groupConfig()" icon="fa-users"></q-fab-action>
-        <q-fab-action v-bind:class="!$FAST_CONFIG.PARALLEL_SURVEYS ? 'hidden' : ''" color="amber" @click="addSurvey()" icon="person_add"></q-fab-action>
+        <q-fab-action v-bind:class="!$FAST_CONFIG.PARALLEL_SURVEYS ? 'hidden' : ''" color="amber" @click="addSurvey()" icon="person_add">
+            <q-tooltip>{{$t('Add participant')}}</q-tooltip>
+        </q-fab-action>
 
-        <q-fab-action color="primary" @click="saveAsDraft()" icon="fa-floppy-o"></q-fab-action>
-         <q-fab-action color="secondary" @click="openRightDrawer()" icon="assessment" v-if="$FAST_CONFIG.HAS_SCORES"></q-fab-action>
-        <q-fab-action color="secondary" @click="togglePages" icon="menu" v-if="_isWizard && !$FAST_CONFIG.TAB_MENU"></q-fab-action>
+        <q-fab-action v-bind:class="!$FAST_CONFIG.PARALLEL_SURVEYS ? 'hidden' : ''" color="purple-6" @click="groupConfig()" icon="fa-users">
+            <q-tooltip>{{$t("Change Group")}}</q-tooltip>
+
+        </q-fab-action>
+
+
+         <q-fab-action color="red" @click="openRightDrawer()" icon="assessment" v-if="$FAST_CONFIG.HAS_SCORES">
+            <q-tooltip>{{$t('Show scores')}}</q-tooltip>
+         </q-fab-action>
+
+        <q-fab-action color="secondary" @click="togglePages" icon="menu" v-if="_isWizard && !$FAST_CONFIG.TAB_MENU">
+            <q-tooltip>{{$t('Show pages')}}</q-tooltip>
+        </q-fab-action>
 
       </q-fab>
     </q-fixed-position>
@@ -650,8 +664,8 @@ export default {
         progressSteps = ["1"];
         steps = [
           {
-            title: "Participant Name",
-            text: "Give the next participant a name"
+            title: this.$t("Participant Name"),
+            text: this.$t("Give the next participant a name")
           }
         ];
       } else {
