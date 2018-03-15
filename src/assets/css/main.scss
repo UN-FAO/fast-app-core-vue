@@ -64,6 +64,7 @@ p {
   position: inherit;
   width: max-content !important;
   min-width: -webkit-fill-available;
+  color:black;
 }
 
 ul.list-inline {
@@ -737,7 +738,9 @@ button.btn.btn-primary.btn-wizard-nav-next {
 }
 
 
-
+.q-data-table-toolbar .q-search {
+ border-bottom: 1px solid grey !important;
+}
 
 @import 'custom/custom.scss';
 @import 'qDataTable.scss';

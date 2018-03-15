@@ -9,7 +9,6 @@ import uuidv4 from 'uuid/v4'
 import _cloneDeep from 'lodash/cloneDeep'
 import moment from 'moment'
 
-
 const Submission = class {
   /**
    * [getOwnName description]

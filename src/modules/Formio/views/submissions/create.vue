@@ -22,8 +22,6 @@
           <q-btn @click="clickNext()" class="pull-right primary" color="primary">Full review</q-btn>
           <q-btn @click="submitForm()" class="pull-right primary" color="danger">Submit</q-btn>
            -->
-
-        -->
         <!--<q-icon name="thumb_up" />-->
         <q-tabs inverted id="contentForm" >
           <!-- Tabs - notice slot="title" -->
@@ -35,7 +33,7 @@
 
           <q-tab-pane name="tab-1" ref="tab1">
 
-            <formio :formURL="$FAST_CONFIG.APP_URL + '/' + $route.params.idForm" :submission="submission" :formioToken="formioToken" :localDraft="$FAST_CONFIG.LOCAL_DRAFT_ENABLED" :readOnly="readOnly" :autoCreate="autoCreate" />
+            <formio :formURL="$FAST_CONFIG.APP_URL + '/' + $route.params.idForm" :submission="submission" :formioToken="formioToken" :localDraft="$FAST_CONFIG.LOCAL_DRAFT_ENABLED" :readOnly="readOnly" :autoCreate="autoCreate" :editMode="this.$route.params.FAST_EDIT_MODE" />
           </q-tab-pane>
 
         </q-tabs>
@@ -86,7 +84,7 @@
     -->
 </div>
   </div>
-  <q-tabs slot="footer" v-model="tab" v-if="$FAST_CONFIG.TAB_MENU" class="floatingPagination">
+  <q-tabs slot="footer" v-model="tab" v-if="$FAST_CONFIG.TAB_MENU && $route.params.FAST_EDIT_MODE !== 'online'" class="floatingPagination">
           <q-tab
            icon="fa-file"
             slot="title"
@@ -247,6 +245,9 @@ export default {
   asyncData: {
     submission: {
       get() {
+        if (this.$route.params.fullSubmision) {
+          return { data: this.$route.params.fullSubmision };
+        }
         if (this.$route.params.idSubmission) {
           return Submission.local().get(this.$route.params.idSubmission);
         } else {
@@ -859,7 +860,9 @@ export default {
         draft: true,
         trigger: "createParalelSurvey"
       };
-      let formio = new Formio(this.$FAST_CONFIG.APP_URL + "/" + this.$route.params.idForm);
+      let formio = new Formio(
+        this.$FAST_CONFIG.APP_URL + "/" + this.$route.params.idForm
+      );
       formio.saveSubmission(formSubmission);
     },
     getForms() {

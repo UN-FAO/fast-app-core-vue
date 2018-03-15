@@ -3,7 +3,7 @@ import FORMIO from 'modules/Formio/api/Formio'
 import Configuration from "database/repositories/Configuration/Configuration";
 
 let User = class {
-  static async find(filter) {
+  static async find() {
     let config = await Configuration.getLocal()
     let users = await FORMIO.users(config.APP_NAME)
     return users

@@ -43,6 +43,9 @@ export default {
     },
     autoCreate: {
       required: false
+    },
+    editMode: {
+      required: false
     }
   },
   watch: {
@@ -78,9 +81,9 @@ export default {
   },
   methods: {
     /**
-         * [renderForm description]
-         * @return {[type]} [description]
-         */
+     * [renderForm description]
+     * @return {[type]} [description]
+     */
     renderForm() {
       // Offline plugin functionallity
       this.registerOfflinePlugin();
@@ -94,17 +97,17 @@ export default {
       this.mountFormIOForm();
     },
     /**
-         * [loadExternalResources description]
-         * @param  {[type]} Components [description]
-         * @return {[type]}            [description]
-         */
+     * [loadExternalResources description]
+     * @param  {[type]} Components [description]
+     * @return {[type]}            [description]
+     */
     loadExternalResources(Components) {
       // return OFFLINE_PLUGIN.externalResources(Components)
     },
     /**
-         * [setTranslations description]
-         * @param {[type]} Components [description]
-         */
+     * [setTranslations description]
+     * @param {[type]} Components [description]
+     */
     setTranslations(Components) {
       let comps = FormioUtils.findComponents(Components, {
         tag: "p"
@@ -117,9 +120,9 @@ export default {
       return Components;
     },
     /**
-      * [registerOfflinePlugin description]
-      * @return {[type]} [description]
-      */
+     * [registerOfflinePlugin description]
+     * @return {[type]} [description]
+     */
     registerOfflinePlugin() {
       // De register if there was a previous registration
       Formio.deregisterPlugin("offline");
@@ -210,16 +213,45 @@ export default {
         );
       }
       let formio = new Formio(this.formURL);
+
+      if (this.editMode === "online") {
+        this.onlineSave(formSubmission, formio);
+        return;
+      }
       formio.saveSubmission(formSubmission);
     },
+    onlineSave(submission, formio) {
+      Formio.deregisterPlugin("offline");
+      formio.saveSubmission(submission).then(updated => {
+        this.$router.push({
+          name: "reviewers"
+        });
+      });
+    },
     setSubmission(onlineJsonForm) {
-      this.formIO.submission = {
-        data: _get(this.jsonSubmission, "data.data", {})
-      };
+      if (
+        this.editMode === "online" &&
+        this.submission &&
+        !this.jsonSubmission
+      ) {
+        this.formIO.submission = {
+          data: _get(this.submission, "data.data", {})
+        };
 
-      // If we are creating a wizard
-      if (onlineJsonForm.display === "wizard") {
-        this.formIO.data = _get(this.jsonSubmission, "data.data", {});
+        // If we are creating a wizard
+        if (onlineJsonForm.display === "wizard") {
+          this.formIO.data = _get(this.submission, "data.data", {});
+        }
+        this.jsonSubmission = this.submission;
+      } else {
+        this.formIO.submission = {
+          data: _get(this.jsonSubmission, "data.data", {})
+        };
+
+        // If we are creating a wizard
+        if (onlineJsonForm.display === "wizard") {
+          this.formIO.data = _get(this.jsonSubmission, "data.data", {});
+        }
       }
     },
     /**
@@ -239,12 +271,12 @@ export default {
       } else {
         this.formIO = new FormioForm(this.$refs.formIO, translations);
       }
-      this.formIO.url = this.formURL
+      this.formIO.url = this.formURL;
     },
     /**
-      * [mountFormIOForm description]
-      * @return {[type]} [description]
-      */
+     * [mountFormIOForm description]
+     * @return {[type]} [description]
+     */
     async mountFormIOForm(savedSubmission) {
       // Optional parameter (If we want to stay on
       // the same page after submission)
@@ -262,6 +294,10 @@ export default {
         if (this.autoCreate) {
           this.createLocalDraft();
           return;
+        }
+
+        if (this.submission && this.editMode && !this.jsonSubmission) {
+          this.setSubmission(onlineJsonForm);
         }
 
         if (this.jsonSubmission) {
@@ -328,7 +364,7 @@ export default {
         if (events.filter(e => e.type === "formio.change").length < 1) {
           this.formIO.on("change", change => {
             this.removeDuplicatedPagination();
-            if (this.localDraft) {
+            if (this.localDraft && this.editMode !== "online") {
               this.saved = false;
               var draftStatus = new CustomEvent("draftStatus", {
                 detail: { data: false, text: "Draft not Saved" }
@@ -388,6 +424,7 @@ export default {
               trigger: "formioSubmit",
               syncError: false
             };
+
             this.save(formSubmission);
           });
         }

@@ -1,6 +1,36 @@
 <template>
-<div style="color:black">
+<div style="color:black" class="row justify-center">
+   <div class="relative-position">
+ <q-data-table
+    :data="users"
+    :config="config"
+    :columns="columns"
+    >
 
+    <template slot="col-isReviewer" scope="scope">
+      <span v-if="scope.row.isReviewer && scope.row.countries" v-for="country in scope.row.countries" v-bind:key="country" >
+        <q-chip  :color="scope.row.isReviewer ? 'primary' : 'red'" style="margin-top:5px">
+          {{getCountry(country)}}
+        </q-chip>
+        <br>
+      </span>
+
+    </template>
+
+
+      <template slot='col-action' scope='scope'>
+                <q-btn color="primary" round small  @click='handleEdit(scope)'> <i class="material-icons edit" >edit</i>
+                  <q-tooltip>{{$t('Edit')}}</q-tooltip>
+                </q-btn>
+
+      </template>
+  </q-data-table>
+    <q-inner-loading :visible="loading">
+      <q-spinner-gears size="50px" color="primary"></q-spinner-gears>
+    </q-inner-loading>
+
+  </div>
+<!--
      <q-select
       filter
       v-model="select"
@@ -24,27 +54,35 @@
       style="border-bottom: 1px solid grey; width: 50%"
       clearable
     />
-
-  <q-data-table
-    :data="reviewers"
-    :config="config"
-    :columns="columns"
-    >
-  </q-data-table>
+-->
 </div>
 </template>
 <script>
 import User from "database/models/User";
-import { QDataTable, QSelect } from "quasar";
+import {
+  QDataTable,
+  QSelect,
+  QChip,
+  QBtn,
+  QTooltip,
+  QSpinnerGears,
+  QInnerLoading
+} from "quasar";
 import countryList from "database/resources/countries.json";
 export default {
   name: "reviewer",
   components: {
     QDataTable,
-    QSelect
+    QSelect,
+    QChip,
+    QBtn,
+    QTooltip,
+    QSpinnerGears,
+    QInnerLoading
   },
   data() {
     return {
+      loading: false,
       countries: null,
       userSelect: [],
       countryList: countryList.map(c => {
@@ -62,10 +100,9 @@ export default {
         rowHeight: "70px",
         responsive: true,
         pagination: {
-          rowsPerPage: 100,
+          rowsPerPage: 50,
           options: [10, 30, 50, 100]
         },
-        selection: "multiple",
         messages: {
           noData: this.$t("No data available to show."),
           noDataAfterFiltering: this.$t(
@@ -100,10 +137,16 @@ export default {
           sort: true
         },
         {
-          label: this.$t("Revision Scope"),
-          field: "scope",
-          filter: true,
-          sort: true
+          label: this.$t("Scope"),
+          field: "isReviewer",
+          filter: false,
+          sort: false
+        },
+        {
+          label: this.$t("Action"),
+          field: "action",
+          filter: false,
+          width: "110px"
         }
       ]
     };
@@ -113,23 +156,46 @@ export default {
   },
   methods: {
     async getUsers() {
+      this.loading = true;
       let users = await User.remote().find();
-      this.users = users.filter(user => {
-        return !user.data.IS_REVIEWER;
+
+      this.users = users.filter((obj, pos, arr) => {
+        return (
+          arr
+            .map(mapObj => mapObj["data"]["email"])
+            .indexOf(obj["data"]["email"]) === pos
+        );
       });
 
-      this.userSelect = this.users.map(user => {
-        return {
-          label: user.data.email,
-          value: user._id
-        };
+      this.users = this.users.map(user => {
+        let c = user.data;
+        c._id = user._id;
+        return c;
+      });
+      this.loading = false;
+    },
+    getCountry(code) {
+      let country = countryList.filter(c => {
+        return c.iso2 === code;
       });
 
-      this.userSelect = this.userSelect.filter((obj, pos, arr) => {
-        return arr.map(mapObj => mapObj["label"]).indexOf(obj["label"]) === pos;
-      });
-      this.reviewers = users.filter(user => {
-        return !!user.data.IS_REVIEWER;
+      let name =
+        country && country[0] && country[0].shortName
+          ? country[0].shortName
+          : code;
+      console.log(name);
+      return name;
+    },
+    handleEdit(data) {
+      let user = data;
+      this.$router.push({
+        name: "formio_submission_update",
+        params: {
+          idForm: "user",
+          idSubmission: user.row._id,
+          fullSubmision: { data: user.row, _id: user.row._id },
+          FAST_EDIT_MODE: "online"
+        }
       });
     }
   }

@@ -137,7 +137,7 @@ const Formio = class {
   static users(projectName) {
     return this.getResource({
       projectName,
-      resource: 'user/submission'
+      resource: 'user/submission?limit=500'
     })
   }
 
