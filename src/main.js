@@ -38,6 +38,9 @@ import Localization from 'modules/Localization/Localization'
 import Configuration from "database/repositories/Configuration/Configuration";
 import Pages from "database/repositories/Configuration/Pages";
 
+import AsyncComputed from 'vue-async-computed'
+Vue.use(AsyncComputed)
+
 import VueAsyncProperties from 'vue-async-properties'
 Vue.use(VueAsyncProperties)
 

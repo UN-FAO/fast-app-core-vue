@@ -183,7 +183,6 @@ export default {
         country && country[0] && country[0].shortName
           ? country[0].shortName
           : code;
-      console.log(name);
       return name;
     },
     handleEdit(data) {
