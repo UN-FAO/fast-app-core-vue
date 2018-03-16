@@ -30,31 +30,6 @@
     </q-inner-loading>
 
   </div>
-<!--
-     <q-select
-      filter
-      v-model="select"
-      :options="userSelect"
-      separator
-      autofocus-filter
-      filter-placeholder="Search by email"
-      stack-label="User to register as reviewer"
-      style="border-bottom: 1px solid grey; width: 50%"
-      clearable
-    />
-
-      <q-select
-      filter
-      separator
-      autofocus-filter
-      v-model="countries"
-      :options="countryList"
-      filter-placeholder="Search for the country"
-      stack-label="Which country"
-      style="border-bottom: 1px solid grey; width: 50%"
-      clearable
-    />
--->
 </div>
 </template>
 <script>

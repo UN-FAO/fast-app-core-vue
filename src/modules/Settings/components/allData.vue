@@ -1,7 +1,7 @@
 <template>
     <div class="row" style="color:black">
 
-        <div style="width:100%">
+        <div style="width:100%" class="relative-position">
             <q-select filter separator autofocus-filter v-model="selectForm" :options="formList" stack-label="Search your form" filter-placeholder="Search for the country" style="border-bottom: 1px solid grey; width: 50%" clearable />
 
             <q-card-main>
@@ -16,7 +16,7 @@
             </q-card-main>
 
             <!-- This should be extracted to its own component -->
-            <q-inner-loading :visible="typeof submissions === 'undefined'">
+            <q-inner-loading :visible="loading">
                 <q-spinner-audio size="50px" color="primary"></q-spinner-audio>
             </q-inner-loading>
             <!--Until Here      -->
@@ -127,6 +127,7 @@ export default {
         if (this.currentForm.data.title === "") {
           return [];
         }
+        this.loading = true;
         let form = this.currentForm.data;
 
         FormioJS.setToken(Auth.user().x_jwt_token);
@@ -154,6 +155,7 @@ export default {
           data._id = s._id;
           return data;
         });
+        this.loading = false;
         return remoteSubmissions;
       },
       watch() {
@@ -237,44 +239,7 @@ export default {
   },
   data() {
     return {
-      cols: [
-        {
-          label: "Date of survey",
-          field: "date",
-          filter: true,
-          sort: true
-        },
-        {
-          label: "Data to be collected:",
-          field: "dataCollected",
-          filter: true,
-          sort: true
-        },
-        {
-          label: "Location name",
-          field: "locationName",
-          filter: true,
-          sort: true
-        },
-        {
-          label: "Latitude",
-          field: "latitude",
-          filter: true,
-          sort: true
-        },
-        {
-          label: "Longitude",
-          field: "longitude",
-          filter: true,
-          sort: true
-        },
-        {
-          label: "Another",
-          field: "another",
-          filter: true,
-          sort: true
-        }
-      ],
+      loading: false,
       formList: [],
       config: {
         refresh: false,
