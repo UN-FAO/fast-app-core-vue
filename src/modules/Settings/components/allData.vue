@@ -1,68 +1,52 @@
 <template>
-  <div class="row" style="color:black">
+    <div class="row" style="color:black">
 
-      <div style="width:100%">
-      <q-select
-                filter
-                separator
-                autofocus-filter
-                v-model="selectForm"
-            :options="formList"
-            stack-label="Search your form"
-                filter-placeholder="Search for the country"
-                style="border-bottom: 1px solid grey; width: 50%"
-                clearable
-        />
+        <div style="width:100%">
+            <q-select filter separator autofocus-filter v-model="selectForm" :options="formList" stack-label="Search your form" filter-placeholder="Search for the country" style="border-bottom: 1px solid grey; width: 50%" clearable />
 
-        <q-card-main>
+            <q-card-main>
 
-        <h1 class="_control-label-title">{{formTitle}}</h1>
+                <h1 class="_control-label-title">{{formTitle}}</h1>
+                <q-data-table
+                :data="submissions"
+                :config="config"
+                :columns="columns"
+                v-if="currentForm && currentForm.data.title !== ''">
+                </q-data-table>
+            </q-card-main>
 
-        <q-data-table
-              :data="[]"
-              :config="config"
-              :columns="columns"
-            >
+            <!-- This should be extracted to its own component -->
+            <q-inner-loading :visible="typeof submissions === 'undefined'">
+                <q-spinner-audio size="50px" color="primary"></q-spinner-audio>
+            </q-inner-loading>
+            <!--Until Here      -->
+        </div>
 
+        <!-- This should be extracted to its own component -->
+        <q-fixed-position corner="top-right" :offset="[18, 18]">
+            <q-fab color="red" icon="add" direction="down" push>
+                <q-btn color="primary" round @click='createSubmission()'> <i class="material-icons edit" style="font-size: 1.7em;">add</i>
+                    <q-tooltip>{{$t('New Submission')}}</q-tooltip>
+                </q-btn>
 
+                <q-btn color="positive" round small @click='exportCSV()'> <i class="material-icons edit" style="font-size: 1.3em;">file_download</i><span style="font-size: 0.6em;">CSV</span>
+                    <q-tooltip>{{$t('Export CSV')}}</q-tooltip>
+                </q-btn>
+                <q-btn color="positive" round small @click='exportJson()'> <i class="material-icons edit" style="font-size: 1.3em;">file_download</i><span style="font-size: 0.6em;">JSON</span>
+                    <q-tooltip>{{$t('Export Json')}}</q-tooltip>
+                </q-btn>
 
-            </q-data-table>
+                <q-fab-action color="secondary" @click="importSubmission()" icon="fa-upload">
+                    <q-tooltip>
+                        {{$t('Import Submissions')}}
+                    </q-tooltip>
+                </q-fab-action>
 
-        </q-card-main>
-
-          <!-- This should be extracted to its own component -->
-        <q-inner-loading :visible="typeof submissions === 'undefined'">
-          <q-spinner-audio size="50px" color="primary"></q-spinner-audio>
-        </q-inner-loading>
-         <!--Until Here      -->
+            </q-fab>
+        </q-fixed-position>
+        <!--Until Here      -->
     </div>
-
-    <!-- This should be extracted to its own component -->
-    <q-fixed-position corner="top-right" :offset="[18, 18]" >
-      <q-fab color="red" icon="add" direction="down" push>
-        <q-btn  color="primary" round @click='createSubmission()'> <i class="material-icons edit" style="font-size: 1.7em;" >add</i>
-                  <q-tooltip>{{$t('New Submission')}}</q-tooltip>
-        </q-btn>
-
-        <q-btn  color="positive" round small  @click='exportCSV()'>  <i class="material-icons edit" style="font-size: 1.3em;" >file_download</i><span style="font-size: 0.6em;">CSV</span>
-                  <q-tooltip>{{$t('Export CSV')}}</q-tooltip>
-                </q-btn>
-                <q-btn  color="positive" round small @click='exportJson()'> <i class="material-icons edit" style="font-size: 1.3em;" >file_download</i><span style="font-size: 0.6em;">JSON</span>
-                  <q-tooltip>{{$t('Export Json')}}</q-tooltip>
-                </q-btn>
-
-        <q-fab-action color="secondary" @click="importSubmission()" icon="fa-upload">
-          <q-tooltip>
-             {{$t('Import Submissions')}}
-          </q-tooltip>
-        </q-fab-action>
-
-      </q-fab>
-    </q-fixed-position>
-      <!--Until Here      -->
-  </div>
 </template>
-
 <script>
 import {
   QDataTable,
@@ -170,8 +154,6 @@ export default {
           data._id = s._id;
           return data;
         });
-
-        console.log('remoteSubmissions', remoteSubmissions)
         return remoteSubmissions;
       },
       watch() {
@@ -189,7 +171,20 @@ export default {
     },
     columns() {
       if (!this.currentForm || this.currentForm.data.title === "") {
-        return [];
+        return [
+          {
+            label: "Longitude",
+            field: "longitude",
+            filter: true,
+            sort: true
+          },
+          {
+            label: "Another",
+            field: "another",
+            filter: true,
+            sort: true
+          }
+        ];
       }
       this.visibleColumns = FormioUtils.findComponents(
         this.currentForm.data.components,
@@ -204,41 +199,14 @@ export default {
         return !!(c.label !== "");
       });
       this.visibleColumns.forEach((column, index) => {
-        let self = this;
+        // let self = this;
         let visibleColum = {
           label: this.$t(column.label),
           field: column.key,
           filter: true,
-          sort: true,
-          width: "250px",
-          format(value, row) {
-            if (column.key === "dataCollected") {
-              if (
-                row.fullSubmission[column.key].scouting &&
-                row.fullSubmission[column.key].traps
-              ) {
-                let text =
-                  self.$t("Field scouting") + ", " + self.$t("Pheromone traps");
-                return text;
-              } else if (row.fullSubmission[column.key].scouting) {
-                return self.$t("Field scouting");
-              } else if (row.fullSubmission[column.key].traps) {
-                return self.$t("Pheromone traps");
-              }
-            }
-            return typeof row.fullSubmission[column.key] === "object"
-              ? ""
-              : row.fullSubmission[column.key];
-          }
+          sort: true
         };
         columns.push(visibleColum);
-      });
-
-      columns.push({
-        label: this.$t("Action"),
-        field: "action",
-        filter: false,
-        width: "110px"
       });
       console.log("columnscolumns", columns);
       return columns;
@@ -269,6 +237,44 @@ export default {
   },
   data() {
     return {
+      cols: [
+        {
+          label: "Date of survey",
+          field: "date",
+          filter: true,
+          sort: true
+        },
+        {
+          label: "Data to be collected:",
+          field: "dataCollected",
+          filter: true,
+          sort: true
+        },
+        {
+          label: "Location name",
+          field: "locationName",
+          filter: true,
+          sort: true
+        },
+        {
+          label: "Latitude",
+          field: "latitude",
+          filter: true,
+          sort: true
+        },
+        {
+          label: "Longitude",
+          field: "longitude",
+          filter: true,
+          sort: true
+        },
+        {
+          label: "Another",
+          field: "another",
+          filter: true,
+          sort: true
+        }
+      ],
       formList: [],
       config: {
         refresh: false,
