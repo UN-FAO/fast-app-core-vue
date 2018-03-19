@@ -1,6 +1,15 @@
 <template>
 <div style="color:black" class="row justify-center">
    <div class="relative-position">
+
+     <div class="section-title pageTitle" style="margin:auto">
+          {{ $t("Data Reviewers") }}
+        </div>
+
+        <div style="width:100%;color:grey">
+         <hr>
+        </div>
+
  <q-data-table
     :data="users"
     :config="config"
@@ -108,6 +117,12 @@ export default {
         {
           label: this.$t("Reviewer email"),
           field: "email",
+          filter: true,
+          sort: true
+        },
+        {
+          label: this.$t("Reviewer country"),
+          field: "country",
           filter: true,
           sort: true
         },

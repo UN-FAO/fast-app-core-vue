@@ -2,7 +2,7 @@
   <q-scroll-area style="width: 100%; height: 100%">
     <q-list-header class="bg-primary text-white" style="padding-left: 0px; height: 50px; background:#00293c !important;">
       <center>
-        <img src="statics/2000px-FAO_logo_reverse.png" style="max-height: 40px; max-width: 40px;" /> {{$FAST_CONFIG.APP_FANTACY_NAME}}
+        <img src="statics/2000px-FAO_logo_reverse.png" style="max-height: 40px; max-width: 40px;" /> {{$FAST_CONFIG.APP_NAME_DRAWER}}
       </center>
     </q-list-header>
     <q-list>
@@ -31,7 +31,13 @@
       <collectionpagelinks v-if="$FAST_CONFIG.IS_SURVEY"></collectionpagelinks>
 
 
-    <q-side-link v-if="isAdmin()" multiline highlight item :to="{path: '/settings/translations'}" :key="settings">
+    <q-side-link v-if="isReviewer()" multiline highlight item :to="{path: '/settings/alldata'}" :key="settings">
+      <q-item-side icon="fa-cog" />
+      <q-item-main :label="$t('Review Data')"/>
+    </q-side-link>
+
+
+    <q-side-link v-if="isAdmin()" multiline highlight item :to="{path: '/settings/alldata'}" :key="settings">
       <q-item-side icon="fa-cog" />
       <q-item-main :label="$t('Application Settings')"/>
     </q-side-link>
@@ -213,6 +219,9 @@ export default {
     },
     isAdmin() {
       return Auth.hasRole("Administrator");
+    },
+    isReviewer() {
+      return Auth.hasRole("Reviewer");
     },
     userEmail() {
       return Auth.userEmail();

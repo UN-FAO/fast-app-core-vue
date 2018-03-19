@@ -24,6 +24,16 @@
       <div class="loading" v-if="hasTranslation()">
         <q-spinner-gears size="50px" color="primary"></q-spinner-gears>
       </div>
+
+        <div class="section-title pageTitle" style="margin:auto">
+          {{ $t("Translations") }}
+        </div>
+
+        <div style="width:100%;color:grey">
+         <hr>
+        </div>
+
+
       <div v-if="!hasTranslation()">
         <tstats :stats="translations.stats"> </tstats>
         <div class="col-lg-12">

@@ -218,6 +218,11 @@ export default {
         this.onlineSave(formSubmission, formio);
         return;
       }
+
+      if (this.editMode === "online-review") {
+        this.onlineReview(formSubmission, formio);
+        return;
+      }
       formio.saveSubmission(formSubmission);
     },
     onlineSave(submission, formio) {
@@ -230,7 +235,7 @@ export default {
     },
     setSubmission(onlineJsonForm) {
       if (
-        this.editMode === "online" &&
+        (this.editMode === "online" || this.editMode === "online-review") &&
         this.submission &&
         !this.jsonSubmission
       ) {
@@ -261,7 +266,7 @@ export default {
      * @return {[type]}                [description]
      */
     createFormioInstance(onlineJsonForm, translations) {
-      translations.readOnly = this.readOnly;
+      translations.readOnly = !!(this.editMode === 'online-review')
       if (!_isEmpty(this.formIO)) {
         return;
       }
@@ -364,7 +369,7 @@ export default {
         if (events.filter(e => e.type === "formio.change").length < 1) {
           this.formIO.on("change", change => {
             this.removeDuplicatedPagination();
-            if (this.localDraft && this.editMode !== "online") {
+            if (this.localDraft && this.editMode !== "online" && this.editMode !== "online-review") {
               this.saved = false;
               var draftStatus = new CustomEvent("draftStatus", {
                 detail: { data: false, text: "Draft not Saved" }

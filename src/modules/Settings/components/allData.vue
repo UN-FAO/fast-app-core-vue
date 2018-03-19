@@ -1,17 +1,40 @@
 <template>
     <div class="row" style="color:black">
+        <div class="section-title pageTitle" style="margin:auto">
+          {{ $t("All Data") }}
+        </div>
+
+        <div style="width:100%;color:grey">
+         <hr>
+        </div>
 
         <div style="width:100%" class="relative-position">
             <q-select filter separator autofocus-filter v-model="selectForm" :options="formList" stack-label="Search your form" filter-placeholder="Search for the country" style="border-bottom: 1px solid grey; width: 50%" clearable />
 
             <q-card-main>
 
-                <h1 class="_control-label-title">{{formTitle}}</h1>
+                <h1 class="_control-label-title"><span v-if="formTitle !== ''">Form:</span> {{formTitle}}</h1>
                 <q-data-table
                 :data="submissions"
                 :config="config"
                 :columns="columns"
                 v-if="currentForm && currentForm.data.title !== ''">
+
+                   <template slot='col-review' scope='scope'>
+                <q-btn color="primary" round small  @click='handleReview(scope)'> <i class="material-icons remove_red_eye" >remove_red_eye</i>
+                  <q-tooltip>{{$t('Review')}}</q-tooltip>
+                </q-btn>
+              </template>
+
+              <template slot='col-deleted' scope='scope'>
+
+                <q-chip icon="fa-ban" color="red" v-if="scope.row.deleted && scope.row.deleted === true">
+                </q-chip>
+
+                <q-chip icon="fa-check" color="green" v-else>
+                </q-chip>
+
+              </template>
                 </q-data-table>
             </q-card-main>
 
@@ -49,6 +72,7 @@
 </template>
 <script>
 import {
+  QChip,
   QDataTable,
   QField,
   QInput,
@@ -210,11 +234,17 @@ export default {
         };
         columns.push(visibleColum);
       });
-      console.log("columnscolumns", columns);
+      columns.push({
+        label: "Review",
+        field: "review",
+        filter: false,
+        sort: false
+      });
       return columns;
     }
   },
   components: {
+    QChip,
     QDataTable,
     QField,
     QInput,
@@ -279,7 +309,7 @@ export default {
       bodyHeight: 500,
       selectedRows: [],
       visibleColumns: [],
-      selectForm: null
+      selectForm: this.$route.query.form
     };
   },
   beforeDestroy() {
@@ -378,16 +408,29 @@ export default {
 
       return { date: date, data: dataExport, labels: labels };
     },
-    handleEdit(data) {
-      let self = this;
-      let submission = data.row;
-      self.$router.push({
+    async handleReview(data) {
+      let submission = await this.loadSubmission(data.row._id)
+      this.$router.push({
         name: "formio_submission_update",
         params: {
-          idForm: submission.formio.formId,
-          idSubmission: submission.id_submision
+          idForm: this.currentForm.data.path,
+          idSubmission: data.row._id,
+          fullSubmision: { data: submission.content.data, _id: data.row._id },
+          formio: submission.formio,
+          FAST_EDIT_MODE: "online-review"
         }
       });
+    },
+    async loadSubmission(_id) {
+      this.loading = true
+      FormioJS.setToken(Auth.user().x_jwt_token);
+        let formUrl = await Config.getLocal();
+        formUrl = formUrl.APP_URL + "/" + this.currentForm.data.path + '/submission/' + _id;
+        let formio = new FormioJS(formUrl);
+        FormioJS.clearCache();
+        let submission = await formio.loadSubmission()
+        this.loading = false
+        return {content: submission, formio: formio}
     },
     handleReport(data) {
       let self = this;
@@ -568,32 +611,6 @@ export default {
       this.selectedRows = rows.map(r => {
         return r.data;
       });
-    },
-    getRowActionsDef() {
-      let self = this;
-      return {
-        label: self.$t("Actions"),
-        def: [
-          /* TODO
-            Uncomment this and finish when CORS are available
-            to have PDF export of the submission
-            {
-              type: 'text',
-              handler(submission) {
-                let id = submission.id_submision
-                var formio = new Formio('https://dghnmpjfioshlsx.form.io/welcome/submission/' + id + '?token=ASUiwa0aEMZI7LZNBPlfXiMG3ub5TO')
-                formio.getDownloadUrl().then(function(url) {
-                  var link = document.createElement('a')
-                  link.href = url
-                  link.download = url.substr(url.lastIndexOf('/') + 1)
-                  link.click()
-                })
-              },
-              icon: 'document'
-            },
-            */
-        ]
-      };
     },
     async importSubmission() {
       const file = await this.$swal({

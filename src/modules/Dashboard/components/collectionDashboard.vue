@@ -5,6 +5,40 @@
     </div>
     <hr style="border-top: 1px solid lightgray;">
 
+    <div class="row">
+  <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-xs-12" style="margin:auto;">
+    <q-card style="background:white;">
+      <q-card-title>
+        <h4>
+          Welcome to the APP for the Survey on Social Acceptability of Aquaculture
+        </h4>
+        <span slot="subtitle"> Please note that:</span>
+      </q-card-title>
+      <q-card-main>
+        <q-list class="no-border">
+
+          <q-item>
+            <q-item-main label>
+              This online application offers the possibility of saving a draft of the questionnaire at any time you want and completing
+              it afterwards. This option is available clicking the red plus
+              <q-icon name="add_circle" color="negative"
+              /> menu visible on the right during the process and choosing the blue saving icon.
+            </q-item-main>
+          </q-item>
+          <q-item>
+            <q-item-side icon="help" />
+            <q-item-main label>
+              You can find a glossary of aquaculture terms
+              <a href="http://www.fao.org/faoterm/en/?defaultCollId=14" target="_blank">here</a>.
+            </q-item-main>
+          </q-item>
+        </q-list>
+      </q-card-main>
+    </q-card>
+  </div>
+</div>
+
+
       <div class="row">
     <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-xs-12" style="margin:auto;" >
       <q-card color="white" class="text-black cardRibbon"  style="cursor: pointer;" @click="$router.push({name: 'newSurvey'})">

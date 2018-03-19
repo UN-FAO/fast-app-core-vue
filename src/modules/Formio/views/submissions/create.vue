@@ -8,7 +8,7 @@
       <q-card-main>
         <q-list separator style="border: none !important">
 
-          <q-item class="formioPagination" multiline style="text-align: left; text-transform: capitalize; min-height: 60px; border-radius: 5px;" link v-for="(page, index) in _pages" :key="page.title" @click="goToPage(index)" :ref="'page-'+ index" v-bind:class="currentPage === index ? 'activePage' : ''">
+          <q-item class="formioPagination" multiline style="text-align: left; min-height: 60px; border-radius: 5px;" link v-for="(page, index) in _pages" :key="page.title" @click="goToPage(index)" :ref="'page-'+ index" v-bind:class="currentPage === index ? 'activePage' : ''">
             <q-item-main style=" margin-top: auto;  margin-bottom: auto;" :label="$t(getLabelForPage(page))" label-lines="3" />
           </q-item>
         </q-list>
@@ -42,7 +42,7 @@
     </q-card>
 
     <q-fixed-position corner="top-right" :offset="[18, 18]">
-      <q-fab color="red" icon="add" direction="down">
+      <q-fab color="red" icon="add" direction="down" v-if="!this.$route.params.FAST_EDIT_MODE">
 
         <q-fab-action color="primary" @click="saveAsDraft()" icon="fa-floppy-o">
             <q-tooltip>{{$t('Save as draft')}}</q-tooltip>
@@ -67,6 +67,16 @@
         </q-fab-action>
 
       </q-fab>
+       <q-fab color="red" icon="add" direction="down" v-if="this.$route.params.FAST_EDIT_MODE">
+
+        <q-fab-action color="green" @click="reviewSubmission('accept')" icon="fa-check">
+            <q-tooltip>{{$t('Accept')}}</q-tooltip>
+        </q-fab-action>
+
+        <q-fab-action color="red" @click="reviewSubmission('reject')" icon="fa-ban">
+            <q-tooltip>{{$t('Delete')}}</q-tooltip>
+        </q-fab-action>
+      </q-fab>
     </q-fixed-position>
 
     <!--
@@ -84,7 +94,7 @@
     -->
 </div>
   </div>
-  <q-tabs slot="footer" v-model="tab" v-if="$FAST_CONFIG.TAB_MENU && $route.params.FAST_EDIT_MODE !== 'online'" class="floatingPagination">
+  <q-tabs slot="footer" v-model="tab" v-if="$FAST_CONFIG.TAB_MENU" class="floatingPagination">
           <q-tab
            icon="fa-file"
             slot="title"
@@ -335,6 +345,23 @@ export default {
   },
   methods: {
     ...mapActions(["getResources"]),
+    reviewSubmission(revision) {
+      let submission = this.$route.params.fullSubmision;
+      if (revision === "accept") {
+        submission.data.deleted = false;
+      } else if (revision === "reject") {
+        submission.data.deleted = true;
+      }
+      Formio.deregisterPlugin("offline");
+      this.$route.params.formio.saveSubmission(submission).then(updated => {
+        this.$router.push({
+          name: "alldata",
+          query: {
+            form: this.$route.params.idForm
+          }
+        });
+      });
+    },
     saveAsDraft() {
       // Create the event
       var saveAsDraft = new CustomEvent("saveAsDraft", {

@@ -5,11 +5,14 @@
       <q-card-main>
         <q-list separator style="border: none !important">
 
-          <q-item class="formioPagination" multiline @click="goToRoute('translations')" style="text-align: left; text-transform: uppercase; min-height: 60px; border-radius: 5px;" link v-bind:class="activePage">
-              <q-item-tile icon="translate">
+           <q-item class="formioPagination" @click="goToRoute('alldata')"  multiline style="text-align: left; text-transform: uppercase; min-height: 60px; border-radius: 5px;" link v-bind:class="activePage">
+             <q-item-tile avatar>
+               <img src="statics/customSVG/allData.svg">
               </q-item-tile>
-            <q-item-main  style=" margin-top: auto;  margin-bottom: auto; margin-left:20px" :label="$t('Translations')" label-lines="3" />
+            <q-item-main style=" margin-top: auto;  margin-bottom: auto; margin-left:10px" :label="$t('All data')" label-lines="3" />
           </q-item>
+
+
 
            <q-item class="formioPagination" @click="goToRoute('reviewers')"  multiline style="text-align: left; text-transform: uppercase; min-height: 60px; border-radius: 5px;" link v-bind:class="activePage">
              <q-item-tile avatar>
@@ -18,11 +21,11 @@
             <q-item-main style=" margin-top: auto;  margin-bottom: auto; margin-left:10px" :label="$t('Data reviewers')" label-lines="3" />
           </q-item>
 
-           <q-item class="formioPagination" @click="goToRoute('alldata')"  multiline style="text-align: left; text-transform: uppercase; min-height: 60px; border-radius: 5px;" link v-bind:class="activePage">
-             <q-item-tile avatar>
-               <img src="statics/customSVG/allData.svg">
+
+           <q-item class="formioPagination" multiline @click="goToRoute('translations')" style="text-align: left; text-transform: uppercase; min-height: 60px; border-radius: 5px;" link v-bind:class="activePage">
+              <q-item-tile icon="translate">
               </q-item-tile>
-            <q-item-main style=" margin-top: auto;  margin-bottom: auto; margin-left:10px" :label="$t('All data')" label-lines="3" />
+            <q-item-main  style=" margin-top: auto;  margin-bottom: auto; margin-left:20px" :label="$t('Translations')" label-lines="3" />
           </q-item>
 
         </q-list>
