@@ -1,7 +1,7 @@
 <template>
 <div>
   <div class="row customReport">
-    <q-card color="white"  class="col-lg-offset-1 col-md-offset-1 col-lg-10 col-md-10 col-sm-12 col-xs-12">
+    <q-card color="white"  class="col-lg-offset-1 col-md-offset-1 col-sm-offset-1 col-lg-10 col-md-10 col-sm-12 col-xs-12">
       <q-card-title>
         Relative resilience by domain
       </q-card-title>
@@ -14,7 +14,7 @@
                 </div>
         </q-card-main>
     </q-card>
-    <q-card color="white" class="col-lg-offset-1 col-md-offset-1 col-lg-10 col-md-10 col-sm-12 col-xs-12">
+    <q-card color="white" class="col-lg-offset-1 col-md-offset-1 col-sm-offset-1 col-lg-10 col-md-10 col-sm-12 col-xs-12">
         <q-card-title>
         Relative resilience by Module
       </q-card-title>
@@ -24,7 +24,7 @@
     </q-card>
   </div>
     <div class="row">
-    <q-card color="white" class="col-lg-offset-1 col-md-offset-1 col-lg-10 col-md-10 col-sm-12 col-xs-12">
+    <q-card color="white" class="col-lg-offset-1 col-md-offset-1 col-sm-offset-1 col-lg-10 col-md-10 col-sm-12 col-xs-12">
         <q-card-title>
             Detailed Resilience report
         </q-card-title>

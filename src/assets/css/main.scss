@@ -251,7 +251,7 @@ input[type="checkbox"]+span {
   padding: 6px 12px;
   background-color: rgb(231, 231, 231);
   border-radius: 5px;
-  min-width: 160px;
+  min-width: 230px;
   max-width: 230px;
   min-height: 30px;
   text-align: center;
@@ -268,7 +268,7 @@ input[type="checkbox"]:checked+span {
   color: white;
   padding: 6px 12px;
   border-radius: 5px;
-  min-width: 160px;
+  min-width: 230px;
   max-width: 230px;
   min-height: 30px;
   text-align: center;
@@ -752,3 +752,4 @@ button.btn.btn-primary.btn-wizard-nav-next {
 @import 'formContainer.scss';
 @import 'formNav.scss';
 @import 'formCard.scss';
+@import 'fastIcons/fastIcons.scss';

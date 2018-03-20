@@ -1,8 +1,8 @@
 {
   "name": "fast",
   "version": "0.7.3",
-  "deployAppName": "MEDAID",
-  "deployAppID": "5a97d0ae8590243a117921ea",
+  "deployAppName": "SHARP+",
+  "deployAppID": "59b112c7678919000775f921",
   "description": "A data collection application for FORM.io",
   "author": "Ignacio Cabrera <ignacio.cabrera@fao.org>",
   "scripts": {
