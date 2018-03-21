@@ -1,7 +1,7 @@
 import md5 from 'md5'
 import store from 'config/store'
 import router from 'config/router'
-import { MD5_KEY, SAVE_REDIRECT } from 'config/env'
+import CONFIGURATION from 'database/repositories/Configuration/Configuration'
 import Auth from 'modules/Auth/api/Auth'
 
 let StoreForm = class {
@@ -43,8 +43,9 @@ let StoreForm = class {
     })
     document.dispatchEvent(draftStatus)
     if (formSubmission._id) {
+      let config = await CONFIGURATION.getLocal()
       if (formSubmission.redirect === true) {
-        switch (SAVE_REDIRECT) {
+        switch (config.SAVE_REDIRECT) {
           case 'dashboard':
             router.push({
               name: 'dashboard'
@@ -81,8 +82,9 @@ let StoreForm = class {
   /**
    *
    */
-  static storeUser(formSubmission, formio, redirect, hashField, formId, eventHub) {
-    formSubmission.data.hashedPassword = md5(formSubmission.data.password, MD5_KEY)
+  static async storeUser(formSubmission, formio, redirect, hashField, formId, eventHub) {
+    let config = await CONFIGURATION.getLocal()
+    formSubmission.data.hashedPassword = md5(formSubmission.data.password, config.MD5_KEY)
 
     store.dispatch('storeUserLocally', {
       data: formSubmission.data,

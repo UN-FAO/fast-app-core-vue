@@ -39,7 +39,7 @@ let Import = class {
     let totalSubmissions = json.length
     let formio = Import.getFormIOInstance(vm)
     Loading.show({ message: 'Importing ' + totalSubmissions + ' submissions' })
-    // json = json.slice(0, 3);
+    json = json.slice(151, 200);
     Promise.each(json, async function (row, index) {
       // await Uploader.sendDataToFormIO(row)
       let submission = Import.prepareSubmission(row)
@@ -80,7 +80,7 @@ let Import = class {
    *
    * @param {*} vm
    */
-  static async getFormIOInstance(vm) {
+  static getFormIOInstance(vm) {
     Formio.deregisterPlugin("offline");
     Formio.registerPlugin(
       OFFLINE_PLUGIN.getPlugin(
@@ -91,7 +91,7 @@ let Import = class {
       ),
       "offline"
     );
-    let APP_URL = this.$FAST_CONFIG.APP_URL
+    let APP_URL = vm.$FAST_CONFIG.APP_URL
     let formUrl = APP_URL + "/" + vm.currentForm.data.path;
     let formio = new Formio(formUrl);
     return formio
@@ -102,11 +102,12 @@ let Import = class {
    */
   static async saveSubmission(submission, formio, vm) {
     let processedSubmission = PreProcess.JsonSubmission(submission)
-    await store.dispatch('addSubmission', {
+    let a = await store.dispatch('addSubmission', {
       formSubmission: processedSubmission,
       formio: formio,
       User: Auth.user().data
     })
+    console.log('a is: ', a)
   }
 }
 

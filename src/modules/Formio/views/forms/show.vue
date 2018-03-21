@@ -4,8 +4,8 @@
       <q-card color="white" style="bottom: unset;margin-top: 30px;" class="col-lg-10 col-lg-offset-1 col-md-offset-1 col-md-10 col-sm-10 col-sm-offset-1 col-xs-offset-0 col-xs-12  centered relative-position">
           <q-card-main>
         <h1 class="_control-label-title">{{formTitle}}</h1>
-
-          <q-transition appear enter="fadeIn" leave="fadeOut">
+          <span v-if="loading">Loading...</span>
+          <q-transition appear enter="fadeIn" leave="fadeOut" v-if="!loading">
             <!-- This should be extracted to its own component -->
              <q-data-table
               :data="submissions"
@@ -78,6 +78,13 @@
              {{$t('Import Submissions')}}
           </q-tooltip>
         </q-fab-action>
+         <q-fab-action color="secondary" @click="pullSubmissions()" icon="fa-download">
+          <q-tooltip>
+             {{$t('Get Data')}}
+          </q-tooltip>
+        </q-fab-action>
+
+
 
       </q-fab>
     </q-fixed-position>
@@ -296,7 +303,8 @@ export default {
       selectedRows: [],
       currentForm: {},
       submissions: undefined,
-      visibleColumns: []
+      visibleColumns: [],
+      loading: false
     };
   },
   beforeDestroy() {
@@ -626,15 +634,12 @@ export default {
       }
     },
     async updateLocalSubmissions(done) {
-      if (this.$route.params.idForm === "*") {
-        let submissions = await Submission.local().sFind({});
-        this.submissions = submissions.results;
-      } else {
+      this.loading = true
         let submissions = await Submission.local().sFind({
           "data.formio.formId": this.$route.params.idForm
         });
         this.submissions = submissions.results;
-      }
+        this.loading = false
       if (done) {
         done();
       }
