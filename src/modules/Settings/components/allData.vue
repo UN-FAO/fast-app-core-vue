@@ -14,28 +14,12 @@
             <q-card-main>
 
                 <h1 class="_control-label-title"><span v-if="formTitle !== ''">Form:</span> {{formTitle}}</h1>
-                <q-data-table
-                :data="submissions"
-                :config="config"
-                :columns="columns"
-                v-if="currentForm && currentForm.data.title !== ''">
 
-                   <template slot='col-review' scope='scope'>
-                <q-btn color="primary" round small  @click='handleReview(scope)'> <i class="material-icons remove_red_eye" >remove_red_eye</i>
-                  <q-tooltip>{{$t('Review')}}</q-tooltip>
-                </q-btn>
-              </template>
-
-              <template slot='col-deleted' scope='scope'>
-
-                <q-chip icon="fa-ban" color="red" v-if="scope.row.deleted && scope.row.deleted === true">
-                </q-chip>
-
-                <q-chip icon="fa-check" color="green" v-else>
-                </q-chip>
-
-              </template>
-                </q-data-table>
+                <datatable
+                  :data="submissions"
+                  :form="currentForm"
+                  v-if="currentForm && currentForm.data.title !== ''"
+                ></datatable>
             </q-card-main>
 
             <!-- This should be extracted to its own component -->
@@ -92,28 +76,21 @@ import {
   QPullToRefresh,
   QSpinnerAudio,
   QTransition,
-  Platform,
   QInnerLoading,
   QTooltip
 } from "quasar";
-import _forEach from "lodash/forEach";
-import _map from "lodash/map";
-import jsonexport from "jsonexport";
-import flatten from "flat";
 import Submission from "database/models/Submission";
 import Form from "database/models/Form";
 import FormioUtils from "formiojs/utils";
-import Promise from "bluebird";
-import Papa from "papaparse";
+import Promise from "bluebird"
 import Import from "database/repositories/Submission/Import";
-import _flattenDeep from "lodash/flattenDeep";
 import FormioJS from "formiojs";
 import Auth from "modules/Auth/api/Auth";
 import Config from "database/repositories/Configuration/Configuration";
+import datatable from "components/dataTable"
 export default {
   async mounted() {
     this.updateLocalSubmissions();
-
     this.$eventHub.on("lenguageSelection", async data => {
       await this.updateLocalSubmissions();
     });
@@ -170,7 +147,7 @@ export default {
         let remoteSubmissions = await formio.loadSubmissions({
           params: {
             // "data.deleted": false,
-            limit: "100",
+            limit: "5000",
             select: select
           }
         });
@@ -219,7 +196,7 @@ export default {
           tableView: true
         }
       );
-      this.visibleColumns = this.visibleColumns.slice(0, 20);
+      this.visibleColumns = this.visibleColumns.slice(0, 7);
       let columns = [];
       this.visibleColumns = this.visibleColumns.filter(c => {
         return !!(c.label !== "");
@@ -244,6 +221,7 @@ export default {
     }
   },
   components: {
+    datatable,
     QChip,
     QDataTable,
     QField,
@@ -271,44 +249,6 @@ export default {
     return {
       loading: false,
       formList: [],
-      config: {
-        refresh: false,
-        noHeader: false,
-        columnPicker: false,
-        leftStickyColumns: 0,
-        rightStickyColumns: 0,
-        rowHeight: "70px",
-        responsive: true,
-        pagination: {
-          rowsPerPage: 100,
-          options: [10, 30, 50, 100]
-        },
-        messages: {
-          noData: this.$t("No data available to show."),
-          noDataAfterFiltering: this.$t(
-            "No results. Please refine your search terms."
-          )
-        },
-        // (optional) Override default labels. Useful for I18n.
-        labels: {
-          columns: this.$t("Columns"),
-          allCols: this.$t("All Columns"),
-          rows: this.$t("Rows"),
-          selected: {
-            singular: this.$t("item selected."),
-            plural: this.$t("items selected.")
-          },
-          clear: this.$t("clear"),
-          search: this.$t("Search"),
-          all: this.$t("All")
-        }
-      },
-      pagination: true,
-      rowHeight: 50,
-      bodyHeightProp: "maxHeight",
-      bodyHeight: 500,
-      selectedRows: [],
-      visibleColumns: [],
       selectForm: this.$route.query.form
     };
   },
@@ -318,96 +258,6 @@ export default {
     this.$eventHub.off("lenguageSelection");
   },
   methods: {
-    exportCSV() {
-      let exported = this.loadExportData("csv");
-      jsonexport(exported.data, (err, csv) => {
-        if (err) {
-          return console.log(err);
-        }
-        let labelsRow = [];
-        let parserCsv = Papa.parse(csv);
-        let columns = parserCsv.data[0];
-        columns.forEach(c => {
-          let newLabel = "";
-          let innerLabels = c.split(".");
-          innerLabels.forEach((innerLabel, idx) => {
-            if (isNaN(innerLabel)) {
-              let correspondingLabel = exported.labels.find(label => {
-                return label.apiKey === innerLabel;
-              });
-              let matchingLabel =
-                (correspondingLabel && correspondingLabel.label) || innerLabel;
-              newLabel = newLabel + matchingLabel;
-            } else {
-              if (idx === innerLabels.length - 1) {
-                newLabel = newLabel + "." + innerLabel;
-              } else {
-                newLabel = newLabel + "." + innerLabel + ".";
-              }
-            }
-          });
-          labelsRow.push(newLabel);
-        });
-        let newCSV = Papa.unparse(
-          { fields: labelsRow, data: parserCsv.data },
-          { header: true, delimiter: ";" }
-        );
-        let name = "backup_" + exported.date + ".csv";
-        this.download(newCSV, name, "text/csv;encoding:utf-8");
-      });
-    },
-    exportJson() {
-      let exported = this.loadExportData("json");
-      let name = "backup_" + exported.date + ".json";
-      this.download(
-        JSON.stringify(exported.data),
-        name,
-        "text/json;encoding:utf-8"
-      );
-    },
-    loadExportData(type) {
-      let self = this;
-      let json = [];
-      let dataExport;
-      let labels = [];
-      let allKeys = [];
-
-      dataExport =
-        this.selectedRows.length === 0 ? this.submissions : this.selectedRows;
-      _forEach(dataExport, function(submission) {
-        let record = submission.fullSubmission;
-        record.id = submission.id_submision;
-        json.push(flatten(record));
-        allKeys.push(Object.keys(record));
-      });
-
-      allKeys = Array.from(new Set(_flattenDeep(allKeys)));
-
-      allKeys.forEach(key => {
-        let component = FormioUtils.getComponent(
-          self.currentForm.data.components,
-          key
-        );
-
-        let label = component ? component.label : null;
-        if (label) {
-          labels.push({ apiKey: key, label: self.$t(label) });
-        }
-      });
-
-      let orderedJsonOut = _map(dataExport, "fullSubmission");
-
-      dataExport = type && type === "csv" ? json : orderedJsonOut;
-
-      let date = new Date()
-        .toJSON()
-        .replace(/-/g, "_")
-        .replace(/T/g, "_")
-        .replace(/:/g, "_")
-        .slice(0, 19);
-
-      return { date: date, data: dataExport, labels: labels };
-    },
     async handleReview(data) {
       let submission = await this.loadSubmission(data.row._id)
       this.$router.push({
@@ -490,127 +340,9 @@ export default {
           });
         });
     },
-    download: function(content, fileName, mimeType) {
-      if (Platform.is.cordova) {
-        this.cordovaDownload(content, fileName, mimeType);
-      } else {
-        this.browserDownload(content, fileName, mimeType);
-      }
-    },
-    browserDownload(content, fileName, mimeType) {
-      var a = document.createElement("a");
-      mimeType = mimeType || "application/octet-stream";
-      var self = this;
-      let successDownload = function() {
-        // Loading.hide();
-        self.$swal("Exported!", "The file has been exported.", "success");
-      };
-
-      if (navigator.msSaveBlob) {
-        // IE10
-        navigator.msSaveBlob(
-          new Blob([content], {
-            type: mimeType
-          }),
-          fileName
-        );
-        successDownload();
-      } else if (URL && "download" in a) {
-        // html5 A[download]
-        a.href = URL.createObjectURL(
-          new Blob([content], {
-            type: mimeType
-          })
-        );
-        a.setAttribute("download", fileName);
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        successDownload();
-      } else {
-        let fileContent = "data:" + mimeType + "," + content;
-        let encodedUri = encodeURI(fileContent);
-        let link = document.createElement("a");
-        link.id = "_downloadedFile";
-        if (link.download !== undefined) {
-          link.href = encodedUri;
-          link.download = fileName;
-          link.target = "_blank";
-          document.body.appendChild(link);
-          link.click();
-        } else {
-          window.open(encodedUri);
-        }
-        successDownload();
-      }
-    },
-    cordovaDownload(content, fileName, mimeType) {
-      let self = this;
-      var logOb;
-      window.resolveLocalFileSystemURL(
-        cordova.file.externalDataDirectory,
-        function(dir) {
-          dir.getFile(
-            fileName,
-            {
-              create: true
-            },
-            function(file) {
-              logOb = file;
-              writeLog(content);
-            }
-          );
-        }
-      );
-
-      function writeLog(output) {
-        if (!logOb) return;
-        logOb.createWriter(function(fileWriter) {
-          fileWriter.seek(fileWriter.length);
-          var blob = new Blob([output], {
-            type: mimeType
-          });
-          fileWriter.write(blob);
-          // Loading.hide();
-          self.$swal(
-            "Exported!",
-            "The file has been exported to: " +
-              cordova.file.externalDataDirectory +
-              fileName,
-            "success"
-          );
-        });
-      }
-    },
-    getIconColor: function(row) {
-      if (row.draft && row.draft === true) {
-        return "grey";
-      } else if (row.status === "offline") {
-        return "offline";
-      } else {
-        return "green";
-      }
-    },
     scrollToEnd: function(ID) {
       var container = this.$el.querySelector("#container");
       container.scrollTop = container.scrollHeight;
-    },
-    createSubmission() {
-      this.$router.push({
-        name: "formio_form_submission",
-        params: {
-          id: this.$route.params.id,
-          idForm: this.$route.params.idForm
-        },
-        query: {
-          formPath: this.$route.query.formPath
-        }
-      });
-    },
-    handleSelectionChange(number, rows) {
-      this.selectedRows = rows.map(r => {
-        return r.data;
-      });
     },
     async importSubmission() {
       const file = await this.$swal({
@@ -629,12 +361,6 @@ export default {
       if (done) {
         done();
       }
-    },
-    async pullSubmissions() {
-      this.$store.dispatch("getSubmissions", {
-        currentForm: this.currentForm,
-        vm: this
-      });
     },
     displayError(error) {
       let errorString =

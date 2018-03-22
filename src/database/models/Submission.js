@@ -8,6 +8,7 @@ import * as Database from 'database/Database';
 import uuidv4 from 'uuid/v4'
 import _cloneDeep from 'lodash/cloneDeep'
 import moment from 'moment'
+import RemoteSubmission from 'database/repositories/Submission/RemoteSubmission'
 
 const Submission = class {
   /**
@@ -23,7 +24,7 @@ const Submission = class {
    */
   static remote() {
     Submission.getFrom = 'remote'
-    return Submission
+    return RemoteSubmission
   }
   /**
    * [local description]
