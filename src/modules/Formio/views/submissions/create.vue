@@ -66,6 +66,8 @@
             <q-tooltip>{{$t('Show pages')}}</q-tooltip>
         </q-fab-action>
 
+        <q-fab-action color="secondary" @click="exportPDF()" icon="print"></q-fab-action>
+
       </q-fab>
        <q-fab color="red" icon="add" direction="down" v-if="this.$route.params.FAST_EDIT_MODE">
 
@@ -151,6 +153,7 @@ import Auth from "modules/Auth/api/Auth";
 import Submission from "database/models/Submission";
 import formio from "modules/Formio/components/formio/formio";
 import OFFLINE_PLUGIN from "modules/Formio/components/formio/src/offlinePlugin";
+import PdfExport from 'modules/Wrappers/PdfExport';
 export default {
   components: {
     formio,
@@ -439,197 +442,7 @@ export default {
       this.showPages = !this.showPages;
     },
     exportPDF() {
-      // var lfrom represents the current form
-      // var indexr = 1;
-      var linesOfPage = 0;
-      var indexPage = 1;
-      var limitLinesOfPage = 33;
-      var lForm = this.currentForm.data;
-      var currentPanel = "";
-      // var element represents the htmo page thats became pdf document
-      // we use styles directly on dom elements
-      var element = "";
-      // the construction of the page
-      element += "<html>";
-      element += "<head>";
-      element += "<title>Survey</title>";
-      element += "<head>";
-      element += "<body>";
-      element += "<div id='printableSurvey'>";
-      element += "<div  style='text-align: center;'>";
-      element +=
-        "<br><br><img src='statics/faoHeader.jpg' width='275' height='112'></div>";
-      element += "<br><br><br><br><br><br>";
-      element +=
-        "<div style='text-align: center; font-family: Helvetica; font-size: 40px;color: #b3b3ff;text-shadow: 1px 1px 1px #000000;'>GIPB Planning and Assessment Tool</div>";
-      element +=
-        "<div style='text-align: center; font-family: Helvetica; font-size: 40px;color: #b3b3ff;text-shadow: 1px 1px 1px #000000;'>(PAT) for Plant Breeding Capacity</div>";
-      element +=
-        "<div style='text-align: center; font-family: Helvetica; font-size: 40px;color: #b3b3ff;text-shadow: 1px 1px 1px #000000;'>OUTPUT</div>";
-      element += "<br><br><br><br><br><br>";
-      element +=
-        "<table width='100%' style='font-family:verdana;font-size: 16px;'><tr><td width='40%'>Assessment undertaken by</td><td>&nbsp;Country:</td></tr>";
-      element += "<tr><td width='40%'></td><td>&nbsp;Organization:</td></tr>";
-      element +=
-        "<tr><td width='40%'></td><td>&nbsp;Information team:</td></tr>";
-      element += "<tr><td width='40%'>&nbsp;</td><td></td></tr>";
-      element += "<tr><td width='40%'></td><td>&nbsp;</td></tr>";
-      element += "<tr><td width='40%'>&nbsp;</td><td></td></tr>";
-      element += "<tr><td width='40%'>Date:</td><td></td></tr>";
-      element += "</table>";
-      element += "<br><br><br><br><br><br><br><br>";
-      element +=
-        "<div style='text-align: right; font-family: Helvetica; font-size: 19px;color: #b3b3ff;text-shadow: 1px 1px 1px #000000;'>A framework to support Building Plant Breeding Capacity for</div>";
-      element +=
-        "<div style='text-align: right; font-family: Helvetica; font-size: 19px;color: #b3b3ff;text-shadow: 1px 1px 1px #000000;'>Sustainable Crop Improvement</div>";
-      element += "<table width='100%'>";
-      // we using tables because is a requisite from client
-      FormioUtils.eachComponent(
-        lForm.components,
-        component => {
-          if (
-            component.title !== undefined &&
-            currentPanel.toLowerCase() !== component.title.toLowerCase()
-          ) {
-            currentPanel = component.title;
-            element += "<tr>";
-            element += "<td>";
-            element += "&nbsp;";
-            element += "</td></tr>";
-            element += "<tr>";
-            element +=
-              "<td style='font-weight: bold;font-family: Verdana;font-size: 18px;color: #b3b3ff;' colspan='3'>";
-            element += currentPanel;
-            element += "</td></tr>";
-            element += "<tr>";
-            element += "<td colspan='3' valign='top'>";
-            element += "<hr>";
-            element += "</td></tr>";
-            linesOfPage += 2;
-          }
-          // the loop eachComponent just render the fields filled and not render buttons
-          if (
-            FormioUtils.getValue(this.currentSubmission, component.key) &&
-            component.type !== "button"
-          ) {
-            if (linesOfPage < limitLinesOfPage) {
-              // total of lines of one page based on letter size
-              if (component.type === "datetime") {
-                element += "<tr>";
-                element +=
-                  "<td style='font-family: Verdana;font-size: 12px' colspan='3'>";
-                element += component.label;
-                element += "<ul><li>";
-                element += FormioUtils.getValue(
-                  this.currentSubmission,
-                  component.key
-                ).substring(0, 10);
-                element += "</li></ul></td></tr>";
-                linesOfPage += 2;
-              } else if (component.type === "select") {
-                var valueObject = FormioUtils.getValue(
-                  this.currentSubmission,
-                  component.key
-                ).toString();
-                var list = [];
-                if (valueObject.indexOf(",") > 0) {
-                  list = valueObject.split(",");
-                } else {
-                  list = [valueObject];
-                }
-                element += "<tr>";
-                element +=
-                  "<td style='font-family: Verdana;font-size: 12px' colspan='3'>";
-                element += component.label;
-                element += "<ul>";
-                linesOfPage += 1;
-                for (var i = 0; i < list.length; i++) {
-                  element += "<li><i>&nbsp;-&nbsp;";
-                  element += list[i];
-                  element += "</i></li>";
-                  linesOfPage += 1;
-                }
-                element += "</ul>";
-                element += "</td></tr>";
-              } else {
-                element += "<tr>";
-                element +=
-                  "<td style='font-family: Verdana;font-size: 12px' colspan='3'>";
-                element += component.label;
-                element += "<ul><li>";
-                element += FormioUtils.getValue(
-                  this.currentSubmission,
-                  component.key
-                );
-                element += "</li></ul></td></tr>";
-                linesOfPage += 2;
-              }
-              // indexr++;
-            } else {
-              // the else block prints the footer of page with page number and starts a new page
-              element += " <tr><td colspan='2' > &nbsp; </td></tr>";
-              element += " <tr><td colspan='2' > &nbsp; </td></tr>";
-              element += " <tr><td colspan='2' > &nbsp; </td></tr>";
-              element += " <tr><td colspan='2' > <hr></td></tr>";
-              element +=
-                " <tr><td>PAT Survey</td><td align='right'> Page " +
-                indexPage +
-                "</td></tr>";
-              element += " <tr><td colspan='2' > &nbsp; </td></tr>";
-              element += " <tr><td colspan='2' > &nbsp; </td></tr>";
-              element += " <tr><td colspan='2' > &nbsp; </td></tr>";
-              element += " <tr><td colspan='2' > &nbsp; </td></tr>";
-              element += "<tr>";
-              element += "<td style='font-family: Verdana;font-size: 12px'>";
-              element += component.label;
-              element += "<ul><li>";
-              element += FormioUtils.getValue(
-                this.currentSubmission,
-                component.key
-              );
-              element += "</li></ul></td></tr>";
-              // indexr = 1;
-              linesOfPage = 1;
-              indexPage++;
-            }
-          }
-        },
-        true
-      ); //  this boolean parameter defines includeall components
-      // sadfaf
-      if (linesOfPage < limitLinesOfPage) {
-        var diferenceLines = limitLinesOfPage - linesOfPage;
-        for (var x = 0; x < diferenceLines; x++) {
-          element += " <tr><td colspan='2' > &nbsp; </td></tr>";
-        }
-      }
-      element += " <tr><td colspan='2' > &nbsp; </td></tr>";
-      element += " <tr><td colspan='2' > <hr></td></tr>";
-      element +=
-        " <tr><td>PAT Survey</td><td align='right'> Page " +
-        indexPage +
-        "</td></tr>";
-      element += "</table>";
-      element += "</div>";
-      element += "</body>";
-      element += "</html>";
-      // use of the html2pdf component for generate the pdf
-      html2pdf(element, {
-        margin: 1,
-        filename: "export.pdf",
-        html2canvas: {
-          dpi: 192,
-          letterRendering: true
-        },
-        jsPDF: {
-          orientation: "portrait",
-          unit: "cm",
-          format: "letter"
-        }
-      });
-      // console.log(element);
-      // var element became undefined for the case when de user generate another report  on the same session
-      element = undefined;
+      PdfExport.export(this.currentForm, this.currentSubmission, "a4", "p"); // passing currentForm, currentSubmission, pagesize and pageOrientation
     },
     reloadPage() {
       this.$swal({
