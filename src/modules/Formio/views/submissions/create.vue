@@ -17,11 +17,11 @@
 
     <q-card color="white" v-bind:class="getFormClass" style="">
       <q-card-main>
-
+        <!--
         <q-btn @click="singleNext()" class="pull-right primary" color="primary">Next Page</q-btn>
           <q-btn @click="clickNext()" class="pull-right primary" color="primary">Full review</q-btn>
           <q-btn @click="submitForm()" class="pull-right primary" color="danger">Submit</q-btn>
-
+        -->
         <!--<q-icon name="thumb_up" />-->
         <q-tabs inverted id="contentForm" >
           <!-- Tabs - notice slot="title" -->

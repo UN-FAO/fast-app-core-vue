@@ -3,7 +3,10 @@ import Auth from "modules/Auth/api/Auth";
 import Config from "database/repositories/Configuration/Configuration";
 
 let RemoteSubmission = class {
-  static async find({form, filter, limit, select}) {
+  static async find({ form, filter, limit, select, pagination }) {
+    if (!form || !form.path) {
+      throw new Error('Form not present. You must provide the full Form.io JSON form to execute the query')
+    }
     let formio = await RemoteSubmission.getFormioInstance(form)
     let queryParams = {
       limit: limit
@@ -12,6 +15,11 @@ let RemoteSubmission = class {
     if (filter) {
       let filterQuery = RemoteSubmission.filterToString(filter)
       queryParams = { ...queryParams, ...filterQuery }
+    }
+
+    if (select) {
+      let selectQuery = RemoteSubmission.selectToString(select)
+      queryParams = { ...queryParams, ...selectQuery }
     }
 
     let remoteSubmissions = await formio.loadSubmissions({
@@ -82,6 +90,17 @@ let RemoteSubmission = class {
       }
     });
     return filterQuery
+  }
+
+  static selectToString(select) {
+    if (!select) {
+      return
+    }
+    let selectString = select.reduce((reducer, column) => {
+      reducer = reducer + "," + column;
+      return reducer;
+    }, "_id");
+    return { select: selectString }
   }
 }
 export default RemoteSubmission

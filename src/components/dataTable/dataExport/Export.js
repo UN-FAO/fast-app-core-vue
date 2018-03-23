@@ -2,10 +2,15 @@ import _flattenDeep from "lodash/flattenDeep";
 import FormioUtils from "formiojs/utils";
 import _forEach from "lodash/forEach";
 import Download from './Download'
+import Promise from "bluebird";
 import flatten from "flat";
 import Csv from "./Csv";
-import Promise from "bluebird";
+
 let Export = class {
+  /**
+   *
+   * @param {*} param0
+   */
   static async jsonTo({ output, data, formioForm, vm }) {
     return new Promise(async (resolve, reject) => {
       let formattedData = Export.formatSubmissions({ output, data, formioForm, vm })
@@ -18,7 +23,11 @@ let Export = class {
           }
           break;
         case 'json':
-
+          let name = "backup_" + formattedData.date + ".json";
+          let json = await Download.file({ content: JSON.stringify(formattedData.data), fileName: name, mimeType: "text/json;encoding:utf-8" });
+          if (json) {
+            resolve()
+          }
           break;
         default:
           break;

@@ -26,7 +26,7 @@
      <q-item-separator  />
 
 
-     <pageLinks :pages="PAGES" v-if="!$FAST_CONFIG.IS_SURVEY"></pageLinks>
+      <pageLinks :pages="PAGES" v-if="!$FAST_CONFIG.IS_SURVEY"></pageLinks>
 
       <collectionpagelinks v-if="$FAST_CONFIG.IS_SURVEY"></collectionpagelinks>
 
