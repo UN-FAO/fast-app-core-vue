@@ -28,13 +28,23 @@ let RemoteSubmission = class {
     return remoteSubmissions
   }
 
-  static async getFormioInstance(form) {
+  static async save({ form, submission }) {
+    FormioJS.deregisterPlugin("offline");
+    let formio = await RemoteSubmission.getFormioInstance(form, submission._id)
+    return formio.saveSubmission(submission)
+  }
+
+  static async getFormioInstance(form, submissionID) {
     FormioJS.setToken(Auth.user().x_jwt_token);
-    let formUrl = await Config.getLocal();
-    formUrl = formUrl.APP_URL + "/" + form.path;
-    let formio = new FormioJS(formUrl);
     FormioJS.clearCache();
-    return formio
+    // Get the base URL
+    let formUrl = await Config.getLocal();
+    // Get ID of the Form
+    let formString = form && form.path ? form.path : form
+    formUrl = formUrl.APP_URL + "/" + formString;
+    // Set URL in case of submission context
+    formUrl = submissionID ? formUrl + 'submission/' + submissionID : formUrl
+    return new FormioJS(formUrl);
   }
 
   static filterToString(filter) {

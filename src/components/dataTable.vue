@@ -33,15 +33,12 @@
 </template>
 
 <script>
-import FormioJS from "formiojs";
 import FormioUtils from "formiojs/utils";
-import Auth from "modules/Auth/api/Auth";
 import buttonMenu from "./dataTable/menu";
 import Export from "./dataTable/dataExport/Export";
 import Submission from "database/models/Submission";
 import { QTooltip, QBtn, QDataTable, QChip, QIcon } from "quasar";
 import Import from "database/repositories/Submission/Import";
-import Config from "database/repositories/Configuration/Configuration";
 
 export default {
   components: {
@@ -165,17 +162,14 @@ export default {
     },
     async loadSubmission(_id) {
       this.loading = true;
-      FormioJS.setToken(Auth.user().x_jwt_token);
-      let formUrl = await Config.getLocal();
-      formUrl =
-        formUrl.APP_URL + "/" + this.form.data.path + "/submission/" + _id;
-      let formio = new FormioJS(formUrl);
-      FormioJS.clearCache();
-      let submission = await formio.loadSubmission();
+      let submission = await Submission.remote().find({
+        form: this.form.data,
+        filter: [{element: '_id', query: '=', value: _id}],
+        limit: 1
+      });
       this.loading = false;
       return {
-        content: submission,
-        formio: formio
+        content: submission[0]
       };
     },
     handleReport(data) {

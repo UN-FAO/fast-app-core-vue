@@ -141,6 +141,7 @@ import {
   QInnerLoading,
   QSpinnerAudio
 } from "quasar";
+import to from "await-to-js";
 import uuidv4 from "uuid/v4";
 import _get from "lodash/get";
 import Formio from "formiojs";
@@ -153,7 +154,7 @@ import Auth from "modules/Auth/api/Auth";
 import Submission from "database/models/Submission";
 import formio from "modules/Formio/components/formio/formio";
 import OFFLINE_PLUGIN from "modules/Formio/components/formio/src/offlinePlugin";
-import PdfExport from 'modules/Wrappers/PdfExport';
+import PdfExport from "modules/Wrappers/PdfExport";
 export default {
   components: {
     formio,
@@ -348,21 +349,26 @@ export default {
   },
   methods: {
     ...mapActions(["getResources"]),
-    reviewSubmission(revision) {
+    async reviewSubmission(revision) {
+      let err;
       let submission = this.$route.params.fullSubmision;
-      if (revision === "accept") {
-        submission.data.deleted = false;
-      } else if (revision === "reject") {
-        submission.data.deleted = true;
-      }
-      Formio.deregisterPlugin("offline");
-      this.$route.params.formio.saveSubmission(submission).then(updated => {
-        this.$router.push({
-          name: "alldata",
-          query: {
-            form: this.$route.params.idForm
-          }
-        });
+
+      submission.data.deleted = revision !== "accept";
+
+      [err] = await to(
+        Submission.remote().save({
+          form: this.$route.params.idForm,
+          submission: submission
+        })
+      );
+
+      if (err) throw new Error("Submission was not saved");
+
+      this.$router.push({
+        name: "alldata",
+        query: {
+          form: this.$route.params.idForm
+        }
       });
     },
     saveAsDraft() {

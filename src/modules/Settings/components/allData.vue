@@ -18,8 +18,8 @@
         <datatable
           :data="submissions"
           :form="currentForm"
-          :menuActions="['create', 'export', 'import']"
-          :tableActions="['review', 'edit', 'report', 'delete']"
+          :menuActions="['create', 'export']"
+          :tableActions="['review', 'edit', 'report']"
           v-if="currentForm && currentForm.data.title !== ''"
         />
       </q-card-main>
