@@ -34,6 +34,7 @@
                     {{$t('Version')}}   {{$FAST_CONFIG.FAST_VERSION}}
                     <q-icon name="fa-cog" color="white" @click="adminLogin" style="cursor:pointer;"/>
                   </p>
+                  <a href="fastapp://">Open the App!</a>
                 </div>
 
                      <div class="sponsors" >

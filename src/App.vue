@@ -27,7 +27,7 @@ import connectionAlert from "modules/Connection/components/alert";
 import { mapActions } from "vuex";
 import Sync from "database/repositories/Database/Sync";
 import Connection from "modules/Wrappers/Connection";
-import { QLayout, Toast } from "quasar";
+import { QLayout, Toast, Platform } from "quasar";
 import layoutStore from "layout/layout-store";
 import FastClick from "fastclick";
 
@@ -49,6 +49,22 @@ export default {
         "error"
       );
     };
+
+    if (Platform.is.cordova) {
+      window.plugins.launchmyapp.getLastIntent(
+        function(url) {
+          if (url.indexOf("mycoolapp://" > -1)) {
+            alert("received url: " + url);
+          } else {
+            return alert("ignore intent: " + url);
+          }
+        },
+        function(error) {
+          return alert("no intent received", error);
+        }
+      );
+      return;
+    }
 
     document.addEventListener("FAST:USER:REGISTRATION:ERROR", error => {
       emailValidationMessage(error.detail.data.submission.email);
