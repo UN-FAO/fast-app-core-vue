@@ -19,7 +19,7 @@
           :data="submissions"
           :form="currentForm"
           :menuActions="['create', 'export']"
-          :tableActions="['review', 'edit', 'report']"
+          :tableActions="['review']"
           v-if="currentForm && currentForm.data.title !== ''"
         />
       </q-card-main>

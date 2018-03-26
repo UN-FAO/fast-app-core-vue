@@ -102,6 +102,7 @@ export default {
           let data = [];
           data = this.selectedRows.length === 0 ? [] : this.selectedRows;
           let submissions = await this.getFullSubmissions(data);
+          console.log('submissions', submissions)
           await Export.jsonTo({
             output: type,
             data: submissions,

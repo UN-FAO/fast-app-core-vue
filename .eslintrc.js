@@ -18,7 +18,7 @@ module.exports = {
   ],
   globals: {
     'Connection': true,
-    'universalLinks':true,
+    'universalLinks': true,
     'LocalFileSystem': true,
     'cordova': true,
     'html2pdf': true,
@@ -26,7 +26,7 @@ module.exports = {
     'PROD': true,
     '__THEME': true,
     'sms': true,
-    'logOb':true
+    'logOb': true
   },
   // add your custom rules here
   'rules': {
@@ -51,12 +51,13 @@ module.exports = {
     "no-trailing-spaces": [2, { "skipBlankLines": true }],
     "indent": 0,
     "no-multiple-empty-lines": 0,
-    "brace-style":0,
-    "no-useless-return":0,
-    "no-unexpected-multiline":0,
-    "func-call-spacing":0,
+    "brace-style": 0,
+    "no-useless-return": 0,
+    "no-unexpected-multiline": 0,
+    "func-call-spacing": 0,
     "quotes": 0,
     "semi": 0,
-    "operator-linebreak": 0
+    "operator-linebreak": 0,
+    "no-new-func": 0
   }
 }
