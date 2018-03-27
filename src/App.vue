@@ -53,17 +53,14 @@ export default {
     if (Platform.is.cordova) {
       window.plugins.launchmyapp.getLastIntent(
         function(url) {
-          if (url.indexOf("mycoolapp://" > -1)) {
+          if (url.indexOf("fastapp://" > -1)) {
             alert("received url: " + url);
-          } else {
-            return alert("ignore intent: " + url);
           }
         },
         function(error) {
-          return alert("no intent received", error);
+          return console.log(error)
         }
       );
-      return;
     }
 
     document.addEventListener("FAST:USER:REGISTRATION:ERROR", error => {
