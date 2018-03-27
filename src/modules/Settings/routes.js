@@ -8,7 +8,7 @@ const Reviewer = r =>
   require.ensure([], () => r(require('./components/assignReviewer')), 'offline-module')
 
 const AllData = r =>
-  require.ensure([], () => r(require('./components/AllData')), 'offline-module')
+  require.ensure([], () => r(require('./components/allData')), 'offline-module')
 
 let SettingsRoutes = [{
   path: '/settings',
