@@ -1,6 +1,14 @@
 <template>
-  <div style="color:black">
+  <div style="color:black"  v-if="show">
     <q-data-table :data="data" :config="config" :columns="columns" @selection="handleSelectionChange" @rowclick="handleRowClick">
+        <template :slot="'col-' + col.field" scope='scope' v-for="col in columns">
+            <q-btn flat color="black" @click="editCell(scope)" v-bind:key="col.field" v-if="editTable && col.field.indexOf('val') >= 0" >
+                {{scope.data ? scope.data : '-'}}
+            </q-btn>
+            <span  v-bind:key="col.field" v-else>
+            {{scope.data}}
+            </span>
+          </template>
 
               <template slot='col-actions' scope='scope'>
                  <q-btn v-if="tableActions.includes('review')" color="primary" round small  @click='handleReview(scope)'> <i class="material-icons remove_red_eye" >remove_red_eye</i>
@@ -19,14 +27,14 @@
               </q-btn>
             </template>
 
-<template slot='col-deleted' scope='scope'>
-  <q-chip icon="fa-ban" color="red" v-if="scope.row.deleted && scope.row.deleted === true">
-  </q-chip>
+          <template slot='col-deleted' scope='scope'>
+            <q-chip icon="fa-ban" color="red" v-if="scope.row.deleted && scope.row.deleted === true">
+            </q-chip>
 
-  <q-chip icon="fa-check" color="green" v-else>
-  </q-chip>
-</template>
-     </q-data-table>
+            <q-chip icon="fa-check" color="green" v-else>
+            </q-chip>
+          </template>
+        </q-data-table>
 
      <button-menu render="outside" :actions="menuActions"/>
 </div>
@@ -58,10 +66,19 @@ export default {
       required: true
     },
     tableActions: {
-      required: true
+      required: true,
+      type: Array,
+      default: []
     },
     menuActions: {
-      required: true
+      required: true,
+      type: Array,
+      default: []
+    },
+    editTable: {
+      required: false,
+      type: Boolean,
+      default: false
     }
   },
   mounted() {
@@ -90,6 +107,16 @@ export default {
     menuActions: function(data) {}
   },
   methods: {
+    rerender() {
+      this.show = false;
+      this.$nextTick(() => {
+        this.show = true;
+        console.log("re-render start");
+        this.$nextTick(() => {
+          console.log("re-render end");
+        });
+      });
+    },
     async exportTo(type) {
       this.$swal({
         title: "Exporting...",
@@ -102,7 +129,6 @@ export default {
           let data = [];
           data = this.selectedRows.length === 0 ? [] : this.selectedRows;
           let submissions = await this.getFullSubmissions(data);
-          console.log('submissions', submissions)
           await Export.jsonTo({
             output: type,
             data: submissions,
@@ -165,7 +191,7 @@ export default {
       this.loading = true;
       let submission = await Submission.remote().find({
         form: this.form.data,
-        filter: [{element: '_id', query: '=', value: _id}],
+        filter: [{ element: "_id", query: "=", value: _id }],
         limit: 1
       });
       this.loading = false;
@@ -329,6 +355,24 @@ export default {
           idSubmission: data.row._id
         }
       });
+    },
+    async editCell(data) {
+      console.log("ediiitiiing", data);
+      const value = await this.$swal({
+        // The title must be replced by a compound ID from FORM.io dg property
+        title: data.row.alpha3Code + " " + data.col.label,
+        input: "text",
+        inputPlaceholder: "Enter amount for " + data.col.label,
+        inputValue: data.data,
+        showCancelButton: true
+      });
+
+      if (value) {
+        console.log(data)
+        console.log("this.data", this.data[data.row.__index][data.col.field]);
+        this.data[data.row.__index][data.col.field] = value;
+        // this.rerender()
+      }
     }
   },
   computed: {
@@ -340,65 +384,79 @@ export default {
       return this.$t(title);
     },
     columns() {
-      if (!this.form || this.form.data.title === "") {
-        return [
-          {
-            label: "Longitude",
-            field: "longitude",
-            filter: true,
-            sort: true
-          },
-          {
-            label: "Another",
-            field: "another",
-            filter: true,
-            sort: true
-          }
-        ];
-      }
-      this.visibleColumns = FormioUtils.findComponents(
-        this.form.data.components,
-        {
-          input: true,
-          tableView: true
-        }
-      );
-      this.visibleColumns = this.visibleColumns.slice(0, 7);
       let columns = [];
-      this.visibleColumns = this.visibleColumns.filter(c => {
-        return !!(c.label !== "");
-      });
+      // If there is no Form
+      if (!this.form || this.form.data.title === "") {
+        return [{}];
+      } else if (this.editTable) {
+        // If we have and edit table
+        this.visibleColumns = FormioUtils.findComponents(
+          this.form.data.components,
+          {
+            input: true,
+            tableView: true
+          }
+        );
+        let wantedKeys = Object.keys(this.data[0]);
+
+        this.visibleColumns = this.visibleColumns.filter(o => {
+          return wantedKeys.includes(o.key);
+        });
+
+        console.log("this.visibleColumns", this.visibleColumns);
+      } else {
+        // If we have a normal table
+        this.visibleColumns = FormioUtils.findComponents(
+          this.form.data.components,
+          {
+            input: true,
+            tableView: true
+          }
+        );
+        this.visibleColumns = this.visibleColumns.slice(0, 7);
+        this.visibleColumns = this.visibleColumns.filter(c => {
+          return !!(c.label !== "");
+        });
+      }
+      // Create the column given the component
       this.visibleColumns.forEach((column, index) => {
         // let self = this;
         let visibleColum = {
           label: this.$t(column.label),
           field: column.key,
           filter: true,
-          sort: true
+          sort: true,
+          width: "100px"
         };
         columns.push(visibleColum);
       });
-      columns.push({
-        label: "Actions",
-        field: "actions",
-        filter: false,
-        sort: false
-      });
+
+      if (!this.editTable) {
+        columns.push({
+          label: "Actions",
+          field: "actions",
+          filter: false,
+          sort: false,
+          width: "150px"
+        });
+      }
+
       return columns;
     }
   },
   data() {
     return {
+      show: true,
       config: {
         refresh: false,
         noHeader: false,
         columnPicker: false,
         leftStickyColumns: 0,
-        rightStickyColumns: 1,
+        rightStickyColumns: this.editTable ? 0 : 1,
         rowHeight: "70px",
         responsive: true,
         pagination: {
-          rowsPerPage: 100,
+          rowsPerPage: 10,
           options: [10, 30, 50, 100]
         },
         messages: {

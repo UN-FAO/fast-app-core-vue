@@ -1,8 +1,8 @@
 {
   "name": "fast",
   "version": "0.7.6",
-  "deployAppName": "PAT",
-  "deployAppID": "5a65f5d5d772bf00015a3dc3",
+  "deployAppName": "SWS",
+  "deployAppID": "5aa95c9550daad5e7d88ef30",
   "description": "A data collection application for FORM.io",
   "author": "Ignacio Cabrera <ignacio.cabrera@fao.org>",
   "scripts": {
@@ -23,7 +23,8 @@
     "set:drip": "sh deploys/setEnv.sh DRIP DRIP 5a8ea794201d180001742752",
     "set:gift": "sh deploys/setEnv.sh GIFT GIFT 5a93ebd213202f0001d68698",
     "set:medaid": "sh deploys/setEnv.sh MEDAID MEDAID 5a97d0ae8590243a117921ea",
-    "set:pat": "sh deploys/setEnv.sh PAT PAT 5a65f5d5d772bf00015a3dc3",
+    "set:pat": "sh deploys/setEnv.sh PAT PAT 5ab89c910180ad282a6d635d",
+    "set:sws": "sh deploys/setEnv.sh SWS SWS 5aa95c9550daad5e7d88ef30",
     "set:ssfk": "sh deploys/setEnv.sh SSFK SSFK 5a9674e1d27542149fd0cb5c",
     "set:dev": "sh deploys/setEnv.sh DEV DEV 59b136fb2f12080007487131",
     "get:roles": "sh deploys/getAppRoles.sh"

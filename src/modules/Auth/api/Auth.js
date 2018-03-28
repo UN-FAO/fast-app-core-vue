@@ -38,6 +38,7 @@ const Auth = class {
   static hasRole(roleName) {
     let user = JSON.parse(LocalStorage.get.item('authUser'))
     user = user === null ? false : user
+    console.log('user', user)
     let result = _find(user.rolesNames, {
       title: roleName
     });

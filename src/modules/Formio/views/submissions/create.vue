@@ -1,118 +1,120 @@
 <template>
-<div class="container-fluid">
-  <div class="row FormioContainer">
-<div class="formPageContainer" style="margin-top:30px; overflow-x:scroll;margin-bottom: 100px;">
+  <div class="container-fluid">
+    <div class="row FormioContainer">
+      <div class="formPageContainer" style="margin-top:30px; overflow-x:scroll;margin-bottom: 100px;">
 
 
-    <q-card style="background-color: white; max-height: fit-content;" class="formNav" v-if="_isWizard && showPages && !$FAST_CONFIG.TAB_MENU">
-      <q-card-main>
-        <q-list separator style="border: none !important">
+        <q-card style="background-color: white; max-height: fit-content;" class="formNav" v-if="_isWizard && showPages && !$FAST_CONFIG.TAB_MENU">
+          <q-card-main>
+            <q-list separator style="border: none !important">
 
-          <q-item class="formioPagination" multiline style="text-align: left; min-height: 60px; border-radius: 5px;" link v-for="(page, index) in _pages" :key="page.title" @click="goToPage(index)" :ref="'page-'+ index" v-bind:class="currentPage === index ? 'activePage' : ''">
-            <q-item-main style=" margin-top: auto;  margin-bottom: auto;" :label="$t(getLabelForPage(page))" label-lines="3" />
-          </q-item>
-        </q-list>
-      </q-card-main>
-    </q-card>
+              <q-item class="formioPagination" multiline style="text-align: left; min-height: 60px; border-radius: 5px;" link v-for="(page, index) in _pages" :key="page.title" @click="goToPage(index)" :ref="'page-'+ index" v-bind:class="currentPage === index ? 'activePage' : ''">
+                <q-item-main style=" margin-top: auto;  margin-bottom: auto;" :label="$t(getLabelForPage(page))" label-lines="3" />
+              </q-item>
+            </q-list>
+          </q-card-main>
+        </q-card>
 
-    <q-card color="white" v-bind:class="getFormClass" style="">
-      <q-card-main>
+        <q-card color="white" v-bind:class="getFormClass" style="">
+          <q-card-main>
+            <!--
+              <q-btn @click="singleNext()" class="pull-right primary" color="primary">Next Page</q-btn>
+                <q-btn @click="clickNext()" class="pull-right primary" color="primary">Full review</q-btn>
+                <q-btn @click="submitForm()" class="pull-right primary" color="danger">Submit</q-btn>
+              -->
+            <!--<q-icon name="thumb_up" />-->
+            <q-tabs inverted id="contentForm" v-model="selectedTab">
+              <!-- Tabs - notice slot="title" -->
+
+              <q-tab v-bind:class="!$FAST_CONFIG.PARALLEL_SURVEYS ? 'hidden' : ''" default slot="title" name="tab-1" icon="person" :label="participantName" :color="saved ? 'primary' : 'red'" />
+              <!-- Targets -->
+              <q-tab slot="title" v-if="participant.submissionId !== $route.params.idSubmission" v-for="participant in participants" :key="participant.submissionId" icon="person" :label="participant.participantName" :color="saved ? 'primary' : 'red'" @click="goToSurvey(participant.submissionId)"
+              />
+
+              <q-tab-pane name="tab-1" ref="tab1">
+
+                <formio :formURL="$FAST_CONFIG.APP_URL + '/' + $route.params.idForm" :submission="submission" :formioToken="formioToken" :localDraft="$FAST_CONFIG.LOCAL_DRAFT_ENABLED" :readOnly="readOnly" :autoCreate="autoCreate" :editMode="this.$route.params.FAST_EDIT_MODE"
+                  v-bind:style="{ display: !customRender ? 'initial' : 'none' }" />
+
+                <div v-bind:style="{ display: customRender ? 'initial' : 'none', color: 'black' }">
+                  Hello here"! {{customRenderArray.length}}
+
+                  <datatable
+                    :data="customRenderArray"
+                    :form="currentForm"
+                    :editTable="true"
+                    v-if="currentForm && currentForm.data.title !== ''"
+                  />
+                </div>
+              </q-tab-pane>
+
+            </q-tabs>
+
+          </q-card-main>
+        </q-card>
+
+        <q-fixed-position corner="top-right" :offset="[18, 18]">
+          <q-fab color="red" icon="add" direction="down" v-if="!this.$route.params.FAST_EDIT_MODE">
+
+            <q-fab-action color="primary" @click="saveAsDraft()" icon="fa-floppy-o">
+              <q-tooltip>{{$t('Save as draft')}}</q-tooltip>
+            </q-fab-action>
+
+            <q-fab-action v-bind:class="!$FAST_CONFIG.PARALLEL_SURVEYS ? 'hidden' : ''" color="amber" @click="addSurvey()" icon="person_add">
+              <q-tooltip>{{$t('Add participant')}}</q-tooltip>
+            </q-fab-action>
+
+            <q-fab-action v-bind:class="!$FAST_CONFIG.PARALLEL_SURVEYS ? 'hidden' : ''" color="purple-6" @click="groupConfig()" icon="fa-users">
+              <q-tooltip>{{$t("Change Group")}}</q-tooltip>
+
+            </q-fab-action>
+
+
+            <q-fab-action color="red" @click="openRightDrawer()" icon="assessment" v-if="$FAST_CONFIG.HAS_SCORES">
+              <q-tooltip>{{$t('Show scores')}}</q-tooltip>
+            </q-fab-action>
+
+            <q-fab-action color="secondary" @click="togglePages" icon="menu" v-if="_isWizard && !$FAST_CONFIG.TAB_MENU">
+              <q-tooltip>{{$t('Show pages')}}</q-tooltip>
+            </q-fab-action>
+
+            <q-fab-action color="secondary" @click="exportPDF()" icon="print"></q-fab-action>
+
+          </q-fab>
+          <q-fab color="red" icon="add" direction="down" v-if="this.$route.params.FAST_EDIT_MODE">
+
+            <q-fab-action color="green" @click="reviewSubmission('accept')" icon="fa-check">
+              <q-tooltip>{{$t('Accept')}}</q-tooltip>
+            </q-fab-action>
+
+            <q-fab-action color="red" @click="reviewSubmission('reject')" icon="fa-ban">
+              <q-tooltip>{{$t('Delete')}}</q-tooltip>
+            </q-fab-action>
+          </q-fab>
+        </q-fixed-position>
+
         <!--
-        <q-btn @click="singleNext()" class="pull-right primary" color="primary">Next Page</q-btn>
-          <q-btn @click="clickNext()" class="pull-right primary" color="primary">Full review</q-btn>
-          <q-btn @click="submitForm()" class="pull-right primary" color="danger">Submit</q-btn>
-        -->
-        <!--<q-icon name="thumb_up" />-->
-        <q-tabs inverted id="contentForm" >
-          <!-- Tabs - notice slot="title" -->
+              <q-fixed-position v-if="displayDown" style="margin: 18px;position: sticky;z-index: 100;width: 100%;min-height: 63px;" corner="bottom-right" :offset="[18, 18]">
+              <q-btn round color="primary" @click="nextQuestion" class="pull-right">
+              <q-icon name="fa-arrow-circle-down" />
+              </q-btn>
+              </q-fixed-position>
 
-          <q-tab v-bind:class="!$FAST_CONFIG.PARALLEL_SURVEYS ? 'hidden' : ''" default slot="title" name="tab-1" icon="person" :label="participantName" :color="saved ? 'primary' : 'red'" />
-          <!-- Targets -->
-          <q-tab slot="title" v-if="participant.submissionId !== $route.params.idSubmission" v-for="participant in participants" :key="participant.submissionId" icon="person" :label="participant.participantName" :color="saved ? 'primary' : 'red'" @click="goToSurvey(participant.submissionId)"
-          />
-
-          <q-tab-pane name="tab-1" ref="tab1">
-
-            <formio :formURL="$FAST_CONFIG.APP_URL + '/' + $route.params.idForm" :submission="submission" :formioToken="formioToken" :localDraft="$FAST_CONFIG.LOCAL_DRAFT_ENABLED" :readOnly="readOnly" :autoCreate="autoCreate" :editMode="this.$route.params.FAST_EDIT_MODE" />
-          </q-tab-pane>
-
-        </q-tabs>
-
-      </q-card-main>
-    </q-card>
-
-    <q-fixed-position corner="top-right" :offset="[18, 18]">
-      <q-fab color="red" icon="add" direction="down" v-if="!this.$route.params.FAST_EDIT_MODE">
-
-        <q-fab-action color="primary" @click="saveAsDraft()" icon="fa-floppy-o">
-            <q-tooltip>{{$t('Save as draft')}}</q-tooltip>
-        </q-fab-action>
-
-        <q-fab-action v-bind:class="!$FAST_CONFIG.PARALLEL_SURVEYS ? 'hidden' : ''" color="amber" @click="addSurvey()" icon="person_add">
-            <q-tooltip>{{$t('Add participant')}}</q-tooltip>
-        </q-fab-action>
-
-        <q-fab-action v-bind:class="!$FAST_CONFIG.PARALLEL_SURVEYS ? 'hidden' : ''" color="purple-6" @click="groupConfig()" icon="fa-users">
-            <q-tooltip>{{$t("Change Group")}}</q-tooltip>
-
-        </q-fab-action>
-
-
-         <q-fab-action color="red" @click="openRightDrawer()" icon="assessment" v-if="$FAST_CONFIG.HAS_SCORES">
-            <q-tooltip>{{$t('Show scores')}}</q-tooltip>
-         </q-fab-action>
-
-        <q-fab-action color="secondary" @click="togglePages" icon="menu" v-if="_isWizard && !$FAST_CONFIG.TAB_MENU">
-            <q-tooltip>{{$t('Show pages')}}</q-tooltip>
-        </q-fab-action>
-
-        <q-fab-action color="secondary" @click="exportPDF()" icon="print"></q-fab-action>
-
-      </q-fab>
-       <q-fab color="red" icon="add" direction="down" v-if="this.$route.params.FAST_EDIT_MODE">
-
-        <q-fab-action color="green" @click="reviewSubmission('accept')" icon="fa-check">
-            <q-tooltip>{{$t('Accept')}}</q-tooltip>
-        </q-fab-action>
-
-        <q-fab-action color="red" @click="reviewSubmission('reject')" icon="fa-ban">
-            <q-tooltip>{{$t('Delete')}}</q-tooltip>
-        </q-fab-action>
-      </q-fab>
-    </q-fixed-position>
-
-    <!--
-        <q-fixed-position v-if="displayDown" style="margin: 18px;position: sticky;z-index: 100;width: 100%;min-height: 63px;" corner="bottom-right" :offset="[18, 18]">
-        <q-btn round color="primary" @click="nextQuestion" class="pull-right">
-        <q-icon name="fa-arrow-circle-down" />
-        </q-btn>
-        </q-fixed-position>
-
-        <q-fixed-position v-if="displayUp" style="margin: 18px;position: sticky;z-index: 99;width: 100%;min-height: 63px;    padding-bottom: 70px;" corner="bottom-right" :offset="[18, 18]">
-        <q-btn round color="primary" @click="prevQuestion" class="pull-right">
-        <q-icon name="fa-arrow-circle-up" />
-        </q-btn>
-        </q-fixed-position>
-    -->
-</div>
+              <q-fixed-position v-if="displayUp" style="margin: 18px;position: sticky;z-index: 99;width: 100%;min-height: 63px;    padding-bottom: 70px;" corner="bottom-right" :offset="[18, 18]">
+              <q-btn round color="primary" @click="prevQuestion" class="pull-right">
+              <q-icon name="fa-arrow-circle-up" />
+              </q-btn>
+              </q-fixed-position>
+          -->
+      </div>
+    </div>
+    <q-tabs slot="footer" v-model="tab" v-if="$FAST_CONFIG.TAB_MENU" class="floatingPagination">
+      <q-tab icon="fa-file" slot="title" v-for="(page, index) in _pages" :key="page.title" @click="goToPage(index)" :ref="'page-'+ index + 1" :name="index + 1" v-bind:class="currentPage === index ? 'activePage' : ''" :label="$t(getLabelForPage(page))">
+      </q-tab>
+    </q-tabs>
   </div>
-  <q-tabs slot="footer" v-model="tab" v-if="$FAST_CONFIG.TAB_MENU" class="floatingPagination">
-          <q-tab
-           icon="fa-file"
-            slot="title"
-            v-for="(page, index) in _pages"
-            :key="page.title"
-            @click="goToPage(index)"
-            :ref="'page-'+ index + 1"
-            :name="index + 1"
-            v-bind:class="currentPage === index ? 'activePage' : ''"
-            :label="$t(getLabelForPage(page))"
-            >
-          </q-tab>
-      </q-tabs>
-  </div>
-
 </template>
+
 <script>
 import { mapActions } from "vuex";
 import {
@@ -155,8 +157,10 @@ import Submission from "database/models/Submission";
 import formio from "modules/Formio/components/formio/formio";
 import OFFLINE_PLUGIN from "modules/Formio/components/formio/src/offlinePlugin";
 import PdfExport from "modules/Wrappers/PdfExport";
+import datatable from "components/dataTable";
 export default {
   components: {
+    datatable,
     formio,
     QCard,
     QCardTitle,
@@ -201,9 +205,6 @@ export default {
       this.currentQuestion = -1;
       window.scrollTo(0, 0);
     });
-    this.currentForm = await Form.local().findOne({
-      "data.path": this.$route.params.idForm
-    });
 
     this.$eventHub.on("formio.render", data => {
       this.isWizard = !!data.formio.wizard;
@@ -239,16 +240,16 @@ export default {
     });
     this.$eventHub.on("VALIDATION_ERRORS", data => {
       /*
-            this.errors = data
-            let submitButton = document.querySelector('.btn-wizard-nav-submit')
-            if (submitButton && this.errors.count > 0) {
-              submitButton.disabled = true
-            } else {
-              if (submitButton) {
-                submitButton.disabled = false
+              this.errors = data
+              let submitButton = document.querySelector('.btn-wizard-nav-submit')
+              if (submitButton && this.errors.count > 0) {
+                submitButton.disabled = true
+              } else {
+                if (submitButton) {
+                  submitButton.disabled = false
+                }
               }
-            }
-            */
+              */
     });
   },
   beforeDestroy() {
@@ -260,7 +261,9 @@ export default {
     submission: {
       get() {
         if (this.$route.params.fullSubmision) {
-          return { data: this.$route.params.fullSubmision };
+          return {
+            data: this.$route.params.fullSubmision
+          };
         }
         if (this.$route.params.idSubmission) {
           return Submission.local().get(this.$route.params.idSubmission);
@@ -281,6 +284,23 @@ export default {
       },
       transform(result) {
         return result;
+      }
+    }
+  },
+  asyncComputed: {
+    currentForm: {
+      get() {
+        if (this.$route.params.idForm) {
+          return Form.local().findOne({
+            "data.path": this.$route.params.idForm
+          });
+        } else {
+          return {
+            data: {
+              title: ""
+            }
+          };
+        }
       }
     }
   },
@@ -344,7 +364,9 @@ export default {
       parallelSub: [],
       autoCreate: !this.$route.params.idSubmission,
       readOnly: false,
-      tab: 1
+      tab: 1,
+      customRender: false,
+      customRenderArray: []
     };
   },
   methods: {
@@ -404,6 +426,25 @@ export default {
       this.scorePanels = scorePanels;
     },
     goToPage(index) {
+      if (
+        this._pages[index] &&
+        this._pages[index].properties &&
+        this._pages[index].properties["custom-render"]
+      ) {
+        let dataGridName = this._pages[index].properties["custom-render"];
+        console.log("this.submission", this.submission);
+        this.customRenderArray = this.submission.data.data[dataGridName];
+        this.customRenderArray = this.customRenderArray
+          ? this.customRenderArray
+          : [];
+        this.customRender = true;
+        this.currentPage = index;
+        this.tab = index + 1;
+        this.currentQuestion = -1;
+        window.scrollTo(0, 0);
+        return;
+      }
+      this.customRender = false;
       try {
         let pageNumber = index + 1;
         let page = document.querySelectorAll(
@@ -774,14 +815,6 @@ export default {
         components: errors,
         errorsByPage: groupedErrors
       });
-    },
-    customSubmission() {
-      let submission = require("./sub.json");
-      let customSubmission = this.submission;
-
-      customSubmission.data.data = submission[0];
-      console.log(customSubmission, "customSubmission");
-      return customSubmission;
     }
   }
 };

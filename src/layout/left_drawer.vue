@@ -218,6 +218,7 @@ export default {
       Auth.logOut();
     },
     isAdmin() {
+      console.log(Auth.hasRole("Administrator"))
       return Auth.hasRole("Administrator");
     },
     isReviewer() {
