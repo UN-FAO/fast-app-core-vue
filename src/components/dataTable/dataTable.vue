@@ -1,14 +1,31 @@
 <template>
   <div style="color:black"  v-if="show">
     <q-data-table :data="data" :config="config" :columns="columns" @selection="handleSelectionChange" @rowclick="handleRowClick">
-        <template :slot="'col-' + col.field" scope='scope' v-for="col in columns">
-            <q-btn flat color="black" @click="editCell(scope)" v-bind:key="col.field" v-if="editTable && col.field.indexOf('val') >= 0" >
-                {{scope.data ? scope.data : '-'}}
-            </q-btn>
-            <span  v-bind:key="col.field" v-else>
-            {{scope.data}}
-            </span>
-          </template>
+              <template :slot="'col-' + col.field" scope='scope' v-for="col in columns">
+                  <q-btn flat color="black" @click="editCell(scope)" v-bind:key="col.field" v-if="fastMode === 'editGrid' && col.field.indexOf('val') >= 0" >
+                      {{scope.data ? scope.data : '-'}}
+                  </q-btn>
+                  <span  v-bind:key="col.field" v-else>
+                  {{scope.data}}
+                  </span>
+                </template>
+
+                <template slot="col-status" scope="scope">
+                <div v-if="scope.row.status === 'offline' && scope.row.draft">
+                  <i class="material-icons tag--grey">description</i>
+                  <q-tooltip>{{$t('Draft')}}</q-tooltip>
+                </div>
+                <div v-else-if="scope.row.status === 'offline'">
+                  <i class="material-icons tag--offline">description</i>
+                  <q-tooltip>{{$t('Offline submission')}}</q-tooltip>
+                </div>
+                <div v-else>
+                  <i class="material-icons tag--green">check_circle</i>
+                  <q-tooltip>{{$t('Online submission')}}</q-tooltip>
+                </div>
+                 <i class="material-icons" style="color: red;font-size: x-large; cursor: pointer;" v-if="scope.row.syncError && scope.row.syncError !=='Unauthorized' " @click="displayError(scope.row.syncError)">block</i>
+                  <i class="material-icons" style="color: red;font-size: x-large; cursor: pointer;" v-if="scope.row.syncError && scope.row.syncError ==='Unauthorized' " @click="displayError(scope.row.syncError)">block</i>
+            </template>
 
               <template slot='col-actions' scope='scope'>
                  <q-btn v-if="tableActions.includes('review')" color="primary" round small  @click='handleReview(scope)'> <i class="material-icons remove_red_eye" >remove_red_eye</i>
@@ -42,11 +59,14 @@
 
 <script>
 import FormioUtils from "formiojs/utils";
-import buttonMenu from "./dataTable/menu";
-import Export from "./dataTable/dataExport/Export";
+import buttonMenu from "./menu";
+import Export from "./dataExport/Export";
 import Submission from "database/models/Submission";
 import { QTooltip, QBtn, QDataTable, QChip, QIcon } from "quasar";
 import Import from "database/repositories/Submission/Import";
+import Columns from "./tableFormatter/Columns";
+import _get from "lodash/get"
+import Promise from "bluebird"
 
 export default {
   components: {
@@ -75,7 +95,7 @@ export default {
       type: Array,
       default: []
     },
-    editTable: {
+    fastMode: {
       required: false,
       type: Boolean,
       default: false
@@ -214,14 +234,14 @@ export default {
       let rows = this.selectedRows;
       let self = this;
       if (rows.length === 0) {
-        self.$swal({
+        this.$swal({
           title: this.$t("No row selected"),
           text: this.$t("You must select at least one row to delete"),
           type: "error"
         });
         return;
       }
-      self
+      this
         .$swal({
           title: this.$t("Are you sure?"),
           text: this.$t("You won't be able to revert this!"),
@@ -235,11 +255,11 @@ export default {
         .then(async () => {
           Promise.each(rows, async submission => {
             let online = await Submission.local().findOne({
-              "data._id": submission.id_submision
+              "data._id": submission._id
             });
 
             let offline = await Submission.local().findOne({
-              _id: submission.id_submision
+              _id: submission._id
             });
 
             let deleteSubmission = offline;
@@ -248,7 +268,7 @@ export default {
             }
             await Submission.local().remove(deleteSubmission);
           }).then(async () => {
-            await this.updateLocalSubmissions();
+            this.$emit('refresh')
             self.$swal(
               this.$t("Deleted!"),
               this.$t("Your submission has been deleted."),
@@ -339,15 +359,7 @@ export default {
       });
     },
     goToEditView(data) {
-      let formId = this.form.data.path;
-      if (
-        this.form.data &&
-        this.form.data.properties &&
-        this.form.data.properties["edit-view"]
-      ) {
-        formId = this.form.data.properties["edit-view"];
-      }
-
+      let formId = _get(this.form, 'data.properties["edit-view"]') || this.form.data.path;
       this.$router.push({
         name: "formio_submission_update",
         params: {
@@ -357,10 +369,9 @@ export default {
       });
     },
     async editCell(data) {
-      console.log("ediiitiiing", data);
       const value = await this.$swal({
         // The title must be replced by a compound ID from FORM.io dg property
-        title: data.row.alpha3Code + " " + data.col.label,
+        title: data.col.label,
         input: "text",
         inputPlaceholder: "Enter amount for " + data.col.label,
         inputValue: data.data,
@@ -368,80 +379,26 @@ export default {
       });
 
       if (value) {
-        console.log(data)
-        console.log("this.data", this.data[data.row.__index][data.col.field]);
         this.data[data.row.__index][data.col.field] = value;
         // this.rerender()
+        let autoSave = new CustomEvent("autoSaveDraft", {
+          detail: {
+            data: {},
+            text: "Autosave Requested"
+          }
+        });
+        document.dispatchEvent(autoSave);
       }
     }
   },
   computed: {
-    formTitle() {
-      let title = "";
-      if (this.form) {
-        title = this.form.data ? this.form.data.title : "";
-      }
-      return this.$t(title);
-    },
     columns() {
-      let columns = [];
-      // If there is no Form
-      if (!this.form || this.form.data.title === "") {
-        return [{}];
-      } else if (this.editTable) {
-        // If we have and edit table
-        this.visibleColumns = FormioUtils.findComponents(
-          this.form.data.components,
-          {
-            input: true,
-            tableView: true
-          }
-        );
-        let wantedKeys = Object.keys(this.data[0]);
-
-        this.visibleColumns = this.visibleColumns.filter(o => {
-          return wantedKeys.includes(o.key);
-        });
-
-        console.log("this.visibleColumns", this.visibleColumns);
-      } else {
-        // If we have a normal table
-        this.visibleColumns = FormioUtils.findComponents(
-          this.form.data.components,
-          {
-            input: true,
-            tableView: true
-          }
-        );
-        this.visibleColumns = this.visibleColumns.slice(0, 7);
-        this.visibleColumns = this.visibleColumns.filter(c => {
-          return !!(c.label !== "");
-        });
-      }
-      // Create the column given the component
-      this.visibleColumns.forEach((column, index) => {
-        // let self = this;
-        let visibleColum = {
-          label: this.$t(column.label),
-          field: column.key,
-          filter: true,
-          sort: true,
-          width: "100px"
-        };
-        columns.push(visibleColum);
+      return Columns.get({
+        form: this.form.data,
+        data: this.data,
+        fastMode: this.fastMode,
+        vm: this
       });
-
-      if (!this.editTable) {
-        columns.push({
-          label: "Actions",
-          field: "actions",
-          filter: false,
-          sort: false,
-          width: "150px"
-        });
-      }
-
-      return columns;
     }
   },
   data() {
@@ -452,7 +409,7 @@ export default {
         noHeader: false,
         columnPicker: false,
         leftStickyColumns: 0,
-        rightStickyColumns: this.editTable ? 0 : 1,
+        rightStickyColumns: 1,
         rowHeight: "70px",
         responsive: true,
         pagination: {

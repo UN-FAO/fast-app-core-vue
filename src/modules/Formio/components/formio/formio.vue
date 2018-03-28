@@ -64,12 +64,15 @@ export default {
     // SMS.listen(this)
 
     document.addEventListener("saveAsDraft", this.saveAsLocalDraft);
+    document.addEventListener("autoSaveDraft", this.autoSaveAsDraft);
+
     this.save = _debounce(this.save, 400);
     this.renderForm();
   },
   beforeDestroy() {
     Lenguage.off(this);
     document.removeEventListener("saveAsDraft", this.saveAsLocalDraft);
+     document.removeEventListener("autoSaveDraft", this.autoSaveAsDraft);
   },
   data: () => {
     return {
@@ -266,7 +269,7 @@ export default {
      * @return {[type]}                [description]
      */
     createFormioInstance(onlineJsonForm, translations) {
-      translations.readOnly = !!(this.editMode === 'online-review')
+      translations.readOnly = !!(this.editMode === "online-review");
       if (!_isEmpty(this.formIO)) {
         return;
       }
@@ -369,7 +372,11 @@ export default {
         if (events.filter(e => e.type === "formio.change").length < 1) {
           this.formIO.on("change", change => {
             this.removeDuplicatedPagination();
-            if (this.localDraft && this.editMode !== "online" && this.editMode !== "online-review") {
+            if (
+              this.localDraft &&
+              this.editMode !== "online" &&
+              this.editMode !== "online-review"
+            ) {
               this.saved = false;
               var draftStatus = new CustomEvent("draftStatus", {
                 detail: { data: false, text: "Draft not Saved" }

@@ -20,6 +20,7 @@
           :form="currentForm"
           :menuActions="['create', 'export']"
           :tableActions="['review']"
+          fastMode="show-admin"
           v-if="currentForm && currentForm.data.title !== ''"
         />
       </q-card-main>
@@ -36,7 +37,7 @@
 import { QSelect, QCardMain, QInnerLoading, QSpinnerAudio } from "quasar";
 import Form from "database/models/Form";
 import FormioUtils from "formiojs/utils";
-import datatable from "components/dataTable";
+import datatable from "components/dataTable/dataTable";
 import Submission from "database/models/Submission";
 export default {
   async mounted() {

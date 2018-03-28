@@ -37,12 +37,11 @@
                   v-bind:style="{ display: !customRender ? 'initial' : 'none' }" />
 
                 <div v-bind:style="{ display: customRender ? 'initial' : 'none', color: 'black' }">
-                  Hello here"! {{customRenderArray.length}}
 
                   <datatable
                     :data="customRenderArray"
                     :form="currentForm"
-                    :editTable="true"
+                    fastMode="editGrid"
                     v-if="currentForm && currentForm.data.title !== ''"
                   />
                 </div>
@@ -157,7 +156,7 @@ import Submission from "database/models/Submission";
 import formio from "modules/Formio/components/formio/formio";
 import OFFLINE_PLUGIN from "modules/Formio/components/formio/src/offlinePlugin";
 import PdfExport from "modules/Wrappers/PdfExport";
-import datatable from "components/dataTable";
+import datatable from "components/dataTable/dataTable";
 export default {
   components: {
     datatable,

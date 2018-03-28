@@ -6,7 +6,6 @@ import _get from 'lodash/get'
 import Auth from 'modules/Auth/api/Auth'
 import * as Database from 'database/Database';
 import uuidv4 from 'uuid/v4'
-import _cloneDeep from 'lodash/cloneDeep'
 import moment from 'moment'
 import RemoteSubmission from 'database/repositories/Submission/RemoteSubmission'
 
@@ -156,7 +155,7 @@ const Submission = class {
     return unsynced
   }
 
-  static async sFind(filter, pagination) {
+  static async sFind({ filter, pagination, columns }) {
     let page = (pagination && pagination.page) || 1
     let limit = (pagination && pagination.limit) || 500
     let paginationInfo = {}
@@ -178,32 +177,25 @@ const Submission = class {
         (o.data.user_email && o.data.user_email === Auth.userEmail())
       )
     })
-    local = _orderBy(local, [
-      'created'
-    ], [
-        'desc'
-      ])
-    let submissions = _map(local, function (submission) {
-      let data = submission.data.data
-      let formio = submission.data.formio
-      submission = _cloneDeep(submission)
-      let tableRow = {
-        created: submission.meta.created,
-        updated: submission.meta.updated,
-        Humancreated: moment(submission.meta.created).fromNow(),
-        HumanUpdated: moment(submission.meta.updated).fromNow(),
-        id_submision: submission.data._id ? submission.data._id : submission._id,
-        local: !submission.data._id,
-        status: submission.data.sync === false ? 'offline' : 'online',
-        draft: submission.data.draft,
-        fullSubmission: data,
-        formio: formio,
-        syncError: submission.data.syncError ? submission.data.syncError : false
+    local = _orderBy(local, ['created'], ['desc'])
+
+    let sub = local.map(s => {
+      let sub = {
+        _id: s.data._id,
+        status: s.data.sync === false ? 'offline' : 'online',
+        draft: s.data.draft,
+        HumanUpdated: moment(s.meta.updated).fromNow(),
+        syncError: s.data.syncError ? s.data.syncError : false,
+        updated: s.meta.updated
       }
-      return tableRow
+      columns.forEach(c => {
+        sub[c] = s.data.data[c]
+      })
+      return sub
     })
-    submissions = _orderBy(submissions, ['updated'], ['desc'])
-    let paginated = { results: submissions, pagination: paginationInfo }
+
+    sub = _orderBy(sub, ['updated'], ['desc'])
+    let paginated = { results: sub, pagination: paginationInfo }
     return paginated
   }
 
