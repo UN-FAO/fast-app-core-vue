@@ -2,8 +2,8 @@ import Formio from 'modules/Formio/api/Formio'
 import _forEach from 'lodash/forEach'
 import _map from 'lodash/map'
 import _isEmpty from 'lodash/isEmpty'
-import Translation from 'database/models/Translation'
-import CONFIGURATION from 'database/repositories/Configuration/Configuration'
+import Translation from 'libraries/fastjs/database/models/Translation'
+import CONFIGURATION from 'libraries/fastjs/repositories/Configuration/Configuration'
 
 const Localization = class {
   /**

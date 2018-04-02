@@ -150,9 +150,9 @@ import _forEach from "lodash/forEach";
 import _groupBy from "lodash/groupBy";
 import _debounce from "lodash/debounce";
 import FormioUtils from "formiojs/utils";
-import Form from "database/models/Form";
+import Form from "libraries/fastjs/database/models/Form";
 import Auth from "modules/Auth/api/Auth";
-import Submission from "database/models/Submission";
+import Submission from "libraries/fastjs/database/models/Submission";
 import formio from "modules/Formio/components/formio/formio";
 import OFFLINE_PLUGIN from "modules/Formio/components/formio/src/offlinePlugin";
 import PdfExport from "modules/Wrappers/PdfExport";
@@ -377,8 +377,7 @@ export default {
       submission.data.deleted = revision !== "accept";
 
       [err] = await to(
-        Submission.remote().save({
-          form: this.$route.params.idForm,
+        Submission.remote(this.$route.params.idForm).save({
           submission: submission
         })
       );

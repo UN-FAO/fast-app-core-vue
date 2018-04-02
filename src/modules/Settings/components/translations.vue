@@ -103,9 +103,9 @@
 </style>
 
 <script>
-import Form from 'database/models/Form'
-import FormLabels from 'database/repositories/Form/Labels'
-import Translation from "database/models/Translation";
+import Form from 'libraries/fastjs/database/models/Form'
+import FormLabels from 'libraries/fastjs/repositories/Form/Labels'
+import Translation from "libraries/fastjs/database/models/Translation";
 import Localization from "modules/Localization/Localization";
 import { mapActions } from "vuex";
 import {

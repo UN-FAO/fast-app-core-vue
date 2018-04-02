@@ -1,4 +1,4 @@
-import * as Database from 'database/Database';
+import * as Database from '../Database';
 import uuidv4 from 'uuid/v4'
 import _orderBy from "lodash/orderBy"
 import moment from 'moment'

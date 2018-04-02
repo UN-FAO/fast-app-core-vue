@@ -1,6 +1,6 @@
 import FORMIO from 'modules/Formio/api/Formio'
 // import Connection from 'modules/Wrappers/Connection'
-import Configuration from "database/repositories/Configuration/Configuration";
+import Configuration from "libraries/fastjs/repositories/Configuration/Configuration";
 
 let User = class {
   static async find() {

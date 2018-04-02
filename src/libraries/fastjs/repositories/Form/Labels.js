@@ -1,11 +1,11 @@
 import FormioUtils from "formiojs/utils";
 import _forEach from 'lodash/forEach'
 import _isEmpty from 'lodash/isEmpty'
-import Translation from 'database/models/Translation'
+import Translation from 'libraries/fastjs/database/models/Translation'
 import {
   TRANSLATIONS
 } from 'modules/Localization/appTranslations'
-import Form from 'database/models/Form'
+import Form from 'libraries/fastjs/database/models/Form'
 
 let FormLabels = class {
   /**

@@ -1,9 +1,9 @@
 import Formio from 'formiojs'
 import _forEach from 'lodash/forEach'
-import Form from 'database/models/Form'
+import Form from 'libraries/fastjs/database/models/Form'
 import Auth from 'modules/Auth/api/Auth'
-import Submission from 'database/models/Submission'
-import Translation from 'database/models/Translation'
+import Submission from 'libraries/fastjs/database/models/Submission'
+import Translation from 'libraries/fastjs/database/models/Translation'
 import GetRequest from './repositories/offlinePlugin/GetRequest'
 import PostRequest from './repositories/offlinePlugin/PostRequest'
 

@@ -1,9 +1,9 @@
 import store from 'config/store'
 import _filter from 'lodash/filter'
-import User from 'database/models/User'
+import User from 'libraries/fastjs/database/models/User'
 import Auth from 'modules/Auth/api/Auth'
 import Connection from 'modules/Wrappers/Connection'
-import Submission from 'database/models/Submission'
+import Submission from 'libraries/fastjs/database/models/Submission'
 let Sync = class {
   /**
    *
@@ -28,7 +28,7 @@ let Sync = class {
 
     if (!usersAreSync) { return }
 
-    let unsyncSubmissions = await Submission.getUnsync()
+    let unsyncSubmissions = await Submission.local().getUnsync()
     if (unsyncSubmissions.length > 0) {
       store.dispatch('sendOfflineData', {
         offlineSubmissions: unsyncSubmissions,

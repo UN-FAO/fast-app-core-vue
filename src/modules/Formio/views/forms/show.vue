@@ -26,9 +26,9 @@
 </template>
 
 <script>
-import Form from "database/models/Form";
+import Form from "libraries/fastjs/database/models/Form";
 import FormioUtils from "formiojs/utils";
-import Submission from "database/models/Submission";
+import Submission from "libraries/fastjs/database/models/Submission";
 import datatable from "components/dataTable/dataTable";
 import { QCard, QCardMain, QInnerLoading, Toast } from "quasar";
 import Columns from "components/dataTable/tableFormatter/Columns";
@@ -79,12 +79,11 @@ export default {
   methods: {
     async refreshData() {
       this.loading = true;
-      let col = Columns.getTableView(this.currentForm.data).map(o => o.path);
-      let submissions = await Submission.local().sFind({
+      let submissions = await Submission.merged(this.$route.params.idForm).showView({
         filter: {
           "data.formio.formId": this.$route.params.idForm
         },
-        columns: col
+        select: Columns.getTableView(this.currentForm.data).map(o => o.path)
       });
       this.submissions = submissions.results;
       this.loading = false;

@@ -1,56 +1,57 @@
 <template>
-  <div style="color:black"  v-if="show">
+  <div style="color:black" v-if="show">
     <q-data-table :data="data" :config="config" :columns="columns" @selection="handleSelectionChange" @rowclick="handleRowClick">
-              <template :slot="'col-' + col.field" scope='scope' v-for="col in columns">
-                  <q-btn flat color="black" @click="editCell(scope)" v-bind:key="col.field" v-if="fastMode === 'editGrid' && col.field.indexOf('val') >= 0" >
-                      {{scope.data ? scope.data : '-'}}
-                  </q-btn>
-                  <span  v-bind:key="col.field" v-else>
-                  {{scope.data}}
-                  </span>
-                </template>
+      <template :slot="'col-' + col.field" scope='scope' v-for="col in columns">
+                    <q-btn flat color="black" @click="editCell(scope)" v-bind:key="col.field" v-if="fastMode === 'editGrid' && col.field.indexOf('val') >= 0" >
+                        {{scope.data ? scope.data : '-'}}
+                    </q-btn>
+                    <span  v-bind:key="col.field" v-else>
+                    {{scope.data}}
+                    </span>
+</template>
 
-                <template slot="col-status" scope="scope">
-                <div v-if="scope.row.status === 'offline' && scope.row.draft">
-                  <i class="material-icons tag--grey">description</i>
-                  <q-tooltip>{{$t('Draft')}}</q-tooltip>
-                </div>
-                <div v-else-if="scope.row.status === 'offline'">
-                  <i class="material-icons tag--offline">description</i>
-                  <q-tooltip>{{$t('Offline submission')}}</q-tooltip>
-                </div>
-                <div v-else>
-                  <i class="material-icons tag--green">check_circle</i>
-                  <q-tooltip>{{$t('Online submission')}}</q-tooltip>
-                </div>
-                 <i class="material-icons" style="color: red;font-size: x-large; cursor: pointer;" v-if="scope.row.syncError && scope.row.syncError !=='Unauthorized' " @click="displayError(scope.row.syncError)">block</i>
-                  <i class="material-icons" style="color: red;font-size: x-large; cursor: pointer;" v-if="scope.row.syncError && scope.row.syncError ==='Unauthorized' " @click="displayError(scope.row.syncError)">block</i>
-            </template>
+<template slot="col-status" scope="scope">
+  <div v-if="scope.row.status === 'offline' && scope.row.draft">
+    <i class="material-icons tag--grey">description</i>
+    <q-tooltip>{{$t('Draft')}}</q-tooltip>
+  </div>
+  <div v-else-if="scope.row.status === 'offline'">
+    <i class="material-icons tag--offline">description</i>
+    <q-tooltip>{{$t('Offline submission')}}</q-tooltip>
+  </div>
+  <div v-else>
+    <i class="material-icons tag--green">check_circle</i>
+    <q-tooltip>{{$t('Online submission')}}</q-tooltip>
+  </div>
+  <i class="material-icons" style="color: red;font-size: x-large; cursor: pointer;" v-if="scope.row.syncError && scope.row.syncError !=='Unauthorized' " @click="displayError(scope.row.syncError)">block</i>
+  <i class="material-icons" style="color: red;font-size: x-large; cursor: pointer;" v-if="scope.row.syncError && scope.row.syncError ==='Unauthorized' " @click="displayError(scope.row.syncError)">block</i>
+</template>
 
-              <template slot='col-actions' scope='scope'>
-                 <q-btn v-if="tableActions.includes('review')" color="primary" round small  @click='handleReview(scope)'> <i class="material-icons remove_red_eye" >remove_red_eye</i>
-                <q-tooltip>{{$t('Review')}}</q-tooltip>
-                </q-btn>
-                <q-btn  v-if="tableActions.includes('edit')" color="primary" round small  @click='goToEditView(scope)'> <i class="material-icons edit" >edit</i>
-                  <q-tooltip>{{$t('Edit')}}</q-tooltip>
-                </q-btn>
-                <q-btn v-if="tableActions.includes('report')"  color="primary" round small  @click='handleReport(scope)'> <i class="material-icons assignment" >assignment</i>
-                  <q-tooltip>{{$t('Report')}}</q-tooltip>
-                </q-btn>
-              </template>
-              <template slot="selection" slot-scope="props">
-              <q-btn flat v-if="tableActions.includes('delete')"  color="primary" @click="handleDelete(props)">
-                <q-icon name="delete" />
-              </q-btn>
-            </template>
+<template slot='col-actions' scope='scope'>
+  <q-btn v-if="tableActions.includes('review')" color="primary" round small @click='handleReview(scope)'> <i class="material-icons remove_red_eye">remove_red_eye</i>
+    <q-tooltip>{{$t('Review')}}</q-tooltip>
+  </q-btn>
+  <q-btn v-if="tableActions.includes('edit')" color="primary" round small @click='goToEditView(scope)'> <i class="material-icons edit">edit</i>
+    <q-tooltip>{{$t('Edit')}}</q-tooltip>
+  </q-btn>
+  <q-btn v-if="tableActions.includes('report')" color="primary" round small @click='handleReport(scope)'> <i class="material-icons assignment">assignment</i>
+    <q-tooltip>{{$t('Report')}}</q-tooltip>
+  </q-btn>
+</template>
 
-          <template slot='col-deleted' scope='scope'>
-            <q-chip icon="fa-ban" color="red" v-if="scope.row.deleted && scope.row.deleted === true">
-            </q-chip>
+<template slot="selection" slot-scope="props">
+  <q-btn flat v-if="tableActions.includes('delete')" color="primary" @click="handleDelete(props)">
+    <q-icon name="delete" />
+  </q-btn>
+</template>
 
-            <q-chip icon="fa-check" color="green" v-else>
-            </q-chip>
-          </template>
+<template slot='col-deleted' scope='scope'>
+  <q-chip icon="fa-ban" color="red" v-if="scope.row.deleted && scope.row.deleted === true">
+  </q-chip>
+
+  <q-chip icon="fa-check" color="green" v-else>
+  </q-chip>
+</template>
         </q-data-table>
 
      <button-menu render="outside" :actions="menuActions"/>
@@ -61,12 +62,12 @@
 import FormioUtils from "formiojs/utils";
 import buttonMenu from "./menu";
 import Export from "./dataExport/Export";
-import Submission from "database/models/Submission";
+import Submission from "libraries/fastjs/database/models/Submission";
 import { QTooltip, QBtn, QDataTable, QChip, QIcon } from "quasar";
-import Import from "database/repositories/Submission/Import";
+import Import from "libraries/fastjs/repositories/Submission/Import";
 import Columns from "./tableFormatter/Columns";
-import _get from "lodash/get"
-import Promise from "bluebird"
+import _get from "lodash/get";
+import Promise from "bluebird";
 
 export default {
   components: {
@@ -184,8 +185,7 @@ export default {
             ]
           : null;
 
-      let sub = await Submission.remote().find({
-        form: this.form.data,
+      let sub = await Submission.remote(this.form.data.path).find({
         filter: filter,
         limit: 50000
       });
@@ -209,9 +209,14 @@ export default {
     },
     async loadSubmission(_id) {
       this.loading = true;
-      let submission = await Submission.remote().find({
-        form: this.form.data,
-        filter: [{ element: "_id", query: "=", value: _id }],
+      let submission = await Submission.remote(this.form.data.path).find({
+        filter: [
+          {
+            element: "_id",
+            query: "=",
+            value: _id
+          }
+        ],
         limit: 1
       });
       this.loading = false;
@@ -241,41 +246,54 @@ export default {
         });
         return;
       }
-      this
-        .$swal({
-          title: this.$t("Are you sure?"),
-          text: this.$t("You won't be able to revert this!"),
-          type: "warning",
-          showCancelButton: true,
-          confirmButtonColor: "#3085d6",
-          cancelButtonColor: "#d33",
-          confirmButtonText: this.$t("Yes, delete it!"),
-          cancelButtonText: this.$t("Cancel")
-        })
-        .then(async () => {
-          Promise.each(rows, async submission => {
-            let online = await Submission.local().findOne({
+      this.$swal({
+        title: this.$t("Are you sure?"),
+        text: this.$t("You won't be able to revert this!"),
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: this.$t("Yes, delete it!"),
+        cancelButtonText: this.$t("Cancel")
+      }).then(async () => {
+        Promise.each(rows, async submission => {
+          console.log("submission", submission);
+          let online = await Submission.local(this.form.data.path).find({
+            filter: {
               "data._id": submission._id
-            });
-
-            let offline = await Submission.local().findOne({
-              _id: submission._id
-            });
-
-            let deleteSubmission = offline;
-            if (online) {
-              deleteSubmission = online;
             }
-            await Submission.local().remove(deleteSubmission);
-          }).then(async () => {
-            this.$emit('refresh')
+          });
+
+          let offline = await Submission.local(this.form.data.path).find({
+            filter: {
+              _id: submission._id
+            }
+          });
+          let deleteSubmission = online || offline;
+          if (deleteSubmission.length === 0) {
+            throw new Error('cannot delete an online submission')
+          }
+          await Submission.local(this.form.data.path).findAndRemove({
+            _id: deleteSubmission[0]._id
+          });
+        })
+          .then(async () => {
+            this.$emit("refresh");
             self.$swal(
               this.$t("Deleted!"),
               this.$t("Your submission has been deleted."),
               "success"
             );
+          })
+          .catch(error => {
+            console.log(error);
+            this.$swal(
+              this.$t("Error!"),
+              this.$t("Can't delete online submission."),
+              "error"
+            );
           });
-        });
+      });
     },
     async importSubmission() {
       const file = await this.$swal({
@@ -359,7 +377,8 @@ export default {
       });
     },
     goToEditView(data) {
-      let formId = _get(this.form, 'data.properties["edit-view"]') || this.form.data.path;
+      let formId =
+        _get(this.form, 'data.properties["edit-view"]') || this.form.data.path;
       this.$router.push({
         name: "formio_submission_update",
         params: {

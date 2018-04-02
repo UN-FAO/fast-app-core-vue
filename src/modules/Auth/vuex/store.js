@@ -1,5 +1,5 @@
-import User from 'database/models/User'
-import SyncHelper from 'database/helpers/SyncHelper'
+import User from 'libraries/fastjs/database/models/User'
+import SyncHelper from 'libraries/fastjs/database/helpers/SyncHelper'
 import {
   APP_URL,
   APP_NAME

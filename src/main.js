@@ -35,8 +35,8 @@ import 'quasar-extras/fontawesome'
 // import 'quasar-extras/animate'
 
 import Localization from 'modules/Localization/Localization'
-import Configuration from "database/repositories/Configuration/Configuration";
-import Pages from "database/repositories/Configuration/Pages";
+import Configuration from "libraries/fastjs/repositories/Configuration/Configuration";
+import Pages from "libraries/fastjs/repositories/Configuration/Pages";
 
 import AsyncComputed from 'vue-async-computed'
 Vue.use(AsyncComputed)
@@ -44,8 +44,12 @@ Vue.use(AsyncComputed)
 import VueAsyncProperties from 'vue-async-properties'
 Vue.use(VueAsyncProperties)
 
-import Moment from 'database/repositories/Date/moment'
+import Moment from 'libraries/fastjs/repositories/Date/moment'
 Moment.setLocales()
+
+import fastConfig from "libraries/fastjs/config";
+import { CONFIG_URL, APP_CONFIG_ID } from 'config/env'
+fastConfig.set({ baseURL: CONFIG_URL, submissionId: APP_CONFIG_ID })
 
 Vue.config.productionTip = false
 
@@ -55,26 +59,38 @@ if (__THEME === 'mat') {
   require('quasar-extras/roboto-font')
 }
 
-Quasar.start(async() => {
+/**
+ *  On App start
+ */
+Quasar.start(async () => {
   /* eslint-disable no-new */
   let appTranslations = []
-  await Configuration.get(Vue);
-  await Pages.get();
-  appTranslations = await Localization.setLocales()
-  let defaultLenguage = localStorage.getItem('defaultLenguage') ? localStorage.getItem('defaultLenguage') : 'en'
+  let config
+  try {
+    config = await Configuration.set(Vue);
+    fastConfig.setBaseUrl(config.APP_URL)
 
-  // console.log(appTranslations)
-  const i18n = new VueI18n({
-    locale: defaultLenguage, // set locale
-    messages: appTranslations // set locale messages
-  })
+    await Pages.set();
 
-  /* eslint-disable no-new */
-  new Vue({
-    i18n,
-    el: '#q-app',
-    router,
-    store,
-    render: h => h(require('./App'))
-  })
+    appTranslations = await Localization.setLocales()
+
+    let defaultLenguage = localStorage.getItem('defaultLenguage') || 'en'
+
+    // Set the translations into the Plugin
+    const i18n = new VueI18n({
+      locale: defaultLenguage, // set locale
+      messages: appTranslations // set locale messages
+    })
+
+    /* eslint-disable no-new */
+    new Vue({
+      i18n,
+      el: '#q-app',
+      router,
+      store,
+      render: h => h(require('./App'))
+    })
+  } catch (error) {
+    alert('The application cannot Start. You must be connected to internet to start the App for the first time')
+  }
 })

@@ -6,7 +6,7 @@
 
 <script>
 import report from "./report/report";
-import Submission from "database/models/Submission";
+import Submission from "libraries/fastjs/database/models/Submission";
 export default {
   components: {
     report

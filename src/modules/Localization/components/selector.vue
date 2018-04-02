@@ -40,8 +40,8 @@ import {
   QItemSeparator
 } from "quasar";
 import Localization from "../Localization";
-import Translation from "database/models/Translation";
-import Moment from 'database/repositories/Date/moment'
+import Translation from "libraries/fastjs/database/models/Translation";
+import Moment from 'libraries/fastjs/repositories/Date/moment'
 
 export default {
   name: "localization",

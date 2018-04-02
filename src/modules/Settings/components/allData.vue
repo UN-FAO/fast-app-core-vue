@@ -35,10 +35,10 @@
 
 <script>
 import { QSelect, QCardMain, QInnerLoading, QSpinnerAudio } from "quasar";
-import Form from "database/models/Form";
+import Form from "libraries/fastjs/database/models/Form";
 import FormioUtils from "formiojs/utils";
 import datatable from "components/dataTable/dataTable";
-import Submission from "database/models/Submission";
+import Submission from "libraries/fastjs/database/models/Submission";
 export default {
   async mounted() {
     this.$eventHub.on("lenguageSelection", async data => {
@@ -86,8 +86,7 @@ export default {
           return [];
         }
         this.loading = true;
-        let sub = await Submission.remote().find({
-          form: this.currentForm.data,
+        let sub = await Submission.remote(this.currentForm.data.path).find({
           select: this.columns.map(o => {
             return "data." + o.field;
           }),

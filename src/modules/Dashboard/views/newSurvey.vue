@@ -38,7 +38,7 @@ import {
   QItemSeparator
 } from "quasar";
 import actioncards from "../components/actionCards";
-import Form from "database/models/Form";
+import Form from "libraries/fastjs/database/models/Form";
 export default {
   components: {
     actioncards,

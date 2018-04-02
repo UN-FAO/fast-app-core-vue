@@ -1,7 +1,7 @@
 import md5 from 'md5'
 import store from 'config/store'
 import router from 'config/router'
-import CONFIGURATION from 'database/repositories/Configuration/Configuration'
+import CONFIGURATION from 'libraries/fastjs/repositories/Configuration/Configuration'
 import Auth from 'modules/Auth/api/Auth'
 
 let StoreForm = class {
@@ -27,12 +27,9 @@ let StoreForm = class {
     }
 
     if (formSubmission.trigger && formSubmission.trigger === 'resourceCreation') {
-      console.log('formSubmission', formSubmission)
     }
-    console.log('formSubmission', formSubmission)
     if (formSubmission.trigger && formSubmission.trigger === 'formioSubmit') {
       created.isSubmit = true
-      console.log('formSubmission', formSubmission)
     }
 
     var draftStatus = new CustomEvent('draftStatus', {

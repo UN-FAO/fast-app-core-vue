@@ -1,30 +1,30 @@
-import * as Database from 'database/Database';
+import * as Database from '../Database';
 import uuidv4 from 'uuid/v4'
-import RemoteUser from '../repositories/User/User'
 
-const User = class {
+
+const Role = class {
   /**
    * [getOwnName description]
    * @return {[type]} [description]
    */
   static getOwnName() {
-    return 'User'
+    return 'Role'
   }
   /**
    * [remote description]
    * @return {[type]} [description]
    */
   static remote() {
-    User.getFrom = 'remote'
-    return RemoteUser
+    Role.getFrom = 'remote'
+    return Role
   }
   /**
    * [local description]
    * @return {[type]} [description]
    */
   static local() {
-    User.getFrom = 'local'
-    return User
+    Role.getFrom = 'local'
+    return Role
   }
   /**
    * [getModel description]
@@ -32,7 +32,7 @@ const User = class {
    */
   static async getModel() {
     const DB = await Database.get()
-    return DB.getCollection(User.getOwnName())
+    return DB.getCollection(Role.getOwnName())
   }
   /**
    * [find description]
@@ -40,7 +40,7 @@ const User = class {
    * @return {[type]}        [description]
    */
   static async find(filter) {
-    const model = await User.getModel()
+    const model = await Role.getModel()
     return model.find(filter);
   }
   /**
@@ -49,7 +49,7 @@ const User = class {
    * @return {[type]}        [description]
    */
   static async findOne(filter) {
-    const model = await User.getModel()
+    const model = await Role.getModel()
     return model.findOne(filter);
   }
   /**
@@ -58,7 +58,7 @@ const User = class {
    * @return {[type]}          [description]
    */
   static async remove(document) {
-    const model = await User.getModel()
+    const model = await Role.getModel()
     return model.remove(document);
   }
   /**
@@ -67,7 +67,7 @@ const User = class {
    * @return {[type]}         [description]
    */
   static async insert(element) {
-    const model = await User.getModel()
+    const model = await Role.getModel()
     element._id = uuidv4() + '_local'
     return model.insert(element);
   }
@@ -77,12 +77,12 @@ const User = class {
    * @return {[type]}          [description]
    */
   static async update(document) {
-    const model = await User.getModel()
+    const model = await Role.getModel()
     return model.update(document);
   }
 
   static async updateOrCreate(document) {
-    const model = await User.getModel()
+    const model = await Role.getModel()
     let role = await model.findOne(document)
     if (!role) {
       model.insert(document)
@@ -90,8 +90,8 @@ const User = class {
   }
 
   static async findAndRemove(filter) {
-    const model = await User.getModel()
+    const model = await Role.getModel()
     return model.findAndRemove(filter);
   }
 }
-export default User
+export default Role

@@ -1,6 +1,6 @@
-import Form from 'database/models/Form'
+import Form from 'libraries/fastjs/database/models/Form'
 import Auth from 'modules/Auth/api/Auth'
-import Submission from 'database/models/Submission'
+import Submission from 'libraries/fastjs/database/models/Submission'
 import { SHARE_DATA_BETWEEN_USERS } from 'config/env'
 
 

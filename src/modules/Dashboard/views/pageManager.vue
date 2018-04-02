@@ -38,7 +38,7 @@ import {
   QItemSeparator
 } from "quasar";
 
-import Pages from "database/repositories/Configuration/Pages";
+import Pages from "libraries/fastjs/repositories/Configuration/Pages";
 import actioncards from "../components/actionCards";
 export default {
   components: {

@@ -1,6 +1,5 @@
 import Loki from 'lokijs'
 import Promise from 'bluebird'
-import { APP_CONFIG_ID } from 'config/env'
 import LokiIndexedAdapter from 'lokijs/src/loki-indexed-adapter'
 /*
 |--------------------------------------------------------------------------
@@ -19,7 +18,7 @@ const _create = function () {
     var pa = new Loki.LokiPartitioningAdapter(idbAdapter, {
       paging: true
     });
-    var db = new Loki(APP_CONFIG_ID, {
+    var db = new Loki('FAST', {
       adapter: pa,
       autosave: true,
       autosaveInterval: 1000,

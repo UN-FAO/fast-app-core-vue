@@ -52,6 +52,7 @@
 import { mapActions } from "vuex";
 import Auth from "modules/Auth/api/Auth";
 import { QField, QInput, QBtn, QIcon } from "quasar";
+
 export default {
   async mounted() {
     this.getResources({

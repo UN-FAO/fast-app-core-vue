@@ -25,7 +25,7 @@ import leftdrawer from "layout/left_drawer";
 import rightdrawer from "layout/right_drawer";
 import connectionAlert from "modules/Connection/components/alert";
 import { mapActions } from "vuex";
-import Sync from "database/repositories/Database/Sync";
+import Sync from "libraries/fastjs/repositories/Database/Sync";
 import Connection from "modules/Wrappers/Connection";
 import { QLayout, Toast, Platform } from "quasar";
 import layoutStore from "layout/layout-store";

@@ -1,6 +1,6 @@
 import Formio from 'formiojs'
 import _debounce from 'lodash/debounce'
-import Form from 'database/models/Form'
+import Form from 'libraries/fastjs/database/models/Form'
 import StoreForm from './StoreForm'
 
 const PostRequest = class {

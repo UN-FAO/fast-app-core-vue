@@ -1,29 +1,30 @@
-import * as Database from 'database/Database';
+import * as Database from '../Database';
 import uuidv4 from 'uuid/v4'
+import RemoteUser from 'libraries/fastjs/repositories/User/User'
 
-const Pages = class {
+const User = class {
   /**
    * [getOwnName description]
    * @return {[type]} [description]
    */
   static getOwnName() {
-    return 'Pages'
+    return 'User'
   }
   /**
    * [remote description]
    * @return {[type]} [description]
    */
   static remote() {
-    Pages.getFrom = 'remote'
-    return Pages
+    User.getFrom = 'remote'
+    return RemoteUser
   }
   /**
    * [local description]
    * @return {[type]} [description]
    */
   static local() {
-    Pages.getFrom = 'local'
-    return Pages
+    User.getFrom = 'local'
+    return User
   }
   /**
    * [getModel description]
@@ -31,7 +32,7 @@ const Pages = class {
    */
   static async getModel() {
     const DB = await Database.get()
-    return DB.getCollection(Pages.getOwnName())
+    return DB.getCollection(User.getOwnName())
   }
   /**
    * [find description]
@@ -39,7 +40,7 @@ const Pages = class {
    * @return {[type]}        [description]
    */
   static async find(filter) {
-    const model = await Pages.getModel()
+    const model = await User.getModel()
     return model.find(filter);
   }
   /**
@@ -48,7 +49,7 @@ const Pages = class {
    * @return {[type]}        [description]
    */
   static async findOne(filter) {
-    const model = await Pages.getModel()
+    const model = await User.getModel()
     return model.findOne(filter);
   }
   /**
@@ -57,7 +58,7 @@ const Pages = class {
    * @return {[type]}          [description]
    */
   static async remove(document) {
-    const model = await Pages.getModel()
+    const model = await User.getModel()
     return model.remove(document);
   }
   /**
@@ -66,7 +67,7 @@ const Pages = class {
    * @return {[type]}         [description]
    */
   static async insert(element) {
-    const model = await Pages.getModel()
+    const model = await User.getModel()
     element._id = uuidv4() + '_local'
     return model.insert(element);
   }
@@ -76,12 +77,12 @@ const Pages = class {
    * @return {[type]}          [description]
    */
   static async update(document) {
-    const model = await Pages.getModel()
+    const model = await User.getModel()
     return model.update(document);
   }
 
   static async updateOrCreate(document) {
-    const model = await Pages.getModel()
+    const model = await User.getModel()
     let role = await model.findOne(document)
     if (!role) {
       model.insert(document)
@@ -89,8 +90,8 @@ const Pages = class {
   }
 
   static async findAndRemove(filter) {
-    const model = await Pages.getModel()
+    const model = await User.getModel()
     return model.findAndRemove(filter);
   }
 }
-export default Pages
+export default User

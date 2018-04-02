@@ -8,10 +8,10 @@ import {
   MD5_KEY
 } from 'config/env'
 import md5 from 'md5'
-import User from 'database/models/User'
+import User from 'libraries/fastjs/database/models/User'
 import store from 'config/store'
 import Connection from 'modules/Wrappers/Connection'
-import Role from "database/models/Role";
+import Role from "libraries/fastjs/database/models/Role";
 import _forEach from "lodash/forEach";
 import _find from 'lodash/find'
 

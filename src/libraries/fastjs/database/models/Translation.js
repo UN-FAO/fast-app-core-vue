@@ -1,7 +1,7 @@
 import _forEach from 'lodash/forEach';
 import _orderBy from "lodash/orderBy";
 import _find from 'lodash/find'
-import * as Database from 'database/Database';
+import * as Database from '../Database';
 import uuidv4 from 'uuid/v4'
 
 
@@ -144,7 +144,7 @@ const Translation = class {
    *
    */
   static getIsoLanguages() {
-    let languages = require("database/resources/isoLanguages.json");
+    let languages = require("libraries/fastjs/database/resources/isoLanguages.json");
     return languages
   }
 }

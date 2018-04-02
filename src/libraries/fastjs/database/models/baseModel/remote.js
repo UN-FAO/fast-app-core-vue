@@ -1,53 +1,86 @@
-import FormioJS from "formiojs";
-import Auth from "modules/Auth/api/Auth";
-import Config from "database/repositories/Configuration/Configuration";
+import Formio from 'formiojs'
+import config from "../../../config";
 
-let RemoteSubmission = class {
-  static async find({ form, filter, limit, select, pagination }) {
-    if (!form || !form.path) {
-      throw new Error('Form not present. You must provide the full Form.io JSON form to execute the query')
+const remoteModel = (() => {
+  /* eslint-disable no-unused-vars */
+  async function getFormioInstance({ formPath, submissionID = undefined }) {
+    // Get the base URL
+    let formUrl = formPath ? await config.get().baseURL : await config.get().url
+    console.log('formUrformUrlformUrlformUrll', formUrl, formPath)
+    if (config.get().jwt) {
+      Formio.setToken(config.get().jwt);
     }
-    let formio = await RemoteSubmission.getFormioInstance(form)
+    Formio.clearCache();
+    // Get ID of the Form
+    formUrl = formUrl + "/" + formPath;
+    // Set URL in case of submission context
+    formUrl = submissionID ? formUrl + 'submission/' + submissionID : formUrl
+    return new Formio(formUrl);
+  }
+  /**
+   * [find description]
+   * @param  {[type]} filter [description]
+   * @return {[type]}        [description]
+   */
+  async function find({ formPath, filter, limit, select, pagination }) {
+    let formio = await getFormioInstance({ formPath: formPath })
+
     let queryParams = {
       limit: limit
     }
 
     if (filter) {
-      let filterQuery = RemoteSubmission.filterToString(filter)
+      let filterQuery = filterToString(filter)
       queryParams = { ...queryParams, ...filterQuery }
     }
 
     if (select) {
-      let selectQuery = RemoteSubmission.selectToString(select)
+      let selectQuery = selectToString(select)
       queryParams = { ...queryParams, ...selectQuery }
     }
 
     let remoteSubmissions = await formio.loadSubmissions({
       params: queryParams
     });
+
     return remoteSubmissions
   }
-
-  static async save({ form, submission }) {
-    FormioJS.deregisterPlugin("offline");
-    let formio = await RemoteSubmission.getFormioInstance(form, submission._id)
-    return formio.saveSubmission(submission)
+  /**
+   * [findOne description]
+   * @param  {[type]} filter [description]
+   * @return {[type]}        [description]
+   */
+  async function findOne({ formPath, filter }) {
+  }
+  /**
+   * [remove description]
+   * @param  {[type]} document [description]
+   * @return {[type]}          [description]
+   */
+  async function remove({ formPath, document }) {
+  }
+  /**
+   * [insert description]
+   * @param  {[type]} element [description]
+   * @return {[type]}         [description]
+   */
+  async function insert({ formPath, element }) {
+  }
+  /**
+   * [update description]
+   * @param  {[type]} document [description]
+   * @return {[type]}          [description]
+   */
+  async function update({ formPath, document }) {
   }
 
-  static async getFormioInstance(form, submissionID) {
-    FormioJS.setToken(Auth.user().x_jwt_token);
-    FormioJS.clearCache();
-    // Get the base URL
-    let formUrl = await Config.getLocal();
-    // Get ID of the Form
-    let formString = form && form.path ? form.path : form
-    formUrl = formUrl.APP_URL + "/" + formString;
-    // Set URL in case of submission context
-    formUrl = submissionID ? formUrl + 'submission/' + submissionID : formUrl
-    return new FormioJS(formUrl);
+  async function updateOrCreate({ formPath, document }) {
   }
 
-  static filterToString(filter) {
+  async function findAndRemove({ formPath, filter }) {
+  }
+
+  function filterToString(filter) {
     if (!filter) {
       return
     }
@@ -102,7 +135,7 @@ let RemoteSubmission = class {
     return filterQuery
   }
 
-  static selectToString(select) {
+  function selectToString(select) {
     if (!select) {
       return
     }
@@ -112,5 +145,15 @@ let RemoteSubmission = class {
     }, "_id");
     return { select: selectString }
   }
-}
-export default RemoteSubmission
+
+  return Object.freeze({
+    find,
+    findOne,
+    remove,
+    insert,
+    update,
+    updateOrCreate,
+    findAndRemove
+  });
+})()
+export default remoteModel

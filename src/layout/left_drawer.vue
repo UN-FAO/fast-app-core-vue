@@ -97,7 +97,7 @@
 <script>
 import { mapState, mapActions } from "vuex";
 import Auth from "modules/Auth/api/Auth";
-import Form from "database/models/Form";
+import Form from "libraries/fastjs/database/models/Form";
 import {
   QScrollArea,
   QSideLink,
@@ -117,8 +117,8 @@ import pageLinks from "./components/pageLinks"
 import collectionpagelinks from "./components/collectionPageLinks"
 import layoutStore from "./layout-store";
 import Localization from "modules/Localization/Localization";
-import Pages from "database/repositories/Configuration/Pages";
-import Configuration from "database/repositories/Configuration/Configuration";
+import Pages from "libraries/fastjs/repositories/Configuration/Pages";
+import Configuration from "libraries/fastjs/repositories/Configuration/Configuration";
 
 export default {
   components: {

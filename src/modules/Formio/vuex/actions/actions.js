@@ -1,13 +1,13 @@
 import Formio from 'modules/Formio/api/Formio'
-import SyncHelper from 'database/helpers/SyncHelper'
+import SyncHelper from 'libraries/fastjs/database/helpers/SyncHelper'
 import moment from 'moment'
 import Auth from 'modules/Auth/api/Auth'
 import Connection from 'modules/Wrappers/Connection'
 import FormioJS from 'formiojs'
 import Promise from 'bluebird'
-import Form from 'database/models/Form'
-import User from 'database/models/User'
-import Submission from 'database/models/Submission'
+import Form from 'libraries/fastjs/database/models/Form'
+import User from 'libraries/fastjs/database/models/User'
+import Submission from 'libraries/fastjs/database/models/Submission'
 import _forEach from 'lodash/forEach'
 import _map from 'lodash/map'
 import _unionBy from 'lodash/unionBy'
@@ -239,6 +239,8 @@ const actions = {
         updated: moment().format()
       }
       let localSubmission = await Submission.local().get(formSubmission._id)
+      console.log('localSubmission', localSubmission)
+      console.log('formSubmission', formSubmission)
       // Cases where we want to update
       let sendingSubmission = submission.draft === false
       let fromDraftToSubmission = (localSubmission.data.draft === false) && (submission.draft === false)

@@ -1,4 +1,4 @@
-import * as Database from 'database/Database'
+import * as Database from 'libraries/fastjs/database/Database'
 import _map from 'lodash/map'
 import _filter from 'lodash/filter'
 

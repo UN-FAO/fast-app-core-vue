@@ -1,46 +1,22 @@
-import * as Database from 'database/Database';
+import * as Database from '../../Database';
 import uuidv4 from 'uuid/v4'
 
-
-const Role = class {
-  /**
-   * [getOwnName description]
-   * @return {[type]} [description]
-   */
-  static getOwnName() {
-    return 'Role'
-  }
-  /**
-   * [remote description]
-   * @return {[type]} [description]
-   */
-  static remote() {
-    Role.getFrom = 'remote'
-    return Role
-  }
-  /**
-   * [local description]
-   * @return {[type]} [description]
-   */
-  static local() {
-    Role.getFrom = 'local'
-    return Role
-  }
+const localModel = (() => {
   /**
    * [getModel description]
    * @return {[type]} [description]
    */
-  static async getModel() {
+  async function getModel({ model }) {
     const DB = await Database.get()
-    return DB.getCollection(Role.getOwnName())
+    return DB.getCollection(model)
   }
   /**
    * [find description]
    * @param  {[type]} filter [description]
    * @return {[type]}        [description]
    */
-  static async find(filter) {
-    const model = await Role.getModel()
+  async function find({ modelName, filter, limit, select, pagination }) {
+    const model = await this.getModel({ model: modelName })
     return model.find(filter);
   }
   /**
@@ -48,8 +24,8 @@ const Role = class {
    * @param  {[type]} filter [description]
    * @return {[type]}        [description]
    */
-  static async findOne(filter) {
-    const model = await Role.getModel()
+  async function findOne({ modelName, filter }) {
+    const model = await this.getModel({ model: modelName })
     return model.findOne(filter);
   }
   /**
@@ -57,8 +33,8 @@ const Role = class {
    * @param  {[type]} document [description]
    * @return {[type]}          [description]
    */
-  static async remove(document) {
-    const model = await Role.getModel()
+  async function remove({ modelName, document }) {
+    const model = await this.getModel({ model: modelName })
     return model.remove(document);
   }
   /**
@@ -66,8 +42,8 @@ const Role = class {
    * @param  {[type]} element [description]
    * @return {[type]}         [description]
    */
-  static async insert(element) {
-    const model = await Role.getModel()
+  async function insert({ modelName, element }) {
+    const model = await this.getModel({ model: modelName })
     element._id = uuidv4() + '_local'
     return model.insert(element);
   }
@@ -76,22 +52,33 @@ const Role = class {
    * @param  {[type]} document [description]
    * @return {[type]}          [description]
    */
-  static async update(document) {
-    const model = await Role.getModel()
+  async function update({ modelName, document }) {
+    const model = await this.getModel({ model: modelName })
     return model.update(document);
   }
 
-  static async updateOrCreate(document) {
-    const model = await Role.getModel()
+  async function updateOrCreate({ modelName, document }) {
+    const model = await this.getModel({ model: modelName })
     let role = await model.findOne(document)
     if (!role) {
       model.insert(document)
     }
   }
 
-  static async findAndRemove(filter) {
-    const model = await Role.getModel()
+  async function findAndRemove({ modelName, filter }) {
+    const model = await this.getModel({ model: modelName })
     return model.findAndRemove(filter);
   }
-}
-export default Role
+
+  return Object.freeze({
+    getModel,
+    find,
+    findOne,
+    remove,
+    insert,
+    update,
+    updateOrCreate,
+    findAndRemove
+  });
+})()
+export default localModel
