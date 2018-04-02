@@ -41,6 +41,8 @@ let Configuration = (() => {
         VUE.$FAST_CONFIG = insertedConfig
       }
       return insertedConfig
+    } else {
+      return localConfig
     }
   }
 

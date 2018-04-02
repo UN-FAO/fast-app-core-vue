@@ -5,20 +5,29 @@ import _get from "lodash/get"
 
 let PAGES = (() => {
   async function set() {
+    let localPages, remotePages
+
+    localPages = await Pages.local().find()
+    localPages = _get(localPages, '[0]', undefined)
     if (Connection.isOnline()) {
-      let newPages = await Pages.remote().find({limit: 500})
-      newPages = _get(newPages, '[0].data', undefined)
-
-      let pages = await Pages.local().find()
-      if (newPages && pages.length > 0) {
-        await Pages.remove(pages[0])
+      try {
+        remotePages = await Pages.remote().find({ limit: 500 })
+      } catch (error) {
+        console.log('error', error)
       }
-      let insertPages = newPages || pages[0]
+    }
+    remotePages = _get(remotePages, '[0].data', undefined)
 
-      if (insertPages && typeof insertPages !== 'undefined' && !_isEmpty(insertPages)) {
-        await Pages.local().insert(insertPages)
+    if (remotePages) {
+      if (localPages) {
+        await Pages.local().remove(localPages)
       }
-      return insertPages
+      if (!_isEmpty(remotePages)) {
+        let insertedConfig = await Pages.local().insert(remotePages)
+        return insertedConfig
+      }
+    } else {
+      return localPages
     }
   }
 
