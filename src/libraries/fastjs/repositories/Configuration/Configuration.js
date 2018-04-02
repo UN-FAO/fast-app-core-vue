@@ -42,6 +42,11 @@ let Configuration = (() => {
       }
       return insertedConfig
     } else {
+      if (VUE && VUE.prototype) {
+        VUE.prototype.$FAST_CONFIG = localConfig
+      } else {
+        VUE.$FAST_CONFIG = localConfig
+      }
       return localConfig
     }
   }
