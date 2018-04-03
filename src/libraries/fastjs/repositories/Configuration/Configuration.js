@@ -1,4 +1,4 @@
-import Connection from 'modules/Wrappers/Connection'
+import Connection from 'libraries/fastjs/Wrappers/Connection'
 import CONFIGURATION from 'libraries/fastjs/database/models/Configuration'
 import { APP_CONFIG_ID } from 'config/env'
 import _get from "lodash/get"

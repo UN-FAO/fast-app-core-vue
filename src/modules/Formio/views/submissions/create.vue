@@ -155,7 +155,7 @@ import Auth from 'libraries/fastjs/repositories/Auth/Auth'
 import Submission from "libraries/fastjs/database/models/Submission";
 import formio from "modules/Formio/components/formio/formio";
 import OFFLINE_PLUGIN from "modules/Formio/components/formio/src/offlinePlugin";
-import PdfExport from "modules/Wrappers/PdfExport";
+import PdfExport from "libraries/fastjs/Wrappers/PdfExport";
 import datatable from "components/dataTable/dataTable";
 export default {
   components: {

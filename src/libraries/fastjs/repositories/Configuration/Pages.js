@@ -1,4 +1,4 @@
-import Connection from 'modules/Wrappers/Connection'
+import Connection from 'libraries/fastjs/Wrappers/Connection'
 import Pages from 'libraries/fastjs/database/models/Pages'
 import _isEmpty from "lodash/isEmpty"
 import _get from "lodash/get"

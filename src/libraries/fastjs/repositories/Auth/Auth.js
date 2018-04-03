@@ -2,7 +2,7 @@ import Configuration from 'libraries/fastjs/repositories/Configuration/Configura
 import md5 from 'md5'
 import User from 'libraries/fastjs/database/models/User'
 import UserRepository from "libraries/fastjs/repositories/User/User";
-import Connection from 'modules/Wrappers/Connection'
+import Connection from 'libraries/fastjs/Wrappers/Connection'
 import Role from "libraries/fastjs/database/models/Role";
 import _forEach from "lodash/forEach";
 import _find from 'lodash/find'

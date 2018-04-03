@@ -2,7 +2,7 @@
 </template>
 
 <script>
-import Connection from "modules/Wrappers/Connection";
+import Connection from 'libraries/fastjs/Wrappers/Connection'
 import Auth from 'libraries/fastjs/repositories/Auth/Auth'
 import { Alert } from "quasar";
 import "quasar-extras/animate/bounceInRight.css";

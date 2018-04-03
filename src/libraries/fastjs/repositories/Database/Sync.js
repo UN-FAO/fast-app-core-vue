@@ -2,7 +2,7 @@ import store from 'config/store'
 import _filter from 'lodash/filter'
 import User from 'libraries/fastjs/database/models/User'
 import Auth from 'libraries/fastjs/repositories/Auth/Auth'
-import Connection from 'modules/Wrappers/Connection'
+import Connection from 'libraries/fastjs/Wrappers/Connection'
 import Submission from 'libraries/fastjs/database/models/Submission'
 let Sync = class {
   /**

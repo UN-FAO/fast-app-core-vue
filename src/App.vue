@@ -25,7 +25,7 @@ import leftdrawer from "layout/left_drawer";
 import rightdrawer from "layout/right_drawer";
 import connectionAlert from "modules/Connection/components/alert";
 import { mapActions } from "vuex";
-import Connection from "modules/Wrappers/Connection";
+import Connection from 'libraries/fastjs/Wrappers/Connection'
 import { QLayout, Toast, Platform } from "quasar";
 import layoutStore from "layout/layout-store";
 import FastClick from "fastclick";
