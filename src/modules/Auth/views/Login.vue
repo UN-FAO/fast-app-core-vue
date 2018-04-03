@@ -9,7 +9,7 @@
                 </p>
                 <div class="form-login" >
                   <div class="form-group">
-                        <div class="segment-title">{{$t('User Login')}}</div>
+                        <div class="segment-title">{{isAdminLogin ? $t('Admin Login'): $t('User Login')}}</div>
                     <q-field >
                     <q-input v-model="credentials.username"
                     :stack-label="$t('Email')" :placeholder="$t('Email')" name="Email" />
@@ -32,7 +32,8 @@
                   <p class="text-center _new-user"><router-link :to="{ path: 'register' }">{{$t('New user')}}?</router-link></p>
                   <p class="text-center" style="color: grey !important">
                     {{$t('Version')}}   {{$FAST_CONFIG.FAST_VERSION}}
-                    <q-icon name="fa-cog" color="white" @click="adminLogin" style="cursor:pointer;"/>
+                     <q-icon name="fa-cog" color="white" @click="adminLogin" style="cursor:pointer;" v-if="!isAdminLogin"/>
+                       <q-icon style="cursor:pointer;" name="fa-arrow-circle-left" color="white" @click="adminLogin" v-if="isAdminLogin"/>
                   </p>
                   <a href="fastapp://">Open the App!</a>
                 </div>
@@ -71,6 +72,7 @@ export default {
         username: "",
         password: ""
       },
+      isAdminLogin: false,
       logingIn: false,
       logInError: false
     };
@@ -92,17 +94,21 @@ export default {
       this.credentials.password = this.credentials.password.trim();
       this.credentials.username = this.credentials.username.trim();
       // Try to authenticate the User
-      Loading.show('Loging in...')
-      Auth.attempt(this.credentials, this.$FAST_CONFIG.APP_URL)
+      Loading.show("Loging in...");
+      Auth.attempt(
+        this.credentials,
+        this.$FAST_CONFIG.APP_URL,
+        this.isAdminLogin ? "admin" : undefined
+      )
         .then(User => {
-          Loading.hide()
+          Loading.hide();
           this.$router.push({
             name: "dashboard"
           });
         })
         .catch(error => {
           console.log(error);
-          Loading.hide()
+          Loading.hide();
           this.logingIn = false;
           this.$swal(
             "Wrong Credentials!",
@@ -112,9 +118,7 @@ export default {
         });
     },
     adminLogin() {
-      this.$router.push({
-        name: "adminLogin"
-      });
+      this.isAdminLogin = !this.isAdminLogin;
     }
   }
 };
