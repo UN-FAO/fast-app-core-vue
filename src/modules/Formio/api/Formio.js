@@ -10,34 +10,6 @@ import AXIOS from 'axios'
 
 const Formio = class {
   /**
-   * [authenticate description]
-   * @param  {[type]} username [description]
-   * @param  {[type]} password [description]
-   * @return {[type]}          [description]
-   */
-  static authenticate(username, password) {
-    return new Promise((resolve, reject) => {
-      axios.post('https://formio.form.io/user/login', {
-          data: {
-            email: username,
-            password: password
-          }
-        })
-        .then(response => {
-          resolve({
-            headers: response.headers,
-            data: response.data
-          })
-          Loading.hide()
-        })
-        .catch((error) => {
-          Loading.hide()
-          reject(error)
-        })
-    })
-  }
-
-  /**
    * [projects description]
    * @return {[type]} [description]
    */
@@ -570,64 +542,6 @@ const Formio = class {
   }
 
   /**
-   * [userAuth description]
-   * @param  {[type]} credentials [description]
-   * @param  {[type]} baseUrl     [description]
-   * @return {Promise}             [description]
-   */
-  static adminAuth(credentials, baseUrl) {
-    return new Promise((resolve, reject) => {
-      Loading.show({
-        message: 'Login admin in...'
-      })
-      let url = baseUrl + '/admin/login'
-      AXIOS.post(url, {
-          data: {
-            email: credentials.username,
-            password: credentials.password
-          }
-        })
-        .then(response => {
-          Loading.hide()
-          resolve(response)
-        })
-        .catch((error) => {
-          Loading.hide()
-          reject(error)
-        })
-    })
-  }
-
-  /**
-   * [userAuth description]
-   * @param  {[type]} credentials [description]
-   * @param  {[type]} baseUrl     [description]
-   * @return {Promise}             [description]
-   */
-  static userAuth(credentials, baseUrl) {
-    return new Promise((resolve, reject) => {
-      Loading.show({
-        message: 'Login user in...'
-      })
-      let url = baseUrl + '/user/login'
-      AXIOS.post(url, {
-          data: {
-            email: credentials.username,
-            password: credentials.password
-          }
-        })
-        .then(response => {
-          Loading.hide()
-          resolve(response)
-        })
-        .catch((error) => {
-          Loading.hide()
-          reject(error)
-        })
-    })
-  }
-
-  /**
    * [getUser description]
    * @param  {[type]} id      [description]
    * @param  {[type]} baseUrl [description]
@@ -663,16 +577,6 @@ const Formio = class {
     let form = new FormioForm(container)
     form.src = url + '/user/register'
     return form
-  }
-
-  /**
-   * [getRoles description]
-   * @param  {[type]} projectId [description]
-   * @return {[type]}           [description]
-   */
-  static getRoles(projectId) {
-    var roles = require('./roles.json');
-    return roles
   }
 
   /**

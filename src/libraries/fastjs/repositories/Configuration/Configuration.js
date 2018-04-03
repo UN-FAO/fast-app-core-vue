@@ -19,35 +19,34 @@ let Configuration = (() => {
           limit: 1
         })
       } catch (error) {
-        console.log('error', error)
+        throw new Error(error)
       }
     }
     remoteConfig = _get(remoteConfig, '[0].data', undefined)
 
     if (!localConfig && !remoteConfig) {
-      console.log('Cannot start app. You need to be connected to internet')
       throw new Error('Application is not connected to internet, or the configuration file cannot be pulled')
     }
 
-    if (remoteConfig) {
-      if (localConfig) {
-        await CONFIGURATION.local().remove(localConfig)
-      }
-      let insertedConfig = await CONFIGURATION.local().insert(remoteConfig)
-      // Create Global Vue variable
-      if (VUE && VUE.prototype) {
-        VUE.prototype.$FAST_CONFIG = insertedConfig
-      } else {
-        VUE.$FAST_CONFIG = insertedConfig
-      }
-      return insertedConfig
-    } else {
-      if (VUE && VUE.prototype) {
-        VUE.prototype.$FAST_CONFIG = localConfig
-      } else {
-        VUE.$FAST_CONFIG = localConfig
-      }
+    if (!remoteConfig) {
+      assingGlobalVariable(VUE, localConfig)
       return localConfig
+    }
+
+    if (localConfig) {
+      await CONFIGURATION.local().remove(localConfig)
+    }
+    let insertedConfig = await CONFIGURATION.local().insert(remoteConfig)
+    // Create Global Vue variable
+    assingGlobalVariable(VUE, insertedConfig)
+    return insertedConfig
+  }
+  /* eslint-disable no-unused-vars */
+  function assingGlobalVariable(VUE, configuration) {
+    if (VUE && VUE.prototype) {
+      VUE.prototype.$FAST_CONFIG = configuration
+    } else if (VUE) {
+      VUE.$FAST_CONFIG = configuration
     }
   }
 

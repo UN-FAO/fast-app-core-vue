@@ -6,7 +6,7 @@
 
 <script>
   import HotTable from "vue-handsontable-official";
-  import Localization from "modules/Localization/Localization";
+  import Localization from 'libraries/fastjs/repositories/Localization/Localization'
   import {
     Toast
   } from "quasar";

@@ -6,7 +6,7 @@
 </template>
 <script>
 
-import Auth from "modules/Auth/api/Auth";
+import Auth from 'libraries/fastjs/repositories/Auth/Auth'
 import appdashboard from "../components/appDashboard"
 import collectiondashboard from "../components/collectionDashboard"
 export default {

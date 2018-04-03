@@ -39,7 +39,7 @@ import {
   QCardMain,
   QItemSeparator
 } from "quasar";
-import Localization from "../Localization";
+import Localization from 'libraries/fastjs/repositories/Localization/Localization'
 import Translation from "libraries/fastjs/database/models/Translation";
 import Moment from 'libraries/fastjs/repositories/Date/moment'
 

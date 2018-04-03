@@ -2,19 +2,17 @@ import Connection from 'modules/Wrappers/Connection'
 import Pages from 'libraries/fastjs/database/models/Pages'
 import _isEmpty from "lodash/isEmpty"
 import _get from "lodash/get"
+import to from 'await-to-js';
 
 let PAGES = (() => {
   async function set() {
-    let localPages, remotePages
+    let localPages, remotePages, error
 
     localPages = await Pages.local().find()
     localPages = _get(localPages, '[0]', undefined)
     if (Connection.isOnline()) {
-      try {
-        remotePages = await Pages.remote().find({ limit: 500 })
-      } catch (error) {
-        console.log('error', error)
-      }
+      [error, remotePages] = await to(Pages.remote().find({ limit: 500 }))
+      if (error) { throw new Error(error) }
     }
     remotePages = _get(remotePages, '[0].data', undefined)
 

@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import setRoutes from 'config/setRoutes'
-import Auth from 'modules/Auth/api/Auth'
+import Auth from 'libraries/fastjs/repositories/Auth/Auth'
 /**
  * Import routes from modules
  */

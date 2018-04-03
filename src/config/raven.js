@@ -4,7 +4,7 @@ import {
   APP_ENV
 } from './env'
 import Raven from 'raven-js';
-import Auth from 'modules/Auth/api/Auth'
+import Auth from 'libraries/fastjs/repositories/Auth/Auth'
 import RavenVue from 'raven-js/plugins/vue';
 
 let ravenClient = {};

@@ -1,31 +1,23 @@
-import {
-  LocalStorage,
-  Loading
-} from 'quasar'
-import router from 'config/router'
-import Formio from 'modules/Formio/api/Formio'
-import {
-  MD5_KEY
-} from 'config/env'
+import Configuration from 'libraries/fastjs/repositories/Configuration/Configuration'
 import md5 from 'md5'
 import User from 'libraries/fastjs/database/models/User'
-import store from 'config/store'
+import UserRepository from "libraries/fastjs/repositories/User/User";
 import Connection from 'modules/Wrappers/Connection'
 import Role from "libraries/fastjs/database/models/Role";
 import _forEach from "lodash/forEach";
 import _find from 'lodash/find'
 
-const Auth = class {
+let Auth = (() => {
   /**
-   * Retrieves the current auth user
-   * @return {boolean} [description]
-   */
-  static user() {
-    let user = JSON.parse(LocalStorage.get.item('authUser'))
+  * Retrieves the current auth user
+  * @return {boolean} [description]
+  */
+  function user() {
+    let user = JSON.parse(localStorage.getItem('authUser'))
     return user === null ? false : user
   }
 
-  static userEmail() {
+  function userEmail() {
     let userEmail = ''
     if (Auth.user() && Auth.user().data && Auth.user().data.email) {
       userEmail = Auth.user().data.email
@@ -35,10 +27,9 @@ const Auth = class {
     return userEmail
   }
 
-  static hasRole(roleName) {
-    let user = JSON.parse(LocalStorage.get.item('authUser'))
+  function hasRole(roleName) {
+    let user = JSON.parse(localStorage.getItem('authUser'))
     user = user === null ? false : user
-    console.log('user', user)
     let result = _find(user.rolesNames, {
       title: roleName
     });
@@ -51,20 +42,16 @@ const Auth = class {
    * Authenticated
    * @return {boolean}
    */
-  static check() {
-    let user = JSON.parse(LocalStorage.get.item('authUser'))
+  function check() {
+    let user = JSON.parse(localStorage.getItem('authUser'))
     return !!user && !!user.x_jwt_token
   }
 
   /**
    * Logs the Authenticated User Out
    */
-  static logOut() {
-    LocalStorage.remove('authUser')
-
-    router.push({
-      path: '/login'
-    })
+  async function logOut() {
+    await localStorage.removeItem('authUser')
   }
 
   /**
@@ -72,23 +59,22 @@ const Auth = class {
    * @param  {[type]}   credentials [description]
    * @return {Promise}   callback    [description]
    */
-  static attempt(credentials, baseUrl, role) {
+  function attempt(credentials, baseUrl, role) {
     role = role || 'user'
 
     return new Promise((resolve, reject) => {
-      this.authenticate(credentials, baseUrl, role)
+      authenticate(credentials, baseUrl, role)
         // If credentials are OK
-        .then(async(response) => {
-          Loading.hide()
+        .then(async (response) => {
           let headers = response.headers || {}
           let user = response.data
           user.x_jwt_token = headers['x-jwt-token']
 
           // Save auth user
-          LocalStorage.set('authUser', JSON.stringify(user))
+          localStorage.setItem('authUser', JSON.stringify(user))
 
           // user.isAdmin = true
-          let roles = await Formio.getRoles();
+          let roles = await Role.getJsonRoles()
           user.rolesNames = [];
           _forEach(roles, async role => {
             Role.local().updateOrCreate(role);
@@ -96,13 +82,12 @@ const Auth = class {
               user.rolesNames.push(role)
             }
           });
-          LocalStorage.set('authUser', JSON.stringify(user))
+          localStorage.setItem('authUser', JSON.stringify(user))
 
           resolve(user)
         })
         // If there are errors
         .catch((error) => {
-          Loading.hide()
           console.log('There was an error over here!')
           reject(error)
         })
@@ -114,25 +99,16 @@ const Auth = class {
    * @param  {[type]} credentials [description]
    * @return {Promise}             [description]
    */
-  static authenticate(credentials, baseUrl, role) {
+  function authenticate(credentials, baseUrl, role) {
     let isOnline = Connection.isOnline()
-
-    if (role === 'admin') {
-      if (isOnline) {
-        return this.remoteAuthenticate(credentials, baseUrl, role)
-          .catch(() => {
-            console.log('Remote Auth failed, trying locally')
-          })
-      }
-    }
     if (isOnline) {
-      return this.remoteAuthenticate(credentials, baseUrl, role)
+      return remoteAuthenticate(credentials, baseUrl, role)
         .catch(() => {
           console.log('Remote Auth failed, trying locally')
-          return this.localAuthenticate(credentials, baseUrl)
+          return localAuthenticate(credentials, baseUrl)
         })
     }
-    return this.localAuthenticate(credentials, baseUrl)
+    return localAuthenticate(credentials, baseUrl)
   }
 
   /**
@@ -141,29 +117,12 @@ const Auth = class {
    * @param  {[type]} baseUrl     [description]
    * @return {[type]}             [description]
    */
-  static remoteAuthenticate(credentials, baseUrl, role) {
-    Loading.show({
-      message: 'Authenticating to Formio..'
-    })
-
-    if (role === 'admin') {
-      return Formio.adminAuth(credentials, baseUrl)
-        .then((response) => {
-          // Store locally the user for future offline login
-          let user = response.data
-          store.dispatch('storeUserLocally', user)
-          return response
-        })
-        .catch((error) => {
-          console.log('Error from remote auth', error)
-        })
-    }
-
-    return Formio.userAuth(credentials, baseUrl)
+  function remoteAuthenticate(credentials, baseUrl, role) {
+    return UserRepository.login({ credentials: credentials, role: role })
       .then((response) => {
         // Store locally the user for future offline login
         let user = response.data
-        store.dispatch('storeUserLocally', user)
+        UserRepository.storeLocally(user)
         return response
       })
       .catch((error) => {
@@ -176,13 +135,14 @@ const Auth = class {
    * @param  {[type]} credentials [description]
    * @return {[type]}             [description]
    */
-  static async localAuthenticate(credentials) {
+  async function localAuthenticate(credentials) {
     const {
       username,
       password
     } = credentials
+    let config = Configuration.getLocal()
     // Hash password
-    const hashedPassword = md5(password, MD5_KEY)
+    const hashedPassword = md5(password, config.MD5_KEY)
     // Get the user
     let dbUser = await User.local().findOne({
       'data.data.email': username
@@ -196,6 +156,14 @@ const Auth = class {
     // If is valid, return the user
     return dbUser
   }
-}
 
+  return Object.freeze({
+    user,
+    userEmail,
+    hasRole,
+    check,
+    logOut,
+    attempt
+  });
+})()
 export default Auth

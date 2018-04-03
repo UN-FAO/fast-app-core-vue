@@ -3,7 +3,7 @@ import OFFLINE_PLUGIN from "modules/Formio/components/formio/src/offlinePlugin";
 import Promise from 'bluebird'
 import { Loading } from 'quasar'
 import store from 'config/store'
-import Auth from 'modules/Auth/api/Auth'
+import Auth from 'libraries/fastjs/repositories/Auth/Auth'
 import _debounce from 'lodash/debounce'
 import PreProcess from './importPreProcess'
 // import Uploader from './Uploader'

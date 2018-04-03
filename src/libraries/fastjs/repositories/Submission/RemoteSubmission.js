@@ -1,5 +1,5 @@
 import FormioJS from "formiojs";
-import Auth from "modules/Auth/api/Auth";
+import Auth from 'libraries/fastjs/repositories/Auth/Auth'
 import Config from "libraries/fastjs/repositories/Configuration/Configuration";
 
 let RemoteSubmission = class {

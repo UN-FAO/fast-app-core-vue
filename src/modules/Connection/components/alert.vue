@@ -3,7 +3,7 @@
 
 <script>
 import Connection from "modules/Wrappers/Connection";
-import Auth from "modules/Auth/api/Auth";
+import Auth from 'libraries/fastjs/repositories/Auth/Auth'
 import { Alert } from "quasar";
 import "quasar-extras/animate/bounceInRight.css";
 import "quasar-extras/animate/bounceOutRight.css";

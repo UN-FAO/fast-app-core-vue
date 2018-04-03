@@ -151,7 +151,7 @@ import _groupBy from "lodash/groupBy";
 import _debounce from "lodash/debounce";
 import FormioUtils from "formiojs/utils";
 import Form from "libraries/fastjs/database/models/Form";
-import Auth from "modules/Auth/api/Auth";
+import Auth from 'libraries/fastjs/repositories/Auth/Auth'
 import Submission from "libraries/fastjs/database/models/Submission";
 import formio from "modules/Formio/components/formio/formio";
 import OFFLINE_PLUGIN from "modules/Formio/components/formio/src/offlinePlugin";

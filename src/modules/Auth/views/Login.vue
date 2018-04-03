@@ -50,8 +50,8 @@
 
 <script>
 import { mapActions } from "vuex";
-import Auth from "modules/Auth/api/Auth";
-import { QField, QInput, QBtn, QIcon } from "quasar";
+import Auth from "libraries/fastjs/repositories/Auth/Auth";
+import { Loading, QField, QInput, QBtn, QIcon } from "quasar";
 
 export default {
   async mounted() {
@@ -67,7 +67,6 @@ export default {
   },
   data() {
     return {
-      buttonClass: "normal",
       credentials: {
         username: "",
         password: ""
@@ -93,15 +92,17 @@ export default {
       this.credentials.password = this.credentials.password.trim();
       this.credentials.username = this.credentials.username.trim();
       // Try to authenticate the User
+      Loading.show('Loging in...')
       Auth.attempt(this.credentials, this.$FAST_CONFIG.APP_URL)
         .then(User => {
-          this.$store.dispatch("setUserObject", User);
+          Loading.hide()
           this.$router.push({
             name: "dashboard"
           });
         })
         .catch(error => {
           console.log(error);
+          Loading.hide()
           this.logingIn = false;
           this.$swal(
             "Wrong Credentials!",

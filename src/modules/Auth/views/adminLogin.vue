@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import Auth from "modules/Auth/api/Auth";
+import Auth from 'libraries/fastjs/repositories/Auth/Auth'
 import { QField, QInput, QBtn, QIcon } from "quasar";
 import { mapActions } from "vuex";
 

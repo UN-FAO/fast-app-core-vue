@@ -1,12 +1,13 @@
 import Formio from 'formiojs'
 import config from "../../../config";
+import to from 'await-to-js';
 
 const remoteModel = (() => {
   /* eslint-disable no-unused-vars */
   async function getFormioInstance({ formPath, submissionID = undefined }) {
     // Get the base URL
     let formUrl = formPath ? await config.get().baseURL : await config.get().url
-    console.log('formUrformUrlformUrlformUrll', formUrl, formPath)
+    Formio.setToken('');
     if (config.get().jwt) {
       Formio.setToken(config.get().jwt);
     }
@@ -23,8 +24,8 @@ const remoteModel = (() => {
    * @return {[type]}        [description]
    */
   async function find({ formPath, filter, limit, select, pagination }) {
+    let remoteSubmissions, error
     let formio = await getFormioInstance({ formPath: formPath })
-
     let queryParams = {
       limit: limit
     }
@@ -39,9 +40,10 @@ const remoteModel = (() => {
       queryParams = { ...queryParams, ...selectQuery }
     }
 
-    let remoteSubmissions = await formio.loadSubmissions({
+    [error, remoteSubmissions] = await to(formio.loadSubmissions({
       params: queryParams
-    });
+    }));
+    if (error) { let e = "The API call to " + formPath + " could not be completed, server responded with " + JSON.stringify(error); throw new Error(e) }
 
     return remoteSubmissions
   }

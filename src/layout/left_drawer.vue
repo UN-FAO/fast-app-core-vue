@@ -96,7 +96,7 @@
 </style>
 <script>
 import { mapState, mapActions } from "vuex";
-import Auth from "modules/Auth/api/Auth";
+import Auth from "libraries/fastjs/repositories/Auth/Auth";
 import Form from "libraries/fastjs/database/models/Form";
 import {
   QScrollArea,
@@ -113,10 +113,10 @@ import {
   QItem,
   QItemSeparator
 } from "quasar";
-import pageLinks from "./components/pageLinks"
-import collectionpagelinks from "./components/collectionPageLinks"
+import pageLinks from "./components/pageLinks";
+import collectionpagelinks from "./components/collectionPageLinks";
 import layoutStore from "./layout-store";
-import Localization from "modules/Localization/Localization";
+import Localization from "libraries/fastjs/repositories/Localization/Localization";
 import Pages from "libraries/fastjs/repositories/Configuration/Pages";
 import Configuration from "libraries/fastjs/repositories/Configuration/Configuration";
 
@@ -142,13 +142,13 @@ export default {
     Form.local().sAll(this, "forms");
   },
   asyncData: {
-      PAGES: {
+    PAGES: {
       async get() {
         let pages = await Pages.getLocal();
         return pages;
       },
       transform(result) {
-        return result.pages
+        return result.pages;
       }
     }
   },
@@ -212,13 +212,15 @@ export default {
         }
       });
     },
-    handleLogout() {
+    async handleLogout() {
       this.$eventHub.$emit("openLeftDrawer");
-      this.$store.dispatch("clearAuthUser");
-      Auth.logOut();
+      await Auth.logOut();
+      this.$router.push({
+        path: "/login"
+      });
     },
     isAdmin() {
-      console.log(Auth.hasRole("Administrator"))
+      console.log(Auth.hasRole("Administrator"));
       return Auth.hasRole("Administrator");
     },
     isReviewer() {

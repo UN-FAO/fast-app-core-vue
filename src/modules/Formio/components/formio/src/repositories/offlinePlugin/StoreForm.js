@@ -2,7 +2,8 @@ import md5 from 'md5'
 import store from 'config/store'
 import router from 'config/router'
 import CONFIGURATION from 'libraries/fastjs/repositories/Configuration/Configuration'
-import Auth from 'modules/Auth/api/Auth'
+import Auth from 'libraries/fastjs/repositories/Auth/Auth'
+import User from "libraries/fastjs/repositories/User/User";
 
 let StoreForm = class {
   static handle(formSubmission, formio, redirect, hashField, formId, eventHub) {
@@ -82,8 +83,7 @@ let StoreForm = class {
   static async storeUser(formSubmission, formio, redirect, hashField, formId, eventHub) {
     let config = await CONFIGURATION.getLocal()
     formSubmission.data.hashedPassword = md5(formSubmission.data.password, config.MD5_KEY)
-
-    store.dispatch('storeUserLocally', {
+    User.storeLocally({
       data: formSubmission.data,
       sync: false,
       formio: formio

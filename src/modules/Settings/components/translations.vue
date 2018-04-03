@@ -106,7 +106,7 @@
 import Form from 'libraries/fastjs/database/models/Form'
 import FormLabels from 'libraries/fastjs/repositories/Form/Labels'
 import Translation from "libraries/fastjs/database/models/Translation";
-import Localization from "modules/Localization/Localization";
+import Localization from 'libraries/fastjs/repositories/Localization/Localization'
 import { mapActions } from "vuex";
 import {
   QBtn,

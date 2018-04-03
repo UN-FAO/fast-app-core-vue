@@ -3,7 +3,7 @@ import _filter from 'lodash/filter'
 import _orderBy from 'lodash/orderBy'
 import _uniqBy from 'lodash/uniqBy'
 import _get from 'lodash/get'
-import Auth from 'modules/Auth/api/Auth'
+import Auth from 'libraries/fastjs/repositories/Auth/Auth'
 import * as Database from '../Database';
 import uuidv4 from 'uuid/v4'
 import moment from 'moment'

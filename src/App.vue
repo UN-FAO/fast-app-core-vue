@@ -25,7 +25,6 @@ import leftdrawer from "layout/left_drawer";
 import rightdrawer from "layout/right_drawer";
 import connectionAlert from "modules/Connection/components/alert";
 import { mapActions } from "vuex";
-import Sync from "libraries/fastjs/repositories/Database/Sync";
 import Connection from "modules/Wrappers/Connection";
 import { QLayout, Toast, Platform } from "quasar";
 import layoutStore from "layout/layout-store";
@@ -37,7 +36,9 @@ export default {
     window.addEventListener(
       "load",
       function() {
-        FastClick(document.body);
+        if (document) {
+          FastClick(document.body);
+        }
       },
       false
     );
@@ -58,7 +59,7 @@ export default {
           }
         },
         function(error) {
-          return console.log(error)
+          return console.log(error);
         }
       );
     }
@@ -99,47 +100,17 @@ export default {
     });
 
     Connection.initEventListeners(this);
-    this.setSyncInterval();
   },
   methods: {
     ...mapActions(["sendOfflineData"]),
     toggleRtl: function(lenguage) {
       this.ltr = lenguage.direction === "ltr";
-    },
-    /**
-     * [setSyncInterval description]
-     */
-    setSyncInterval: function() {
-      let rInterval = function(callback, delay) {
-        let dateNow = Date.now,
-          requestAnimation = window.requestAnimationFrame,
-          start = dateNow(),
-          stop,
-          intervalFunc = function() {
-            // eslint-disable-next-line no-use-before-define
-            dateNow() - start < delay || ((start += delay), callback());
-            // eslint-disable-next-line no-use-before-define
-            stop || requestAnimation(intervalFunc);
-          };
-        requestAnimation(intervalFunc);
-        return {
-          clear: function() {
-            stop = 1;
-          }
-        };
-      };
-      rInterval(() => {
-        return Sync.now(this);
-      }, 2000);
     }
   },
   data() {
     return {
-      backgroundColor: "whitesmoke",
-      timeout: {},
       ltr: true,
-      layoutStore,
-      backgroundStyle: "height: inherit;"
+      layoutStore
     };
   },
   computed: {

@@ -13,16 +13,12 @@ const Localization = class {
    * @return {[type]}          [description]
    */
   static async setLocales() {
-    let appTranslations = []
-
     let localTranslations = await Translation.local().find()
 
     if (localTranslations.length > 0 && localTranslations[0].data) {
-      appTranslations = localTranslations[0].data
-    } else {
-      appTranslations = await Localization.getTranslations()
+      return localTranslations[0].data
     }
-
+    let appTranslations = await Localization.getTranslations()
     return appTranslations
   }
 
@@ -36,7 +32,10 @@ const Localization = class {
     if (navigator.onLine) {
       try {
         // Fetch the Translation that are online
-        let onlineTranslations = await Localization.getOnlineTranslation()
+        let onlineTranslations = await Translation.remote().find({limit: 50000})
+        if (onlineTranslations.length === 0) {
+          return []
+        }
         let lenguages = Translation.local().getIsoLanguages()
         let localTranslations = {}
         localTranslations.label = {}
@@ -73,24 +72,14 @@ const Localization = class {
         })
 
         appTranslations = appTranslations.data
-
+        console.log('apptgerger', appTranslations)
         return appTranslations
       } catch (error) {
-        return []
         console.log('Error while getting translations')
       }
     } else {
       return []
     }
-  }
-
-  /**
-   * [getTranslation description]
-   * @return {[type]} [description]
-   */
-  static async getOnlineTranslation() {
-    let config = await CONFIGURATION.getLocal();
-    return Formio.getTranslations(config.APP_NAME)
   }
 
   /**
