@@ -5,15 +5,26 @@ import to from 'await-to-js';
 const remoteModel = (() => {
   /* eslint-disable no-unused-vars */
   async function getFormioInstance({ formPath, submissionID = undefined }) {
+    let formUrl
     // Get the base URL
-    let formUrl = formPath ? await config.get().baseURL : await config.get().url
+    switch (formPath) {
+      case 'custom':
+        formUrl = await config.get().baseURL
+          break;
+      case undefined:
+        formUrl = await config.get().url
+        formUrl = formUrl + "/" + formPath;
+        break;
+      default:
+        formUrl = await config.get().baseURL
+        formUrl = formUrl + "/" + formPath;
+        break;
+    }
     Formio.setToken('');
     if (config.get().jwt) {
       Formio.setToken(config.get().jwt);
     }
     Formio.clearCache();
-    // Get ID of the Form
-    formUrl = formUrl + "/" + formPath;
     // Set URL in case of submission context
     formUrl = submissionID ? formUrl + 'submission/' + submissionID : formUrl
     return new Formio(formUrl);
@@ -155,7 +166,8 @@ const remoteModel = (() => {
     insert,
     update,
     updateOrCreate,
-    findAndRemove
+    findAndRemove,
+    getFormioInstance
   });
 })()
 export default remoteModel

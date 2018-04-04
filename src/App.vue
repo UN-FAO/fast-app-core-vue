@@ -24,8 +24,7 @@ import toolbar from "layout/toolbar";
 import leftdrawer from "layout/left_drawer";
 import rightdrawer from "layout/right_drawer";
 import connectionAlert from "modules/Connection/components/alert";
-import { mapActions } from "vuex";
-import Connection from 'libraries/fastjs/Wrappers/Connection'
+import Connection from "libraries/fastjs/Wrappers/Connection";
 import { QLayout, Toast, Platform } from "quasar";
 import layoutStore from "layout/layout-store";
 import FastClick from "fastclick";
@@ -102,7 +101,6 @@ export default {
     Connection.initEventListeners(this);
   },
   methods: {
-    ...mapActions(["sendOfflineData"]),
     toggleRtl: function(lenguage) {
       this.ltr = lenguage.direction === "ltr";
     }
@@ -118,8 +116,7 @@ export default {
       return (
         this.$route.name !== "login" &&
         this.$route.name !== "register" &&
-        this.$route.name !== "login_redirect" &&
-        this.$route.name !== "adminLogin"
+        this.$route.name !== "login_redirect"
       );
     }
   },

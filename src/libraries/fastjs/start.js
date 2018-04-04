@@ -1,9 +1,10 @@
+import to from 'await-to-js';
+import fastConfig from "libraries/fastjs/config";
+import Form from 'libraries/fastjs/repositories/Form/RemoteForms'
+import Pages from "libraries/fastjs/repositories/Configuration/Pages";
+import SyncInterval from "libraries/fastjs/repositories/Database/SyncInterval";
 import Localization from 'libraries/fastjs/repositories/Localization/Localization'
 import Configuration from "libraries/fastjs/repositories/Configuration/Configuration";
-import Pages from "libraries/fastjs/repositories/Configuration/Pages";
-import fastConfig from "libraries/fastjs/config";
-import to from 'await-to-js';
-import SyncInterval from "libraries/fastjs/repositories/Database/SyncInterval";
 /* eslint-disable no-unused-vars */
 let App = (() => {
   async function start(Vue) {
@@ -16,6 +17,8 @@ let App = (() => {
     if (err) { let e = 'The pages could not be retrieve from source'; console.log(e, err) }
 
     let appTranslations = await Localization.setLocales()
+
+    await Form.update();
 
     SyncInterval.set(2000)
 

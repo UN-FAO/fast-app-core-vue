@@ -88,12 +88,6 @@ export default {
       this.submissions = submissions.results;
       this.loading = false;
     },
-    async pullSubmissions() {
-      this.$store.dispatch("getSubmissions", {
-        currentForm: this.currentForm,
-        vm: this
-      });
-    },
     displayError(error) {
       let errorString =
         '<div style="overflow-x:auto;"><table class="restable"><thead> <tr><th scope="col">' +

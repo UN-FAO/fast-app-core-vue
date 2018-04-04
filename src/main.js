@@ -55,7 +55,6 @@ Vue.prototype.$http = axios
 if (__THEME === 'mat') {
   require('quasar-extras/roboto-font')
 }
-
 /**
  *  On App start
  */

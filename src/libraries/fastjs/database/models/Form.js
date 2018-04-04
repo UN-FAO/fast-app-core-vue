@@ -1,105 +1,34 @@
-import * as Database from '../Database';
-import uuidv4 from 'uuid/v4'
-import _orderBy from "lodash/orderBy"
 import moment from 'moment'
-
-const Form = class {
+import _orderBy from "lodash/orderBy"
+import baseModel from './baseModelFactory'
+import remoteModel from './baseModel/remote'
+import Connection from 'libraries/fastjs/Wrappers/Connection'
+let Form = (args) => {
+  var baseModel = args.baseModel;
   /**
    * [getOwnName description]
    * @return {[type]} [description]
    */
-  static getOwnName() {
+  /* eslint-disable no-unused-vars */
+  function getOwnName() {
     return 'Form'
   }
-  /**
-   * [remote description]
-   * @return {[type]} [description]
-   */
-  static remote() {
-    Form.getFrom = 'remote'
-    return Form
-  }
-  /**
-   * [local description]
-   * @return {[type]} [description]
-   */
-  static local() {
-    Form.getFrom = 'local'
-    return Form
-  }
-  /**
-   * [getModel description]
-   * @return {[type]} [description]
-   */
-  static async getModel() {
-    const DB = await Database.get()
-    return DB.getCollection(Form.getOwnName())
-  }
-  /**
-   * [find description]
-   * @param  {[type]} filter [description]
-   * @return {[type]}        [description]
-   */
-  static async find(filter) {
-    const model = await Form.getModel()
-    return model.find(filter);
-  }
-  /**
-   * [findOne description]
-   * @param  {[type]} filter [description]
-   * @return {[type]}        [description]
-   */
-  static async findOne(filter) {
-    const model = await Form.getModel()
-    return model.findOne(filter);
-  }
-  /**
-   * [remove description]
-   * @param  {[type]} document [description]
-   * @return {[type]}          [description]
-   */
-  static async remove(document) {
-    const model = await Form.getModel()
-    return model.remove(document);
-  }
-  /**
-   * [insert description]
-   * @param  {[type]} element [description]
-   * @return {[type]}         [description]
-   */
-  static async insert(element) {
-    const model = await Form.getModel()
-    element._id = uuidv4() + '_local'
-    return model.insert(element);
-  }
-  /**
-   * [update description]
-   * @param  {[type]} document [description]
-   * @return {[type]}          [description]
-   */
-  static async update(document) {
-    const model = await Form.getModel()
-    return model.update(document);
+
+  function getFormPath() {
+    return 'custom'
   }
 
-  static async updateOrCreate(document) {
-    const model = await Form.getModel()
-    let role = await model.findOne(document)
-    if (!role) {
-      model.insert(document)
-    }
+  async function customFind() {
+    let formio = await remoteModel.getFormioInstance({ formPath: 'custom' })
+    let remoteForms = Connection.isOnline() ? await formio.loadForms({
+      params: {
+        limit: '200'
+      }
+    }) : []
+    return remoteForms
   }
 
-  static async findAndRemove(filter) {
-    const model = await Form.getModel()
-    return model.findAndRemove(filter);
-  }
-  /**
- * [get description]
- * @param  {[type]} id [description]
- * @return {[type]}    [description]
- */
-  static async get(id) {
+  async function get(id) {
     id = id.replace(/\s/g, '')
 
     let formRequest = await Form.findOne({
@@ -123,12 +52,12 @@ const Form = class {
     }
   }
 
-  static async sAll() {
+  async function sAll() {
     let allForms = await Form.find()
     return allForms
   }
 
-  static async cardFormattedForms(action) {
+  async function cardFormattedForms(action) {
     let result = await Form.local().sAll();
     result = result.filter(o => {
       return o.data.tags.indexOf("visible") > -1;
@@ -155,5 +84,17 @@ const Form = class {
     result = { innerCards: result }
     return result
   }
+
+  return Object.freeze(Object.assign({}, baseModel, {
+    getOwnName,
+    getFormPath,
+    sAll,
+    get,
+    cardFormattedForms,
+    customFind
+  }));
 }
+Form = Form({
+  baseModel: baseModel()
+});
 export default Form

@@ -46,6 +46,9 @@ const baseModel = () => {
         return Local.find({ modelName: this.getOwnName(), filter, limit, select, pagination })
         break;
       case 'remote':
+        if (this.getFormPath() === 'custom') {
+          return this.customFind({ formPath: this.getFormPath(), filter, limit, select, pagination })
+        }
         return Remote.find({ formPath: this.getFormPath(), filter, limit, select, pagination })
         break;
       case 'remote-local':

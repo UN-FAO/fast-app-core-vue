@@ -9,7 +9,6 @@ import AuthRoutes from 'modules/Auth/routes'
 import DashboardRoutes from 'modules/Dashboard/routes'
 import FormioRoutes from 'modules/Formio/routes'
 import SettingsRoutes from 'modules/Settings/routes'
-import TableauRoutes from 'modules/Tableau/routes'
 
 Vue.use(VueRouter)
 /*
@@ -25,7 +24,7 @@ Vue.use(VueRouter)
  |   routes.push({path: '/somePath', component: someComponent, name: 'someName'})
  |
  */
-let routes = setRoutes([AuthRoutes, DashboardRoutes, FormioRoutes, SettingsRoutes, TableauRoutes])
+let routes = setRoutes([AuthRoutes, DashboardRoutes, FormioRoutes, SettingsRoutes])
 
 // Default 404
 const Error404 = r =>
@@ -33,19 +32,6 @@ const Error404 = r =>
 routes.push({ path: '*', component: Error404, name: 'error404' })
 
 const router = new VueRouter({
-  /*
-   * NOTE! VueRouter "history" mode DOESN'T works for Cordova builds,
-   * it is only to be used only for websites.
-   *
-   * If you decide to go with "history" mode, please also open /config/index.js
-   * and set "build.publicPath" to something other than an empty string.
-   * Example: '/' instead of current ''
-   *
-   * If switching back to default "hash" mode, don't forget to set the
-   * build publicPath back to '' so Cordova builds work again.
-   */
-
-  // mode: 'history',
   mode: 'hash',
   routes,
   scrollBehavior (to, from, savedPosition) {

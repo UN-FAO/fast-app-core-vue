@@ -50,16 +50,9 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
 import Auth from "libraries/fastjs/repositories/Auth/Auth";
 import { Loading, QField, QInput, QBtn, QIcon } from "quasar";
-
 export default {
-  async mounted() {
-    this.getResources({
-      appName: this.$FAST_CONFIG.APP_NAME
-    });
-  },
   components: {
     QField,
     QInput,
@@ -72,9 +65,7 @@ export default {
         username: "",
         password: ""
       },
-      isAdminLogin: false,
-      logingIn: false,
-      logInError: false
+      isAdminLogin: false
     };
   },
   /**
@@ -83,14 +74,12 @@ export default {
    * @type {Object}
    */
   methods: {
-    ...mapActions(["sendOfflineData", "getResources"]),
     /**
      * Response to the login method
      * sets the layout for the App ON.
      * @return {[type]} [description]
      */
     handleLogin(event, done) {
-      this.logingIn = true;
       this.credentials.password = this.credentials.password.trim();
       this.credentials.username = this.credentials.username.trim();
       // Try to authenticate the User
@@ -109,7 +98,6 @@ export default {
         .catch(error => {
           console.log(error);
           Loading.hide();
-          this.logingIn = false;
           this.$swal(
             "Wrong Credentials!",
             "Wrong username or password...try again",
