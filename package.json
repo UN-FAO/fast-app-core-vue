@@ -28,7 +28,8 @@
     "set:sws": "sh deploys/setEnv.sh SWS SWS 5aa95c9550daad5e7d88ef30",
     "set:ssfk": "sh deploys/setEnv.sh SSFK SSFK 5a9674e1d27542149fd0cb5c",
     "set:dev": "sh deploys/setEnv.sh DEV DEV 59b136fb2f12080007487131",
-    "get:roles": "sh deploys/getAppRoles.sh"
+    "get:roles": "sh deploys/getAppRoles.sh",
+    "test": "echo 'hi!'"
   },
   "dependencies": {
     "await-to-js": "^2.0.1",
