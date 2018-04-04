@@ -1,0 +1,123 @@
+
+version: 2
+
+jobs:
+
+  unit_test:
+    docker:
+      # specify the version you desire here
+      - image: circleci/node:8.1
+
+      # Specify service dependencies here if necessary
+      # CircleCI maintains a library of pre-built images
+      # documented at https://circleci.com/docs/2.0/circleci-images/
+      # - image: circleci/mongo:3.4.4
+
+    working_directory: ~/repo
+
+    branch: develop
+
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cac he:
+        keys:
+        - v1-dependencies-{{ checksum "package.json" }}
+        # fallback to using the latest cache if no exact match is found
+        - v1-dependencies-
+
+      - run: npm install
+
+      - save_cache:
+        paths:
+          - node_modules
+        key: v1-dependencies-{{ checksum "package.json" }}
+
+      # run tests!
+      - run: npm test
+
+  e2e_test:
+    machine: true
+
+    working_directory: ~/frontend
+
+    parallelism: 1
+
+    steps:
+      - run: uname -a
+
+      - checkout
+      - run: git status
+
+      - run: git clone https://bitbucket.org/followupcio/fao_node_dev.git ~/fao_node_dev
+      - run: echo $TESTING_DOCKER_ENV | sed -e $'s/;/\\\n/g' > ~/fao_node_dev/.env
+      - run: cat ~/fao_node_dev/.env
+
+      - run: git clone https://bitbucket.org/followupcio/backend.git ~/backend && cd ~/backend && git checkout develop && git status
+      - run: echo $TESTING_BACKEND_ENV | sed -e $'s/;/\\\n/g' > ~/backend/.env
+      - run: cat ~/backend/.env
+      - run: ls ~/backend
+
+      # Force copy of backend file to volume
+      # - run: cd ~/fao_node_dev && docker-compose run -d node_backend sleep 60
+      # - run: cd ~/fao_node_dev && docker-compose run -d node_frontend sleep 60
+
+      - run: cd ~/fao_node_dev && docker-compose up -d
+
+      - run: sleep 60
+
+      - run: npm i cypress
+
+      - run: docker ps
+
+      - run:
+          name: Waiting for Docker Compose to be ready
+          command: |
+            for i in `seq 1 6`;
+            do
+              nc -z 127.0.1 3001 && echo Success && exit 0
+              echo -n .
+              sleep 1
+            done
+            echo Failed waiting for Docker Compose && exit 1
+
+      - run:
+          name: Running E2E tests with JUnit reporter
+          command: npm run test-junit
+
+      - store_test_results:
+          path: junit-results
+
+      - store_artifacts:
+          path: cypress/videos
+
+      - store_artifacts:
+          path: cypress/screenshots
+
+  deployment:
+      docker:
+        - image: chybie/node-aws-cli
+
+      working_directory: ~/repo
+
+      steps:
+        - checkout
+        - run: echo $BUILDING_FRONTEND_ENV | sed -e $'s/;/\\\n/g' > ~/repo/.env
+        - run: cat ~/repo/.env
+        - run: npm i
+        - run: npm run build
+        - deploy:
+            name: Deploy to S3 if tests pass and branch is Master
+            command: |
+                  aws s3 sync ~/repo/build s3://faomsdev --delete --acl public-read --region eu-west-2
+
+workflows:
+
+  version: 2
+
+  test_and_deploy:
+
+    jobs:
+      - unit_test
+      # - deployment
