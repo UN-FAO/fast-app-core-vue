@@ -15,59 +15,11 @@
 </style>
 
 <script>
-import {
-  QCard,
-  QCardTitle,
-  QCardSeparator,
-  QCardMain,
-  QCardMedia,
-  QItemSide,
-  QFab,
-  QFabAction,
-  QFixedPosition,
-  QPullToRefresh,
-  QTabs,
-  QTab,
-  QTabPane,
-  QCollapsible,
-  QBtn,
-  QIcon,
-  QTooltip,
-  QList,
-  QItem,
-  QItemSeparator
-} from "quasar";
 import actioncards from "../components/actionCards";
 import Form from "libraries/fastjs/database/models/Form";
 export default {
   components: {
-    actioncards,
-    QCard,
-    QCardMedia,
-    QItemSide,
-    QCardTitle,
-    QCardSeparator,
-    QCardMain,
-    QFab,
-    QFabAction,
-    QFixedPosition,
-    QPullToRefresh,
-    QTabs,
-    QTab,
-    QTabPane,
-    QCollapsible,
-    QBtn,
-    QIcon,
-    QTooltip,
-    QList,
-    QItem,
-    QItemSeparator
-  },
-  data: () => {
-    return {
-      forms: undefined,
-      loading: true
-    };
+    actioncards
   },
    asyncData: {
     newForms: {
@@ -78,18 +30,6 @@ export default {
       transform(result) {
         return result;
       }
-    }
-  },
-  mounted: async function() {
-    let forms = await Form.local().sAll();
-    let visible = forms.filter(o => {
-      return o.data.tags.indexOf("visible") > -1;
-    });
-    if (visible.length === 1 && this.$FAST_CONFIG.APP_ENV !== "dev") {
-      this.$router.push({
-        name: "formio_form_show",
-        params: { idForm: visible[0].data.path }
-      });
     }
   }
 };

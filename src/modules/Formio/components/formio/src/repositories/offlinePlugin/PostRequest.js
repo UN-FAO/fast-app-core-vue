@@ -1,6 +1,4 @@
-import Formio from 'formiojs'
 import _debounce from 'lodash/debounce'
-import Form from 'libraries/fastjs/database/models/Form'
 import StoreForm from './StoreForm'
 
 const PostRequest = class {
@@ -8,16 +6,15 @@ const PostRequest = class {
    *
    * @param {*} args
    */
-  static async handle(args, redirect, hashField, formId, eventHub) {
+  static async handle({args, hashField, formio}) {
     if (args.type === 'submission') {
-      return PostRequest.handleSubmission(args, redirect, hashField, formId, eventHub)
+      return PostRequest.handleSubmission({args, hashField, formio})
     }
   }
   /**
    *
    */
-  static async handleSubmission(args, redirect, hashField, formId, eventHub) {
-    let formio = await PostRequest.getFormioInstance(args)
+  static async handleSubmission({args, hashField, formio}) {
     let submission = args.data
     if (args.data && !args.data.trigger) {
       let formSubmission = {
@@ -29,18 +26,8 @@ const PostRequest = class {
       submission = formSubmission
     }
     let dStoreForm = _debounce(StoreForm.handle, 1000)
-    dStoreForm(submission, formio, redirect, hashField, formId, eventHub)
+    dStoreForm({submission, formio, hashField})
     return args.data
-  }
-  /**
-   *
-   * @param {*} args
-   */
-  static async getFormioInstance(args) {
-    let form = await Form.local().get(args.formio.formId)
-    let formioPath = 'https://' + form.machineName.split(':')[0] + '.form.io/' + form.path
-    let formio = new Formio(formioPath)
-    return formio
   }
 }
 export default PostRequest

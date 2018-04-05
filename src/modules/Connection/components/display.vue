@@ -6,6 +6,7 @@
 
 <script>
 import { QIcon } from "quasar";
+import Event from "libraries/fastjs/Wrappers/Event";
 export default {
   name: "wifiDisplay",
   components: {
@@ -16,9 +17,29 @@ export default {
       isOnline: true
     };
   },
+  methods: {
+    changeOnlineStatus(event) {
+      this.isOnline = event.detail.data;
+    }
+  },
   mounted() {
-    this.$eventHub.$on("connectionStatusChanged", isOnline => {
-      this.isOnline = isOnline;
+    Event.listen({
+      name: "FAST:CONNECTION:ONLINE",
+      callback: this.changeOnlineStatus
+    });
+    Event.listen({
+      name: "FAST:CONNECTION:OFFLINE",
+      callback: this.changeOnlineStatus
+    });
+  },
+   beforeDestroy() {
+    Event.remove({
+      name: "FAST:CONNECTION:ONLINE",
+      callback: this.changeOnlineStatus
+    });
+    Event.remove({
+      name: "FAST:CONNECTION:OFFLINE",
+      callback: this.changeOnlineStatus
     });
   }
 };

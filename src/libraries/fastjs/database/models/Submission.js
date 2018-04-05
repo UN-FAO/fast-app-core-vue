@@ -4,66 +4,33 @@ import _orderBy from 'lodash/orderBy'
 import _uniqBy from 'lodash/uniqBy'
 import _get from 'lodash/get'
 import Auth from 'libraries/fastjs/repositories/Auth/Auth'
-import * as Database from '../Database';
-import uuidv4 from 'uuid/v4'
 import moment from 'moment'
 import RemoteSubmission from 'libraries/fastjs/repositories/Submission/RemoteSubmission'
+import baseModel from './baseModelFactory'
 
-const Submission = class {
-  constructor(location, formPath) {
-    this.getFrom = location;
-    this.formPath = formPath
-  }
+let Submission = (args) => {
+  var baseModel = args.baseModel;
   /**
    * [getOwnName description]
    * @return {[type]} [description]
    */
-  getOwnName() {
+  /* eslint-disable no-unused-vars */
+  function getOwnName() {
     return 'Submission'
   }
-  /**
-  * [getModel description]
-  * @return {[type]} [description]
-  */
-  async getModel() {
-    const DB = await Database.get()
-    return DB.getCollection(this.getOwnName())
+
+  function getFormPath() {
+    return undefined
   }
-  /**
-   * [remote description]
-   * @return {[type]} [description]
-   */
-  static remote(formPath) {
-    this.getFrom = 'remote'
-    return new Submission('remote', formPath)
-  }
-  /**
-   * [submission description]
-   * @return {[type]} [description]
-   */
-  static local(formPath) {
-    return new Submission('local', formPath)
-  }
-  /**
-   * [local description]
-   * @return {[type]} [description]
-   */
-  static merged(formPath) {
-    return new Submission('remote-local', formPath)
-  }
-  /**
-   * [find description]
-   * @param  {[type]} filter [description]
-   * @return {[type]}        [description]
-   */
-  async find({ filter, limit, select, pagination }) {
-    const model = await this.getModel()
-    switch (this.getFrom) {
+
+  async function rFind({ filter, limit, select, pagination, formioPath }) {
+    return new RemoteSubmission(this.formPath).find({ filter, limit, select, pagination, formioPath })
+    switch (baseModel.getFrom) {
       case 'remote':
-        return new RemoteSubmission(this.formPath).find({ filter, limit, select, pagination })
+        console.log('fwefew')
         break;
       case 'local':
-        return model.find(filter).filter(o => {
+        return baseModel.local().find(filter).filter(o => {
           return (
             (o.data.owner && o.data.owner === Auth.user()._id) ||
             (o.data.user_email && o.data.user_email === Auth.userEmail())
@@ -74,7 +41,7 @@ const Submission = class {
         let merged = []
         let remote = await new RemoteSubmission(this.formPath).find({ filter, limit, select, pagination })
 
-        let local = model.find(filter).filter(o => {
+        let local = baseModel.local().find(filter).filter(o => {
           return (
             (o.data.owner && o.data.owner === Auth.user()._id) ||
             (o.data.user_email && o.data.user_email === Auth.userEmail())
@@ -94,85 +61,23 @@ const Submission = class {
         break;
     }
   }
-  /**
-   * [remove description]
-   * @param  {[type]} document [description]
-   * @return {[type]}          [description]
-   */
-  async remove(document) {
-    const model = await this.getModel()
-    return model.remove(document);
-  }
-  /**
-   * [insert description]
-   * @param  {[type]} element [description]
-   * @return {[type]}         [description]
-   */
-  async insert(element) {
-    const model = await this.getModel()
-    element._id = uuidv4() + '_local'
-    return model.insert(element);
-  }
 
-  async save(element) {
-    switch (this.getFrom) {
-      case 'remote':
-        return RemoteSubmission.save(element)
-        break;
-      case 'local':
-        return this.insert(element)
-        break;
-      case 'remote-local':
-        throw new Error('Submission cannot be saved remotely and local at the same time.')
-        break;
-    }
-  }
-  /**
-   * [update description]
-   * @param  {[type]} document [description]
-   * @return {[type]}          [description]
-   */
-  async update(document) {
-    const model = await this.getModel()
-    return model.update(document);
-  }
-
-  async updateOrCreate(document) {
-    const model = await this.getModel()
-    let role = await model.find(document)
-    if (!role) {
-      model.insert(document)
-    }
-  }
-
-  /**
-  * [findOne description]
-  * @param  {[type]} filter [description]
-  * @return {[type]}        [description]
-  */
-  async findOne(filter) {
-    const model = await this.getModel()
-    return model.findOne(filter);
-  }
-
-  async findAndRemove(filter) {
-    const model = await this.getModel()
-    return model.findAndRemove(filter);
-  }
-
-  async get(id) {
+  async function get(id) {
     id = id.replace(/\s/g, '')
-    let offline = await this.find({
-      '_id': id
+    let offline = await Submission.local().find({
+      filter: {
+        '_id': id
+      }
     })
-    let online = await this.find({
-      'data._id': id
-    })
+    let online = await Submission.local().find({
+      filter: {
+        'data._id': id
+      }})
     if (online) {
-      return online
+      return online[0]
     }
     if (offline) {
-      return offline
+      return offline[0]
     } else {
       return {
         data: false
@@ -180,7 +85,7 @@ const Submission = class {
     }
   }
 
-  async offline(formId) {
+  async function offline(formId) {
     let filter = await this.find({
       'data.user_email': Auth.userEmail(),
       'data.formio.formId': formId
@@ -193,7 +98,7 @@ const Submission = class {
     return filter
   }
 
-  async stored(formId) {
+  async function stored(formId) {
     return Submission
       .find({
         'data.formio.formId': formId,
@@ -201,7 +106,7 @@ const Submission = class {
       })
   }
 
-  async getUnsync() {
+  async function getUnsync() {
     let unsynced = await this.find({
       'data.sync': false
     })
@@ -214,13 +119,27 @@ const Submission = class {
     return unsynced
   }
 
-  async showView({ form, filter, limit, select, pagination }) {
+  async function showView({ form, filter, limit, select, pagination }) {
     let page = (pagination && pagination.page) || 1
     let pageLimit = (pagination && pagination.limit) || 500
     let paginationInfo = {}
     let submissions = []
 
-    submissions = await this.find(filter)
+    submissions = await Submission.find({ form, limit, select, pagination })
+
+    submissions = submissions.map(o => {
+      if (!o.data._id) {
+        o.data._id = o._id
+      }
+      if (!o.data.owner) {
+        o.data.owner = o.owner
+      }
+      if (!o.data.modified) {
+        o.data.modified = o.modified
+      }
+      return o.data
+    }
+    )
 
     if (pageLimit > 0) {
       let totalRecords = submissions.length
@@ -231,8 +150,7 @@ const Submission = class {
       // submissions = submissions.slice(firstRecord - 1, lastRecord);
     }
 
-    submissions = _orderBy(submissions, ['created'], ['desc'])
-    let sub = submissions.map(s => {
+    submissions = submissions.map(s => {
       let sub = {
         _id: s._id,
         status: s.sync === false ? 'offline' : 'online',
@@ -242,16 +160,18 @@ const Submission = class {
         updated: s.updated || s.modified
       }
       select.forEach(c => {
-        sub[c] = s.data[c]
+        c = c.replace('data.', '')
+        sub[c] = s[c]
       })
       return sub
     })
-    sub = _orderBy(sub, ['updated'], ['desc'])
-    let paginated = { results: sub, pagination: paginationInfo }
+
+    submissions = _orderBy(submissions, ['updated'], ['desc'])
+    let paginated = { results: submissions, pagination: paginationInfo }
     return paginated
   }
 
-  async getParallelParticipants(idForm, idSubmission) {
+  async function getParallelParticipants(idForm, idSubmission) {
     let currentSubmission = await this.find({
       '_id': idSubmission
     })
@@ -282,7 +202,7 @@ const Submission = class {
     return a
   }
 
-  getParallelSurvey(submission) {
+  function getParallelSurvey(submission) {
     let parallelsurveyInfo =
       _get(
         submission,
@@ -303,11 +223,11 @@ const Submission = class {
     return parallelsurveyInfo
   }
 
-  setParallelSurvey(parallelsurveyInfo) {
+  function setParallelSurvey(parallelsurveyInfo) {
     return JSON.stringify(parallelsurveyInfo)
   }
 
-  async getGroups(formId) {
+  async function getGroups(formId) {
     let submissions = await this.find();
 
     submissions = formId ? submissions.filter((submission) => {
@@ -328,7 +248,7 @@ const Submission = class {
     return _uniqBy(groups, 'groupId')
   }
 
-  async getGroup(id) {
+  async function getGroup(id) {
     let groups = await this.getGroups()
     groups = groups.filter((group) => {
       return group.groupId === id
@@ -336,9 +256,9 @@ const Submission = class {
     return groups[0]
   }
 
-  async removeFromGroup(submission) { }
+  async function removeFromGroup(submission) { }
 
-  async assingToGroup(submissionId, groupId) {
+  async function assingToGroup(submissionId, groupId) {
     let group = await this.getGroup(groupId[0])
     let submission = await this.get(submissionId)
 
@@ -354,5 +274,26 @@ const Submission = class {
     );
     await this.update(submission)
   }
+
+  return Object.freeze(Object.assign({}, baseModel, {
+    getOwnName,
+    getFormPath,
+    assingToGroup,
+    removeFromGroup,
+    getGroup,
+    getGroups,
+    setParallelSurvey,
+    getParallelSurvey,
+    getParallelParticipants,
+    showView,
+    getUnsync,
+    stored,
+    offline,
+    get,
+    rFind
+  }));
 }
+Submission = Submission({
+  baseModel: baseModel()
+});
 export default Submission

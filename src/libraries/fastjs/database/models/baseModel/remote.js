@@ -1,11 +1,15 @@
 import Formio from 'formiojs'
 import config from "../../../config";
+import Auth from 'libraries/fastjs/repositories/Auth/Auth'
 import to from 'await-to-js';
 
 const remoteModel = (() => {
   /* eslint-disable no-unused-vars */
   async function getFormioInstance({ formPath, submissionID = undefined }) {
     let formUrl
+    if (Auth.user().x_jwt_token) {
+      Formio.setToken(Auth.user().x_jwt_token);
+    }
     // Get the base URL
     switch (formPath) {
       case 'custom':
@@ -13,17 +17,14 @@ const remoteModel = (() => {
           break;
       case undefined:
         formUrl = await config.get().url
-        formUrl = formUrl + "/" + formPath;
+        Formio.setToken('');
         break;
       default:
         formUrl = await config.get().baseURL
         formUrl = formUrl + "/" + formPath;
         break;
     }
-    Formio.setToken('');
-    if (config.get().jwt) {
-      Formio.setToken(config.get().jwt);
-    }
+
     Formio.clearCache();
     // Set URL in case of submission context
     formUrl = submissionID ? formUrl + 'submission/' + submissionID : formUrl
@@ -34,9 +35,10 @@ const remoteModel = (() => {
    * @param  {[type]} filter [description]
    * @return {[type]}        [description]
    */
-  async function find({ formPath, filter, limit, select, pagination }) {
+  async function find({ formPath, filter = [], limit = 30, select = [], pagination }) {
     let remoteSubmissions, error
     let formio = await getFormioInstance({ formPath: formPath })
+
     let queryParams = {
       limit: limit
     }
@@ -155,7 +157,7 @@ const remoteModel = (() => {
     let selectString = select.reduce((reducer, column) => {
       reducer = reducer + "," + column;
       return reducer;
-    }, "_id");
+    }, "_id,owner,modified");
     return { select: selectString }
   }
 

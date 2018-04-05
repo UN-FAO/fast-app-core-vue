@@ -1,35 +1,32 @@
 import md5 from 'md5'
-import store from 'config/store'
 import router from 'config/router'
 import CONFIGURATION from 'libraries/fastjs/repositories/Configuration/Configuration'
-import Auth from 'libraries/fastjs/repositories/Auth/Auth'
 import User from "libraries/fastjs/repositories/User/User";
+import Submission from 'libraries/fastjs/repositories/Submission/Submission'
 
 let StoreForm = class {
-  static handle(formSubmission, formio, redirect, hashField, formId, eventHub) {
+  static handle({ submission, formio, hashField }) {
     if ((typeof hashField !== 'undefined')) {
-      StoreForm.storeUser(formSubmission, formio, redirect, hashField, formId, eventHub)
+      StoreForm.storeUser({ submission, formio, hashField })
     } else {
-      StoreForm.storeSubmission(formSubmission, formio, redirect, hashField, formId, eventHub)
+      StoreForm.storeSubmission({ submission, formio, hashField })
     }
   }
   /**
    *
    */
-  static async storeSubmission(formSubmission, formio, redirect, hashField, formId, eventHub) {
-    let created = await store.dispatch('addSubmission', {
-      formSubmission: formSubmission,
-      formio: formio,
-      User: Auth.user().data
+  static async storeSubmission({ submission, formio, hashField }) {
+    let created = await Submission.add({
+      submission: submission,
+      formio: formio
     })
-
     if (!created) {
       return
     }
 
-    if (formSubmission.trigger && formSubmission.trigger === 'resourceCreation') {
+    if (submission.trigger && submission.trigger === 'resourceCreation') {
     }
-    if (formSubmission.trigger && formSubmission.trigger === 'formioSubmit') {
+    if (submission.trigger && submission.trigger === 'formioSubmit') {
       created.isSubmit = true
     }
 
@@ -40,9 +37,9 @@ let StoreForm = class {
       }
     })
     document.dispatchEvent(draftStatus)
-    if (formSubmission._id) {
+    if (submission._id) {
       let config = await CONFIGURATION.getLocal()
-      if (formSubmission.redirect === true) {
+      if (submission.redirect === true) {
         switch (config.SAVE_REDIRECT) {
           case 'dashboard':
             router.push({
@@ -53,7 +50,7 @@ let StoreForm = class {
             router.push({
               name: 'formio_form_show',
               params: {
-                idForm: formId
+                idForm: formio.formId
               }
             })
             break;
@@ -70,7 +67,7 @@ let StoreForm = class {
       router.push({
         name: 'formio_submission_update',
         params: {
-          idForm: formId,
+          idForm: formio.formId,
           idSubmission: created._id
         }
       })

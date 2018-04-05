@@ -7,7 +7,7 @@ import Localization from 'libraries/fastjs/repositories/Localization/Localizatio
 import Configuration from "libraries/fastjs/repositories/Configuration/Configuration";
 /* eslint-disable no-unused-vars */
 let App = (() => {
-  async function start(Vue) {
+  async function start({Vue, interval = true}) {
     let pages, err;
 
     let config = await Configuration.set(Vue);
@@ -15,13 +15,13 @@ let App = (() => {
 
     [err, pages] = await to(Pages.set());
     if (err) { let e = 'The pages could not be retrieve from source'; console.log(e, err) }
-
     let appTranslations = await Localization.setLocales()
 
     await Form.update();
 
-    SyncInterval.set(2000)
-
+    if (interval) {
+      SyncInterval.set(2000)
+    }
     return {
       translations: appTranslations,
       pages: pages,

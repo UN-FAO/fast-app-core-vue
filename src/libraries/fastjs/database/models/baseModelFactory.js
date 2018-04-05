@@ -40,16 +40,16 @@ const baseModel = () => {
    * @param  {[type]} filter [description]
    * @return {[type]}        [description]
    */
-  async function find({ filter, limit = 30, select, pagination } = {}) {
+  async function find({ filter, limit = 30, select, pagination, form } = {}) {
     switch (getFrom) {
       case 'local':
         return Local.find({ modelName: this.getOwnName(), filter, limit, select, pagination })
         break;
       case 'remote':
         if (this.getFormPath() === 'custom') {
-          return this.customFind({ formPath: this.getFormPath(), filter, limit, select, pagination })
+          return this.rFind({ formPath: this.getFormPath(), filter, limit, select, pagination, form })
         }
-        return Remote.find({ formPath: this.getFormPath(), filter, limit, select, pagination })
+        return Remote.find({ formPath: form || this.getFormPath(), filter, limit, select, pagination })
         break;
       case 'remote-local':
         return

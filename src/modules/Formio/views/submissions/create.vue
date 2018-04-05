@@ -429,7 +429,6 @@ export default {
         this._pages[index].properties["custom-render"]
       ) {
         let dataGridName = this._pages[index].properties["custom-render"];
-        console.log("this.submission", this.submission);
         this.customRenderArray = this.submission.data.data[dataGridName];
         this.customRenderArray = this.customRenderArray
           ? this.customRenderArray

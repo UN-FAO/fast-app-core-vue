@@ -1,7 +1,7 @@
 import moment from 'moment'
-import _cloneDeep from 'lodash/cloneDeep'
 import Auth from 'libraries/fastjs/repositories/Auth/Auth'
 import SyncHelper from 'libraries/fastjs/database/helpers/SyncHelper'
+import SubmissionModel from 'libraries/fastjs/database/models/Submission'
 
 let Submission = (() => {
   /**
@@ -9,22 +9,23 @@ let Submission = (() => {
    * @param {*} submitedForm
    * @param {*} formio
    */
-  async function add(submitedForm, formio) {
-    let submission = _cloneDeep(submitedForm)
+  async function add({ submission, formio }) {
+    submission = SyncHelper.deleteNulls(submission)
+    console.log('submission', submission)
+    // If we are updating the submission
+    if (submission._id) {
+      return handleUpdate(submission, submission)
+    }
+
     submission = {
       ...submission,
       sync: false,
       user_email: Auth.userEmail(),
       formio: formio
     }
-    submission = SyncHelper.deleteNulls(submission)
-    // If we are updating the submission
-    if (submitedForm._id) {
-      return handleUpdate(submitedForm, submission)
-    }
     // If we are creating a new draft from scratch or a resource
-    let newSubmission = handleCreate(submission)
-    switch (submitedForm.trigger) {
+    let newSubmission = await handleCreate(submission)
+    switch (submission.trigger) {
       case 'importSubmission':
       case 'createLocalDraft':
       case 'resourceCreation':
@@ -32,19 +33,19 @@ let Submission = (() => {
         break;
       case 'createParalelSurvey':
         newSubmission.trigger = 'createParalelSurvey'
-        newSubmission.data.data.parallelSurvey = Submission.local().setParallelSurvey({
-          ...Submission.local().getParallelSurvey(newSubmission),
+        newSubmission.data.data.parallelSurvey = SubmissionModel.local().setParallelSurvey({
+          ...SubmissionModel.local().getParallelSurvey(newSubmission),
           submissionId: newSubmission._id
         })
-        await Submission.local().update(newSubmission)
+        await SubmissionModel.local().update(newSubmission)
         return newSubmission
         break;
     }
   }
 
   async function handleCreate(submission) {
-    submission.created = moment().format()
-    let newSubmission = await Submission.local().insert({
+    submission.created = moment().unix()
+    let newSubmission = await SubmissionModel.local().insert({
       data: submission
     })
     return newSubmission
@@ -54,13 +55,13 @@ let Submission = (() => {
     submission = {
       ...submission,
       type: 'update',
-      updated: moment().format()
+      updated: moment().unix()
     }
-    let localSubmission = await Submission.local().get(submitedForm._id)
+    let localSubmission = await SubmissionModel.local().get(submitedForm._id)
 
     if (await shouldUpdate(localSubmission, submission)) {
       localSubmission.data = submission
-      await Submission.local().update(localSubmission)
+      await SubmissionModel.local().update(localSubmission)
     }
     return localSubmission
   }

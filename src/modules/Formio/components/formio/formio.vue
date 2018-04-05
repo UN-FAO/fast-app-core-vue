@@ -131,11 +131,10 @@ export default {
       Formio.deregisterPlugin("offline");
       // Register the plugin for offline mode
       Formio.registerPlugin(
-        OFFLINE_PLUGIN.getPlugin(
-          this.formURL,
-          this.hashField,
-          false,
-          this.$eventHub
+        OFFLINE_PLUGIN.getPlugin({
+          formio: new Formio(this.formURL),
+          hashField: this.hashField
+        }
         ),
         "offline"
       );
@@ -208,6 +207,7 @@ export default {
      * @return {[type]}                [description]
      */
     save(formSubmission) {
+      console.log('formSubmissionformSubmission', this.submission)
       if (this.jsonSubmission) {
         formSubmission._id = _get(
           this.jsonSubmission,

@@ -11,9 +11,14 @@ let Event = (() => {
   function listen({ name, callback }) {
     window.addEventListener(name, callback)
   }
+
+  function remove({ name, callback }) {
+    window.removeEventListener(name, callback)
+  }
   return Object.freeze({
     emit,
-    listen
+    listen,
+    remove
   });
 })()
 export default Event

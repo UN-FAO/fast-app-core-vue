@@ -78,7 +78,6 @@ let Columns = class {
     let columns = []
     // Create the column given the component
     visibleColumns.forEach((column, index) => {
-      // let self = this;
       let visibleColum = {
         label: vm.$t(column.label),
         field: column.key,

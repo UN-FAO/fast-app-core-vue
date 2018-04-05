@@ -95,9 +95,7 @@
 }
 </style>
 <script>
-import { mapState, mapActions } from "vuex";
 import Auth from "libraries/fastjs/repositories/Auth/Auth";
-import Form from "libraries/fastjs/database/models/Form";
 import {
   QScrollArea,
   QSideLink,
@@ -115,11 +113,8 @@ import {
 } from "quasar";
 import pageLinks from "./components/pageLinks";
 import collectionpagelinks from "./components/collectionPageLinks";
-import layoutStore from "./layout-store";
-import Localization from "libraries/fastjs/repositories/Localization/Localization";
 import Pages from "libraries/fastjs/repositories/Configuration/Pages";
-import Configuration from "libraries/fastjs/repositories/Configuration/Configuration";
-
+import FAST from "libraries/fastjs/start";
 export default {
   components: {
     QScrollArea,
@@ -138,9 +133,6 @@ export default {
     pageLinks,
     collectionpagelinks
   },
-  mounted: async function() {
-    Form.local().sAll(this, "forms");
-  },
   asyncData: {
     PAGES: {
       async get() {
@@ -152,23 +144,7 @@ export default {
       }
     }
   },
-  data() {
-    return {
-      forms: [],
-      subscriptions: [],
-      layoutStore
-    };
-  },
-  computed: {
-    ...mapState({
-      User: state => state.authStore.authUser
-    }),
-    isOnline() {
-      return this.$root.VueOnline;
-    }
-  },
   methods: {
-    ...mapActions(["getResources"]),
     closeDrawer() {
       this.$refs.leftDrawer.close();
     },
@@ -184,15 +160,7 @@ export default {
         onOpen: async () => {
           this.$swal.showLoading();
 
-          await Configuration.get(this);
-
-          await Pages.get();
-
-          await Localization.getTranslations();
-
-          await this.getResources({
-            appName: this.$FAST_CONFIG.APP_NAME
-          });
+          await FAST.start({Vue: this, interval: false});
 
           this.$swal.close();
           this.$swal({
@@ -220,7 +188,6 @@ export default {
       });
     },
     isAdmin() {
-      console.log(Auth.hasRole("Administrator"));
       return Auth.hasRole("Administrator");
     },
     isReviewer() {

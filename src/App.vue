@@ -74,6 +74,7 @@ export default {
     this.$eventHub.on("lenguageSelection", lenguage => {
       this.toggleRtl(lenguage);
     });
+
     this.$eventHub.on("connectionStatusChanged", status => {
       this.$store.dispatch("changeIsOnlineStatus", status);
     });
@@ -98,7 +99,7 @@ export default {
       }
     });
 
-    Connection.initEventListeners(this);
+    Connection.initEventListeners();
   },
   methods: {
     toggleRtl: function(lenguage) {

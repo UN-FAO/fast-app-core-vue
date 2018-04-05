@@ -2,24 +2,30 @@
 </template>
 
 <script>
-import Connection from 'libraries/fastjs/Wrappers/Connection'
-import Auth from 'libraries/fastjs/repositories/Auth/Auth'
+import Connection from "libraries/fastjs/Wrappers/Connection";
+import Auth from "libraries/fastjs/repositories/Auth/Auth";
 import { Alert } from "quasar";
 import "quasar-extras/animate/bounceInRight.css";
 import "quasar-extras/animate/bounceOutRight.css";
 import _debounce from "lodash/debounce";
+import Event from "libraries/fastjs/Wrappers/Event";
 export default {
   name: "connectionAlert",
   mounted: function() {
     this.showPopUp = _debounce(this.showPopUp, 3000);
-    this.$eventHub.on("connectionStatusChanged", this.showPopUp);
+    Event.listen({
+      name: "FAST:CONNECTION:ONLINE",
+      callback: this.showPopUp
+    });
   },
   beforeDestroy() {
-    this.$eventHub.off("connectionStatusChanged", this.showPopUp);
+    Event.remove({
+      name: "FAST:CONNECTION:ONLINE",
+      callback: this.showPopUp
+    });
   },
   methods: {
     handleLogout() {
-      this.$store.dispatch("clearAuthUser");
       Auth.logOut();
     },
     showPopUp() {

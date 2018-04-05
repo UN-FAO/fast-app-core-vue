@@ -15,7 +15,6 @@ let PAGES = (() => {
       if (error) { throw new Error(error) }
     }
     remotePages = _get(remotePages, '[0].data', undefined)
-
     if (remotePages) {
       if (localPages) {
         await Pages.local().remove(localPages)

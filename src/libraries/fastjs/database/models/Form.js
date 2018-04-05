@@ -18,7 +18,7 @@ let Form = (args) => {
     return 'custom'
   }
 
-  async function customFind() {
+  async function rFind() {
     let formio = await remoteModel.getFormioInstance({ formPath: 'custom' })
     let remoteForms = Connection.isOnline() ? await formio.loadForms({
       params: {
@@ -52,13 +52,8 @@ let Form = (args) => {
     }
   }
 
-  async function sAll() {
-    let allForms = await Form.find()
-    return allForms
-  }
-
   async function cardFormattedForms(action) {
-    let result = await Form.local().sAll();
+    let result = await Form.local().find();
     result = result.filter(o => {
       return o.data.tags.indexOf("visible") > -1;
     });
@@ -88,10 +83,9 @@ let Form = (args) => {
   return Object.freeze(Object.assign({}, baseModel, {
     getOwnName,
     getFormPath,
-    sAll,
     get,
     cardFormattedForms,
-    customFind
+    rFind
   }));
 }
 Form = Form({

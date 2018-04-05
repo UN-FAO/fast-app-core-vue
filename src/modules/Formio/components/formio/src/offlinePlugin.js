@@ -1,18 +1,17 @@
 import Formio from 'formiojs'
-import _forEach from 'lodash/forEach'
-import Form from 'libraries/fastjs/database/models/Form'
-import Auth from 'libraries/fastjs/repositories/Auth/Auth'
-import Submission from 'libraries/fastjs/database/models/Submission'
+// import Form from 'libraries/fastjs/database/models/Form'
+// import Auth from 'libraries/fastjs/repositories/Auth/Auth'
+// import Submission from 'libraries/fastjs/database/models/Submission'
 import Translation from 'libraries/fastjs/database/models/Translation'
 import GetRequest from './repositories/offlinePlugin/GetRequest'
 import PostRequest from './repositories/offlinePlugin/PostRequest'
 
 const OFFLINE_PLUGIN = class {
-  static getPlugin(formioURL, hashField, redirect, eventHub) {
-    let formId = formioURL.split("/").pop();
+  static getPlugin({ formio, hashField }) {
     let plugin = {
       priority: 0,
       staticRequest: async (args) => {
+        /*
         return
         // Try to get the form associated to the static request
         let formArray = args.url.split('/')
@@ -46,6 +45,7 @@ const OFFLINE_PLUGIN = class {
         let submissions = await Submission.local().stored(Auth.user()._id, form.path)
         let jsonSubmissions = this.LocalToJson(submissions)
         return jsonSubmissions
+        */
       },
       request: async (args) => {
         Formio.clearCache()
@@ -54,10 +54,9 @@ const OFFLINE_PLUGIN = class {
           let result = GetRequest.handle(args)
           return result
         }
-
         // If we are trying to save a submission
         if ((args.method === 'POST' || args.method === 'PUT')) {
-          let submission = await PostRequest.handle(args, redirect, hashField, formId, eventHub)
+          let submission = await PostRequest.handle({ args, hashField, formio })
           return submission
         }
       }
@@ -74,12 +73,12 @@ const OFFLINE_PLUGIN = class {
    */
   static LocalToJson(lockiJSData) {
     let transformedArray = []
-    _forEach(lockiJSData, function (element) {
+    lockiJSData.forEach(function (element) {
       transformedArray.push(element.data)
     })
     return transformedArray
   }
-
+  // Do not removed this function is used inside the formio.vue component
   static async getLocalTranslations() {
     let translations = await Translation.local().getFormTranslations()
     return translations

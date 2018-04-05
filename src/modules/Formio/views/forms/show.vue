@@ -32,6 +32,7 @@ import Submission from "libraries/fastjs/database/models/Submission";
 import datatable from "components/dataTable/dataTable";
 import { QCard, QCardMain, QInnerLoading, Toast } from "quasar";
 import Columns from "components/dataTable/tableFormatter/Columns";
+import Auth from "libraries/fastjs/repositories/Auth/Auth";
 
 export default {
   async mounted() {
@@ -79,11 +80,13 @@ export default {
   methods: {
     async refreshData() {
       this.loading = true;
-      let submissions = await Submission.merged(this.$route.params.idForm).showView({
+      let submissions = await Submission.local().showView({
+        form: this.$route.params.idForm,
         filter: {
-          "data.formio.formId": this.$route.params.idForm
+          "data.formio.formId": this.$route.params.idForm,
+          "data.user_email": Auth.userEmail()
         },
-        select: Columns.getTableView(this.currentForm.data).map(o => o.path)
+        select: Columns.getTableView(this.currentForm.data).map(o => 'data.' + o.path)
       });
       this.submissions = submissions.results;
       this.loading = false;
