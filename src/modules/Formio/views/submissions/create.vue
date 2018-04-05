@@ -264,12 +264,14 @@ export default {
           };
         }
         if (this.$route.params.idSubmission) {
+          console.log('esta es')
           return Submission.local().get(this.$route.params.idSubmission);
         } else {
           return undefined;
         }
       },
       transform(result) {
+        console.log('esta el resultado', result)
         return result;
       }
     },

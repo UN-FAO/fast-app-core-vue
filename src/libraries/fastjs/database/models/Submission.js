@@ -69,14 +69,8 @@ let Submission = (args) => {
         '_id': id
       }
     })
-    let online = await Submission.local().find({
-      filter: {
-        'data._id': id
-      }})
-    if (online) {
-      return online[0]
-    }
-    if (offline) {
+
+    if (offline.length > 0) {
       return offline[0]
     } else {
       return {

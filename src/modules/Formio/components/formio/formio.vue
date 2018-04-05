@@ -207,7 +207,7 @@ export default {
      * @return {[type]}                [description]
      */
     save(formSubmission) {
-      console.log('formSubmissionformSubmission', this.submission)
+      console.log('formSubmissionformSubmissio4n', this.jsonSubmission)
       if (this.jsonSubmission) {
         formSubmission._id = _get(
           this.jsonSubmission,

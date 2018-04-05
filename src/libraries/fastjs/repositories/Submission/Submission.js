@@ -48,6 +48,7 @@ let Submission = (() => {
     let newSubmission = await SubmissionModel.local().insert({
       data: submission
     })
+    console.log('newSubmission', newSubmission)
     return newSubmission
   }
 
