@@ -52,7 +52,14 @@ const baseModel = () => {
         return Remote.find({ formPath: form || this.getFormPath(), filter, limit, select, pagination })
         break;
       case 'remote-local':
-        return
+        let local = await Local.find({ modelName: this.getOwnName(), filter, limit, select, pagination })
+        let remote
+        if (this.getFormPath() === 'custom') {
+          remote = await this.rFind({ formPath: this.getFormPath(), filter, limit, select, pagination, form })
+        } else {
+          remote = await Remote.find({ formPath: form || this.getFormPath(), filter, limit, select, pagination })
+        }
+        return remote.concat(local)
         break;
     }
   }

@@ -121,19 +121,27 @@ let Submission = (args) => {
 
     submissions = await Submission.find({ form, limit, select, pagination })
 
+
     submissions = submissions.map(o => {
-      if (!o.data._id) {
+      if (o.data && !o.data._id) {
         o.data._id = o._id
       }
-      if (!o.data.owner) {
+      if (o.data && !o.data.owner) {
         o.data.owner = o.owner
       }
-      if (!o.data.modified) {
+      if (o.data && !o.data.modified) {
         o.data.modified = o.modified
       }
-      return o.data
+      let result = o.data
+      if (result && result.data) {
+        let d = result.data
+        delete result.data
+        result = Object.assign(result, d);
+      }
+      return result
     }
     )
+    console.log('few', submissions)
 
     if (pageLimit > 0) {
       let totalRecords = submissions.length

@@ -11,11 +11,6 @@ let Submission = (() => {
    */
   async function add({ submission, formio }) {
     submission = SyncHelper.deleteNulls(submission)
-    console.log('submission', submission)
-    // If we are updating the submission
-    if (submission._id) {
-      return handleUpdate(submission, submission)
-    }
 
     submission = {
       ...submission,
@@ -23,6 +18,12 @@ let Submission = (() => {
       user_email: Auth.userEmail(),
       formio: formio
     }
+
+    // If we are updating the submission
+    if (submission._id) {
+      return handleUpdate(submission, submission)
+    }
+
     // If we are creating a new draft from scratch or a resource
     let newSubmission = await handleCreate(submission)
     switch (submission.trigger) {
@@ -48,7 +49,6 @@ let Submission = (() => {
     let newSubmission = await SubmissionModel.local().insert({
       data: submission
     })
-    console.log('newSubmission', newSubmission)
     return newSubmission
   }
 

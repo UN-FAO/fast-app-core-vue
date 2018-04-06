@@ -35,7 +35,7 @@ const remoteModel = (() => {
    * @param  {[type]} filter [description]
    * @return {[type]}        [description]
    */
-  async function find({ formPath, filter = [], limit = 30, select = [], pagination }) {
+  async function find({ formPath, filter = undefined, limit = 30, select = undefined, pagination }) {
     let remoteSubmissions, error
     let formio = await getFormioInstance({ formPath: formPath })
 
