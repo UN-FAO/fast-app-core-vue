@@ -4,6 +4,8 @@ import User from 'libraries/fastjs/database/models/User'
 import Auth from 'libraries/fastjs/repositories/Auth/Auth'
 import Connection from 'libraries/fastjs/Wrappers/Connection'
 import Submission from 'libraries/fastjs/database/models/Submission'
+import OfflineData from 'libraries/fastjs/repositories/Submission/OfflineData'
+
 let Sync = class {
   /**
    *
@@ -23,17 +25,14 @@ let Sync = class {
    * @param {*} db
    * @param {*} vm
    */
-  static async syncSubmission(vm) {
+  static async syncSubmission() {
     let usersAreSync = await this.areUsersSynced()
 
     if (!usersAreSync) { return }
 
     let unsyncSubmissions = await Submission.local().getUnsync()
     if (unsyncSubmissions.length > 0) {
-      store.dispatch('sendOfflineData', {
-        offlineSubmissions: unsyncSubmissions,
-        vm: vm
-      })
+      OfflineData.send(unsyncSubmissions)
     }
   }
   /**

@@ -2,7 +2,8 @@ import md5 from 'md5'
 import router from 'config/router'
 import CONFIGURATION from 'libraries/fastjs/repositories/Configuration/Configuration'
 import User from "libraries/fastjs/repositories/User/User";
-import Submission from 'libraries/fastjs/repositories/Submission/Submission'
+import Submission from 'libraries/fastjs/repositories/Submission/SubmissionRepository'
+import Event from 'libraries/fastjs/Wrappers/Event'
 
 let StoreForm = class {
   static handle({ submission, formio, hashField }) {
@@ -28,15 +29,12 @@ let StoreForm = class {
     }
     if (submission.trigger && submission.trigger === 'formioSubmit') {
       created.isSubmit = true
+    } else {
+      created.isSubmit = false
     }
 
-    var draftStatus = new CustomEvent('draftStatus', {
-      'detail': {
-        'data': created,
-        'text': 'Draft Saved'
-      }
-    })
-    document.dispatchEvent(draftStatus)
+    Event.emit({ name: 'FAST:SUBMISSION:CHANGED', data: created, text: 'Draft Saved' })
+
     if (submission._id) {
       let config = await CONFIGURATION.getLocal()
       if (submission.redirect === true) {

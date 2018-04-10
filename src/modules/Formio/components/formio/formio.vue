@@ -17,6 +17,7 @@ import FormioUtils from "formiojs/utils";
 import OFFLINE_PLUGIN from "./src/offlinePlugin";
 import GPS from "./src/gps";
 import Lenguage from "./src/lenguage";
+import Event from "libraries/fastjs/Wrappers/Event";
 // import SMS from './src/sms'
 
 export default {
@@ -72,7 +73,7 @@ export default {
   beforeDestroy() {
     Lenguage.off(this);
     document.removeEventListener("saveAsDraft", this.saveAsLocalDraft);
-     document.removeEventListener("autoSaveDraft", this.autoSaveAsDraft);
+    document.removeEventListener("autoSaveDraft", this.autoSaveAsDraft);
   },
   data: () => {
     return {
@@ -134,8 +135,7 @@ export default {
         OFFLINE_PLUGIN.getPlugin({
           formio: new Formio(this.formURL),
           hashField: this.hashField
-        }
-        ),
+        }),
         "offline"
       );
     },
@@ -207,11 +207,15 @@ export default {
      * @return {[type]}                [description]
      */
     save(formSubmission) {
-      console.log('formSubmissionformSubmissio4n', this.jsonSubmission)
       if (this.jsonSubmission) {
         formSubmission._id = _get(
           this.jsonSubmission,
           "data._id",
+          this.jsonSubmission._id
+        );
+        formSubmission._lid = _get(
+          this.jsonSubmission,
+          "data._lid",
           this.jsonSubmission._id
         );
       }
@@ -229,11 +233,29 @@ export default {
       formio.saveSubmission(formSubmission);
     },
     onlineSave(submission, formio) {
-      Formio.deregisterPlugin("offline");
-      formio.saveSubmission(submission).then(updated => {
-        this.$router.push({
-          name: "reviewers"
-        });
+      this.$swal({
+        title: "Saving...",
+        text: this.$t(
+          "The information is being saved. This can take a couple seconds..."
+        ),
+        showCancelButton: false,
+        onOpen: async () => {
+          Formio.deregisterPlugin("offline");
+          this.$swal.showLoading();
+          formio.saveSubmission(submission).then(updated => {
+            this.$swal.close();
+            if (this.editMode === "online-review") {
+              this.$router.push({
+                name: "reviewers"
+              });
+            } else if (this.editMode === "online") {
+              this.$router.push({
+                name: "formio_form_show",
+                params: { idForm: formio.formId }
+              });
+            }
+          });
+        }
       });
     },
     setSubmission(onlineJsonForm) {
@@ -378,10 +400,11 @@ export default {
               this.editMode !== "online-review"
             ) {
               this.saved = false;
-              var draftStatus = new CustomEvent("draftStatus", {
-                detail: { data: false, text: "Draft not Saved" }
+              Event.emit({
+                name: "FAST:SUBMISSION:CHANGED",
+                data: false,
+                text: "Draft not Saved"
               });
-              document.dispatchEvent(draftStatus);
               // AutoSave functionality
               // If a timer was already started, clear it.
               if (timeoutId) clearTimeout(timeoutId);

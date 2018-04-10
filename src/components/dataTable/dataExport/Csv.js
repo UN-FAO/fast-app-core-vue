@@ -1,13 +1,23 @@
 import Papa from "papaparse";
+import jsonexport from "jsonexport"
 import Promise from "bluebird"
 import _zip from "lodash/zip"
 import _unzip from "lodash/unzip"
 let Csv = class {
-  static async get({ json }) {
+  static async toCsv(json) {
     return new Promise((resolve, reject) => {
-      let csv = Papa.unparse(json.data);
+      jsonexport(json, function (err, csv) {
+        if (err) reject(err)
+        resolve(csv);
+      });
+    })
+  }
+  static async get({ json }) {
+    return new Promise(async (resolve, reject) => {
+      let csv = await Csv.toCsv(json.data)
       let labelsRow = [];
       let parsedCsv = Papa.parse(csv, { dynamicTyping: true });
+
       let zipped = _zip(...parsedCsv.data)
 
       let orderedArray = []

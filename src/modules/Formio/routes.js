@@ -1,5 +1,5 @@
 const FormShow = r =>
-  require.ensure([], () => r(require('./views/forms/show')), 'offline-module')
+  require.ensure([], () => r(require('./views/submissions/show')), 'offline-module')
 
 const Submission = r =>
   require.ensure([], () => r(require('./views/submissions/create')), 'offline-module')

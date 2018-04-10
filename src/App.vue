@@ -86,19 +86,6 @@ export default {
     this.$eventHub.$on("openRightDrawer", () => {
       this.$refs.layout.toggleRight();
     });
-
-    this.$eventHub.on("FAST-DATA_SYNCED", data => {
-      if (data.count === 0) {
-        Toast.create.negative({
-          html: "SYNC SUBMISSION ERROR"
-        });
-      } else {
-        Toast.create.positive({
-          html: data.count + " SUBMISSION(s) SYNCED"
-        });
-      }
-    });
-
     Connection.initEventListeners();
   },
   methods: {

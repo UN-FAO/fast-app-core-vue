@@ -59,6 +59,20 @@ const baseModel = () => {
         } else {
           remote = await Remote.find({ formPath: form || this.getFormPath(), filter, limit, select, pagination })
         }
+
+        // We need to include a logic here to check Which submission to keep
+        // It could be the offline synced submission, the merge of the two
+        // Or just keep the online submission
+        let localOnline = local.reduce((reducer, s) => {
+          if (s.data && s.data._id && s.data._id.indexOf('_local') === -1) {
+            reducer.push(s.data._id)
+          }
+          return reducer
+        }, [])
+
+        remote = remote.filter(s => {
+          return !localOnline.includes(s._id)
+        })
         return remote.concat(local)
         break;
     }

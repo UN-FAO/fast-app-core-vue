@@ -19,9 +19,13 @@
     <i class="material-icons tag--offline">description</i>
     <q-tooltip>{{$t('Offline submission')}}</q-tooltip>
   </div>
+   <div v-else-if="isOnlineSubmission(scope.row._id, scope.row._lid)">
+    <i class="material-icons tag--green">cloud_done</i>
+    <q-tooltip>{{$t('Online Submission')}}</q-tooltip>
+  </div>
   <div v-else>
-    <i class="material-icons tag--green">check_circle</i>
-    <q-tooltip>{{$t('Online submission')}}</q-tooltip>
+    <i class="material-icons tag--green">cloud_download</i>
+    <q-tooltip>{{$t('Synced Submission')}}</q-tooltip>
   </div>
   <i class="material-icons" style="color: red;font-size: x-large; cursor: pointer;" v-if="scope.row.syncError && scope.row.syncError !=='Unauthorized' " @click="displayError(scope.row.syncError)">block</i>
   <i class="material-icons" style="color: red;font-size: x-large; cursor: pointer;" v-if="scope.row.syncError && scope.row.syncError ==='Unauthorized' " @click="displayError(scope.row.syncError)">block</i>
@@ -59,15 +63,16 @@
 </template>
 
 <script>
-import FormioUtils from "formiojs/utils";
-import buttonMenu from "./menu";
-import Export from "./dataExport/Export";
-import Submission from "libraries/fastjs/database/models/Submission";
-import { QTooltip, QBtn, QDataTable, QChip, QIcon } from "quasar";
-import Import from "libraries/fastjs/repositories/Submission/Import";
-import Columns from "./tableFormatter/Columns";
 import _get from "lodash/get";
 import Promise from "bluebird";
+import buttonMenu from "./menu";
+import Export from "./dataExport/Export";
+import Columns from "./tableFormatter/Columns";
+import { QTooltip, QBtn, QDataTable, QChip, QIcon } from "quasar";
+import Import from "libraries/fastjs/repositories/Submission/Import";
+import Submission from "libraries/fastjs/database/models/Submission";
+import ErrorFormatter from "components/dataTable/submission/errorFormatter";
+import Auth from "libraries/fastjs/repositories/Auth/Auth";
 
 export default {
   components: {
@@ -128,15 +133,8 @@ export default {
     menuActions: function(data) {}
   },
   methods: {
-    rerender() {
-      this.show = false;
-      this.$nextTick(() => {
-        this.show = true;
-        console.log("re-render start");
-        this.$nextTick(() => {
-          console.log("re-render end");
-        });
-      });
+    isOnlineSubmission(_id, _lid) {
+      return !_lid && _id.indexOf("_local") < 0;
     },
     async exportTo(type) {
       this.$swal({
@@ -148,7 +146,7 @@ export default {
         onOpen: async () => {
           this.$swal.showLoading();
           let data = [];
-          data = this.selectedRows.length === 0 ? [] : this.selectedRows;
+          data = this.selectedRows.length === 0 ? this.data : this.selectedRows;
           let submissions = await this.getFullSubmissions(data);
           await Export.jsonTo({
             output: type,
@@ -169,25 +167,13 @@ export default {
       this.clickedRow = row;
     },
     async getFullSubmissions(submissions) {
-      let ids = submissions.reduce((reducer, submission) => {
-        reducer.push(submission._id);
-        return reducer;
-      }, []);
-
-      let filter =
-        ids.length > 0
-          ? [
-              {
-                element: "_id",
-                query: "in",
-                value: ids
-              }
-            ]
-          : null;
-
-      let sub = await Submission.remote(this.form.data.path).find({
-        filter: filter,
-        limit: 50000
+      let sub = await Submission.merged().showView({
+        form: this.form.data.path,
+        filter: {
+          "data.formio.formId": this.form.data.path,
+          "data.user_email": Auth.userEmail()
+        },
+        dataExport: true
       });
       return sub;
     },
@@ -207,9 +193,26 @@ export default {
         }
       });
     },
+    async handleOnlineEdit(data, formId) {
+      let submission = await this.loadSubmission(data.row._id);
+      this.$router.push({
+        name: "formio_submission_update",
+        params: {
+          idForm: formId,
+          idSubmission: data.row._id,
+          fullSubmision: {
+            data: submission.content.data,
+            _id: data.row._id
+          },
+          formio: submission.formio,
+          FAST_EDIT_MODE: "online"
+        }
+      });
+    },
     async loadSubmission(_id) {
       this.loading = true;
-      let submission = await Submission.remote(this.form.data.path).find({
+      let submission = await Submission.remote().find({
+        form: this.form.data.path,
         filter: [
           {
             element: "_id",
@@ -257,23 +260,16 @@ export default {
         cancelButtonText: this.$t("Cancel")
       }).then(async () => {
         Promise.each(rows, async submission => {
-          console.log("submission", submission);
-          let online = await Submission.local(this.form.data.path).find({
-            filter: {
-              "data._id": submission._id
-            }
-          });
-
-          let offline = await Submission.local(this.form.data.path).find({
+          let deleteSubmission = await Submission.local().find({
             filter: {
               _id: submission._id
             }
           });
-          let deleteSubmission = online || offline;
+
           if (deleteSubmission.length === 0) {
-            throw new Error('cannot delete an online submission')
+            throw new Error("cannot delete an online submission");
           }
-          await Submission.local(this.form.data.path).findAndRemove({
+          await Submission.local().findAndRemove({
             _id: deleteSubmission[0]._id
           });
         })
@@ -309,48 +305,7 @@ export default {
       }
     },
     displayError(error) {
-      this.form;
-      let errorString =
-        '<div style="overflow-x:auto;"><table class="restable"><thead> <tr><th scope="col">' +
-        this.$t("Label") +
-        '</th><th scope="col">' +
-        this.$t("Code") +
-        '</th><th scope="col">' +
-        this.$t("Module") +
-        "</th></tr></thead><tbody>";
-
-      error.details.forEach(detail => {
-        let component = FormioUtils.getComponent(
-          this.currentForm.data.components,
-          detail.path[0]
-        );
-        let label = component ? this.$t(component.label) + ": " : "";
-        errorString = errorString + "<tr>";
-        errorString =
-          errorString +
-          "<td data-label=" +
-          this.$t("Label") +
-          ">" +
-          label +
-          "</td>";
-        errorString =
-          errorString +
-          "<td data-label=" +
-          this.$t("Code") +
-          ">" +
-          detail.message +
-          "</td>";
-        errorString =
-          errorString +
-          "<td data-label=" +
-          this.$t("Module") +
-          ">" +
-          detail.message +
-          "</td>";
-        errorString = errorString + "</tr>";
-      });
-      errorString = errorString + "</tbody></table></div>";
-
+      let errorString = ErrorFormatter.format(error);
       this.$swal({
         title: error.name,
         type: "info",
@@ -379,11 +334,16 @@ export default {
     goToEditView(data) {
       let formId =
         _get(this.form, 'data.properties["edit-view"]') || this.form.data.path;
+      if (data.row.status === "online" && !data.row._lid) {
+        this.handleOnlineEdit(data, formId);
+        return;
+      }
+      let submissionId = data.row._lid || data.row._id;
       this.$router.push({
         name: "formio_submission_update",
         params: {
           idForm: formId,
-          idSubmission: data.row._id
+          idSubmission: submissionId
         }
       });
     },

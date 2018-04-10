@@ -1,7 +1,4 @@
 import Formio from 'formiojs'
-// import Form from 'libraries/fastjs/database/models/Form'
-// import Auth from 'libraries/fastjs/repositories/Auth/Auth'
-// import Submission from 'libraries/fastjs/database/models/Submission'
 import Translation from 'libraries/fastjs/database/models/Translation'
 import GetRequest from './repositories/offlinePlugin/GetRequest'
 import PostRequest from './repositories/offlinePlugin/PostRequest'

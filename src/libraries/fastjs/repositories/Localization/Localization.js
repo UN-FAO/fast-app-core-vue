@@ -72,7 +72,6 @@ const Localization = class {
         })
 
         appTranslations = appTranslations.data
-        console.log('apptgerger', appTranslations)
         return appTranslations
       } catch (error) {
         console.log('Error while getting translations')

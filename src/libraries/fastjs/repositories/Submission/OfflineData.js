@@ -1,17 +1,18 @@
 import Connection from 'libraries/fastjs/Wrappers/Connection'
-import Submission from 'libraries/fastjs/database/Models/Submission'
-import User from 'libraries/fastjs/database/Models/User'
+import Submission from 'libraries/fastjs/database/models/Submission'
+import User from 'libraries/fastjs/database/models/User'
 import FormioJS from 'formiojs'
+import Raven from 'config/raven'
+import Event from 'libraries/fastjs/Wrappers/Event'
+import Promise from 'bluebird'
 
 let OfflineData = (() => {
   async function send(data) {
-    let offlineSubmissions = data.offlineSubmissions
-    let vm = data.vm
-    let isOnline = Connection.isOnline()
+    let offlineSubmissions = data
     let syncedSubmissionsCount = 0
     let syncedSubmissions = []
     let offlinePlugin = FormioJS.getPlugin('offline')
-    if (isOnline) {
+    if (Connection.isOnline()) {
       Promise.each(offlineSubmissions, async function (offlineSubmission) {
         let formio = new FormioJS(offlineSubmission.data.formio.formUrl)
         let postData = {
@@ -79,13 +80,15 @@ let OfflineData = (() => {
           }
         }
       }).then((result) => {
-        if (vm) {
-          console.log('The data was synced', vm)
-          vm.$eventHub.emit('FAST-DATA_SYNCED', {
+        console.log('HERE yes synced')
+        Event.emit({
+          name: 'FAST:SUBMISSION:SYNCED',
+          data: {
             count: syncedSubmissionsCount,
             data: syncedSubmissions
-          })
-        }
+          },
+          text: 'The submissions have been synced'
+        })
       })
     }
   }

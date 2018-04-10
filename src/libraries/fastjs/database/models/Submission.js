@@ -5,8 +5,9 @@ import _uniqBy from 'lodash/uniqBy'
 import _get from 'lodash/get'
 import Auth from 'libraries/fastjs/repositories/Auth/Auth'
 import moment from 'moment'
-import RemoteSubmission from 'libraries/fastjs/repositories/Submission/RemoteSubmission'
 import baseModel from './baseModelFactory'
+import _cloneDeep from 'lodash/cloneDeep'
+
 
 let Submission = (args) => {
   var baseModel = args.baseModel;
@@ -21,45 +22,6 @@ let Submission = (args) => {
 
   function getFormPath() {
     return undefined
-  }
-
-  async function rFind({ filter, limit, select, pagination, formioPath }) {
-    return new RemoteSubmission(this.formPath).find({ filter, limit, select, pagination, formioPath })
-    switch (baseModel.getFrom) {
-      case 'remote':
-        console.log('fwefew')
-        break;
-      case 'local':
-        return baseModel.local().find(filter).filter(o => {
-          return (
-            (o.data.owner && o.data.owner === Auth.user()._id) ||
-            (o.data.user_email && o.data.user_email === Auth.userEmail())
-          )
-        }).map(o => o.data);
-        break;
-      case 'remote-local':
-        let merged = []
-        let remote = await new RemoteSubmission(this.formPath).find({ filter, limit, select, pagination })
-
-        let local = baseModel.local().find(filter).filter(o => {
-          return (
-            (o.data.owner && o.data.owner === Auth.user()._id) ||
-            (o.data.user_email && o.data.user_email === Auth.userEmail())
-          )
-        });
-
-        merged = merged.concat(remote)
-        merged = merged.concat(local.map(o => {
-          let _id = o._id
-          if (!o.data._id) {
-            o.data._id = _id
-          }
-          return o.data
-        }
-        ))
-        return merged
-        break;
-    }
   }
 
   async function get(id) {
@@ -101,28 +63,34 @@ let Submission = (args) => {
   }
 
   async function getUnsync() {
-    let unsynced = await this.find({
+    let unsynced = await Submission.find({
       'data.sync': false
     })
+
     // updated incomplete submission
     unsynced = _filter(unsynced, function (o) {
       return (o.data.sync === false && o.data.draft === false && o.data.user_email === Auth.userEmail() && !o.data.queuedForSync && !o.data.syncError)
     })
 
     unsynced = _orderBy(unsynced, ['data.created'], ['asc'])
+
     return unsynced
   }
 
-  async function showView({ form, filter, limit, select, pagination }) {
+  async function showView({ form, filter, limit, select, pagination, dataExport }) {
     let page = (pagination && pagination.page) || 1
     let pageLimit = (pagination && pagination.limit) || 500
     let paginationInfo = {}
     let submissions = []
 
     submissions = await Submission.find({ form, limit, select, pagination })
-
+    // Need to clone the object for as it is Dynamic LokiJs
+    submissions = _cloneDeep(submissions)
 
     submissions = submissions.map(o => {
+      if (o._id && o._id.indexOf('_local') >= 0) {
+        o.data._lid = o._id
+      }
       if (o.data && !o.data._id) {
         o.data._id = o._id
       }
@@ -132,6 +100,15 @@ let Submission = (args) => {
       if (o.data && !o.data.modified) {
         o.data.modified = o.modified
       }
+
+      if (dataExport) {
+        if (!o.$loki) {
+          return o.data
+        }
+        o.data.data._id = o._id
+        return o.data.data
+      }
+
       let result = o.data
       if (result && result.data) {
         let d = result.data
@@ -139,9 +116,11 @@ let Submission = (args) => {
         result = Object.assign(result, d);
       }
       return result
+    })
+
+    if (dataExport) {
+      return submissions
     }
-    )
-    console.log('few', submissions)
 
     if (pageLimit > 0) {
       let totalRecords = submissions.length
@@ -151,15 +130,21 @@ let Submission = (args) => {
       paginationInfo = { total: totalRecords, pages: pages, currentPage: page, pageLimit: pageLimit }
       // submissions = submissions.slice(firstRecord - 1, lastRecord);
     }
-
     submissions = submissions.map(s => {
       let sub = {
         _id: s._id,
         status: s.sync === false ? 'offline' : 'online',
         draft: s.draft,
-        HumanUpdated: moment(s.updated || s.modified).fromNow(),
+        HumanUpdated: s.updated ? moment.unix(s.updated).fromNow() : moment(s.modified).fromNow(),
         syncError: s.syncError ? s.syncError : false,
         updated: s.updated || s.modified
+      }
+      if (s._lid) {
+        sub._lid = s._lid
+      }
+
+      if (!select) {
+        return sub
       }
       select.forEach(c => {
         c = c.replace('data.', '')
@@ -291,8 +276,7 @@ let Submission = (args) => {
     getUnsync,
     stored,
     offline,
-    get,
-    rFind
+    get
   }));
 }
 Submission = Submission({

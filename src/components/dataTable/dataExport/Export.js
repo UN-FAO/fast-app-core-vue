@@ -13,7 +13,6 @@ let Export = class {
   static async jsonTo({ output, data, formioForm, vm }) {
     return new Promise(async (resolve, reject) => {
       let formattedData = Export.formatSubmissions({ output, data, formioForm, vm })
-      console.log('formattedData', formattedData.labels)
       switch (output.toLowerCase()) {
         case 'csv':
           let file = await Csv.get({ json: formattedData })
@@ -65,20 +64,19 @@ let Export = class {
     let json = [];
     let labels = [];
 
-    let components = FormioUtils.findComponents(formioForm.components, { input: true })
+    let components = FormioUtils.findComponents(formioForm.components, {input: true})
+
     data = Export.reCalculateValues(data, components)
 
     if (!formioForm) {
       _forEach(data, function (submission) {
-        json.push(flatten(submission.data));
+        json.push(flatten(submission));
       });
       return { date: date, data: json };
     }
 
     _forEach(data, function (submission) {
-      let record = submission.data;
-      record.id = submission._id;
-      json.push(flatten(record));
+      json.push(flatten(submission));
     });
 
     // Get the Labels for each one of the keys and filter only the available ones.

@@ -114,7 +114,6 @@ import {
 import pageLinks from "./components/pageLinks";
 import collectionpagelinks from "./components/collectionPageLinks";
 import Pages from "libraries/fastjs/repositories/Configuration/Pages";
-import FAST from "libraries/fastjs/start";
 export default {
   components: {
     QScrollArea,
@@ -150,25 +149,12 @@ export default {
     },
     async syncApp() {
       this.$eventHub.$emit("openLeftDrawer");
-
       this.$swal({
-        title: "Updating...",
-        text: this.$t(
-          "Wait until the App is Updated. This can take a couple minutes..."
-        ),
-        showCancelButton: false,
-        onOpen: async () => {
-          this.$swal.showLoading();
-
-          await FAST.start({Vue: this, interval: false});
-
-          this.$swal.close();
-          this.$swal({
-            title: this.$t("App Updated"),
+            title: this.$t("Updating App"),
             text: this.$t(
-              "You need to reload the page to see the changes. Want to do it now?"
+              "You need to reload the page to update the application. Want to do it now?"
             ),
-            type: "success",
+            type: "info",
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
             cancelButtonClass: "modalCancel",
@@ -177,8 +163,6 @@ export default {
           }).then(async () => {
             window.location.reload(true);
           });
-        }
-      });
     },
     async handleLogout() {
       this.$eventHub.$emit("openLeftDrawer");

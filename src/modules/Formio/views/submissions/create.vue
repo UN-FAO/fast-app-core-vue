@@ -53,7 +53,7 @@
         </q-card>
 
         <q-fixed-position corner="top-right" :offset="[18, 18]">
-          <q-fab color="red" icon="add" direction="down" v-if="!this.$route.params.FAST_EDIT_MODE">
+          <q-fab color="red" icon="add" direction="down" v-if="!this.$route.params.FAST_EDIT_MODE && this.$route.params.FAST_EDIT_MODE !== 'review'">
 
             <q-fab-action color="primary" @click="saveAsDraft()" icon="fa-floppy-o">
               <q-tooltip>{{$t('Save as draft')}}</q-tooltip>
@@ -80,7 +80,7 @@
             <q-fab-action color="secondary" @click="exportPDF()" icon="print"></q-fab-action>
 
           </q-fab>
-          <q-fab color="red" icon="add" direction="down" v-if="this.$route.params.FAST_EDIT_MODE">
+          <q-fab color="red" icon="add" direction="down" v-if="this.$route.params.FAST_EDIT_MODE === 'review'">
 
             <q-fab-action color="green" @click="reviewSubmission('accept')" icon="fa-check">
               <q-tooltip>{{$t('Accept')}}</q-tooltip>
@@ -151,11 +151,12 @@ import _groupBy from "lodash/groupBy";
 import _debounce from "lodash/debounce";
 import FormioUtils from "formiojs/utils";
 import Form from "libraries/fastjs/database/models/Form";
-import Auth from 'libraries/fastjs/repositories/Auth/Auth'
+import Auth from "libraries/fastjs/repositories/Auth/Auth";
 import Submission from "libraries/fastjs/database/models/Submission";
 import formio from "modules/Formio/components/formio/formio";
 import OFFLINE_PLUGIN from "modules/Formio/components/formio/src/offlinePlugin";
 import datatable from "components/dataTable/dataTable";
+import Event from "libraries/fastjs/Wrappers/Event";
 export default {
   components: {
     datatable,
@@ -217,7 +218,10 @@ export default {
       this.createScorePanels(this.pages, data);
     });
 
-    document.addEventListener("draftStatus", this.draftStatusChanged);
+    Event.listen({
+      name: "FAST:SUBMISSION:CHANGED",
+      callback: this.draftStatusChanged
+    });
 
     this.$eventHub.$on("formio.error", error => {
       console.log(error);
@@ -251,7 +255,11 @@ export default {
     });
   },
   beforeDestroy() {
-    document.removeEventListener("draftStatus", this.draftStatusChanged);
+     Event.remove({
+      name: "FAST:SUBMISSION:CHANGED",
+      callback: this.draftStatusChanged
+    });
+
     this.$eventHub.$off("formio.error");
     this.$eventHub.$off("VALIDATION_ERRORS");
   },
@@ -264,14 +272,12 @@ export default {
           };
         }
         if (this.$route.params.idSubmission) {
-          console.log('esta es')
           return Submission.local().get(this.$route.params.idSubmission);
         } else {
           return undefined;
         }
       },
       transform(result) {
-        console.log('esta el resultado', result)
         return result;
       }
     },

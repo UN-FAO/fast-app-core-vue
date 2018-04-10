@@ -10,22 +10,14 @@ let Submission = (() => {
    * @param {*} formio
    */
   async function add({ submission, formio }) {
-    submission = SyncHelper.deleteNulls(submission)
-
-    submission = {
-      ...submission,
-      sync: false,
-      user_email: Auth.userEmail(),
-      formio: formio
-    }
-
+    submission = formatSubmission(submission, formio)
     // If we are updating the submission
-    if (submission._id) {
-      return handleUpdate(submission, submission)
+    if (alreadyStored(submission)) {
+      return update(submission)
     }
-
     // If we are creating a new draft from scratch or a resource
-    let newSubmission = await handleCreate(submission)
+    let newSubmission = await create(submission)
+
     switch (submission.trigger) {
       case 'importSubmission':
       case 'createLocalDraft':
@@ -43,8 +35,23 @@ let Submission = (() => {
         break;
     }
   }
+  function formatSubmission(submission, formio) {
+    submission = SyncHelper.deleteNulls(submission)
 
-  async function handleCreate(submission) {
+    submission = {
+      ...submission,
+      sync: false,
+      user_email: Auth.userEmail(),
+      formio: formio
+    }
+    return submission
+  }
+
+  function alreadyStored(submission) {
+    return submission._lid || submission._id
+  }
+
+  async function create(submission) {
     submission.created = moment().unix()
     let newSubmission = await SubmissionModel.local().insert({
       data: submission
@@ -52,22 +59,25 @@ let Submission = (() => {
     return newSubmission
   }
 
-  async function handleUpdate(submitedForm, submission) {
+  async function update(submission) {
     submission = {
       ...submission,
       type: 'update',
       updated: moment().unix()
     }
-    let localSubmission = await SubmissionModel.local().get(submitedForm._id)
 
-    if (await shouldUpdate(localSubmission, submission)) {
+    let localSubmission = await SubmissionModel.local().get(submission._lid || submission._id)
+
+    if (shouldUpdate(localSubmission, submission)) {
       localSubmission.data = submission
-      await SubmissionModel.local().update(localSubmission)
+      localSubmission.isSubmit = submission._lid ? false : localSubmission.isSubmit
+      const saved = await SubmissionModel.local().update(localSubmission)
+      return saved
     }
     return localSubmission
   }
 
-  async function shouldUpdate(localSubmission, submission) {
+  function shouldUpdate(localSubmission, submission) {
     // Cases where we want to update
     let sendingSubmission = submission.draft === false
     let fromDraftToSubmission = (localSubmission.data.draft === false) && (submission.draft === false)
