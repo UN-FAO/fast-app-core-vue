@@ -18,7 +18,7 @@
         </q-item>
               <q-card-separator style="background:lightgrey;"/>
         <span slot="subtitle" class="pull-left text-grey">
-          Select this option to start the survey
+         {{ $t('Select this option to start the survey') }}
           <br>
         </span>
       </q-card-title>
@@ -39,7 +39,7 @@
         </q-item>
               <q-card-separator style="background:lightgrey;"/>
         <span slot="subtitle" class="pull-left text-grey">
-          Select this option to check or edit submitted / draft surveys
+          {{ $t('Select this option to check submitted surveys') }}
           <br>
         </span>
       </q-card-title>

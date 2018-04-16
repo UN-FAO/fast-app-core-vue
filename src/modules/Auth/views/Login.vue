@@ -27,7 +27,14 @@
                             </q-field>
                   </div>
 
-                <input type="submit" :value="$t('Login')" class="btn btn-success btn-sm" @click="handleLogin" name="LOGIN" />
+                <q-btn color="green" @click="handleLogin" :disable="!appLoaded">
+                  <div v-if="appLoaded">{{$t('Login')}}</div>
+                 <div v-else>
+                 <q-spinner-mat color="white" :size="40" />
+                 <span style="color: white">{{$t('Loading...')}}</span>
+                 </div>
+                </q-btn>
+
                   <br>
                   <p class="text-center _new-user"><router-link :to="{ path: 'register' }">{{$t('New user')}}?</router-link></p>
                   <p class="text-center" style="color: grey !important">
@@ -51,13 +58,21 @@
 
 <script>
 import Auth from "libraries/fastjs/repositories/Auth/Auth";
-import { Loading, QField, QInput, QBtn, QIcon } from "quasar";
+import { Loading, QField, QInput, QBtn, QIcon, QSpinnerMat } from "quasar";
+import Event from "libraries/fastjs/Wrappers/Event";
 export default {
+  mounted() {
+    Event.listen({
+      name: "FAST:APPLICATION:LOADED",
+      callback: this.handleLoadedApp
+    });
+  },
   components: {
     QField,
     QInput,
     QBtn,
-    QIcon
+    QIcon,
+    QSpinnerMat
   },
   data() {
     return {
@@ -65,7 +80,8 @@ export default {
         username: "",
         password: ""
       },
-      isAdminLogin: false
+      isAdminLogin: false,
+      appLoaded: this.$APP_LOADED
     };
   },
   /**
@@ -107,6 +123,10 @@ export default {
     },
     adminLogin() {
       this.isAdminLogin = !this.isAdminLogin;
+    },
+    handleLoadedApp() {
+      console.log('this.$APP_LOADED', this.$APP_LOADED)
+      this.appLoaded = this.$APP_LOADED;
     }
   }
 };

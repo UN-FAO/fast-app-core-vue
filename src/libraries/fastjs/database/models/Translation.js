@@ -33,7 +33,7 @@ let Translation = (args) => {
    *
    */
   async function supportedLanguages() {
-    let translations = await Translation.find();
+    let translations = await Translation.local().find();
 
     if (translations.length === 0) {
       return []

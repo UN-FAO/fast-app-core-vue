@@ -147,9 +147,8 @@ export default {
   methods: {
     async getUsers() {
       this.loading = true;
-      let users = await User.remote().find();
-
-      this.users = users.filter((obj, pos, arr) => {
+      let users = await User.remote().find({limit: 5000});
+           this.users = users.filter((obj, pos, arr) => {
         return (
           arr
             .map(mapObj => mapObj["data"]["email"])

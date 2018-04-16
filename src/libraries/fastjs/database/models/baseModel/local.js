@@ -16,7 +16,7 @@ const localModel = (() => {
    * @return {[type]}        [description]
    */
   async function find({ modelName, filter, limit, select, pagination }) {
-    const model = await this.getModel({ model: modelName })
+    const model = await getModel({ model: modelName })
     return model.find(filter);
   }
   /**
@@ -25,7 +25,7 @@ const localModel = (() => {
    * @return {[type]}        [description]
    */
   async function findOne({ modelName, filter }) {
-    const model = await this.getModel({ model: modelName })
+    const model = await getModel({ model: modelName })
     return model.findOne(filter);
   }
   /**
@@ -34,7 +34,7 @@ const localModel = (() => {
    * @return {[type]}          [description]
    */
   async function remove({ modelName, document }) {
-    const model = await this.getModel({ model: modelName })
+    const model = await getModel({ model: modelName })
     return model.remove(document);
   }
   /**
@@ -43,7 +43,7 @@ const localModel = (() => {
    * @return {[type]}         [description]
    */
   async function insert({ modelName, element }) {
-    const model = await this.getModel({ model: modelName })
+    const model = await getModel({ model: modelName })
     element._id = uuidv4() + '_local'
     return model.insert(element);
   }
@@ -53,12 +53,12 @@ const localModel = (() => {
    * @return {[type]}          [description]
    */
   async function update({ modelName, document }) {
-    const model = await this.getModel({ model: modelName })
+    const model = await getModel({ model: modelName })
     return model.update(document);
   }
 
   async function updateOrCreate({ modelName, document }) {
-    const model = await this.getModel({ model: modelName })
+    const model = await getModel({ model: modelName })
     let role = await model.findOne(document)
     if (!role) {
       model.insert(document)
@@ -66,7 +66,7 @@ const localModel = (() => {
   }
 
   async function findAndRemove({ modelName, filter }) {
-    const model = await this.getModel({ model: modelName })
+    const model = await getModel({ model: modelName })
     return model.findAndRemove(filter);
   }
 

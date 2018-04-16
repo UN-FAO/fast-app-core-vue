@@ -1,5 +1,6 @@
 import Local from './baseModel/local'
 import Remote from './baseModel/remote'
+import Connection from 'libraries/fastjs/Wrappers/Connection'
 const baseModel = () => {
   /* eslint-disable no-unused-vars */
   let getFrom = 'remote-local'
@@ -40,7 +41,7 @@ const baseModel = () => {
    * @param  {[type]} filter [description]
    * @return {[type]}        [description]
    */
-  async function find({ filter, limit = 30, select, pagination, form } = {}) {
+  async function find({ filter, limit = undefined, select, pagination, form } = {}) {
     switch (getFrom) {
       case 'local':
         return Local.find({ modelName: this.getOwnName(), filter, limit, select, pagination })
@@ -49,15 +50,18 @@ const baseModel = () => {
         if (this.getFormPath() === 'custom') {
           return this.rFind({ formPath: this.getFormPath(), filter, limit, select, pagination, form })
         }
-        return Remote.find({ formPath: form || this.getFormPath(), filter, limit, select, pagination })
+        return Connection.isOnline() ?
+          Remote.find({ formPath: form || this.getFormPath(), filter, limit, select, pagination }) : []
         break;
       case 'remote-local':
         let local = await Local.find({ modelName: this.getOwnName(), filter, limit, select, pagination })
         let remote
         if (this.getFormPath() === 'custom') {
-          remote = await this.rFind({ formPath: this.getFormPath(), filter, limit, select, pagination, form })
+          remote = Connection.isOnline() ?
+            await this.rFind({ formPath: this.getFormPath(), filter, limit, select, pagination, form }) : []
         } else {
-          remote = await Remote.find({ formPath: form || this.getFormPath(), filter, limit, select, pagination })
+          remote = Connection.isOnline() ?
+            await Remote.find({ formPath: form || this.getFormPath(), filter, limit, select, pagination }) : []
         }
 
         // We need to include a logic here to check Which submission to keep
@@ -124,7 +128,7 @@ const baseModel = () => {
         return Local.insert({ modelName: this.getOwnName(), element: element })
         break;
       case 'remote':
-        return
+        return Remote.insert({ formPath: this.getFormPath(), element: element })
         break;
       case 'remote-local':
         return
@@ -142,7 +146,7 @@ const baseModel = () => {
         return Local.update({ modelName: this.getOwnName(), document: document })
         break;
       case 'remote':
-        return
+        return Remote.update({ formPath: this.getFormPath(), document: document })
         break;
       case 'remote-local':
         return

@@ -5,7 +5,7 @@ require(`./themes/app.${__THEME}.styl`)
 // 2. or, use next line to activate DEFAULT QUASAR STYLE
 // require(`quasar/dist/quasar.${__THEME}.css`)
 // ==============================
-
+console.log('v0.8.1')
 // Uncomment the following lines if you need IE11/Edge support
 require(`quasar/dist/quasar.ie`)
 require(`quasar/dist/quasar.ie.${__THEME}.css`)
@@ -28,7 +28,7 @@ import VueI18n from 'vue-i18n'
 Vue.use(VueI18n)
 import EventHub from 'vue-event-hub'
 Vue.use(EventHub)
-
+/* eslint-disable */
 import 'quasar-extras/material-icons'
 import 'quasar-extras/ionicons'
 import 'quasar-extras/fontawesome'
@@ -45,6 +45,7 @@ Moment.setLocales()
 
 import FASTConfig from "libraries/fastjs/config";
 import FAST from "libraries/fastjs/start";
+
 import { CONFIG_URL, APP_CONFIG_ID } from 'config/env'
 FASTConfig.set({ baseURL: CONFIG_URL, submissionId: APP_CONFIG_ID })
 

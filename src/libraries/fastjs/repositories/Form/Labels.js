@@ -22,8 +22,13 @@ let FormLabels = class {
    * @param {*} languageFilter
    */
   static async handle(formNameFilter, languageFilter) {
+    let allLanguages = require('libraries/fastjs/database/resources/isoLanguages.json')
+    allLanguages = allLanguages.map(o => o.code)
     formNameFilter = formNameFilter || undefined
-    languageFilter = languageFilter || ['en', 'fr', 'es', 'pt']
+    languageFilter = languageFilter || allLanguages
+
+    console.log('formNameFilter', formNameFilter)
+    console.log('languageFilter', languageFilter)
     languageFilter.push('label')
 
     let formFilter = formNameFilter && {
@@ -37,13 +42,14 @@ let FormLabels = class {
     stats.missingTranslations = []
     let translations = await Translation.local().find();
     translations = translations[0].data
-    let forms = await Form.find(formFilter);
+    let forms = await Form.local().find({filter: formFilter});
 
     let componentLabels = []
 
     // Extranct all labels for all available forms
     _forEach(forms, form => {
       componentLabels.push(form.data.title)
+
       // Go across every component
       FormioUtils.eachComponent(form.data.components, (component) => {
         if (component.suffix && component.suffix !== '') {
@@ -55,6 +61,12 @@ let FormLabels = class {
         if (component.addAnother && component.addAnother !== '') {
           componentLabels.push(component.addAnother)
         }
+        if (component.removeRow && component.removeRow !== '') {
+          componentLabels.push(component.removeRow)
+        }
+        if (component.saveRow && component.saveRow !== '') {
+          componentLabels.push(component.saveRow)
+        }
         if (component.legend && component.legend !== '') {
           componentLabels.push(component.legend)
         }
@@ -65,6 +77,14 @@ let FormLabels = class {
         // If it has a label
         if (component.label && component.label !== '') {
           componentLabels.push(component.label)
+        }
+        // If it has a placeholder
+        if (component.placeholder && component.placeholder !== '') {
+          componentLabels.push(component.placeholder)
+        }
+        // If it has a tooltip
+        if (component.tooltip && component.tooltip !== '?' && component.tooltip !== '') {
+          componentLabels.push(component.tooltip)
         }
         // If it has values that have labels (radio)
         if (component.values) {
@@ -78,6 +98,7 @@ let FormLabels = class {
         if (component.type === 'htmlelement' && component.content !== '') {
           componentLabels.push(component.content)
         }
+
         // If it is a select component
         if (component.type === 'select') {
           if (component.data && component.data.values) {
@@ -88,9 +109,22 @@ let FormLabels = class {
             })
           }
         }
+        if (component.type && component.type === 'survey') {
+          if (component.questions) {
+            component.questions.forEach((q) => {
+              componentLabels.push(q.label)
+            })
+            component.values.forEach((v) => {
+              componentLabels.push(v.label)
+            })
+          }
+        }
       }, true);
     })
-    componentLabels = componentLabels.concat(TRANSLATIONS)
+
+    if (formNameFilter.includes('Application')) {
+      componentLabels = componentLabels.concat(TRANSLATIONS)
+    }
     // Clean duplicated labels
     let uniqueLabels = Array.from(new Set(componentLabels)).sort();
 
@@ -146,12 +180,16 @@ let FormLabels = class {
       stats.translations[index].translated = stats.translations[index].total / stats.totalTranslations
     })
 
-    return {
+    let result = {
       labels: labelsArray,
       columns: uniqueColumsNames,
       stats: stats,
       labelsObject: labelsObject
     };
+
+    console.log('result', result)
+
+    return result
   }
 }
 export default FormLabels

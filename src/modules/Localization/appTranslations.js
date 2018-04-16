@@ -1,4 +1,9 @@
 exports.TRANSLATIONS = [
+  'Collected data',
+  'New Survey',
+  'Filter results...',
+  'Select this option to start the survey',
+  'Select this option to check submitted surveys',
   "Import Error!",
   "Your submission could not be Imported. Please check the format of your Json file.",
   "You must select at least one row to delete",
@@ -98,10 +103,17 @@ exports.TRANSLATIONS = [
   'You must select a destination group',
   'Give the group a name',
   'The group name is already taken',
-  'Participant Name',
+  'Current Participant Name',
+  'Next participant Name',
   'Give the next participant a name',
   'Give the current participant a name',
   'The participant name can´t be empty',
   'You must select a group',
-  'Select a group to assign'
+  'Select a group to assign',
+  'next',
+  'previous',
+  'Score',
+  'Loading...',
+  "Can't change group",
+  "There is no group assign to this submission"
 ]

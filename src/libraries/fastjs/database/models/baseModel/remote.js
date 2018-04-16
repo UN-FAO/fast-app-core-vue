@@ -80,6 +80,9 @@ const remoteModel = (() => {
    * @return {[type]}         [description]
    */
   async function insert({ formPath, element }) {
+    let formio = await getFormioInstance({ formPath: formPath })
+    let sub = await formio.saveSubmission(element)
+    return sub
   }
   /**
    * [update description]
@@ -87,6 +90,9 @@ const remoteModel = (() => {
    * @return {[type]}          [description]
    */
   async function update({ formPath, document }) {
+    let formio = await getFormioInstance({ formPath: formPath })
+    let sub = await formio.saveSubmission(document)
+    return sub
   }
 
   async function updateOrCreate({ formPath, document }) {

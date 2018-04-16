@@ -28,10 +28,17 @@ import Connection from "libraries/fastjs/Wrappers/Connection";
 import { QLayout, Toast, Platform } from "quasar";
 import layoutStore from "layout/layout-store";
 import FastClick from "fastclick";
+import FAST from "libraries/fastjs/start";
+import Event from "libraries/fastjs/Wrappers/Event";
 
 export default {
   name: "app",
   mounted() {
+    FAST.loadRemainingConfig({ Vue: this, interval: true });
+    Event.listen({
+      name: "FAST:APPLICATION:LOADED",
+      callback: this.handleLoadedApp
+    });
     window.addEventListener(
       "load",
       function() {
@@ -91,12 +98,16 @@ export default {
   methods: {
     toggleRtl: function(lenguage) {
       this.ltr = lenguage.direction === "ltr";
+    },
+    handleLoadedApp() {
+      this.appLoaded = this.$APP_LOADED
     }
   },
   data() {
     return {
       ltr: true,
-      layoutStore
+      layoutStore,
+      appLoaded: this.$APP_LOADED
     };
   },
   computed: {

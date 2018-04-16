@@ -6,8 +6,8 @@ let RemoteForms = (() => {
   /**
    *
    */
-  async function update() {
-    let remoteForms = await Form.remote().find()
+  async function update({ filter = undefined } = {}) {
+    let remoteForms = await Form.remote().find({ filter })
     // For every new or updated entry
     remoteForms.forEach(async function (form) {
       let localRes = await Form.local().findOne({

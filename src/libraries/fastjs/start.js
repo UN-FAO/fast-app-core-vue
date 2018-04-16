@@ -5,9 +5,35 @@ import Pages from "libraries/fastjs/repositories/Configuration/Pages";
 import SyncInterval from "libraries/fastjs/repositories/Database/SyncInterval";
 import Localization from 'libraries/fastjs/repositories/Localization/Localization'
 import Configuration from "libraries/fastjs/repositories/Configuration/Configuration";
+import Event from 'libraries/fastjs/Wrappers/Event'
+import Vue from 'vue'
 /* eslint-disable no-unused-vars */
 let App = (() => {
-  async function start({Vue, interval = true}) {
+  async function loadRemainingConfig({ interval = true }) {
+    if (Vue && Vue.prototype) {
+      Vue.prototype.$APP_LOADED = false
+    }
+    let pages, err;
+    [err, pages] = await to(Pages.set());
+    if (err) { let e = 'The pages could not be retrieve from source'; console.log(e, err) }
+    let appTranslations = await Localization.setLocales()
+    await Form.update();
+    if (interval) {
+      SyncInterval.set(2000)
+    }
+    let info = {
+      translations: appTranslations,
+      pages: pages,
+      defaultLenguage: localStorage.getItem('defaultLenguage') || 'en'
+    }
+    if (Vue && Vue.prototype) {
+      Vue.prototype.$APP_LOADED = true
+    }
+    Event.emit({ name: 'FAST:APPLICATION:LOADED', data: info, text: 'The application is fully loaded' })
+    return info
+  }
+
+  async function sync({ interval = true }) {
     let pages, err;
 
     let config = await Configuration.set(Vue);
@@ -30,8 +56,25 @@ let App = (() => {
     }
   }
 
+  async function start({ Vue, interval = true }) {
+    let pages, err;
+
+    let config = await Configuration.set(Vue);
+    fastConfig.setBaseUrl(config.APP_URL);
+
+    await Form.update({
+      filter: [{ element: 'path', query: '=', value: 'userregister' }]
+    });
+
+    return {
+      config: config
+    }
+  }
+
   return Object.freeze({
-    start
+    start,
+    sync,
+    loadRemainingConfig
   });
 })()
 export default App

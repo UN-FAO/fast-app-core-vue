@@ -45,7 +45,7 @@ let Export = class {
             d[c.path] = newFx(d)
           }
           catch (error) {
-            console.log("There is an error on one of your calculations", error)
+            // console.log("There is an error on one of your calculations", error)
           }
         }
       })

@@ -1,9 +1,9 @@
 <template>
-  <div v-if="show && showLoading">
-    <q-inner-loading :visible="showLoading">
+
+    <q-inner-loading  v-if="show && showLoading">
       <q-spinner-audio size="50px" color="primary"></q-spinner-audio>
     </q-inner-loading>
-  </div>
+
 </template>
 <script>
 import { QinnerLoading, QSpinnerAudio } from "quasar";

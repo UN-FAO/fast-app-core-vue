@@ -2,7 +2,7 @@
 <div>
 <div class="col-lg-12 col-md-12 col-sm-12 ">
   <div class="col-lg-6 col-md-8 col-sm-8 col-xs-8 pull-right">
-  <q-search  v-model="filter" placeholder="Filter results..." />
+  <q-search  v-model="filter" :placeholder="$t('Filter results...')" />
 </div>
 </div>
 <div v-for="(chunk, index) in _elements" v-bind:key="index" class="col-lg-12">
@@ -12,16 +12,16 @@
         <q-item>
           <q-item-side :avatar="element.innerCardsAvatar" />
           <q-item-main>
-            <q-item-tile label>{{element.innerCardsTitle}}</q-item-tile>
+            <q-item-tile label>{{$t(element.innerCardsTitle)}}</q-item-tile>
 
           </q-item-main>
         </q-item>
               <q-card-separator style="background:lightgrey;"/>
         <span slot="subtitle" class="pull-left text-grey" style="padding-top:10px;">
-          {{element.innerCardsSubtitle}}
+          {{$t(element.innerCardsSubtitle)}}
           <br>
         <q-btn color="primary" style="margin-top:10px" @click="applyAction(action)" v-if="action.innerCardsActionsTarget" v-for="action in element.innerCardsActions" v-bind:key="action.innerCardsActionsText">
-          {{action.innerCardsActionsText}}
+          {{$t(action.innerCardsActionsText)}}
         </q-btn>
         </span>
       </q-card-title>

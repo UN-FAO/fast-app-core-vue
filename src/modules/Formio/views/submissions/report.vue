@@ -12,8 +12,29 @@ export default {
     report
   },
   async mounted() {
-    let resuls = await Submission.local().get(this.$route.params.idSubmission);
-    this.submission = resuls.data.data;
+    if (this.$route.params.idSubmission.indexOf("_local") >= 0) {
+      console.log('offline')
+      let resuls = await Submission.local().get(
+        this.$route.params.idSubmission
+      );
+      resuls = resuls.data.data;
+      this.submission = resuls;
+    } else {
+      console.log('online')
+      let online = await Submission.remote().find({
+        form: this.$route.params.idForm,
+        filter: [
+          {
+            element: "_id",
+            query: "=",
+            value: this.$route.params.idSubmission
+          }
+        ],
+        limit: 1
+      });
+      online = online.length > 0 ? online[0] : [];
+      this.submission = online.data;
+    }
   },
   data() {
     return {

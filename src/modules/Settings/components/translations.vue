@@ -103,10 +103,10 @@
 </style>
 
 <script>
-import Form from 'libraries/fastjs/database/models/Form'
-import FormLabels from 'libraries/fastjs/repositories/Form/Labels'
+import Form from "libraries/fastjs/database/models/Form";
+import FormLabels from "libraries/fastjs/repositories/Form/Labels";
 import Translation from "libraries/fastjs/database/models/Translation";
-import Localization from 'libraries/fastjs/repositories/Localization/Localization'
+import Localization from "libraries/fastjs/repositories/Localization/Localization";
 import { mapActions } from "vuex";
 import {
   QBtn,
@@ -124,6 +124,7 @@ import Promise from "bluebird";
 import _forEach from "lodash/forEach";
 import _isEmpty from "lodash/isEmpty";
 import _map from "lodash/map";
+import FAST from "libraries/fastjs/start";
 
 export default {
   data: function() {
@@ -143,15 +144,17 @@ export default {
   async mounted() {
     this.updateValues();
     this.$eventHub.on("Translation:updated", data => {
-      this.updateValues();
+      // this.updateValues();
     });
+
     this.$eventHub.on("Translation:missing", data => {
-      this.createTranslations()
+      this.createTranslations();
     });
 
     this.formNameFilters = await Form.local().find();
     this.languageNameFilters = await Translation.local().supportedLanguages();
     this.selection = _map(this.formNameFilters, "data.title");
+    this.selection.push("Application");
     this.languageSelection = _map(this.languageNameFilters, "code");
   },
   components: {
@@ -167,13 +170,21 @@ export default {
   },
   computed: {
     filteredForms: function() {
-      return this.formNameFilters.filter(formNameFilter => {
+      // application
+      let forms = this.formNameFilters.filter(formNameFilter => {
         return (
           formNameFilter.data.title
             .toLowerCase()
             .indexOf(this.search.toLowerCase()) >= 0
         );
       });
+      let app = {
+        data: {
+          title: "Application"
+        }
+      };
+      forms.push(app);
+      return forms;
     },
     filteredLanguages: function() {
       return this.languageNameFilters.filter(languageNameFilter => {
@@ -250,6 +261,7 @@ export default {
           showCancelButton: false,
           onOpen: () => {
             this.$swal.showLoading();
+
             return Promise.each(translations, async (translation, index) => {
               if (typeof translation !== "undefined" && translation !== "") {
                 await Localization.createTranslation(translation);
@@ -290,14 +302,22 @@ export default {
       }
     },
     async updateValues() {
-      await this.getResources({
-        appName: this.$FAST_CONFIG.APP_NAME
+      this.$swal({
+        title: "Updating...",
+        text: this.$t(
+          "Wait until the App is Updated. This can take a couple minutes..."
+        ),
+        showCancelButton: false,
+        onOpen: async () => {
+          this.$swal.showLoading();
+          await FAST.sync({ Vue: this, interval: false });
+          this.translations = await FormLabels.get(
+            this.selection,
+            this.languageSelection
+          );
+          this.$swal.close();
+        }
       });
-      await Localization.getTranslations();
-      this.translations = await FormLabels.get(
-        this.selection,
-        this.languageSelection
-      );
     },
     async addLanguage() {
       let options = Translation.local().getIsoLanguages();

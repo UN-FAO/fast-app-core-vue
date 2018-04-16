@@ -77,9 +77,10 @@ let StoreForm = class {
    */
   static async storeUser(formSubmission, formio, redirect, hashField, formId, eventHub) {
     let config = await CONFIGURATION.getLocal()
-    formSubmission.data.hashedPassword = md5(formSubmission.data.password, config.MD5_KEY)
+    console.log('formSubmission', formSubmission.submission)
+    formSubmission.submission.data.hashedPassword = md5(formSubmission.submission.data.password, config.MD5_KEY)
     User.storeLocally({
-      data: formSubmission.data,
+      data: formSubmission.submission.data,
       sync: false,
       formio: formio
     })
@@ -89,7 +90,7 @@ let StoreForm = class {
         })
       })
       .catch((error) => {
-        eventHub.emit('FAST:USER:REGISTRATION:ERROR', formSubmission.data);
+        eventHub.emit('FAST:USER:REGISTRATION:ERROR', formSubmission.submission.data);
         console.log(error)
       })
   }

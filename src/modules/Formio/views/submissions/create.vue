@@ -143,9 +143,7 @@ import {
   QSpinnerAudio
 } from "quasar";
 import to from "await-to-js";
-import uuidv4 from "uuid/v4";
 import _get from "lodash/get";
-import Formio from "formiojs";
 import _forEach from "lodash/forEach";
 import _groupBy from "lodash/groupBy";
 import _debounce from "lodash/debounce";
@@ -154,9 +152,9 @@ import Form from "libraries/fastjs/database/models/Form";
 import Auth from "libraries/fastjs/repositories/Auth/Auth";
 import Submission from "libraries/fastjs/database/models/Submission";
 import formio from "modules/Formio/components/formio/formio";
-import OFFLINE_PLUGIN from "modules/Formio/components/formio/src/offlinePlugin";
 import datatable from "components/dataTable/dataTable";
 import Event from "libraries/fastjs/Wrappers/Event";
+import ParallelSurvey from "libraries/fastjs/repositories/Submission/ParallelSurvey";
 export default {
   components: {
     datatable,
@@ -210,12 +208,10 @@ export default {
     });
 
     this.validateRequired = _debounce(this.validateRequired, 400);
-    this.createScorePanels = _debounce(this.createScorePanels, 400);
 
     this.$eventHub.on("formio.change", data => {
       this.pages = data.formio.pages ? data.formio.pages : [];
       this.validateRequired(this.pages, data);
-      this.createScorePanels(this.pages, data);
     });
 
     Event.listen({
@@ -255,7 +251,7 @@ export default {
     });
   },
   beforeDestroy() {
-     Event.remove({
+    Event.remove({
       name: "FAST:SUBMISSION:CHANGED",
       callback: this.draftStatusChanged
     });
@@ -408,28 +404,6 @@ export default {
       });
       document.dispatchEvent(saveAsDraft);
     },
-    createScorePanels(pages, data) {
-      // Search all of the Score components in different pages
-      let scorePanels = [];
-      _forEach(pages, page => {
-        let panels = FormioUtils.findComponents(page.components, {
-          type: "panel"
-        });
-        if (panels.length > 0) {
-          _forEach(panels, (panel, index) => {
-            // Make sure that the panel contains Score
-            if (panel.key.indexOf("score") !== -1) {
-              _forEach(panel.components, (component, cindex) => {
-                // Search the current value of the Score and add it
-                component.value = data.formio.data[component.key];
-              });
-              scorePanels.push(panel);
-            }
-          });
-        }
-      });
-      this.scorePanels = scorePanels;
-    },
     goToPage(index) {
       if (
         this._pages[index] &&
@@ -540,92 +514,32 @@ export default {
         this.saved = true;
       }
     },
-    addSurvey() {
-      let groupId = _get(
-        Submission.local().getParallelSurvey(this.currentSubmission),
-        "groupId",
-        undefined
-      );
-
-      let steps = [];
-      let progressSteps = [];
-      if (groupId) {
-        progressSteps = ["1"];
-        steps = [
-          {
-            title: this.$t("Participant Name"),
-            text: this.$t("Give the next participant a name")
-          }
-        ];
-      } else {
-        progressSteps = ["1", "2", "3"];
-        steps = [
-          {
-            title: this.$t("Group Name"),
-            text: this.$t("Give the group a name"),
-            inputValidator: value => {
-              return new Promise((resolve, reject) => {
-                if (value !== "") {
-                  resolve();
-                } else {
-                  let error = new Error(
-                    this.$t("The group name is already taken")
-                  );
-                  reject(error);
-                }
-              });
-            }
-          },
-          {
-            title: this.$t("Participant Name"),
-            text: this.$t("Give the current participant a name")
-          },
-          {
-            title: this.$t("Participant Name"),
-            text: this.$t("Give the next participant a name")
-          }
-        ];
-      }
+    async addSurvey() {
+      let wizard = await ParallelSurvey.createWizard({
+        submission: this.currentSubmission,
+        vm: this
+      });
 
       this.$swal.setDefaults({
         input: "text",
-        confirmButtonText: "Next &rarr;",
+        confirmButtonText: this.$t("next") + "&rarr;",
         showCancelButton: true,
-        progressSteps: progressSteps
+        progressSteps: wizard.progressSteps
       });
 
-      this.$swal.queue(steps).then(result => {
-        let surveyData;
+      this.$swal.queue(wizard.steps).then(async result => {
         this.$swal.resetDefaults();
-        if (!groupId) {
-          let groupId = uuidv4();
-          let parallelSurvey = {
-            groupId: groupId,
-            groupName: result[0],
-            participantName: result[1],
-            submissionId: this.currentSubmission._id
-          };
-          this.currentSubmission.data.parallelSurvey = Submission.local().setParallelSurvey(
-            parallelSurvey
-          );
-          surveyData = {
-            parallelSurvey: Submission.local().setParallelSurvey({
-              ...parallelSurvey,
-              participantName: result[2]
-            })
-          };
-        } else {
-          let parallelsurveyInfo = Submission.local().getParallelSurvey(
-            this.currentSubmission
-          );
-          parallelsurveyInfo.participantName = result[0];
-          surveyData = {
-            parallelSurvey: Submission.local().setParallelSurvey(
-              parallelsurveyInfo
-            )
-          };
-        }
-        this.createNewSurvey(surveyData);
+
+        let surveyData = await ParallelSurvey.createNewSurvey({
+          submission: this.currentSubmission,
+          vm: this,
+          info: result
+        });
+
+        await ParallelSurvey.storeNewSurvey({
+          vm: this,
+          survey: surveyData
+        });
       });
     },
     async groupConfig() {
@@ -634,6 +548,7 @@ export default {
         "groupId",
         undefined
       );
+
       let options = await Submission.local().getGroups(
         this.$route.params.idForm
       );
@@ -728,40 +643,7 @@ export default {
         }, 1500);
       });
     },
-    createNewSurvey(surveyData) {
-      // De register if there was a previous registration
-      Formio.deregisterPlugin("offline");
-      // Register the plugin for offline mode
-      Formio.registerPlugin(
-        OFFLINE_PLUGIN.getPlugin(
-          this.$FAST_CONFIG.APP_URL + "/" + this.$route.params.idForm,
-          this.hashField,
-          false,
-          this.$eventHub
-        ),
-        "offline"
-      );
-
-      let formSubmission = {
-        data: surveyData,
-        redirect: "Update",
-        draft: true,
-        trigger: "createParalelSurvey"
-      };
-      let formio = new Formio(
-        this.$FAST_CONFIG.APP_URL + "/" + this.$route.params.idForm
-      );
-      formio.saveSubmission(formSubmission);
-    },
-    getForms() {
-      this.getResources({
-        appName: this.$store.state.authStore.appName
-      });
-    },
     getLabelForPage(page) {
-      // let key = page.key
-      // let errorCount = this.errors.errorsByPage && this.errors.errorsByPage[key] ? this.errors.errorsByPage[key].length : ''
-      // let label = errorCount !== '' ? page.title + '<span style="color: red;     font-weight: 500; font-size: larger; font-family: monospace;"> (' + errorCount + ')</span>' : page.title
       let label = page.title;
       return label;
     },

@@ -168,6 +168,7 @@ export default {
     },
     async getFullSubmissions(submissions) {
       let sub = await Submission.merged().showView({
+        limit: 50000,
         form: this.form.data.path,
         filter: {
           "data.formio.formId": this.form.data.path,
@@ -233,8 +234,8 @@ export default {
       self.$router.push({
         name: "formio_submission_report",
         params: {
-          idForm: submission.formio.formId,
-          idSubmission: submission.id_submision
+          idForm: this.form.data.path,
+          idSubmission: submission._lid || submission._id
         }
       });
     },

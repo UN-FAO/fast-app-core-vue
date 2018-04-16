@@ -39,6 +39,7 @@ import Form from "libraries/fastjs/database/models/Form";
 import FormioUtils from "formiojs/utils";
 import datatable from "components/dataTable/dataTable";
 import Submission from "libraries/fastjs/database/models/Submission";
+import Columns from "components/dataTable/tableFormatter/Columns";
 export default {
   async mounted() {
     this.$eventHub.on("lenguageSelection", async data => {
@@ -48,7 +49,7 @@ export default {
   asyncData: {
     formList: {
       get() {
-        return Form.sAll();
+        return Form.local().find();
       },
       transform(result) {
         let forms = result.reduce((filtered, form) => {
@@ -86,20 +87,15 @@ export default {
           return [];
         }
         this.loading = true;
-        let sub = await Submission.remote(this.currentForm.data.path).find({
-          select: this.columns.map(o => {
-            return "data." + o.field;
-          }),
-          limit: 50000
-        });
-
-        sub = sub.map(s => {
-          let data = s.data;
-          data._id = s._id;
-          return data;
-        });
+        let submissions = await Submission.remote().showView({
+        form: this.currentForm.data.path,
+        limit: 1000,
+        select: Columns.getTableView(this.currentForm.data).map(
+          o => "data." + o.path
+        )
+      });
         this.loading = false;
-        return sub;
+        return submissions.results;
       },
       watch() {
         this.currentForm;

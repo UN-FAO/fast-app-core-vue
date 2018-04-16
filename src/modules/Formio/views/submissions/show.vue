@@ -1,25 +1,24 @@
 <template>
   <div class="row" style="background:#f3f3f5">
-    <div>
-      <q-card color="white" style="bottom: unset;margin-top: 30px;" class="col-lg-10 col-lg-offset-1 col-md-offset-1 col-md-10 col-sm-10 col-sm-offset-1 col-xs-offset-0 col-xs-12  centered relative-position">
-          <q-card-main>
-        <h1 class="_control-label-title">{{formTitle}}</h1>
-          <span v-if="loading">Loading...</span>
-             <datatable
-              :data="submissions"
-              :form="currentForm"
-              :menuActions="['create', 'export']"
-              :tableActions="['edit', 'delete']"
-              fastMode="show"
-              v-on:refresh="refreshData"
-              v-if="currentForm && currentForm.data.title !== ''"
-            />
-        </q-card-main>
+        <div style="width:100%" class="relative-position">
+          <q-card color="white" style="bottom: unset;margin-top: 30px;" class="col-lg-10 col-lg-offset-1 col-md-offset-1 col-md-10 col-sm-10 col-sm-offset-1 col-xs-offset-0 col-xs-12  centered">
+              <q-card-main>
 
-        <loading :visible="noSubmissions"></loading>
-
-      </q-card>
-    </div>
+            <h1 class="_control-label-title">{{formTitle}}</h1>
+              <span v-if="loading">Loading...</span>
+                <datatable
+                  :data="submissions"
+                  :form="currentForm"
+                  :menuActions="['create', 'export', 'import']"
+                  :tableActions="$FAST_CONFIG.HAS_REPORT ? ['edit', 'delete', 'report'] : ['edit', 'delete']"
+                  fastMode="show"
+                  v-on:refresh="refreshData"
+                  v-if="currentForm && currentForm.data.title !== ''"
+                />
+            </q-card-main>
+          </q-card>
+           <loading :visible="noSubmissions"></loading>
+         </div>
   </div>
 </template>
 
@@ -95,6 +94,7 @@ export default {
       this.loading = true;
       let submissions = await Submission.merged().showView({
         form: this.$route.params.idForm,
+        limit: 1000,
         filter: {
           "data.formio.formId": this.$route.params.idForm,
           "data.user_email": Auth.userEmail()

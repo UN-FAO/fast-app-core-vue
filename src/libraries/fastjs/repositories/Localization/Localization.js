@@ -1,9 +1,8 @@
-import Formio from 'modules/Formio/api/Formio'
 import _forEach from 'lodash/forEach'
 import _map from 'lodash/map'
 import _isEmpty from 'lodash/isEmpty'
 import Translation from 'libraries/fastjs/database/models/Translation'
-import CONFIGURATION from 'libraries/fastjs/repositories/Configuration/Configuration'
+import _assign from 'lodash/assign'
 
 const Localization = class {
   /**
@@ -14,12 +13,13 @@ const Localization = class {
    */
   static async setLocales() {
     let localTranslations = await Translation.local().find()
-
+    let appTranslations = await Localization.getTranslations()
+    if (appTranslations.length > 0) {
+      return appTranslations
+    }
     if (localTranslations.length > 0 && localTranslations[0].data) {
       return localTranslations[0].data
     }
-    let appTranslations = await Localization.getTranslations()
-    return appTranslations
   }
 
   /**
@@ -32,7 +32,7 @@ const Localization = class {
     if (navigator.onLine) {
       try {
         // Fetch the Translation that are online
-        let onlineTranslations = await Translation.remote().find({limit: 50000})
+        let onlineTranslations = await Translation.remote().find({ limit: 50000 })
         if (onlineTranslations.length === 0) {
           return []
         }
@@ -86,13 +86,28 @@ const Localization = class {
    * @return {[type]} [description]
    */
   static async createTranslation(label) {
-    let config = await CONFIGURATION.getLocal();
-    return Formio.createTranslation(config.APP_NAME, label)
+    return Translation.remote().insert({
+      data: {
+        "en": label,
+        "label": label
+      }
+    })
   }
 
   static async setTranslations(label, translations) {
-    let config = await CONFIGURATION.getLocal();
-    return Formio.setTranslations(config.APP_NAME, label, translations)
+    let trans = await Translation.remote().find({
+      filter: [
+        { element: 'data.label', query: '=', value: label }
+      ]
+    })
+    let id = trans[0]._id
+    let mergedTranslations = _assign(trans[0].data, translations)
+    let result = await Translation.remote().update({
+      _id: id,
+      data: mergedTranslations
+    })
+    console.log('result', result)
+    return result
   }
 }
 export default Localization

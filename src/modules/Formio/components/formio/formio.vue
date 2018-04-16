@@ -114,8 +114,9 @@ export default {
      */
     setTranslations(Components) {
       let comps = FormioUtils.findComponents(Components, {
-        tag: "p"
+        type: "htmlelement"
       });
+
       _map(comps, comp => {
         if (this.$t(comp.content) !== comp.content) {
           comp.content = this.$t(comp.content);

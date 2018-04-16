@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid col-lg-offset-1 col-lg-10" v-bind:key="$route.path" style="padding-bottom:50px" >
     <div class="section-title pageTitle">
-      {{page.pageTitle}}
+      {{$t(page.pageTitle)}}
     </div>
     <hr style="border-top: 1px solid lightgray;">
 

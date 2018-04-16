@@ -1,15 +1,15 @@
 <template>
   <q-tabs>
     <!-- Tabs - notice slot="title" -->
-    <q-tab default v-if="scorePanels.length > 0 && $route.name === 'formio_submission_update'" slot="title" name="tab-1" icon="assessment" label="Score" />
+    <q-tab default v-if="scorePanels.length > 0 && $route.name === 'formio_submission_update'" slot="title" name="tab-1" icon="assessment" :label="$t('Score')" />
     <q-tab-pane name="tab-1" v-if="scorePanels.length > 0 && $route.name === 'formio_submission_update'">
       <q-list separator>
         <!-- collapsible to hide sub-level menu entries -->
-        <q-collapsible v-for="panel in scorePanels" separator :key="panel.key" icon="apps" :label="panel.title">
+        <q-collapsible v-for="panel in scorePanels" separator :key="panel.key" icon="apps" :label="$t(panel.title)">
 
-          <q-item multiline icon="favorite" v-for="component in panel.components" :label="component.label" :key="component.key">
+          <q-item multiline icon="favorite" v-for="component in panel.components" :label="$t(component.label)" :key="component.key">
             <q-item-side icon="school" />
-            <q-item-main :label="component.label" label-lines="3" />
+            <q-item-main :label="$t(component.label)" label-lines="3" />
             <q-item-side right :stamp="component.value === 0 ? '0' : component.value " />
           </q-item>
 

@@ -137,7 +137,7 @@ let Submission = (args) => {
         draft: s.draft,
         HumanUpdated: s.updated ? moment.unix(s.updated).fromNow() : moment(s.modified).fromNow(),
         syncError: s.syncError ? s.syncError : false,
-        updated: s.updated || s.modified
+        updated: s.updated ? moment.unix(s.updated).unix() : moment(s.modified).unix()
       }
       if (s._lid) {
         sub._lid = s._lid
@@ -152,15 +152,17 @@ let Submission = (args) => {
       })
       return sub
     })
-
+    console.log(submissions)
     submissions = _orderBy(submissions, ['updated'], ['desc'])
     let paginated = { results: submissions, pagination: paginationInfo }
     return paginated
   }
 
   async function getParallelParticipants(idForm, idSubmission) {
-    let currentSubmission = await this.find({
-      '_id': idSubmission
+    let currentSubmission = await Submission.local().find({
+      filter: {
+        '_id': idSubmission
+      }
     })
 
     currentSubmission = currentSubmission[0]
@@ -168,8 +170,10 @@ let Submission = (args) => {
 
     groupId = groupId && groupId !== '[object Object]' ? JSON.parse(groupId).groupId : undefined
 
-    let submissions = await this.find({
-      'data.formio.formId': idForm
+    let submissions = await Submission.local().find({
+      filter: {
+        'data.formio.formId': idForm
+      }
     })
 
     let a = submissions.filter((submission) => {
@@ -215,16 +219,16 @@ let Submission = (args) => {
   }
 
   async function getGroups(formId) {
-    let submissions = await this.find();
+    let submissions = await Submission.local().find();
 
     submissions = formId ? submissions.filter((submission) => {
       return submission.data.formio.formId === formId
     }) : submissions
 
     let groups = submissions.map((submission) => {
-      return this.getParallelSurvey(submission) ? {
-        groupId: this.getParallelSurvey(submission).groupId,
-        groupName: this.getParallelSurvey(submission).groupName
+      return Submission.local().getParallelSurvey(submission) ? {
+        groupId: Submission.local().getParallelSurvey(submission).groupId,
+        groupName: Submission.local().getParallelSurvey(submission).groupName
       } : undefined
     })
 
@@ -236,7 +240,7 @@ let Submission = (args) => {
   }
 
   async function getGroup(id) {
-    let groups = await this.getGroups()
+    let groups = await Submission.local().getGroups()
     groups = groups.filter((group) => {
       return group.groupId === id
     })
@@ -246,20 +250,20 @@ let Submission = (args) => {
   async function removeFromGroup(submission) { }
 
   async function assingToGroup(submissionId, groupId) {
-    let group = await this.getGroup(groupId[0])
-    let submission = await this.get(submissionId)
+    let group = await Submission.local().getGroup(groupId[0])
+    let submission = await Submission.local().get(submissionId)
 
-    let parallelData = this.getParallelSurvey(submission)
+    let parallelData = Submission.local().getParallelSurvey(submission)
 
     let parallelSurvey = {
       ...parallelData,
       groupId: group.groupId,
       groupName: group.groupName
     };
-    submission.data.data.parallelSurvey = this.setParallelSurvey(
+    submission.data.data.parallelSurvey = Submission.local().setParallelSurvey(
       parallelSurvey
     );
-    await this.update(submission)
+    await Submission.local().update(submission)
   }
 
   return Object.freeze(Object.assign({}, baseModel, {
