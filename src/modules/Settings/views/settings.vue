@@ -14,7 +14,7 @@
 
 
 
-           <q-item class="formioPagination" @click="goToRoute('reviewers')"  multiline style="text-align: left; text-transform: uppercase; min-height: 60px; border-radius: 5px;" link v-bind:class="activePage">
+           <q-item class="formioPagination" v-if="$FAST_CONFIG.DATA_REVIEWERS" @click="goToRoute('reviewers')"  multiline style="text-align: left; text-transform: uppercase; min-height: 60px; border-radius: 5px;" link v-bind:class="activePage">
              <q-item-tile avatar>
                <img src="statics/customSVG/reviewer.svg">
               </q-item-tile>

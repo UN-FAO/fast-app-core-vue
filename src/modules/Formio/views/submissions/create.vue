@@ -53,17 +53,17 @@
         </q-card>
 
         <q-fixed-position corner="top-right" :offset="[18, 18]">
-          <q-fab color="red" icon="add" direction="down" v-if="!this.$route.params.FAST_EDIT_MODE && this.$route.params.FAST_EDIT_MODE !== 'review'">
+          <q-fab color="red" icon="add" direction="down" v-if="this.$route.params.FAST_EDIT_MODE !== 'online-review'">
 
-            <q-fab-action color="primary" @click="saveAsDraft()" icon="fa-floppy-o">
+            <q-fab-action color="primary" @click="saveAsDraft()" icon="fa-floppy-o" v-if="this.$route.params.FAST_EDIT_MODE !== 'online'">
               <q-tooltip>{{$t('Save as draft')}}</q-tooltip>
             </q-fab-action>
 
-            <q-fab-action v-bind:class="!$FAST_CONFIG.PARALLEL_SURVEYS ? 'hidden' : ''" color="amber" @click="addSurvey()" icon="person_add">
+            <q-fab-action v-bind:class="!$FAST_CONFIG.PARALLEL_SURVEYS ? 'hidden' : ''" color="amber" @click="addSurvey()" icon="person_add" v-if="this.$route.params.FAST_EDIT_MODE !== 'online'">
               <q-tooltip>{{$t('Add participant')}}</q-tooltip>
             </q-fab-action>
 
-            <q-fab-action v-bind:class="!$FAST_CONFIG.PARALLEL_SURVEYS ? 'hidden' : ''" color="purple-6" @click="groupConfig()" icon="fa-users">
+            <q-fab-action v-bind:class="!$FAST_CONFIG.PARALLEL_SURVEYS ? 'hidden' : ''" color="purple-6" @click="groupConfig()" icon="fa-users" v-if="this.$route.params.FAST_EDIT_MODE !== 'online'">
               <q-tooltip>{{$t("Change Group")}}</q-tooltip>
 
             </q-fab-action>
@@ -77,10 +77,12 @@
               <q-tooltip>{{$t('Show pages')}}</q-tooltip>
             </q-fab-action>
 
+          <!--
             <q-fab-action color="secondary" @click="exportPDF()" icon="print"></q-fab-action>
-
+          -->
           </q-fab>
-          <q-fab color="red" icon="add" direction="down" v-if="this.$route.params.FAST_EDIT_MODE === 'review'">
+
+          <q-fab color="red" icon="add" direction="down" v-if="this.$route.params.FAST_EDIT_MODE === 'online-review'">
 
             <q-fab-action color="green" @click="reviewSubmission('accept')" icon="fa-check">
               <q-tooltip>{{$t('Accept')}}</q-tooltip>
@@ -185,6 +187,7 @@ export default {
     QSpinnerAudio
   },
   async mounted() {
+    console.log('this.$route.params.FAST_EDIT_MODE', this.$route.params.FAST_EDIT_MODE)
     this.$eventHub.on("formio.mounted", formio => {
       this.pages = formio.pages ? formio.pages : [];
     });

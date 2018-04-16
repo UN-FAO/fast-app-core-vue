@@ -125,7 +125,6 @@ export default {
       this.isAdminLogin = !this.isAdminLogin;
     },
     handleLoadedApp() {
-      console.log('this.$APP_LOADED', this.$APP_LOADED)
       this.appLoaded = this.$APP_LOADED;
     }
   }

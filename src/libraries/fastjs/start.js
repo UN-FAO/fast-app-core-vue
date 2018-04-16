@@ -16,13 +16,12 @@ let App = (() => {
     let pages, err;
     [err, pages] = await to(Pages.set());
     if (err) { let e = 'The pages could not be retrieve from source'; console.log(e, err) }
-    let appTranslations = await Localization.setLocales()
+
     await Form.update();
     if (interval) {
       SyncInterval.set(2000)
     }
     let info = {
-      translations: appTranslations,
       pages: pages,
       defaultLenguage: localStorage.getItem('defaultLenguage') || 'en'
     }
@@ -65,9 +64,11 @@ let App = (() => {
     await Form.update({
       filter: [{ element: 'path', query: '=', value: 'userregister' }]
     });
+    let appTranslations = await Localization.setLocales()
 
     return {
-      config: config
+      config: config,
+      translations: appTranslations
     }
   }
 

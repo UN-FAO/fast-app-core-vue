@@ -13,6 +13,7 @@ const Localization = class {
    */
   static async setLocales() {
     let localTranslations = await Translation.local().find()
+
     let appTranslations = await Localization.getTranslations()
     if (appTranslations.length > 0) {
       return appTranslations

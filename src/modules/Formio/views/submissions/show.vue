@@ -24,7 +24,7 @@
 
 <script>
 import loading from "components/loading";
-import { QCard, QCardMain, Toast } from "quasar";
+import { QCard, QCardMain, Toast, Loading } from "quasar";
 import datatable from "components/dataTable/dataTable";
 import Form from "libraries/fastjs/database/models/Form";
 import Auth from "libraries/fastjs/repositories/Auth/Auth";
@@ -43,10 +43,9 @@ export default {
       name: "FAST:SUBMISSION:SYNCED",
       callback: this.handleDataSynced
     });
-
-    this.$eventHub.on("FAST-DATA_IMPORTED", async data => {
-      await this.refreshData();
-      this.$swal("Imported!", "Your submission were imported", "success");
+    Event.listen({
+      name: "FAST:DATA:IMPORTED",
+      callback: this.handleDataImported
     });
 
     this.$eventHub.on("lenguageSelection", async data => {
@@ -86,6 +85,11 @@ export default {
     };
   },
   methods: {
+    async handleDataImported() {
+      await this.refreshData();
+      Loading.hide()
+      this.$swal("Imported!", "Your submission were imported", "success");
+    },
     async handleDataSynced() {
       await this.refreshData();
       Toast.create.positive({ html: "Your data was uploaded!" });

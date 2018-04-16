@@ -112,7 +112,7 @@ export default {
       this.exportTo(type);
     });
     this.$eventHub.on("FAST:IMPORT", type => {
-      this.exportTo(type);
+      this.importSubmission();
     });
     this.$eventHub.on("FAST:GO:CREATE", () => {
       this.goToCreateView();

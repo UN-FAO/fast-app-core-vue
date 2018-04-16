@@ -5,7 +5,8 @@ require(`./themes/app.${__THEME}.styl`)
 // 2. or, use next line to activate DEFAULT QUASAR STYLE
 // require(`quasar/dist/quasar.${__THEME}.css`)
 // ==============================
-console.log('v0.8.1')
+var pjson = require('../package.json');
+console.log(pjson.version);
 // Uncomment the following lines if you need IE11/Edge support
 require(`quasar/dist/quasar.ie`)
 require(`quasar/dist/quasar.ie.${__THEME}.css`)

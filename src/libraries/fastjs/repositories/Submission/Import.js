@@ -2,12 +2,10 @@ import Formio from "formiojs";
 import OFFLINE_PLUGIN from "modules/Formio/components/formio/src/offlinePlugin";
 import Promise from 'bluebird'
 import { Loading } from 'quasar'
-import store from 'config/store'
-import Auth from 'libraries/fastjs/repositories/Auth/Auth'
-import _debounce from 'lodash/debounce'
 import PreProcess from './importPreProcess'
 // import Uploader from './Uploader'
-
+import Submission from 'libraries/fastjs/repositories/Submission/SubmissionRepository'
+import Event from 'libraries/fastjs/Wrappers/Event'
 let Import = class {
   /**
    *
@@ -39,14 +37,13 @@ let Import = class {
     let totalSubmissions = json.length
     let formio = Import.getFormIOInstance(vm)
     Loading.show({ message: 'Importing ' + totalSubmissions + ' submissions' })
-    json = json.slice(151, 200);
+    // json = json.slice(151, 200);
     Promise.each(json, async function (row, index) {
       // await Uploader.sendDataToFormIO(row)
       let submission = Import.prepareSubmission(row)
       await Import.saveSubmission(submission, formio, vm)
     }).then(() => {
-      let dEmit = _debounce(Import.emitNotification, 2000)
-      dEmit(vm)
+      Event.emit({ name: "FAST:DATA:IMPORTED", data: { imported: true }, text: 'Data was imported' })
     })
       .catch(error => {
         Loading.hide(error)
@@ -84,15 +81,14 @@ let Import = class {
     Formio.deregisterPlugin("offline");
     Formio.registerPlugin(
       OFFLINE_PLUGIN.getPlugin(
-        vm.currentForm.data.path,
+        vm.form.data.path,
         undefined,
-        false,
-        vm.$eventHub
+        false
       ),
       "offline"
     );
     let APP_URL = vm.$FAST_CONFIG.APP_URL
-    let formUrl = APP_URL + "/" + vm.currentForm.data.path;
+    let formUrl = APP_URL + "/" + vm.form.data.path;
     let formio = new Formio(formUrl);
     return formio
   }
@@ -102,12 +98,7 @@ let Import = class {
    */
   static async saveSubmission(submission, formio, vm) {
     let processedSubmission = PreProcess.JsonSubmission(submission)
-    let a = await store.dispatch('addSubmission', {
-      formSubmission: processedSubmission,
-      formio: formio,
-      User: Auth.user().data
-    })
-    console.log('a is: ', a)
+    await Submission.add({ submission: processedSubmission, formio: formio })
   }
 }
 
