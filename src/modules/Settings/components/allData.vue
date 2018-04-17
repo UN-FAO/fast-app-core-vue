@@ -40,6 +40,7 @@ import FormioUtils from "formiojs/utils";
 import datatable from "components/dataTable/dataTable";
 import Submission from "libraries/fastjs/database/models/Submission";
 import Columns from "components/dataTable/tableFormatter/Columns";
+import Auth from "libraries/fastjs/repositories/Auth/Auth";
 export default {
   async mounted() {
     this.$eventHub.on("lenguageSelection", async data => {
@@ -87,13 +88,24 @@ export default {
           return [];
         }
         this.loading = true;
-        let submissions = await Submission.remote().showView({
-        form: this.currentForm.data.path,
-        limit: 1000,
-        select: Columns.getTableView(this.currentForm.data).map(
-          o => "data." + o.path
-        )
-      });
+        let queryParams = {
+          form: this.currentForm.data.path,
+          limit: 1000,
+          select: Columns.getTableView(this.currentForm.data).map(
+            o => "data." + o.path
+          )
+        };
+        if (Auth.hasRole("Reviewer")) {
+          queryParams.filter = [
+            {
+              element: "data.country",
+              query: "in",
+              value: Auth.user().data.countries.join(",")
+            }
+          ];
+        }
+
+        let submissions = await Submission.remote().showView(queryParams);
         this.loading = false;
         return submissions.results;
       },
