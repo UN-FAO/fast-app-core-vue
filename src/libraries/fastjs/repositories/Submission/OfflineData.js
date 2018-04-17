@@ -80,7 +80,6 @@ let OfflineData = (() => {
           }
         }
       }).then((result) => {
-        console.log('HERE yes synced')
         Event.emit({
           name: 'FAST:SUBMISSION:SYNCED',
           data: {

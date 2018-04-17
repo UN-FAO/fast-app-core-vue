@@ -122,13 +122,13 @@ const baseModel = () => {
    * @param  {[type]} element [description]
    * @return {[type]}         [description]
    */
-  async function insert(element) {
+  async function insert(element, formPath) {
     switch (getFrom) {
       case 'local':
         return Local.insert({ modelName: this.getOwnName(), element: element })
         break;
       case 'remote':
-        return Remote.insert({ formPath: this.getFormPath(), element: element })
+        return Remote.insert({ formPath: this.getFormPath() || formPath, element: element })
         break;
       case 'remote-local':
         return
@@ -140,13 +140,13 @@ const baseModel = () => {
    * @param  {[type]} document [description]
    * @return {[type]}          [description]
    */
-  async function update(document) {
+  async function update(document, formPath) {
     switch (getFrom) {
       case 'local':
         return Local.update({ modelName: this.getOwnName(), document: document })
         break;
       case 'remote':
-        return Remote.update({ formPath: this.getFormPath(), document: document })
+        return Remote.update({ formPath: this.getFormPath() || formPath, document: document })
         break;
       case 'remote-local':
         return

@@ -147,8 +147,8 @@ export default {
   methods: {
     async getUsers() {
       this.loading = true;
-      let users = await User.remote().find({limit: 5000});
-           this.users = users.filter((obj, pos, arr) => {
+      let users = await User.remote().find({ limit: 5000 });
+      this.users = users.filter((obj, pos, arr) => {
         return (
           arr
             .map(mapObj => mapObj["data"]["email"])
@@ -182,7 +182,8 @@ export default {
           idForm: "user",
           idSubmission: user.row._id,
           fullSubmision: { data: user.row, _id: user.row._id },
-          FAST_EDIT_MODE: "online"
+          FAST_EDIT_MODE: "online",
+          FAST_PARENT_PAGE: "reviewers"
         }
       });
     }

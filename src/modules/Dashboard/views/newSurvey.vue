@@ -21,14 +21,32 @@ export default {
   components: {
     actioncards
   },
-   asyncData: {
+  asyncData: {
     newForms: {
       async get() {
-        let result = await Form.local().cardFormattedForms('create');
-        return result
+        let result = await Form.local().cardFormattedForms("create");
+        if (result.innerCards.length === 1) {
+          this.redirectTo(result.innerCards[0].innerCardsActions[0], "submission");
+        }
+        return result;
       },
       transform(result) {
         return result;
+      }
+    }
+  },
+  methods: {
+    redirectTo(action) {
+      if (action.innerCardsActionsForm) {
+        let name =
+          action.innerCardsActionsAction === "list"
+            ? "formio_form_show"
+            : "formio_form_submission";
+        let to = {
+          name: name,
+          params: { idForm: action.innerCardsActionsForm.path }
+        };
+        this.$router.push(to);
       }
     }
   }

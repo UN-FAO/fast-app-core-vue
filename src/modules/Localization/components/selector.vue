@@ -120,7 +120,6 @@ export default {
       return !!(this.lenguage === code);
     },
     setLanguage(lenguage) {
-      console.log('changing language to', this.$i18n)
       this.$i18n.locale = lenguage.code;
       this.lenguage = lenguage.code;
       Moment.changeLanguage(lenguage.code)

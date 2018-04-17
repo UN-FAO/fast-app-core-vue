@@ -742,6 +742,10 @@ button.btn.btn-primary.btn-wizard-nav-next {
  border-bottom: 1px solid grey !important;
 }
 
+.q-card-subtitle .q-btn:not(:first-of-type) {
+  margin-left: 10px !important;
+}
+
 @import 'custom/custom.scss';
 @import 'qDataTable.scss';
 @import 'errorResponsiveTable.scss';

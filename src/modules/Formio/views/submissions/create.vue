@@ -33,8 +33,16 @@
 
               <q-tab-pane name="tab-1" ref="tab1">
 
-                <formio :formURL="$FAST_CONFIG.APP_URL + '/' + $route.params.idForm" :submission="submission" :formioToken="formioToken" :localDraft="$FAST_CONFIG.LOCAL_DRAFT_ENABLED" :readOnly="readOnly" :autoCreate="autoCreate" :editMode="this.$route.params.FAST_EDIT_MODE"
-                  v-bind:style="{ display: !customRender ? 'initial' : 'none' }" />
+                <formio
+                :formURL="$FAST_CONFIG.APP_URL + '/' + $route.params.idForm"
+                :submission="submission"
+                :formioToken="formioToken"
+                :localDraft="$FAST_CONFIG.LOCAL_DRAFT_ENABLED"
+                :readOnly="readOnly"
+                :autoCreate="autoCreate"
+                :editMode="this.$route.params.FAST_EDIT_MODE"
+                :parentPage="this.$route.params.FAST_PARENT_PAGE"
+                v-bind:style="{ display: !customRender ? 'initial' : 'none' }" />
 
                 <div v-bind:style="{ display: customRender ? 'initial' : 'none', color: 'black' }">
 
@@ -117,7 +125,6 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
 import {
   QCard,
   QCardTitle,
@@ -375,7 +382,6 @@ export default {
     };
   },
   methods: {
-    ...mapActions(["getResources"]),
     async reviewSubmission(revision) {
       let err;
       let submission = this.$route.params.fullSubmision;
@@ -383,9 +389,7 @@ export default {
       submission.data.deleted = revision !== "accept";
 
       [err] = await to(
-        Submission.remote(this.$route.params.idForm).save({
-          submission: submission
-        })
+        Submission.remote().update(submission, this.$route.params.idForm)
       );
 
       if (err) throw new Error("Submission was not saved");

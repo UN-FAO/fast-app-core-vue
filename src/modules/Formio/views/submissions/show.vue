@@ -1,11 +1,12 @@
 <template>
-  <div class="row" style="background:#f3f3f5">
-        <div style="width:100%" class="relative-position">
-          <q-card color="white" style="bottom: unset;margin-top: 30px;" class="col-lg-10 col-lg-offset-1 col-md-offset-1 col-md-10 col-sm-10 col-sm-offset-1 col-xs-offset-0 col-xs-12  centered">
-              <q-card-main>
-
-            <h1 class="_control-label-title">{{formTitle}}</h1>
-              <span v-if="loading">Loading...</span>
+  <div class="row">
+        <div style="width:100%" class="col-lg-10 col-lg-offset-1 col-md-offset-1 col-md-10 col-sm-10 col-sm-offset-1 col-xs-offset-0 col-xs-12">
+          <q-card color="white" style="bottom: unset;margin-top: 30px;" class="relative-position text-dark">
+            <q-card-title>
+              {{formTitle}}
+            </q-card-title>
+              <q-card-main >
+                  <loading :visible="noSubmissions"></loading>
                 <datatable
                   :data="submissions"
                   :form="currentForm"
@@ -13,18 +14,17 @@
                   :tableActions="$FAST_CONFIG.HAS_REPORT ? ['edit', 'delete', 'report'] : ['edit', 'delete']"
                   fastMode="show"
                   v-on:refresh="refreshData"
-                  v-if="currentForm && currentForm.data.title !== ''"
+                  v-if="currentForm && currentForm.data.title !== '' && !noSubmissions"
                 />
             </q-card-main>
           </q-card>
-           <loading :visible="noSubmissions"></loading>
          </div>
   </div>
 </template>
 
 <script>
 import loading from "components/loading";
-import { QCard, QCardMain, Toast, Loading } from "quasar";
+import { QCard, QCardMain, QCardTitle, Toast, Loading } from "quasar";
 import datatable from "components/dataTable/dataTable";
 import Form from "libraries/fastjs/database/models/Form";
 import Auth from "libraries/fastjs/repositories/Auth/Auth";
@@ -75,7 +75,8 @@ export default {
     QCard,
     QCardMain,
     Toast,
-    loading
+    loading,
+    QCardTitle
   },
   data() {
     return {

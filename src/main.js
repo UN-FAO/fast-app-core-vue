@@ -6,7 +6,7 @@ require(`./themes/app.${__THEME}.styl`)
 // require(`quasar/dist/quasar.${__THEME}.css`)
 // ==============================
 var pjson = require('../package.json');
-console.log(pjson.version);
+console.log('v.' + pjson.version);
 // Uncomment the following lines if you need IE11/Edge support
 require(`quasar/dist/quasar.ie`)
 require(`quasar/dist/quasar.ie.${__THEME}.css`)

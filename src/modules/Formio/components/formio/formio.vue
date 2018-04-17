@@ -38,6 +38,9 @@ export default {
     localDraft: {
       required: false
     },
+    parentPage: {
+      required: false
+    },
     options: {
       type: Object,
       default: () => ({})
@@ -243,19 +246,29 @@ export default {
         onOpen: async () => {
           Formio.deregisterPlugin("offline");
           this.$swal.showLoading();
-          formio.saveSubmission(submission).then(updated => {
-            this.$swal.close();
-            if (this.editMode === "online-review") {
-              this.$router.push({
-                name: "reviewers"
-              });
-            } else if (this.editMode === "online") {
-              this.$router.push({
-                name: "formio_form_show",
-                params: { idForm: formio.formId }
-              });
-            }
-          });
+          formio
+            .saveSubmission(submission)
+            .then(updated => {
+              this.$swal.close();
+              if (this.parentPage) {
+                this.$router.push({
+                  name: this.parentPage
+                });
+              } else if (this.editMode === "online-review") {
+                this.$router.push({
+                  name: "reviewers"
+                });
+              } else if (this.editMode === "online") {
+                this.$router.push({
+                  name: "formio_form_show",
+                  params: { idForm: formio.formId }
+                });
+              }
+            })
+            .catch(e => {
+              console.log(e)
+              this.$swal('Error', 'There was a problem while trying to save the submission. ' + JSON.stringify(e), 'error')
+            });
         }
       });
     },

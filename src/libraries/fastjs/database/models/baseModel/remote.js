@@ -14,7 +14,7 @@ const remoteModel = (() => {
     switch (formPath) {
       case 'custom':
         formUrl = await config.get().baseURL
-          break;
+        break;
       case undefined:
         formUrl = await config.get().url
         Formio.setToken('');
@@ -81,6 +81,7 @@ const remoteModel = (() => {
    */
   async function insert({ formPath, element }) {
     let formio = await getFormioInstance({ formPath: formPath })
+    Formio.deregisterPlugin("offline");
     let sub = await formio.saveSubmission(element)
     return sub
   }
@@ -91,6 +92,7 @@ const remoteModel = (() => {
    */
   async function update({ formPath, document }) {
     let formio = await getFormioInstance({ formPath: formPath })
+    Formio.deregisterPlugin("offline");
     let sub = await formio.saveSubmission(document)
     return sub
   }
