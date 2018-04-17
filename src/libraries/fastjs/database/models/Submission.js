@@ -83,7 +83,7 @@ let Submission = (args) => {
     let paginationInfo = {}
     let submissions = []
 
-    submissions = await Submission.find({ form, limit, select, pagination })
+    submissions = await Submission.find({ form, limit, select, pagination, filter })
     // Need to clone the object for as it is Dynamic LokiJs
     submissions = _cloneDeep(submissions)
 

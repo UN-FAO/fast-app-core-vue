@@ -100,7 +100,7 @@ export default {
             {
               element: "data.country",
               query: "in",
-              value: Auth.user().data.countries.join(",")
+              value: Auth.user().data.countries
             }
           ];
         }
