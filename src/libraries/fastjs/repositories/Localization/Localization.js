@@ -13,11 +13,12 @@ const Localization = class {
    */
   static async setLocales() {
     let localTranslations = await Translation.local().find()
-
     let appTranslations = await Localization.getTranslations()
-    if (appTranslations.length > 0) {
+
+    if (appTranslations) {
       return appTranslations
     }
+
     if (localTranslations.length > 0 && localTranslations[0].data) {
       return localTranslations[0].data
     }
@@ -78,7 +79,7 @@ const Localization = class {
         console.log('Error while getting translations')
       }
     } else {
-      return []
+      return undefined
     }
   }
 

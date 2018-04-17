@@ -17,15 +17,12 @@ let App = (() => {
     [err, pages] = await to(Pages.set());
     if (err) { let e = 'The pages could not be retrieve from source'; console.log(e, err) }
 
-    let appTranslations = await Localization.setLocales()
-
     await Form.update();
     if (interval) {
       SyncInterval.set(2000)
     }
     let info = {
       pages: pages,
-      translations: appTranslations,
       defaultLenguage: localStorage.getItem('defaultLenguage') || 'en'
     }
     if (Vue && Vue.prototype) {
@@ -68,7 +65,7 @@ let App = (() => {
       filter: [{ element: 'path', query: '=', value: 'userregister' }]
     });
     let appTranslations = await Localization.setLocales()
-
+    console.log('appTranslations', appTranslations)
     return {
       config: config,
       translations: appTranslations,
