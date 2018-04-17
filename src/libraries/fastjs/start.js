@@ -65,7 +65,6 @@ let App = (() => {
       filter: [{ element: 'path', query: '=', value: 'userregister' }]
     });
     let appTranslations = await Localization.setLocales()
-    console.log('appTranslations', appTranslations)
     return {
       config: config,
       translations: appTranslations,

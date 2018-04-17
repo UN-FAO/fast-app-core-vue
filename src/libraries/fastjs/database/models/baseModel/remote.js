@@ -42,7 +42,7 @@ const remoteModel = (() => {
     let queryParams = {
       limit: limit
     }
-    console.log('from the class', filter)
+
     if (filter) {
       let filterQuery = filterToString(filter)
       queryParams = { ...queryParams, ...filterQuery }

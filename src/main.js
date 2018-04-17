@@ -63,7 +63,6 @@ if (__THEME === 'mat') {
 Quasar.start(async () => {
   try {
     let config = await FAST.start({ Vue: Vue, interval: true });
-    console.log('config', config)
     // Set the translations into the Plugin
     const i18n = new VueI18n({
       locale: config.defaultLenguage, // set locale
