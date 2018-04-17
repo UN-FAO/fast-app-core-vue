@@ -43,7 +43,7 @@ const remoteModel = (() => {
       limit: limit
     }
 
-    if (filter) {
+    if (filter && Array.isArray(filter)) {
       let filterQuery = filterToString(filter)
       queryParams = { ...queryParams, ...filterQuery }
     }

@@ -78,7 +78,8 @@
 }
 
 .q-item-icon {
-  font-size: 26px;
+    font-size: 26px;
+    line-height: 38px;
 }
 
 .q-list-header {

@@ -5,23 +5,23 @@
   <q-search  v-model="filter" :placeholder="$t('Filter results...')" />
 </div>
 </div>
-<div v-for="(chunk, index) in _elements" v-bind:key="index" class="col-lg-12">
-     <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-xs-12" v-for="element in chunk" v-bind:key="element.innerCardsTitle" style="margin:auto;">
+<div v-for="(chunk, index) in _cards" v-bind:key="index" class="col-lg-12">
+     <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-xs-12" v-for="card in chunk" v-bind:key="card.title" style="margin:auto;">
       <q-card color="white" class="text-black cardRibbon">
       <q-card-title>
         <q-item>
-          <q-item-side :avatar="element.innerCardsAvatar" />
+          <q-item-side  :icon="!card.customIcon && card.icon" :avatar="card.customIcon && card.icon"/>
           <q-item-main>
-            <q-item-tile label>{{$t(element.innerCardsTitle)}}</q-item-tile>
+            <q-item-tile label>{{$t(card.title)}}</q-item-tile>
 
           </q-item-main>
         </q-item>
               <q-card-separator style="background:lightgrey;"/>
         <span slot="subtitle" class="pull-left text-grey" style="padding-top:10px;">
-          {{$t(element.innerCardsSubtitle)}}
+          {{$t(card.subtitle)}}
           <br>
-        <q-btn color="primary" style="margin-top:10px" @click="applyAction(action)" v-if="action.innerCardsActionsTarget" v-for="action in element.innerCardsActions" v-bind:key="action.innerCardsActionsText">
-          {{$t(action.innerCardsActionsText)}}
+        <q-btn color="primary" style="margin-top:10px" @click="applyAction(action)" v-if="action.target" v-for="action in card.actions" v-bind:key="action.text">
+          {{$t(action.text)}}
         </q-btn>
         </span>
       </q-card-title>
@@ -32,7 +32,7 @@
 </template>
 <style scoped>
 .q-if.row.no-wrap.items-center.relative-position.q-input.q-search.text-primary {
-    border-bottom: 1px solid grey;
+  border-bottom: 1px solid grey;
 }
 </style>
 <script>
@@ -97,30 +97,34 @@ export default {
     QItemSeparator
   },
   computed: {
-    _elements() {
-      let cards = this.page.innerCards;
+    _cards() {
+      let cards = this.page.cards;
+      console.log('cards', cards)
       cards = cards.filter(c => {
-        return c.innerCardsTitle.toLowerCase().indexOf(this.filter.toLowerCase()) > -1;
+        return (
+          c.title.toLowerCase().indexOf(this.filter.toLowerCase()) >
+          -1
+        );
       });
       return _chunk(cards, 3);
     }
   },
   methods: {
     applyAction(action) {
-      if (action.innerCardsActionsForm) {
+      if (action.formPath) {
         let name =
-          action.innerCardsActionsAction === "list"
+          action.view === "list"
             ? "formio_form_show"
             : "formio_form_submission";
         let to = {
           name: name,
-          params: { idForm: action.innerCardsActionsForm.path }
+          params: { idForm: action.formPath }
         };
         this.$router.push(to);
-      } else if (action.innerCardsActionsPageName) {
+      } else if (action.page) {
         let to = {
           name: "pageManager",
-          params: { pageId: action.innerCardsActionsPageName.pagesPageUrl }
+          params: { pageId: action.page.url }
         };
         this.$router.push(to);
       }

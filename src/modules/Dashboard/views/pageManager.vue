@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid col-lg-offset-1 col-lg-10" v-bind:key="$route.path" style="padding-bottom:50px" >
     <div class="section-title pageTitle">
-      {{$t(page.pageTitle)}}
+      {{$t(page.title)}}
     </div>
     <hr style="border-top: 1px solid lightgray;">
 
@@ -72,14 +72,14 @@ export default {
         return element;
       },
       transform(result) {
-        return result
+        return result;
       }
     }
   },
   methods: {
     filterPage(pages, nextRoute) {
       let page = pages.filter(page => {
-        return page.pagesPageUrl === nextRoute;
+        return page.url === nextRoute;
       });
       return page[0];
     }
