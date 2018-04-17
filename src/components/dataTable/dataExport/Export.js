@@ -40,7 +40,7 @@ let Export = class {
       // Check all components having calculated values
       components.forEach(c => {
         if (c.calculateValue) {
-          let newFx = Function("data", "value", c.calculateValue + "return value;")
+          let newFx = Function("data", "value", c.calculateValue + "; return value;")
           try {
             d[c.path] = newFx(d)
           }

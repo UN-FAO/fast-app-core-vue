@@ -176,6 +176,19 @@ export default {
         },
         dataExport: true
       });
+
+      // Get all Ids in the selection
+      let ids = submissions.reduce((acc, s) => {
+        if (s._id) {
+          acc.push(s._id);
+        }
+        return acc;
+      }, []);
+
+      // Filter the ids
+      sub = sub.filter(s => {
+        return ids.includes(s._id);
+      });
       return sub;
     },
     async handleReview(data) {
