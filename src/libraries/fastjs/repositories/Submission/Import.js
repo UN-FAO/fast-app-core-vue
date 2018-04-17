@@ -63,6 +63,12 @@ let Import = class {
       delete row.id;
       delete row._id;
     }
+    if (row.modified) {
+      delete row.modified;
+    }
+    if (row.owner) {
+      delete row.owner;
+    }
     let data = row.data ? row.data : row
     let formSubmission = {
       data: data,
