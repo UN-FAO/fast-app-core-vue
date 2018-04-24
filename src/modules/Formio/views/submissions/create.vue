@@ -17,6 +17,31 @@
 
         <q-card color="white" v-bind:class="getFormClass" style="">
           <q-card-main>
+            <q-card-title v-if="this.$route.params.FAST_EDIT_MODE !== 'online-review'">
+
+            <q-icon slot="right" flat color="primary" @click="saveAsDraft()" name="fa-floppy-o" v-if="this.$route.params.FAST_EDIT_MODE !== 'online'">
+              <q-tooltip>{{$t('Save as draft')}}</q-tooltip>
+            </q-icon>
+
+            <q-icon slot="right" flat  v-bind:class="!$FAST_CONFIG.PARALLEL_SURVEYS ? 'hidden' : ''" color="amber" @click="addSurvey()" name="person_add" v-if="this.$route.params.FAST_EDIT_MODE !== 'online'">
+              <q-tooltip>{{$t('Add participant')}}</q-tooltip>
+            </q-icon>
+
+            <q-icon slot="right" flat  v-bind:class="!$FAST_CONFIG.PARALLEL_SURVEYS ? 'hidden' : ''" color="purple-6" @click="groupConfig()" name="fa-users" v-if="this.$route.params.FAST_EDIT_MODE !== 'online'">
+              <q-tooltip>{{$t("Change Group")}}</q-tooltip>
+
+            </q-icon>
+
+
+            <q-icon slot="right" flat  color="red" @click="openRightDrawer()" name="assessment" v-if="$FAST_CONFIG.HAS_SCORES">
+              <q-tooltip>{{$t('Show scores')}}</q-tooltip>
+            </q-icon>
+
+            <q-icon  flat  color="grey" @click="togglePages" name="menu" v-if="_isWizard && !$FAST_CONFIG.TAB_MENU">
+              <q-tooltip>{{$t('Show pages')}}</q-tooltip>
+            </q-icon>
+
+            </q-card-title>
             <!--
               <q-btn @click="singleNext()" class="pull-right primary" color="primary">Next Page</q-btn>
                 <q-btn @click="clickNext()" class="pull-right primary" color="primary">Full review</q-btn>
@@ -60,35 +85,7 @@
           </q-card-main>
         </q-card>
 
-        <q-fixed-position corner="top-right" :offset="[18, 18]">
-          <q-fab color="red" icon="add" direction="down" v-if="this.$route.params.FAST_EDIT_MODE !== 'online-review'">
-
-            <q-fab-action color="primary" @click="saveAsDraft()" icon="fa-floppy-o" v-if="this.$route.params.FAST_EDIT_MODE !== 'online'">
-              <q-tooltip>{{$t('Save as draft')}}</q-tooltip>
-            </q-fab-action>
-
-            <q-fab-action v-bind:class="!$FAST_CONFIG.PARALLEL_SURVEYS ? 'hidden' : ''" color="amber" @click="addSurvey()" icon="person_add" v-if="this.$route.params.FAST_EDIT_MODE !== 'online'">
-              <q-tooltip>{{$t('Add participant')}}</q-tooltip>
-            </q-fab-action>
-
-            <q-fab-action v-bind:class="!$FAST_CONFIG.PARALLEL_SURVEYS ? 'hidden' : ''" color="purple-6" @click="groupConfig()" icon="fa-users" v-if="this.$route.params.FAST_EDIT_MODE !== 'online'">
-              <q-tooltip>{{$t("Change Group")}}</q-tooltip>
-
-            </q-fab-action>
-
-
-            <q-fab-action color="red" @click="openRightDrawer()" icon="assessment" v-if="$FAST_CONFIG.HAS_SCORES">
-              <q-tooltip>{{$t('Show scores')}}</q-tooltip>
-            </q-fab-action>
-
-            <q-fab-action color="secondary" @click="togglePages" icon="menu" v-if="_isWizard && !$FAST_CONFIG.TAB_MENU">
-              <q-tooltip>{{$t('Show pages')}}</q-tooltip>
-            </q-fab-action>
-
-          <!--
-            <q-fab-action color="secondary" @click="exportPDF()" icon="print"></q-fab-action>
-          -->
-          </q-fab>
+        <q-fixed-position corner="top-right" :offset="[18, 18]" v-if="this.$route.params.FAST_EDIT_MODE === 'online-review'">
 
           <q-fab color="red" icon="add" direction="down" v-if="this.$route.params.FAST_EDIT_MODE === 'online-review'">
 
