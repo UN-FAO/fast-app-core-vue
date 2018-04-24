@@ -1,7 +1,7 @@
 <template>
   <div class="row">
-        <div style="width:100%" class="col-lg-10 col-lg-offset-1 col-md-offset-1 col-md-10 col-sm-10 col-sm-offset-1 col-xs-offset-0 col-xs-12">
-          <q-card color="white" style="bottom: unset;margin-top: 30px;" class="relative-position text-dark">
+        <div class="col-lg-10 col-lg-offset-1 col-md-12  col-sm-12 col-xs-12 responsiveTableContainer">
+          <q-card class="relative-position">
             <q-card-title>
               {{formTitle}}
 

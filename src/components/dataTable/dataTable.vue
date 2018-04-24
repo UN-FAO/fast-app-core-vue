@@ -402,7 +402,7 @@ export default {
         refresh: false,
         noHeader: false,
         columnPicker: false,
-        leftStickyColumns: 1,
+        leftStickyColumns: 0,
         rightStickyColumns: 1,
         rowHeight: "50px",
         responsive: false,

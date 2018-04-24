@@ -50,7 +50,7 @@ let Columns = class {
       field: "actions",
       filter: false,
       sort: false,
-      width: "150px"
+      width: "80px"
     });
 
     return columns
