@@ -13,8 +13,13 @@ let Auth = (() => {
   * @return {boolean} [description]
   */
   function user() {
-    let user = JSON.parse(localStorage.getItem('authUser'))
-    return user === null ? false : user
+    try {
+      let user = JSON.parse(localStorage.getItem('authUser'))
+      return user === null ? false : user
+    } catch (e) {
+      localStorage.removeItem('authUser')
+      return false;
+    }
   }
 
   function userEmail() {

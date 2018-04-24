@@ -1,5 +1,5 @@
 <template>
-  <div style="color:black" v-if="show">
+  <div class="tableContainer" v-if="show">
     <q-data-table :data="data" :config="config" :columns="columns" @selection="handleSelectionChange" @rowclick="handleRowClick">
       <template :slot="'col-' + col.field" scope='scope' v-for="col in columns">
                     <q-btn flat color="black" @click="editCell(scope)" v-bind:key="col.field" v-if="fastMode === 'editGrid' && col.field.indexOf('val') >= 0" >
@@ -32,13 +32,13 @@
 </template>
 
 <template slot='col-actions' scope='scope'>
-  <q-btn v-if="tableActions.includes('review')" color="primary" round small @click='handleReview(scope)'> <i class="material-icons remove_red_eye">remove_red_eye</i>
+  <q-btn v-if="tableActions.includes('review')" color="primary"  small flat  @click='handleReview(scope)'> <i class="material-icons remove_red_eye">remove_red_eye</i>
     <q-tooltip>{{$t('Review')}}</q-tooltip>
   </q-btn>
-  <q-btn v-if="tableActions.includes('edit')" color="primary" round small @click='goToEditView(scope)'> <i class="material-icons edit">edit</i>
+  <q-btn v-if="tableActions.includes('edit')" color="primary"  small flat  @click='goToEditView(scope)'> <i class="material-icons edit">edit</i>
     <q-tooltip>{{$t('Edit')}}</q-tooltip>
   </q-btn>
-  <q-btn v-if="tableActions.includes('report')" color="primary" round small @click='handleReport(scope)'> <i class="material-icons assignment">assignment</i>
+  <q-btn v-if="tableActions.includes('report')" color="primary"  small flat  @click='handleReport(scope)'> <i class="material-icons assignment">assignment</i>
     <q-tooltip>{{$t('Report')}}</q-tooltip>
   </q-btn>
 </template>
@@ -58,14 +58,14 @@
 </template>
         </q-data-table>
 
-     <button-menu render="outside" :actions="menuActions"/>
+     <export-menu render="outside" :actions="menuActions"/>
 </div>
 </template>
 
 <script>
 import _get from "lodash/get";
 import Promise from "bluebird";
-import buttonMenu from "./menu";
+import exportMenu from "./exportMenu";
 import Export from "./dataExport/Export";
 import Columns from "./tableFormatter/Columns";
 import { QTooltip, QBtn, QDataTable, QChip, QIcon } from "quasar";
@@ -81,7 +81,7 @@ export default {
     QBtn,
     QDataTable,
     QChip,
-    buttonMenu
+    exportMenu
   },
   name: "datatable",
   props: {
@@ -108,8 +108,8 @@ export default {
     }
   },
   mounted() {
-    this.$eventHub.on("FAST:EXPORT", type => {
-      this.exportTo(type);
+    this.$eventHub.on("FAST:EXPORT", params => {
+      this.exportTo(params);
     });
     this.$eventHub.on("FAST:IMPORT", type => {
       this.importSubmission();
@@ -136,7 +136,7 @@ export default {
     isOnlineSubmission(_id, _lid) {
       return !_lid && _id.indexOf("_local") < 0;
     },
-    async exportTo(type) {
+    async exportTo(params) {
       this.$swal({
         title: "Exporting...",
         text: this.$t(
@@ -149,7 +149,8 @@ export default {
           data = this.selectedRows.length === 0 ? this.data : this.selectedRows;
           let submissions = await this.getFullSubmissions(data);
           await Export.jsonTo({
-            output: type,
+            output: params.format,
+            options: params.options,
             data: submissions,
             formioForm: this.form.data,
             vm: this
@@ -401,10 +402,10 @@ export default {
         refresh: false,
         noHeader: false,
         columnPicker: false,
-        leftStickyColumns: 0,
+        leftStickyColumns: 1,
         rightStickyColumns: 1,
-        rowHeight: "70px",
-        responsive: true,
+        rowHeight: "50px",
+        responsive: false,
         pagination: {
           rowsPerPage: 10,
           options: [10, 30, 50, 100]

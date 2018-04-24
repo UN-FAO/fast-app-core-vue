@@ -1,5 +1,44 @@
+.tableContainer{
+  background: #fdfdfd;
+}
+
+.q-data-table table thead tr {
+    border-bottom: 1px solid #cccaca;
+    /* min-height: 56px; */
+    line-height: 1.9;
+    height: 56px;
+}
+
 .q-data-table {
-  color: black;
-  font-size: 14px;
+  color: rgba(0, 0, 0, 0.87);
+  font-size: 13.4px;
+  font-weight: 350;
   border: none
+}
+
+.q-data-table-toolbar.upper-toolbar.row.col.items-center {
+    width: 40%;
+    float: right;
+}
+
+.q-data-table-container {
+    position: relative;
+    overflow: hidden;
+    margin-top: 5px;
+    display: inline-grid;
+    margin-top: 30px;
+}
+
+.q-data-table table:not(.responsive) th {
+    border-bottom: none !important;
+}
+
+.q-if.row.no-wrap.items-center.relative-position.q-select.no-margin.text-right.q-if-focusable.text-primary {
+    display: none;
+}
+
+
+.q-data-table th span {
+    color: rgba(0,0,0,0.54);
+    font-weight: 400;
 }

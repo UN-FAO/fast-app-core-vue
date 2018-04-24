@@ -12,7 +12,7 @@ let Csv = class {
       });
     })
   }
-  static async get({ json }) {
+  static async get({ json, rawArray }) {
     return new Promise(async (resolve, reject) => {
       let csv = await Csv.toCsv(json.data)
       let labelsRow = [];
@@ -55,11 +55,20 @@ let Csv = class {
         });
         labelsRow.push(newLabel);
       });
+
+      let name = "backup_" + json.date
+
+
+      if (rawArray) {
+        parsedCsv.unshift(labelsRow)
+        resolve({ result: parsedCsv, name: name })
+      }
+
       let newCSV = Papa.unparse(
         { fields: labelsRow, data: parsedCsv },
         { header: true, delimiter: ";" }
       );
-      let name = "backup_" + json.date + ".csv";
+
       resolve({ csv: newCSV, name: name })
     })
   }

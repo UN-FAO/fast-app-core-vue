@@ -1,9 +1,10 @@
 export default {
-  view: 'lHh LpR fFf',
+  view: 'hHh LpR lfr',
   reveal: false,
   leftScroll: true,
   rightScroll: true,
-  leftBreakpoint: 0,
+  leftBreakpoint: 996,
   rightBreakpoint: 2000,
   hideTabs: false
 }
+

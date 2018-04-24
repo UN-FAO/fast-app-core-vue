@@ -1,8 +1,8 @@
 {
   "name": "fast",
   "version": "0.8.7",
-  "deployAppName": "SSFK",
-  "deployAppID": "5ad58b7ddc3e0104148241fe",
+  "deployAppName": "SWS",
+  "deployAppID": "5aa95c9550daad5e7d88ef30",
   "description": "A data collection application for FORM.io",
   "author": "Ignacio Cabrera <ignacio.cabrera@fao.org>",
   "scripts": {
@@ -57,6 +57,7 @@
     "quasar-extras": "0.0.8",
     "quasar-framework": "^0.14.9",
     "raven-js": "^3.21.0",
+    "sweet-modal-vue": "^2.0.0",
     "text-mask-all": "github:text-mask/text-mask",
     "uuid": "^3.1.0",
     "vue": "~2.3.4",
@@ -70,7 +71,9 @@
     "vue-router": "^2.7.0",
     "vue-sweetalert": "^0.1.18",
     "vuetify": "^1.0.10",
-    "vuex": "^2.3.1"
+    "vuex": "^2.3.1",
+    "xlsx": "^0.12.9",
+    "xlsx-style": "^0.8.13"
   },
   "devDependencies": {
     "autoprefixer": "^6.4.0",

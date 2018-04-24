@@ -4,8 +4,33 @@
           <q-card color="white" style="bottom: unset;margin-top: 30px;" class="relative-position text-dark">
             <q-card-title>
               {{formTitle}}
+
+
+           <q-icon slot="right" name="fa-plus-circle" @click="emitEvent('FAST:GO:CREATE')" color="primary" style="cursor:pointer; padding-right: 20px">
+
+            </q-icon>
+
+              <q-icon slot="right" name="more_vert" color="grey" style="cursor:pointer">
+              <q-popover ref="popover">
+                <q-list link class="no-border" dense separator no-border>
+
+                  <q-item @click="$refs.popover.close(), createDialog()">
+                    <q-item-side icon="fa-download"  />
+                    <q-item-main :label="$t('Export')" />
+                  </q-item>
+
+                  <q-item @click="$refs.popover.close()">
+                    <q-item-side icon="fa-upload"  />
+                    <q-item-main :label="$t('Import')" />
+                  </q-item>
+
+                </q-list>
+              </q-popover>
+            </q-icon>
+
+
             </q-card-title>
-              <q-card-main >
+              <q-card-main style="padding: 0px" >
                   <loading :visible="noSubmissions"></loading>
                 <datatable
                   :data="submissions"
@@ -18,13 +43,30 @@
                 />
             </q-card-main>
           </q-card>
+
          </div>
+
   </div>
 </template>
 
 <script>
 import loading from "components/loading";
-import { QCard, QCardMain, QCardTitle, Toast, Loading } from "quasar";
+import {
+  QCard,
+  QCardMain,
+  QCardTitle,
+  Toast,
+  Loading,
+  QPopover,
+  QIcon,
+  QList,
+  QItem,
+  QItemMain,
+  QItemSide,
+  QField,
+  QOptionGroup,
+  QBtn
+} from "quasar";
 import datatable from "components/dataTable/dataTable";
 import Form from "libraries/fastjs/database/models/Form";
 import Auth from "libraries/fastjs/repositories/Auth/Auth";
@@ -76,7 +118,16 @@ export default {
     QCardMain,
     Toast,
     loading,
-    QCardTitle
+    QCardTitle,
+    QPopover,
+    QIcon,
+    QList,
+    QItem,
+    QItemMain,
+    QItemSide,
+    QBtn,
+    QField,
+    QOptionGroup
   },
   data() {
     return {
@@ -86,9 +137,19 @@ export default {
     };
   },
   methods: {
+    emitEvent(event, params) {
+      this.$eventHub.emit(event, params);
+    },
+    async createDialog() {
+      Event.emit({
+        name: "FAST:EXPORT:OPENMENU",
+        data: undefined,
+        text: "Triggering Open Export Menu"
+      });
+    },
     async handleDataImported() {
       await this.refreshData();
-      Loading.hide()
+      Loading.hide();
       this.$swal("Imported!", "Your submission were imported", "success");
     },
     async handleDataSynced() {

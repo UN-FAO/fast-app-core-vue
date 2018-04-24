@@ -37,7 +37,7 @@ let Columns = class {
         field: "HumanUpdated",
         filter: true,
         sort: true,
-        width: "200px"
+        width: "150px"
       }
     );
     // If we have a normal table
@@ -83,7 +83,7 @@ let Columns = class {
         field: column.key,
         filter: true,
         sort: true,
-        width: '150px'
+        width: "200px"
       };
       columns.push(visibleColum);
     });
