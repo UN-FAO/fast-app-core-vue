@@ -4,7 +4,6 @@ import Download from './Download'
 import Promise from "bluebird";
 import flatten from "flat";
 import FormioExcel from "libraries/formio-excel/formioExcel";
-import XLSX from "xlsx";
 import Csv from "./Csv";
 
 let Export = class {
@@ -25,11 +24,11 @@ let Export = class {
           break;
         case 'xlsx':
           let aoa = await Csv.get({ json: formattedData, rawArray: true })
-          var ws = XLSX.utils.aoa_to_sheet(aoa.result);
-          var workbook = XLSX.utils.book_new();
-          XLSX.utils.book_append_sheet(workbook, ws, "SheetJS");
+          var ws = XLS.utils.aoa_to_sheet(aoa.result);
+          var workbook = XLS.utils.book_new();
+          XLS.utils.book_append_sheet(workbook, ws, "SheetJS");
           var wopts = { bookType: output, bookSST: false, type: 'array' };
-          var wbout = XLSX.write(workbook, wopts);
+          var wbout = XLS.write(workbook, wopts);
           let excel = await Download.file({ content: wbout, fileName: aoa.name + '.' + output, mimeType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
           if (excel) {
             resolve()
@@ -51,11 +50,11 @@ let Export = class {
           break;
         default:
           let aoaOther = await Csv.get({ json: formattedData, rawArray: true })
-          var wsOther = XLSX.utils.aoa_to_sheet(aoaOther.result);
-          var workbookOther = XLSX.utils.book_new();
-          XLSX.utils.book_append_sheet(workbookOther, wsOther, "SheetJS");
+          var wsOther = XLS.utils.aoa_to_sheet(aoaOther.result);
+          var workbookOther = XLS.utils.book_new();
+          XLS.utils.book_append_sheet(workbookOther, wsOther, "SheetJS");
           var woptsOther = { bookType: output, bookSST: false, type: 'array' };
-          var wboutOther = XLSX.write(workbookOther, woptsOther);
+          var wboutOther = XLS.write(workbookOther, woptsOther);
           let excelOther = await Download.file({ content: wboutOther, fileName: aoaOther.name + '.' + output, mimeType: "application/octet-stream" });
           if (excelOther) {
             resolve()

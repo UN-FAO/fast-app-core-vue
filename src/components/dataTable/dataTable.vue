@@ -374,14 +374,17 @@ export default {
 
       if (value) {
         this.data[data.row.__index][data.col.field] = value;
-        // this.rerender()
+        /* this.rerender()
         let autoSave = new CustomEvent("autoSaveDraft", {
           detail: {
-            data: {},
+            data: {
+              trigger: 'editGrid'
+            },
             text: "Autosave Requested"
           }
         });
         document.dispatchEvent(autoSave);
+        */
       }
     }
   },
@@ -429,7 +432,7 @@ export default {
           search: this.$t("Search"),
           all: this.$t("All")
         },
-        selection: "multiple"
+        selection: this.fastMode !== 'editGrid' ? "multiple" : 0
       },
       selectedRows: [],
       clickedRow: null,

@@ -115,5 +115,14 @@ exports.TRANSLATIONS = [
   'Score',
   'Loading...',
   "Can't change group",
-  "There is no group assign to this submission"
+  "There is no group assign to this submission",
+  'You have errors in the submission',
+  '$_t_ERROR',
+ // MedAid Translations
+  "Welcome to the APP for the Survey on Social Acceptability of Aquaculture",
+  "Please note that",
+  "This online application offers the possibility of saving a draft of the questionnaire at any time you want and completing it afterwards. This option is available clicking the",
+  "icon visible on the top right corner during the process",
+  "You can find a glossary of aquaculture terms",
+  'The survey is carried out within the project "Mediterranean Aquaculture Integrated Development(MedAID)" supported by the European Union in the frame of Horizon 2020, grant agreement number 727315.'
 ]

@@ -1,9 +1,9 @@
 .tableContainer{
-  background: #fdfdfd;
+  background: white;
 }
 
 .q-data-table table thead tr {
-    border-bottom: 1px solid #cccaca;
+    border-bottom: 1px solid white;
     /* min-height: 56px; */
     line-height: 1.9;
     height: 56px;
@@ -31,10 +31,6 @@
 
 .q-data-table table:not(.responsive) th {
     border-bottom: none !important;
-}
-
-.q-if.row.no-wrap.items-center.relative-position.q-select.no-margin.text-right.q-if-focusable.text-primary {
-    display: none;
 }
 
 

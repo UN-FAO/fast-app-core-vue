@@ -146,21 +146,21 @@ import {
   QItemMain,
   QTransition,
   QInnerLoading,
-  QSpinnerAudio
-} from "quasar";
-import to from "await-to-js";
-import _get from "lodash/get";
-import _forEach from "lodash/forEach";
-import _groupBy from "lodash/groupBy";
-import _debounce from "lodash/debounce";
-import FormioUtils from "formiojs/utils";
-import Form from "libraries/fastjs/database/models/Form";
-import Auth from "libraries/fastjs/repositories/Auth/Auth";
-import Submission from "libraries/fastjs/database/models/Submission";
-import formio from "modules/Formio/components/formio/formio";
-import datatable from "components/dataTable/dataTable";
-import Event from "libraries/fastjs/Wrappers/Event";
-import ParallelSurvey from "libraries/fastjs/repositories/Submission/ParallelSurvey";
+  QSpinnerAudio,
+} from 'quasar';
+import to from 'await-to-js';
+import _get from 'lodash/get';
+import _forEach from 'lodash/forEach';
+import _groupBy from 'lodash/groupBy';
+import _debounce from 'lodash/debounce';
+import FormioUtils from 'formiojs/utils';
+import Form from 'libraries/fastjs/database/models/Form';
+import Auth from 'libraries/fastjs/repositories/Auth/Auth';
+import Submission from 'libraries/fastjs/database/models/Submission';
+import formio from 'modules/Formio/components/formio/formio';
+import datatable from 'components/dataTable/dataTable';
+import Event from 'libraries/fastjs/Wrappers/Event';
+import ParallelSurvey from 'libraries/fastjs/repositories/Submission/ParallelSurvey';
 export default {
   components: {
     datatable,
@@ -188,45 +188,48 @@ export default {
     QItemMain,
     QTransition,
     QInnerLoading,
-    QSpinnerAudio
+    QSpinnerAudio,
   },
   async mounted() {
-    console.log('this.$route.params.FAST_EDIT_MODE', this.$route.params.FAST_EDIT_MODE)
-    this.$eventHub.on("formio.mounted", formio => {
+    console.log(
+      'this.$route.params.FAST_EDIT_MODE',
+      this.$route.params.FAST_EDIT_MODE,
+    );
+    this.$eventHub.on('formio.mounted', formio => {
       this.pages = formio.pages ? formio.pages : [];
     });
 
-    this.$eventHub.on("formio.nextPage", data => {
+    this.$eventHub.on('formio.nextPage', data => {
       this.currentPage = data.nextPage.page;
       this.tab = data.nextPage.page + 1;
       this.currentQuestion = -1;
       window.scrollTo(0, 0);
     });
 
-    this.$eventHub.on("formio.prevPage", data => {
+    this.$eventHub.on('formio.prevPage', data => {
       this.currentPage = data.prevPage.page;
       this.tab = data.prevPage.page + 1;
       this.currentQuestion = -1;
       window.scrollTo(0, 0);
     });
 
-    this.$eventHub.on("formio.render", data => {
+    this.$eventHub.on('formio.render', data => {
       this.isWizard = !!data.formio.wizard;
     });
 
     this.validateRequired = _debounce(this.validateRequired, 400);
 
-    this.$eventHub.on("formio.change", data => {
+    this.$eventHub.on('formio.change', data => {
       this.pages = data.formio.pages ? data.formio.pages : [];
       this.validateRequired(this.pages, data);
     });
 
     Event.listen({
-      name: "FAST:SUBMISSION:CHANGED",
-      callback: this.draftStatusChanged
+      name: 'FAST:SUBMISSION:CHANGED',
+      callback: this.draftStatusChanged,
     });
 
-    this.$eventHub.$on("formio.error", error => {
+    this.$eventHub.$on('formio.error', error => {
       console.log(error);
       if (
         error.error.message === "Cannot read property 'notice' of null" ||
@@ -235,15 +238,15 @@ export default {
       ) {
       } else {
         this.$swal({
-          type: "error",
-          title: "Error",
-          html: "You have errors in the submission"
+          type: 'error',
+          title: this.$('Error'),
+          html: this.$('You have errors in the submission'),
         }).then(() => {
           window.scrollTo(0, 0);
         });
       }
     });
-    this.$eventHub.on("VALIDATION_ERRORS", data => {
+    this.$eventHub.on('VALIDATION_ERRORS', data => {
       /*
               this.errors = data
               let submitButton = document.querySelector('.btn-wizard-nav-submit')
@@ -259,19 +262,19 @@ export default {
   },
   beforeDestroy() {
     Event.remove({
-      name: "FAST:SUBMISSION:CHANGED",
-      callback: this.draftStatusChanged
+      name: 'FAST:SUBMISSION:CHANGED',
+      callback: this.draftStatusChanged,
     });
 
-    this.$eventHub.$off("formio.error");
-    this.$eventHub.$off("VALIDATION_ERRORS");
+    this.$eventHub.$off('formio.error');
+    this.$eventHub.$off('VALIDATION_ERRORS');
   },
   asyncData: {
     submission: {
       get() {
         if (this.$route.params.fullSubmision) {
           return {
-            data: this.$route.params.fullSubmision
+            data: this.$route.params.fullSubmision,
           };
         }
         if (this.$route.params.idSubmission) {
@@ -282,36 +285,36 @@ export default {
       },
       transform(result) {
         return result;
-      }
+      },
     },
     participants: {
       get() {
         return Submission.local().getParallelParticipants(
           this.$route.params.idForm,
-          this.$route.params.idSubmission
+          this.$route.params.idSubmission,
         );
       },
       transform(result) {
         return result;
-      }
-    }
+      },
+    },
   },
   asyncComputed: {
     currentForm: {
       get() {
         if (this.$route.params.idForm) {
           return Form.local().findOne({
-            "data.path": this.$route.params.idForm
+            'data.path': this.$route.params.idForm,
           });
         } else {
           return {
             data: {
-              title: ""
-            }
+              title: '',
+            },
           };
         }
-      }
-    }
+      },
+    },
   },
   computed: {
     participantName() {
@@ -325,7 +328,7 @@ export default {
         }
         return parallelSurvey.participantName;
       } else {
-        return "";
+        return '';
       }
     },
     _pages() {
@@ -335,12 +338,12 @@ export default {
       return this.isWizard;
     },
     getFormClass() {
-      let className = "";
+      let className = '';
       if (this.showPages && this._isWizard && !this.$FAST_CONFIG.TAB_MENU) {
-        className = "formNavActive";
+        className = 'formNavActive';
       }
       if (!this.saved) {
-        className = className + " saving";
+        className = className + ' saving';
       }
       return className;
     },
@@ -350,15 +353,15 @@ export default {
       } else {
         return {};
       }
-    }
+    },
   },
   data: function() {
     return {
       form: null,
       people: [
         {
-          name: "P1"
-        }
+          name: 'P1',
+        },
       ],
       formioToken: Auth.user().x_jwt_token,
       saved: true,
@@ -375,7 +378,7 @@ export default {
       readOnly: false,
       tab: 1,
       customRender: false,
-      customRenderArray: []
+      customRenderArray: [],
     };
   },
   methods: {
@@ -383,28 +386,28 @@ export default {
       let err;
       let submission = this.$route.params.fullSubmision;
 
-      submission.data.deleted = revision !== "accept";
+      submission.data.deleted = revision !== 'accept';
 
       [err] = await to(
-        Submission.remote().update(submission, this.$route.params.idForm)
+        Submission.remote().update(submission, this.$route.params.idForm),
       );
 
-      if (err) throw new Error("Submission was not saved");
+      if (err) throw new Error('Submission was not saved');
 
       this.$router.push({
-        name: "alldata",
+        name: 'alldata',
         query: {
-          form: this.$route.params.idForm
-        }
+          form: this.$route.params.idForm,
+        },
       });
     },
     saveAsDraft() {
       // Create the event
-      var saveAsDraft = new CustomEvent("saveAsDraft", {
+      var saveAsDraft = new CustomEvent('saveAsDraft', {
         detail: {
           data: {},
-          text: "Save as Draft Requested"
-        }
+          text: 'Save as Draft Requested',
+        },
       });
       document.dispatchEvent(saveAsDraft);
     },
@@ -412,13 +415,29 @@ export default {
       if (
         this._pages[index] &&
         this._pages[index].properties &&
-        this._pages[index].properties["custom-render"]
+        this._pages[index].properties['custom-render']
       ) {
-        let dataGridName = this._pages[index].properties["custom-render"];
+        let dataGridName = this._pages[index].properties['custom-render'];
+
+        let component = FormioUtils.getComponent(
+          this.currentForm.data.components,
+          dataGridName,
+        );
+
+        let keys = component.components.reduce((r, c) => {
+          r[c.key] = '';
+          return r;
+        }, {});
+
         this.customRenderArray = this.submission.data.data[dataGridName];
         this.customRenderArray = this.customRenderArray
           ? this.customRenderArray
           : [];
+
+        this.customRenderArray.forEach(a => {
+          a = { ...keys, ...a };
+        });
+
         this.customRender = true;
         this.currentPage = index;
         this.tab = index + 1;
@@ -430,7 +449,7 @@ export default {
       try {
         let pageNumber = index + 1;
         let page = document.querySelectorAll(
-          "ul.pagination li:nth-of-type(" + pageNumber + ")"
+          'ul.pagination li:nth-of-type(' + pageNumber + ')',
         )[0];
         page.click();
         this.currentPage = index;
@@ -441,11 +460,11 @@ export default {
           this.togglePages();
         }
       } catch (e) {
-        this.$swal("Complete the required fields");
+        this.$swal('Complete the required fields');
       }
     },
     singleNext() {
-      let button1 = document.querySelectorAll(".btn-wizard-nav-next")[0];
+      let button1 = document.querySelectorAll('.btn-wizard-nav-next')[0];
       button1.click();
     },
     clickNext() {
@@ -456,13 +475,13 @@ export default {
 
       function setDelay(i) {
         setTimeout(function() {
-          let button1 = document.querySelectorAll(".btn-wizard-nav-next")[0];
+          let button1 = document.querySelectorAll('.btn-wizard-nav-next')[0];
           button1.click();
         }, 300);
       }
     },
     submitForm() {
-      let submit = document.querySelectorAll(".btn-wizard-nav-submit")[0];
+      let submit = document.querySelectorAll('.btn-wizard-nav-submit')[0];
       if (submit) {
         submit.click();
       }
@@ -472,19 +491,19 @@ export default {
     },
     reloadPage() {
       this.$swal({
-        title: "Are you sure?",
-        text: "You will lost all unsaved Data",
-        type: "warning",
+        title: 'Are you sure?',
+        text: 'You will lost all unsaved Data',
+        type: 'warning',
         showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, reload it!"
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, reload it!',
       }).then(async () => {
         window.location.reload(true);
       });
     },
     nextQuestion() {
-      let elements = document.getElementsByClassName("form-group");
+      let elements = document.getElementsByClassName('form-group');
       this.currentQuestion =
         this.currentQuestion + 1 >= elements.length
           ? elements.length
@@ -494,7 +513,7 @@ export default {
       this.displayUp = true;
     },
     prevQuestion() {
-      let elements = document.getElementsByClassName("form-group");
+      let elements = document.getElementsByClassName('form-group');
       this.currentQuestion =
         this.currentQuestion - 1 <= 0 ? 0 : this.currentQuestion - 1;
       elements[this.currentQuestion].scrollIntoView(true);
@@ -502,14 +521,14 @@ export default {
       this.displayDown = true;
     },
     openRightDrawer() {
-      this.$eventHub.$emit("openRightDrawer");
+      this.$eventHub.$emit('openRightDrawer');
     },
     draftStatusChanged(e) {
       if (e.detail.data.isSubmit) {
         this.$swal(
-          this.$t("Sent!"),
-          this.$t("Your submission has been sent!"),
-          "success"
+          this.$t('Sent!'),
+          this.$t('Your submission has been sent!'),
+          'success',
         );
       }
       if (e.detail.data === false) {
@@ -521,14 +540,14 @@ export default {
     async addSurvey() {
       let wizard = await ParallelSurvey.createWizard({
         submission: this.currentSubmission,
-        vm: this
+        vm: this,
       });
 
       this.$swal.setDefaults({
-        input: "text",
-        confirmButtonText: this.$t("next") + "&rarr;",
+        input: 'text',
+        confirmButtonText: this.$t('next') + '&rarr;',
         showCancelButton: true,
-        progressSteps: wizard.progressSteps
+        progressSteps: wizard.progressSteps,
       });
 
       this.$swal.queue(wizard.steps).then(async result => {
@@ -537,31 +556,31 @@ export default {
         let surveyData = await ParallelSurvey.createNewSurvey({
           submission: this.currentSubmission,
           vm: this,
-          info: result
+          info: result,
         });
 
         await ParallelSurvey.storeNewSurvey({
           vm: this,
-          survey: surveyData
+          survey: surveyData,
         });
       });
     },
     async groupConfig() {
       let groupId = _get(
         Submission.local().getParallelSurvey(this.currentSubmission),
-        "groupId",
-        undefined
+        'groupId',
+        undefined,
       );
 
       let options = await Submission.local().getGroups(
-        this.$route.params.idForm
+        this.$route.params.idForm,
       );
       let customOptions = {};
       options.forEach(option => {
         customOptions[option.groupId] = option.groupName;
       });
       let currentGroup = await Submission.local().getParallelSurvey(
-        this.currentSubmission
+        this.currentSubmission,
       );
       currentGroup = currentGroup.groupId ? currentGroup.groupId : undefined;
       delete customOptions[currentGroup];
@@ -570,77 +589,77 @@ export default {
       let progressSteps = [];
 
       if (groupId) {
-        progressSteps = ["1"];
+        progressSteps = ['1'];
         steps = [
           {
-            title: this.$t("Change Group"),
-            input: "select",
+            title: this.$t('Change Group'),
+            input: 'select',
             inputOptions: customOptions,
-            inputPlaceholder: this.$t("Select the destination group"),
+            inputPlaceholder: this.$t('Select the destination group'),
             inputValidator: value => {
               return new Promise((resolve, reject) => {
-                if (value !== "") {
+                if (value !== '') {
                   resolve();
                 } else {
                   let error = new Error(
-                    this.$t("You must select a destination group")
+                    this.$t('You must select a destination group'),
                   );
                   reject(error);
                 }
               });
-            }
-          }
+            },
+          },
         ];
       } else {
-        progressSteps = ["1", "2"];
+        progressSteps = ['1', '2'];
         steps = [
           {
-            title: this.$t("Participant Name"),
-            text: this.$t("Give the current participant a name"),
+            title: this.$t('Participant Name'),
+            text: this.$t('Give the current participant a name'),
             inputValidator: value => {
               return new Promise((resolve, reject) => {
-                if (value !== "") {
+                if (value !== '') {
                   resolve();
                 } else {
                   let error = new Error(
-                    this.$t("The participant name can´t be empty")
+                    this.$t('The participant name can´t be empty'),
                   );
                   reject(error);
                 }
               });
-            }
+            },
           },
           {
-            title: "Select Group",
-            input: "select",
+            title: 'Select Group',
+            input: 'select',
             inputOptions: customOptions,
-            inputPlaceholder: this.$t("Select a group to assign"),
+            inputPlaceholder: this.$t('Select a group to assign'),
             inputValidator: value => {
               return new Promise((resolve, reject) => {
-                if (value !== "") {
+                if (value !== '') {
                   resolve();
                 } else {
-                  let error = new Error(this.$t("You must select a group"));
+                  let error = new Error(this.$t('You must select a group'));
                   reject(error);
                 }
               });
-            }
-          }
+            },
+          },
         ];
       }
 
       this.$swal.setDefaults({
-        input: "text",
-        confirmButtonText: "Next &rarr;",
+        input: 'text',
+        confirmButtonText: 'Next &rarr;',
         showCancelButton: true,
-        progressSteps: progressSteps
+        progressSteps: progressSteps,
       });
 
       this.$swal.queue(steps).then(async result => {
         this.$swal.resetDefaults();
         await Submission.local().assingToGroup(
           this.$route.params.idSubmission,
-          result
+          result,
         );
         setTimeout(function() {
           window.location.reload(true);
@@ -653,11 +672,11 @@ export default {
     },
     goToSurvey(id) {
       this.$router.push({
-        name: "formio_submission_update",
+        name: 'formio_submission_update',
         params: {
           idForm: this.$route.params.idForm,
-          idSubmission: id
-        }
+          idSubmission: id,
+        },
       });
     },
     validateRequired(pages, data) {
@@ -673,21 +692,21 @@ export default {
             !component.hidden
           ) {
             // console.log("component", component);
-            if (component.key === "AG-hh-nHhCultivationGirls015") {
+            if (component.key === 'AG-hh-nHhCultivationGirls015') {
               // console.log("component", component);
             }
             let value = data.formio.data[component.key];
             if (
-              typeof value === "undefined" ||
+              typeof value === 'undefined' ||
               value === null ||
-              value === ""
+              value === ''
             ) {
               errorCount = errorCount + 1;
               errors.push(component);
               errorsByPage.push({
                 page: page,
                 component: component,
-                pageKey: page.key
+                pageKey: page.key,
               });
               // console.log("errorCount", errorCount);
             }
@@ -697,13 +716,13 @@ export default {
       let groupedErrors = _groupBy(errorsByPage, function(b) {
         return b.pageKey;
       });
-      this.$eventHub.emit("VALIDATION_ERRORS", {
+      this.$eventHub.emit('VALIDATION_ERRORS', {
         count: errorCount,
         components: errors,
-        errorsByPage: groupedErrors
+        errorsByPage: groupedErrors,
       });
-    }
-  }
+    },
+  },
 };
 </script>
 

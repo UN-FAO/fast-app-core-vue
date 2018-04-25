@@ -5,6 +5,8 @@
     </div>
     <hr style="border-top: 1px solid lightgray;">
 
+
+
     <div class="row">
       <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-xs-12" style="margin:auto;">
         <q-card color="white" class="text-black cardRibbon" style="cursor: pointer;" @click="$router.push({name: 'newSurvey'})">

@@ -1,21 +1,21 @@
 {
   "presets": [
     [
-      "es2015"
-    ],
-    "stage-2"
-  ],
-  "plugins": [
-    "transform-runtime",
-    [
-      "component",
+      "env",
       {
-        "libraryName": "element-ui",
-        "styleLibraryName": "theme-default"
+        "targets": {
+          "browsers": [
+            "last 2 versions",
+            "ie 9"
+          ]
+        },
+        "include": [
+          "transform-es2015-arrow-functions"
+        ]
       }
-    ],
-    "transform-es2015-arrow-functions"
+    ]
   ],
+  "plugins": ["transform-runtime", "transform-object-rest-spread"],
   "comments": false
 }
 

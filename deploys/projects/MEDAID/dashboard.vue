@@ -20,8 +20,8 @@
 
               <q-item>
                 <q-item-main label>
-                  {{ $t("This online application offers the possibility of saving a draft of the questionnaire at any time you want and completing it afterwards. This option is available clicking the red plus") }}
-                  <q-icon name="add_circle" color="negative" /> {{ $t("menu visible on the right during the process and choosing the blue saving icon.") }}
+                  {{ $t("This online application offers the possibility of saving a draft of the questionnaire at any time you want and completing it afterwards. This option is available clicking the") }}
+                  <q-icon name="fa-floppy-o" color="primary" /> {{ $t("icon visible on the top right corner during the process") }}
                 </q-item-main>
               </q-item>
               <q-item>
@@ -123,7 +123,30 @@
 </template>
 
 <script>
-  import {
+import {
+  QCard,
+  QCardMedia,
+  QItemSide,
+  QCardTitle,
+  QCardSeparator,
+  QCardMain,
+  QFab,
+  QFabAction,
+  QFixedPosition,
+  QPullToRefresh,
+  QTabs,
+  QTab,
+  QTabPane,
+  QCollapsible,
+  QBtn,
+  QIcon,
+  QTooltip,
+  QList,
+  QItem,
+  QItemSeparator,
+} from 'quasar';
+export default {
+  components: {
     QCard,
     QCardMedia,
     QItemSide,
@@ -143,31 +166,8 @@
     QTooltip,
     QList,
     QItem,
-    QItemSeparator
-  } from "quasar";
-  export default {
-    components: {
-      QCard,
-      QCardMedia,
-      QItemSide,
-      QCardTitle,
-      QCardSeparator,
-      QCardMain,
-      QFab,
-      QFabAction,
-      QFixedPosition,
-      QPullToRefresh,
-      QTabs,
-      QTab,
-      QTabPane,
-      QCollapsible,
-      QBtn,
-      QIcon,
-      QTooltip,
-      QList,
-      QItem,
-      QItemSeparator
-    },
-    name: "collectiondashboard"
-  };
+    QItemSeparator,
+  },
+  name: 'collectiondashboard',
+};
 </script>

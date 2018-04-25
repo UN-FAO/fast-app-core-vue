@@ -1,9 +1,8 @@
-import XLSX from "xlsx";
-import XLSXS from "xlsx-style";
+
 import FormioUtils from "formiojs/utils";
 const FormioExcel = (() => {
   function get({ data, formioForm, vm }) {
-    var workbook = XLSX.utils.book_new();
+    var workbook = XLS.utils.book_new();
     console.log('formioForm', formioForm)
     switch (formioForm.display.toLowerCase()) {
       case 'wizard':
@@ -18,7 +17,7 @@ const FormioExcel = (() => {
               excelPage['!cols']['A'] = {
                 hidden: true
               }
-              XLSX.utils.book_append_sheet(workbook, excelPage, page.title);
+              XLS.utils.book_append_sheet(workbook, excelPage, page.title);
             }
           })
         }
@@ -34,7 +33,7 @@ const FormioExcel = (() => {
       for (var i = 0; i !== s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
       return buf;
     }
-    var wbout = XLSXS.write(workbook, wopts);
+    var wbout = XLSC.write(workbook, wopts);
     return s2ab(wbout)
   }
 
@@ -42,7 +41,7 @@ const FormioExcel = (() => {
     let width = getPageWidth(page)
     let formattedPage = getArrayFormattedPage(page, width)
     console.log('the amount of levels is:', formattedPage)
-    var ws = XLSX.utils.aoa_to_sheet([
+    var ws = XLS.utils.aoa_to_sheet([
       ['this is a well', 'this is a well', 'this is a well'],
       [0, 0, 0]
     ]);
