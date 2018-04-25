@@ -1,45 +1,51 @@
-import Papa from "papaparse";
-import jsonexport from "jsonexport"
-import Promise from "bluebird"
-import _zip from "lodash/zip"
-import _unzip from "lodash/unzip"
+import Papa from 'papaparse';
+import jsonexport from 'jsonexport';
+import Promise from 'bluebird';
+import _zip from 'lodash/zip';
+import _unzip from 'lodash/unzip';
+
 let Csv = class {
   static async toCsv(json) {
     return new Promise((resolve, reject) => {
-      jsonexport(json, function (err, csv) {
-        if (err) reject(err)
+      jsonexport(json, function(err, csv) {
+        if (err) reject(err);
         resolve(csv);
       });
-    })
+    });
   }
   static async get({ json, rawArray }) {
     return new Promise(async (resolve, reject) => {
-      let csv = await Csv.toCsv(json.data)
+      let csv = await Csv.toCsv(json.data);
+
+      var csv2 = Papa.unparse(json.data);
+      console.log('json', json);
+      console.log('csv', csv);
+      console.log('csv2', csv2);
       let labelsRow = [];
       let parsedCsv = Papa.parse(csv, { dynamicTyping: true });
 
-      let zipped = _zip(...parsedCsv.data)
+      let zipped = _zip(...parsedCsv.data);
 
-      let orderedArray = []
+      let orderedArray = [];
 
-      json.labels.forEach(label => {
-        zipped.forEach(zip => {
+      json.labels.forEach((label) => {
+        zipped.forEach((zip) => {
           if (zip[0].indexOf(label.apiKey) >= 0) {
-            orderedArray.push(zip)
+            orderedArray.push(zip);
           }
-        })
-      })
+        });
+      });
 
-      parsedCsv = _unzip(orderedArray)
+      parsedCsv = _unzip(orderedArray);
       let columns = parsedCsv[0];
 
-      columns.forEach(c => {
-        let newLabel = "";
-        let innerLabels = c.split(".");
+      columns.forEach((c) => {
+        let newLabel = '';
+        let innerLabels = c.split('.');
         // Include the original label (Translated)
         innerLabels.forEach((innerLabel, idx) => {
           if (isNaN(innerLabel)) {
-            let correspondingLabel = json.labels.find(label => {
+            let correspondingLabel = json.labels.find((label) => {
               return label.apiKey === innerLabel;
             });
             let matchingLabel =
@@ -47,33 +53,32 @@ let Csv = class {
             newLabel = newLabel + matchingLabel;
           } else {
             if (idx === innerLabels.length - 1) {
-              newLabel = newLabel + "." + innerLabel;
+              newLabel = newLabel + '.' + innerLabel;
             } else {
-              newLabel = newLabel + "." + innerLabel + ".";
+              newLabel = newLabel + '.' + innerLabel + '.';
             }
           }
         });
         labelsRow.push(newLabel);
       });
 
-      let name = "backup_" + json.date
-
+      let name = 'backup_' + json.date;
 
       if (rawArray) {
-        parsedCsv.unshift(labelsRow)
-        resolve({ result: parsedCsv, name: name })
+        parsedCsv.unshift(labelsRow);
+        resolve({ result: parsedCsv, name: name });
       }
 
       let newCSV = Papa.unparse(
         { fields: labelsRow, data: parsedCsv },
-        { header: true, delimiter: ";" }
+        { header: true, delimiter: ';' }
       );
 
-      resolve({ csv: newCSV, name: name })
-    })
+      resolve({ csv: newCSV, name: name });
+    });
   }
   static orderColumns(parsedCsv, formioForm) {
-    return parsedCsv
+    return parsedCsv;
   }
-}
-export default Csv
+};
+export default Csv;
