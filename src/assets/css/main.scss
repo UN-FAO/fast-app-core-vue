@@ -811,6 +811,19 @@ button.btn.btn-primary.btn-wizard-nav-next {
     margin: 0;
 }
 
+
+
+  .sweet-modal.is-mobile-fullscreen .sweet-buttons {
+    box-sizing: border-box;
+    position: relative;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+}
+
+
+
+
 @import 'custom/custom.scss';
 @import 'qDataTable.scss';
 @import 'errorResponsiveTable.scss';

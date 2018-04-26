@@ -1,67 +1,119 @@
-import Local from './baseModel/local'
-import Remote from './baseModel/remote'
-import Connection from 'libraries/fastjs/Wrappers/Connection'
+import Local from './baseModel/local';
+import Remote from './baseModel/remote';
+import Connection from 'libraries/fastjs/Wrappers/Connection';
 const baseModel = () => {
   /* eslint-disable no-unused-vars */
-  let getFrom = 'remote-local'
+  let getFrom = 'remote-local';
   /**
    * [getOwnName description]
    * @return {[type]} [description]
    */
   function getOwnName() {
-    return 'baseModel'
+    return 'baseModel';
   }
 
   function getFormPath() {
-    return undefined
+    return undefined;
   }
   /**
    * [remote description]
    * @return {[type]} [description]
    */
   function remote() {
-    getFrom = 'remote'
-    return this
+    getFrom = 'remote';
+    return this;
   }
   /**
    * [local description]
    * @return {[type]} [description]
    */
   function local() {
-    getFrom = 'local'
-    return this
+    getFrom = 'local';
+    return this;
   }
 
   function merged() {
-    getFrom = 'remote-local'
-    return this
+    getFrom = 'remote-local';
+    return this;
   }
   /**
    * [find description]
    * @param  {[type]} filter [description]
    * @return {[type]}        [description]
    */
-  async function find({ filter, limit = undefined, select, pagination, form } = {}) {
+  async function find({
+    filter,
+    limit = undefined,
+    select,
+    pagination,
+    form,
+    populate
+  } = {}) {
     switch (getFrom) {
       case 'local':
-        return Local.find({ modelName: this.getOwnName(), filter, limit, select, pagination })
+        return Local.find({
+          modelName: this.getOwnName(),
+          filter,
+          limit,
+          select,
+          pagination
+        });
         break;
       case 'remote':
         if (this.getFormPath() === 'custom') {
-          return this.rFind({ formPath: this.getFormPath(), filter, limit, select, pagination, form })
+          return this.rFind({
+            formPath: this.getFormPath(),
+            filter,
+            limit,
+            select,
+            pagination,
+            populate,
+            form
+          });
         }
-        return Connection.isOnline() ?
-          Remote.find({ formPath: form || this.getFormPath(), filter, limit, select, pagination }) : []
+        return Connection.isOnline()
+          ? Remote.find({
+              formPath: form || this.getFormPath(),
+              filter,
+              limit,
+              select,
+              pagination,
+              populate
+            })
+          : [];
         break;
       case 'remote-local':
-        let local = await Local.find({ modelName: this.getOwnName(), filter, limit, select, pagination })
-        let remote
+        let local = await Local.find({
+          modelName: this.getOwnName(),
+          filter,
+          limit,
+          select,
+          pagination
+        });
+        let remote;
         if (this.getFormPath() === 'custom') {
-          remote = Connection.isOnline() ?
-            await this.rFind({ formPath: this.getFormPath(), filter, limit, select, pagination, form }) : []
+          remote = Connection.isOnline()
+            ? await this.rFind({
+                formPath: this.getFormPath(),
+                filter,
+                limit,
+                select,
+                pagination,
+                populate,
+                form
+              })
+            : [];
         } else {
-          remote = Connection.isOnline() ?
-            await Remote.find({ formPath: form || this.getFormPath(), filter, limit, select, pagination }) : []
+          remote = Connection.isOnline()
+            ? await Remote.find({
+                formPath: form || this.getFormPath(),
+                filter,
+                limit,
+                select,
+                pagination,
+                populate
+              })
+            : [];
         }
 
         // We need to include a logic here to check Which submission to keep
@@ -69,15 +121,15 @@ const baseModel = () => {
         // Or just keep the online submission
         let localOnline = local.reduce((reducer, s) => {
           if (s.data && s.data._id && s.data._id.indexOf('_local') === -1) {
-            reducer.push(s.data._id)
+            reducer.push(s.data._id);
           }
-          return reducer
-        }, [])
+          return reducer;
+        }, []);
 
-        remote = remote.filter(s => {
-          return !localOnline.includes(s._id)
-        })
-        return remote.concat(local)
+        remote = remote.filter((s) => {
+          return !localOnline.includes(s._id);
+        });
+        return remote.concat(local);
         break;
     }
   }
@@ -89,13 +141,13 @@ const baseModel = () => {
   async function findOne(filter) {
     switch (getFrom) {
       case 'local':
-        return Local.findOne({ modelName: this.getOwnName(), filter: filter })
+        return Local.findOne({ modelName: this.getOwnName(), filter: filter });
         break;
       case 'remote':
-        return
+        return;
         break;
       case 'remote-local':
-        return
+        return;
         break;
     }
   }
@@ -107,13 +159,16 @@ const baseModel = () => {
   async function remove(document) {
     switch (getFrom) {
       case 'local':
-        return Local.remove({ modelName: this.getOwnName(), document: document })
+        return Local.remove({
+          modelName: this.getOwnName(),
+          document: document
+        });
         break;
       case 'remote':
-        return
+        return;
         break;
       case 'remote-local':
-        return
+        return;
         break;
     }
   }
@@ -125,13 +180,16 @@ const baseModel = () => {
   async function insert(element, formPath) {
     switch (getFrom) {
       case 'local':
-        return Local.insert({ modelName: this.getOwnName(), element: element })
+        return Local.insert({ modelName: this.getOwnName(), element: element });
         break;
       case 'remote':
-        return Remote.insert({ formPath: this.getFormPath() || formPath, element: element })
+        return Remote.insert({
+          formPath: this.getFormPath() || formPath,
+          element: element
+        });
         break;
       case 'remote-local':
-        return
+        return;
         break;
     }
   }
@@ -143,13 +201,19 @@ const baseModel = () => {
   async function update(document, formPath) {
     switch (getFrom) {
       case 'local':
-        return Local.update({ modelName: this.getOwnName(), document: document })
+        return Local.update({
+          modelName: this.getOwnName(),
+          document: document
+        });
         break;
       case 'remote':
-        return Remote.update({ formPath: this.getFormPath() || formPath, document: document })
+        return Remote.update({
+          formPath: this.getFormPath() || formPath,
+          document: document
+        });
         break;
       case 'remote-local':
-        return
+        return;
         break;
     }
   }
@@ -157,13 +221,16 @@ const baseModel = () => {
   async function updateOrCreate(document) {
     switch (getFrom) {
       case 'local':
-        return Local.updateOrCreate({ modelName: this.getOwnName(), document: document })
+        return Local.updateOrCreate({
+          modelName: this.getOwnName(),
+          document: document
+        });
         break;
       case 'remote':
-        return
+        return;
         break;
       case 'remote-local':
-        return
+        return;
         break;
     }
   }
@@ -171,13 +238,16 @@ const baseModel = () => {
   async function findAndRemove(filter) {
     switch (getFrom) {
       case 'local':
-        return Local.findAndRemove({ modelName: this.getOwnName(), filter: filter })
+        return Local.findAndRemove({
+          modelName: this.getOwnName(),
+          filter: filter
+        });
         break;
       case 'remote':
-        return
+        return;
         break;
       case 'remote-local':
-        return
+        return;
         break;
     }
   }
@@ -195,5 +265,5 @@ const baseModel = () => {
     updateOrCreate,
     findAndRemove
   });
-}
-export default baseModel
+};
+export default baseModel;
