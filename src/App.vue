@@ -4,16 +4,16 @@
     :left-breakpoint="layoutStore.leftBreakpoint"
     :right-breakpoint="layoutStore.rightBreakpoint"
     :reveal="layoutStore.reveal"
-    v-bind:class="isInsideApp ? 'background-app' : 'background-login'"
+    v-bind:class="!isLogin ? 'background-app' : 'background-login'"
     :dir="ltr ? 'ltr' : 'rtl' "
     >
     <toolbar slot="header"></toolbar>
-    <template v-if="isInsideApp">
+    <template v-if="!isLogin">
       <leftdrawer slot="left"></leftdrawer>
       <rightdrawer slot="right"></rightdrawer>
-</template>
+  </template>
   <connection-alert></connection-alert>
-    <router-view :key="$route.path" v-bind:class="isInsideApp ? 'background-app' : 'background-login' "/>
+    <router-view :key="$route.path" v-bind:class="!isLogin ? 'background-app' : 'background-login' "/>
   </q-layout>
 </template>
 
@@ -111,11 +111,11 @@ export default {
     };
   },
   computed: {
-    isInsideApp() {
+    isLogin() {
       return (
-        this.$route.name !== "login" &&
-        this.$route.name !== "register" &&
-        this.$route.name !== "login_redirect"
+        this.$route.name === "login" ||
+        this.$route.name === "register" ||
+        this.$route.name === "login_redirect"
       );
     }
   },

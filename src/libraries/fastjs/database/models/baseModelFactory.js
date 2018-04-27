@@ -129,6 +129,7 @@ const baseModel = () => {
         remote = remote.filter((s) => {
           return !localOnline.includes(s._id);
         });
+        console.log('remote.concat(local);', remote.concat(local));
         return remote.concat(local);
         break;
     }

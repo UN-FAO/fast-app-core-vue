@@ -16,11 +16,6 @@ let Csv = class {
   static async get({ json, rawArray }) {
     return new Promise(async (resolve, reject) => {
       let csv = await Csv.toCsv(json.data);
-
-      var csv2 = Papa.unparse(json.data);
-      console.log('json', json);
-      console.log('csv', csv);
-      console.log('csv2', csv2);
       let labelsRow = [];
       let parsedCsv = Papa.parse(csv, { dynamicTyping: true });
 

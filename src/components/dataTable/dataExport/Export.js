@@ -132,12 +132,14 @@ let Export = class {
 
     if (!formioForm) {
       _forEach(data, function(submission) {
+        delete submission.owner;
         json.push(flatten(submission));
       });
       return { date: date, data: json };
     }
 
     _forEach(data, function(submission) {
+      delete submission.owner;
       json.push(flatten(submission));
     });
 
@@ -152,8 +154,12 @@ let Export = class {
       return labelArray;
     }, []);
 
-    data = output && output === 'json' ? data : json;
+    labels.push({
+      apiKey: 'owner_email',
+      label: vm.$t('Owner Email')
+    });
 
+    data = output && output === 'json' ? data : json;
     return { date: date, data: data, labels: labels };
   }
 };

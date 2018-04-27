@@ -121,6 +121,18 @@ let Submission = (args) => {
       }
 
       if (dataExport) {
+        if (
+          o.data &&
+          o.data.owner &&
+          o.data.owner.data &&
+          o.data.owner.data.email
+        ) {
+          o.data.owner_email = o.data.owner.data.email;
+        }
+        if (o.data && o.data.user_email) {
+          o.data.owner_email = o.data.user_email;
+        }
+
         if (!o.$loki) {
           return o.data;
         }
@@ -180,7 +192,7 @@ let Submission = (args) => {
       });
       return sub;
     });
-    console.log(submissions);
+
     submissions = _orderBy(submissions, ['updated'], ['desc']);
     let paginated = { results: submissions, pagination: paginationInfo };
     return paginated;

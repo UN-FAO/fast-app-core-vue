@@ -123,7 +123,7 @@ export default {
     async syncApp() {
       this.$eventHub.$emit("openLeftDrawer");
       this.$swal({
-        title: "Updating...",
+        title: this.$t("Updating..."),
         text: this.$t(
           "Wait until the App is Updated. This can take a couple minutes..."
         ),

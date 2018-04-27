@@ -239,8 +239,8 @@ export default {
       } else {
         this.$swal({
           type: 'error',
-          title: this.$('Error'),
-          html: this.$('You have errors in the submission'),
+          title: this.$t('Error'),
+          html: this.$t('You have errors in the submission'),
         }).then(() => {
           window.scrollTo(0, 0);
         });
