@@ -14,7 +14,7 @@
       <q-card-main>
         <q-card-title>
           <span v-if="formTitle !== ''">Form:</span> {{formTitle}}
-          <q-icon slot="right" name="more_vert" color="grey" style="cursor:pointer">
+          <q-icon v-if="formTitle !== ''" slot="right" name="more_vert" color="grey" style="cursor:pointer">
               <q-popover ref="popover">
                 <q-list link class="no-border" dense separator no-border>
 
@@ -71,7 +71,7 @@ import datatable from 'components/dataTable/dataTable';
 import Submission from 'libraries/fastjs/database/models/Submission';
 import Columns from 'components/dataTable/tableFormatter/Columns';
 import Auth from 'libraries/fastjs/repositories/Auth/Auth';
-import Event from "libraries/fastjs/Wrappers/Event";
+import Event from 'libraries/fastjs/Wrappers/Event';
 
 export default {
   async mounted() {
@@ -80,11 +80,11 @@ export default {
     });
   },
   methods: {
-      async createDialog() {
+    async createDialog() {
       Event.emit({
-        name: "FAST:EXPORT:OPENMENU",
+        name: 'FAST:EXPORT:OPENMENU',
         data: undefined,
-        text: "Triggering Open Export Menu"
+        text: 'Triggering Open Export Menu',
       });
     },
   },
