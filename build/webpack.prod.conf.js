@@ -1,5 +1,4 @@
-var
-  path = require('path'),
+var path = require('path'),
   config = require('../config'),
   cssUtils = require('./css-utils'),
   webpack = require('webpack'),
@@ -9,9 +8,9 @@ var
   HtmlWebpackPlugin = require('html-webpack-plugin'),
   OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin'),
   ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin'),
-  CompressionPlugin = require("compression-webpack-plugin"),
-  UglifyJSPlugin = require('uglifyjs-webpack-plugin')
-var configVars = require('../src/config/env')
+  CompressionPlugin = require('compression-webpack-plugin'),
+  UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+var configVars = require('../src/config/env');
 
 module.exports = merge(baseWebpackConfig, {
   entry: ['babel-polyfill', './src/main.js'],
@@ -24,7 +23,7 @@ module.exports = merge(baseWebpackConfig, {
   },
   devtool: config.build.productionSourceMap ? '#source-map' : false,
   plugins: [
-
+    /*
     new UglifyJSPlugin({
       uglifyOptions: {
         ie8: true,
@@ -36,6 +35,7 @@ module.exports = merge(baseWebpackConfig, {
         warnings: false
       }
     }),
+    */
 
     new webpack.NoEmitOnErrorsPlugin(),
     /*
@@ -87,18 +87,15 @@ module.exports = merge(baseWebpackConfig, {
     // split vendor js into its own file
     new webpack.optimize.CommonsChunkPlugin({
       name: 'vendor',
-      minChunks: function (module, count) {
+      minChunks: function(module, count) {
         // any required modules inside node_modules are extracted to vendor
         return (
           module.resource &&
           /\.js$/.test(module.resource) &&
-          (
-            module.resource.indexOf('quasar') > -1 ||
-            module.resource.indexOf(
-              path.join(__dirname, '../node_modules')
-            ) === 0
-          )
-        )
+          (module.resource.indexOf('quasar') > -1 ||
+            module.resource.indexOf(path.join(__dirname, '../node_modules')) ===
+              0)
+        );
       }
     }),
     // extract webpack runtime and module manifest to its own file in order to
@@ -108,4 +105,4 @@ module.exports = merge(baseWebpackConfig, {
       chunks: ['vendor']
     })
   ]
-})
+});

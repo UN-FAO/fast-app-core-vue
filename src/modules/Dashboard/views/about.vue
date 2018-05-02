@@ -1,67 +1,93 @@
 <template>
   <div class="container-fluid">
     <div class="row">
-      <div class="landing col-lg-10  col-md-10 col-sm-12">
+      <div class="landing col-lg-10 col-md-12 col-sm-12">
+
         <div class="base">
           <div class="copy">
-
+           <!--
             <div style="text-align: right; color: rgb(14, 109, 165); font-size: 16px;">
               <small>ABOUT
-                <span @click="togglePage(true)"  v-bind:class="[show ? 'showing' : '', 'notShowing']">DRIP</span>
-                    </small>
+                <span @click="togglePage(true)"  v-bind:class="[show ? 'showing' : '', 'notShowing']">Fall Armyworm</span>
+                /
+                <span @click="togglePage(false)" v-bind:class="[!show ? 'showing' : '', 'notShowing']">FAMEWS</span> </small>
             </div>
 
-            <div id="FAMEWS" v-if="show">
+            <div class="title"></div>
+           -->
+            <div class="row">
+
+                <div class="col-lg-5 col-md-5 col-sm-12">
+                </div>
+                <div class="col-lg-7 col-md-7 col-sm-12" id="FallArmy" v-if="show">
+                    <h1>About SHARP+</h1>
+                </div>
+            </div>
+           <div class="row">
+            <div class="col-lg-5 col-md-5 col-sm-12">
+                <div class="image">
+                    <img src=../../../assets/imgs/timeline.png>
+                </div>
+            </div>
+
+            <div class="col-lg-7 col-md-7 col-sm-12" id="FallArmy" v-if="show">
+                  <div class="text">
+                      <p>
+                          The <b>Self and Holistic Assessment of Resilience for farmers and Pastoralists</b> (SHARP) tool was developed by FAO to collect, share and analyse information, concerns and interests of farmers and pastoralists in a participatory self-assessment manner in the context of climate change. Since 2015, SHARP has been included in several projects in <span class="highlight">18 different countries</span> and collected information on <span class="highlight">more than 3500 households</span>, providing <b>training workshops</b> to FAO country offices, governments, researchers, facilitators, enumerators and farmers.
+                      </p><br>
+                      <p>
+                          <b>SHARP</b> highlights the priorities for <b>strengthening climate resilience in rural communities</b> across the agronomic, environmental, social and economic components of assessed households.  SHARP is both an <b>assessment</b> and a <b>monitoring & evaluation tool</b>, which identifies areas of poor resilience and provides a baseline for intervention in the field, enabling comparison within and across communities, providing meaningful contextualized data which can be used to support farmers and pastoralists.
+                    </p><br>
+                    <p>
+                        After incorporating the lessons learned in the field in the past 3 years and technically reviewing the tool, <b>SHARP+</b> arises as an improved version of the SHARP former tool and it is released to the public in 2018. The SHARP+ application contains <b>better targeted and focused questions, new modules,</b> as well as more <b>robust scoring system</b> that jointly allow for a more accurate resilience assessment and understanding of small-scale agricultural producer’s livelihoods in the context of climate change.
+                    </p><br>
+                    <p>
+                        If you wish to know more about SHARP and SHARP+, you can go to:
+                    </p>
+                        <ul class="fa-ul">
+                            <li><i style="color:rgb(14, 109, 165)" class="fa-li fa fa-link"></i>
+                                <p><a href="http://www.fao.org/in-action/sharp/en/">SHARP Website</a></p>
+                            </li>
+                            <li><i style="color:rgb(14, 109, 165)" class="fa-li fa fa-google"></i>
+                                <p><a href="http://www.fao.org/in-action/sharp/en/">Google Play Store</a></p>
+                            </li>
+                            <li><i style="color:rgb(14, 109, 165)" class="fa-li fa fa-flickr"></i>
+                                <p><a href="http://www.fao.org/in-action/sharp/en/">Flickr album</a></p>
+                            </li>
+                            <li><i style="color:rgb(14, 109, 165)" class="fa-li fa fa-envelope-o"></i>
+                                <p>Or contact us at: <a href="mailto:SHARP@fao.org">SHARP@fao.org</a></p>
+                            </li>
+                         </ul>
+                  </div>
+
+            </div>
+
+        <!--
+            <div id="FAMEWS" v-if="!show">
               <div class="title">
-                <small>ABOUT</small>DRIP
+                <small>ABOUT</small>FAMEWS
               </div>
 
               <div style="font-size: 20px; font-weight: 600;  text-transform: uppercase;cursor: pointer; color: rgb(14, 109, 165);">
-                <small><strong style="font-size: 25px;">The Dryland Restoration Initiative Platform (DRIP) </strong>
-
-                </small>
+                <small>FAMEWS = <strong style="font-size: 25px;">F</strong>all <strong style="font-size: 25px;">A</strong>rmyworm <strong style="font-size: 25px;">M</strong>onitoring and
+                  <strong style="font-size: 25px;">E</strong>arly <strong style="font-size: 25px;">W</strong>arning <strong style="font-size: 25px;">S</strong>ystem</small>
               </div>
               <p>
 
-              <div class="text">
-                Is an interactive web portal to support practitioners, project managers, policy-makers and decision-makers in compiling and analysing data and capturing and sharing lessons learned from restoration initiatives, thus advancing the monitoring and assessment of these initiatives globally. DRIP was developed and tested with the active participation of dryland restoration experts and practitioners worldwide.
-
-              </div>
-              <p>
-              <div style="font-size: 20px; font-weight: 600;  text-transform: uppercase;cursor: pointer; color: rgb(14, 109, 165);">
-                <small><strong style="font-size: 25px;">The DRIP Tool </strong>
-
-                </small>
-              </div>
-               <div class="text">
-                   <span>Is an online tool hosted on the Dryland Restoration Initiative Platform that allows to compile data from restoration projects, programmes and initiatives. It captures information from users via an easily understandable questionnaire that can be completed in a few minutes.</span>
-                    <br>
-                  <span> Restoration experts need to register before starting to use the DRIP tool. The DRIP survey obtains information in five sections:</span>
-
-              </div>
-                <p>
-                <div class="text">
-                   <ol>
-                     <li><span style="font-size:20px">General information</span> <br> General information on the restoration initiative (location, scope, type of initiative, …)</li>
-                      <li><span style="font-size:20px">Description of the area and baseline</span><br>Data on the area where the initiative is carried out, including on its climate, geomorphology, soil, land degradation (causes and type of degradation), as well as socio-economic and environmental baseline data, i.e. before the start of the restoration initiative</li>
-                      <li><span style="font-size:20px">Objectives and strategy</span> <br> Objectives of the restoration initiative, and the type of approach used (e.g. species used, techniques, training and other activities)</li>
-                      <li><span style="font-size:20px">Monitoring and evaluation </span><br> Information on monitoring and evaluation activities implemented as part of the restoration initiative</li>
-                      <li><span style="font-size:20px">Results and impacts</span> <br> Main achievements in terms of results (such as activities, number of hectares successfully restored, and related costs), impacts (environmental and socio-economic, but also in terms of capacity development and sustainability of the results achieved), as well as the main challenges encountered and lessons learnt.</li>
-                   </ol>
-              </div>
-
-              <div class="text">
-                Once completed, the survey data is submitted to FAO, which compiles and analyses all the data received into a global database of restoration initiatives. The data then becomes freely accessible through the DRIP.
-              </div>
-
+              <div class="text"></div>
             </div>
 
-            <div style="text-align: right; color: rgb(14, 109, 165); font-size: 16px;">
+
+
+             <div style="text-align: right; color: rgb(14, 109, 165); font-size: 16px;">
               <small>ABOUT
-                <span @click="togglePage(true)"  v-bind:class="[show ? 'showing' : '', 'notShowing']">DRIP</span>
-                    </small>
-            </div>
+                <span @click="togglePage(true)"  v-bind:class="[show ? 'showing' : '', 'notShowing']">Fall Armyworm</span>
+                /
+                <span @click="togglePage(false)" v-bind:class="[!show ? 'showing' : '', 'notShowing']">FAMEWS</span> </small>
+             </div>
+        -->
 
+             </div>
           </div>
         </div>
       </div>
@@ -78,7 +104,7 @@ export default {
   },
   methods: {
     togglePage(value) {
-      this.show = value;
+      this.show = value
     }
   }
 };
@@ -93,8 +119,7 @@ export default {
   cursor: pointer;
 }
 
-.showing:hover,
-.notShowing:hover {
+.showing:hover, .notShowing:hover {
   background: rgb(14, 109, 165);
   color: white;
 }
@@ -121,7 +146,7 @@ export default {
   z-index: 1;
   width: 100%;
   height: 100%;
-  padding: 38px;
+  padding: 5px;
   color: #082352;
   background: #fff;
 }
@@ -160,12 +185,21 @@ export default {
   display: block;
   text-indent: 3px;
 }
+    .copy .image {margin-bottom: 30px;}
+    .copy .image img {width: 100%; max-width: 450px;}
 
-.copy .text {
-  color: #282652;
-  width: 80%;
-  font-size: 100%;
-}
+    .copy .text {
+      color: #282652;
+      font-size: 100%;
+    }
+
+    .copy .text .highlight {font-size:1.4em; color:#b70509; font-weight: 500; letter-spacing: -0.25px;}
+
+    .copy .text ul {margin-top: 20px; margin-bottom: 30px;}
+    .copy .text li {margin-bottom: 15px;}
+    .copy .text li i {font-size: 1.4em;}
+
+    .copy .text p {font-size: inherit;}
 
 .copy .cta {
   cursor: pointer;
@@ -184,7 +218,4 @@ export default {
   background-image: linear-gradient(0, #fff, #fff);
 }
 
-li {
-  margin-bottom: 20px;
-}
 </style>

@@ -31,29 +31,32 @@
   <i class="material-icons" style="color: red;font-size: x-large; cursor: pointer;" v-if="scope.row.syncError && scope.row.syncError ==='Unauthorized' " @click="displayError(scope.row.syncError)">block</i>
 </template>
 
-<template slot='col-actions' scope='scope'>
-  <q-btn v-if="tableActions.includes('review')" color="primary"  small flat  @click='handleReview(scope)'> <i class="material-icons remove_red_eye">remove_red_eye</i>
+<template slot="selection" slot-scope="props">
+
+  <q-btn v-if="tableActions.includes('review')" color="primary"  flat  @click='handleReview(props)'>
+    <q-icon name="remove_red_eye" />
     <q-tooltip>{{$t('Review')}}</q-tooltip>
   </q-btn>
-  <q-btn v-if="tableActions.includes('edit')" color="primary"  small flat  @click='goToEditView(scope)'> <i class="material-icons edit">edit</i>
+  <q-btn v-if="tableActions.includes('edit')" color="primary" flat   @click='goToEditView(props)'>
+    <q-icon name="edit" />
     <q-tooltip>{{$t('Edit')}}</q-tooltip>
   </q-btn>
-  <q-btn v-if="tableActions.includes('report')" color="primary"  small flat  @click='handleReport(scope)'> <i class="material-icons assignment">assignment</i>
+  <q-btn v-if="tableActions.includes('report')" color="primary" flat  @click='handleReport(props)'>
+  <q-icon name="assignment" />
     <q-tooltip>{{$t('Report')}}</q-tooltip>
   </q-btn>
-</template>
 
-<template slot="selection" slot-scope="props">
-  <q-btn flat v-if="tableActions.includes('delete')" color="primary" @click="handleDelete(props)">
+   <q-btn flat v-if="tableActions.includes('delete')" color="grey" @click="handleDelete(props)">
     <q-icon name="delete" />
+    <q-tooltip>{{$t('Delete')}}</q-tooltip>
   </q-btn>
 </template>
 
 <template slot='col-deleted' scope='scope'>
-  <q-chip icon="fa-ban" color="red" v-if="scope.row.deleted && scope.row.deleted === true">
+  <q-chip icon="fa-ban" small color="red" v-if="scope.row.deleted && scope.row.deleted === true">
   </q-chip>
 
-  <q-chip icon="fa-check" color="green" v-else>
+  <q-chip icon="fa-check" small color="green" v-else>
   </q-chip>
 </template>
         </q-data-table>
@@ -73,6 +76,7 @@ import Import from 'libraries/fastjs/repositories/Submission/Import';
 import Submission from 'libraries/fastjs/database/models/Submission';
 import ErrorFormatter from 'components/dataTable/submission/errorFormatter';
 import Auth from 'libraries/fastjs/repositories/Auth/Auth';
+import to from 'await-to-js';
 
 export default {
   components: {
@@ -179,7 +183,7 @@ export default {
       };
 
       if (options.includes('ownerEmail')) {
-        query.populate = ['owner']
+        query.populate = ['owner'];
       }
       let sub = await Submission.merged().showView(query);
 
@@ -198,59 +202,112 @@ export default {
       return sub;
     },
     async handleReview(data) {
-      let submission = await this.loadSubmission(data.row._id);
-      this.$router.push({
-        name: 'formio_submission_update',
-        params: {
-          idForm: this.form.data.path,
-          idSubmission: data.row._id,
-          fullSubmision: {
-            data: submission.content.data,
-            _id: data.row._id,
-          },
-          formio: submission.formio,
-          FAST_EDIT_MODE: 'online-review',
+      let rows = this.selectedRows;
+      if (rows.length > 1) {
+        this.$swal({
+          title: this.$t('Review for multiple rows'),
+          text: this.$t("You can't review more than one row"),
+          type: 'error',
+        });
+        return;
+      }
+      let submission = this.selectedRows[0];
+      let err;
+
+      await this.$swal({
+        title: 'Loading...',
+        text: this.$t(
+          'Getting the submission. This can take a couple seconds...',
+        ),
+        showCancelButton: false,
+        onOpen: async () => {
+          this.$swal.showLoading();
+          [err, submission] = await to(this.loadSubmission(submission._id));
+
+          if (err) {
+            this.$swal.close();
+          }
+          this.$swal.close();
+          this.$router.push({
+            name: 'formio_submission_update',
+            params: {
+              idForm: this.form.data.path,
+              idSubmission: submission.content._id,
+              fullSubmision: {
+                data: submission.content.data,
+                _id: submission.content._id,
+              },
+              formio: submission.formio,
+              FAST_EDIT_MODE: 'online-review',
+            },
+          });
         },
       });
     },
-    async handleOnlineEdit(data, formId) {
-      let submission = await this.loadSubmission(data.row._id);
+    async handleOnlineEdit(submission, formId) {
+      let loadedSubmission = await this.loadSubmission(submission._id);
       this.$router.push({
         name: 'formio_submission_update',
         params: {
           idForm: formId,
-          idSubmission: data.row._id,
+          idSubmission: submission._id,
           fullSubmision: {
-            data: submission.content.data,
-            _id: data.row._id,
+            data: loadedSubmission.content.data,
+            _id: submission._id,
           },
-          formio: submission.formio,
+          formio: loadedSubmission.formio,
           FAST_EDIT_MODE: 'online',
         },
       });
     },
     async loadSubmission(_id) {
       this.loading = true;
-      let submission = await Submission.remote().find({
-        form: this.form.data.path,
-        filter: [
-          {
-            element: '_id',
-            query: '=',
-            value: _id,
-          },
-        ],
-        limit: 1,
-      });
+      let err;
+      let submission;
+
+      [err, submission] = await to(
+        Submission.remote().find({
+          form: this.form.data.path,
+          filter: [
+            {
+              element: '_id',
+              query: '=',
+              value: _id,
+            },
+          ],
+          limit: 1,
+        }),
+      );
+
+      if (err) {
+        this.$swal.close();
+        this.$swal(
+          this.$t('Conexion error'),
+          this.$t("We couldn't get the submission from the server"),
+          'error',
+        );
+        throw new Error('Submission was not retreived');
+      }
+
       this.loading = false;
       return {
         content: submission[0],
       };
     },
-    handleReport(data) {
-      let self = this;
-      let submission = data.row;
-      self.$router.push({
+    handleReport() {
+      let rows = this.selectedRows;
+      console.log('rows', rows);
+      if (rows.length > 1) {
+        this.$swal({
+          title: this.$t('Report for multiple rows'),
+          text: this.$t("You can't see the report more than one row"),
+          type: 'error',
+        });
+        return;
+      }
+      let submission = this.selectedRows[0];
+      console.log('submission', submission);
+      this.$router.push({
         name: 'formio_submission_report',
         params: {
           idForm: this.form.data.path,
@@ -258,7 +315,7 @@ export default {
         },
       });
     },
-    handleDelete(props) {
+    handleDelete() {
       let rows = this.selectedRows;
       let self = this;
       if (rows.length === 0) {
@@ -351,14 +408,24 @@ export default {
         },
       });
     },
-    goToEditView(data) {
-      let formId =
-        _get(this.form, 'data.properties["edit-view"]') || this.form.data.path;
-      if (data.row.status === 'online' && !data.row._lid) {
-        this.handleOnlineEdit(data, formId);
+    goToEditView(props) {
+      let rows = this.selectedRows;
+      if (rows.length > 1) {
+        this.$swal({
+          title: this.$t('Edit Multiple Rows'),
+          text: this.$t("You can't edit more than one row"),
+          type: 'error',
+        });
         return;
       }
-      let submissionId = data.row._lid || data.row._id;
+      let submission = this.selectedRows[0];
+      let formId =
+        _get(this.form, 'data.properties["edit-view"]') || this.form.data.path;
+      if (submission.status === 'online' && !submission._lid) {
+        this.handleOnlineEdit(submission, formId);
+        return;
+      }
+      let submissionId = submission._lid || submission._id;
       this.$router.push({
         name: 'formio_submission_update',
         params: {
@@ -411,7 +478,7 @@ export default {
         noHeader: false,
         columnPicker: false,
         leftStickyColumns: 0,
-        rightStickyColumns: 1,
+        rightStickyColumns: 0,
         rowHeight: '50px',
         responsive: false,
         pagination: {
@@ -433,7 +500,7 @@ export default {
             singular: this.$t('item selected.'),
             plural: this.$t('items selected.'),
           },
-          clear: this.$t('clear'),
+          clear: this.$t('Clear Selection'),
           search: this.$t('Search'),
           all: this.$t('All'),
         },

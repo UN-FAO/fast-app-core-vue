@@ -5,6 +5,11 @@
 
 
         <q-card style="background-color: white; max-height: fit-content;" class="formNav" v-if="_isWizard && showPages && !$FAST_CONFIG.TAB_MENU">
+          <q-card-title>
+            <q-icon  slot="right" flat  color="grey" @click="togglePages" name="menu" v-if="_isWizard && !$FAST_CONFIG.TAB_MENU && showPages">
+              <q-tooltip>{{$t('Show pages')}}</q-tooltip>
+            </q-icon>
+          </q-card-title>
           <q-card-main>
             <q-list separator style="border: none !important">
 
@@ -17,30 +22,38 @@
 
         <q-card color="white" v-bind:class="getFormClass" style="">
           <q-card-main>
-            <q-card-title v-if="this.$route.params.FAST_EDIT_MODE !== 'online-review'">
+            <q-card-title>
 
-            <q-icon slot="right" flat color="primary" @click="saveAsDraft()" name="fa-floppy-o" v-if="this.$route.params.FAST_EDIT_MODE !== 'online'">
-              <q-tooltip>{{$t('Save as draft')}}</q-tooltip>
-            </q-icon>
-
-            <q-icon slot="right" flat  v-bind:class="!$FAST_CONFIG.PARALLEL_SURVEYS ? 'hidden' : ''" color="amber" @click="addSurvey()" name="person_add" v-if="this.$route.params.FAST_EDIT_MODE !== 'online'">
-              <q-tooltip>{{$t('Add participant')}}</q-tooltip>
-            </q-icon>
-
-            <q-icon slot="right" flat  v-bind:class="!$FAST_CONFIG.PARALLEL_SURVEYS ? 'hidden' : ''" color="purple-6" @click="groupConfig()" name="fa-users" v-if="this.$route.params.FAST_EDIT_MODE !== 'online'">
-              <q-tooltip>{{$t("Change Group")}}</q-tooltip>
-
-            </q-icon>
-
-
-            <q-icon slot="right" flat  color="red" @click="openRightDrawer()" name="assessment" v-if="$FAST_CONFIG.HAS_SCORES">
-              <q-tooltip>{{$t('Show scores')}}</q-tooltip>
-            </q-icon>
-
-            <q-icon  flat  color="grey" @click="togglePages" name="menu" v-if="_isWizard && !$FAST_CONFIG.TAB_MENU">
+            <q-icon  flat  color="grey" @click="togglePages" name="menu" v-if="_isWizard && !$FAST_CONFIG.TAB_MENU && !showPages">
               <q-tooltip>{{$t('Show pages')}}</q-tooltip>
             </q-icon>
 
+            <q-icon slot="right" flat color="primary" @click="saveAsDraft()" name="fa-floppy-o" v-if="this.$route.params.FAST_EDIT_MODE !== 'online' && this.$route.params.FAST_EDIT_MODE !== 'online-review'">
+              <q-tooltip>{{$t('Save as draft')}}</q-tooltip>
+            </q-icon>
+
+              <q-icon slot="right" name="more_vert" color="grey" style="cursor:pointer; margin-left:20px">
+              <q-popover ref="popover">
+                <q-list link class="no-border" dense separator no-border>
+
+                  <q-item @click="$refs.popover.close(), openRightDrawer()"  v-if="$FAST_CONFIG.HAS_SCORES">
+                    <q-item-side icon="assessment"  />
+                    <q-item-main :label="$t('Show scores')" />
+                  </q-item>
+
+                  <q-item @click="$refs.popover.close(), addSurvey()" v-if="this.$route.params.FAST_EDIT_MODE !== 'online' && $FAST_CONFIG.PARALLEL_SURVEYS && this.$route.params.FAST_EDIT_MODE !== 'online-review'" >
+                    <q-item-side icon="person_add"  />
+                    <q-item-main :label="$t('Add participant')" />
+                  </q-item>
+
+                  <q-item @click="$refs.popover.close(), groupConfig()" v-if="this.$route.params.FAST_EDIT_MODE !== 'online' && $FAST_CONFIG.PARALLEL_SURVEYS && this.$route.params.FAST_EDIT_MODE !== 'online-review'" >
+                    <q-item-side icon="fa-users"  />
+                    <q-item-main :label="$t('Change Group')" />
+                  </q-item>
+
+                </q-list>
+              </q-popover>
+            </q-icon>
             </q-card-title>
             <!--
               <q-btn @click="singleNext()" class="pull-right primary" color="primary">Next Page</q-btn>
@@ -147,6 +160,8 @@ import {
   QTransition,
   QInnerLoading,
   QSpinnerAudio,
+  QPopover,
+  QItemSide,
 } from 'quasar';
 import to from 'await-to-js';
 import _get from 'lodash/get';
@@ -189,6 +204,8 @@ export default {
     QTransition,
     QInnerLoading,
     QSpinnerAudio,
+    QPopover,
+    QItemSide,
   },
   async mounted() {
     console.log(
@@ -388,16 +405,34 @@ export default {
 
       submission.data.deleted = revision !== 'accept';
 
-      [err] = await to(
-        Submission.remote().update(submission, this.$route.params.idForm),
-      );
+      this.$swal({
+        title: 'Saving...',
+        text: this.$t(
+          'The information is being saved. This can take a couple seconds...',
+        ),
+        showCancelButton: false,
+        onOpen: async () => {
+          this.$swal.showLoading();
+          [err] = await to(
+            Submission.remote().update(submission, this.$route.params.idForm),
+          );
 
-      if (err) throw new Error('Submission was not saved');
-
-      this.$router.push({
-        name: 'alldata',
-        query: {
-          form: this.$route.params.idForm,
+          if (err) {
+            this.$swal.close();
+            this.$swal(
+              this.$t('Save error'),
+              this.$t("You don't have access to modify this submission"),
+              'error',
+            );
+            throw new Error('Submission was not saved');
+          }
+          this.$swal.close();
+          this.$router.push({
+            name: 'alldata',
+            query: {
+              form: this.$route.params.idForm,
+            },
+          });
         },
       });
     },

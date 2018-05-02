@@ -52,7 +52,6 @@ const router = new VueRouter({
  */
 
 router.beforeEach((to, from, next) => {
-  console.log(to)
   // If the route requires Auth
   if (to.meta.requiresAuth && Auth.user() === false) {
     next(false)

@@ -126,11 +126,25 @@ exports.TRANSLATIONS = [
   'Show pages',
   'Your submission has been saved! You can continue editing later',
   'Owner Email',
+  'Delete',
+  'Clear Selection',
+  'Edit Multiple Rows',
+  "You can't edit more than one row",
+  'Report for multiple rows',
+  "You can't see the report more than one row",
+  'Review for multiple rows',
+  "You can't review more than one row",
+  'Save error',
+  "You don't have access to modify this submission",
+  'Conexion error',
+  "We couldn't get the submission from the server",
   // MedAid Translations
+/*
   'Welcome to the APP for the Survey on Social Acceptability of Aquaculture',
   'Please note that',
   'This online application offers the possibility of saving a draft of the questionnaire at any time you want and completing it afterwards. This option is available clicking the',
   'icon visible on the top right corner during the process',
   'You can find a glossary of aquaculture terms',
   'The survey is carried out within the project "Mediterranean Aquaculture Integrated Development(MedAID)" supported by the European Union in the frame of Horizon 2020, grant agreement number 727315.'
+*/
 ];

@@ -99,7 +99,6 @@ export default {
   computed: {
     _cards() {
       let cards = this.page.cards;
-      console.log('cards', cards)
       cards = cards.filter(c => {
         return (
           c.title.toLowerCase().indexOf(this.filter.toLowerCase()) >

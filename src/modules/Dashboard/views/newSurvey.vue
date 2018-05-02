@@ -25,8 +25,8 @@ export default {
     newForms: {
       async get() {
         let result = await Form.local().cardFormattedForms("create");
-        if (result.innerCards.length === 1) {
-          this.redirectTo(result.innerCards[0].innerCardsActions[0], "submission");
+        if (result.cards.length === 1) {
+          this.redirectTo(result.cards[0].actions[0], "submission");
         }
         return result;
       },
@@ -37,14 +37,14 @@ export default {
   },
   methods: {
     redirectTo(action) {
-      if (action.innerCardsActionsForm) {
+      if (action.formPath) {
         let name =
-          action.innerCardsActionsAction === "list"
+          action.action === "list"
             ? "formio_form_show"
             : "formio_form_submission";
         let to = {
           name: name,
-          params: { idForm: action.innerCardsActionsForm.path }
+          params: { idForm: action.formPath }
         };
         this.$router.push(to);
       }

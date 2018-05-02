@@ -12,6 +12,7 @@ export default {
     report
   },
   async mounted() {
+    console.log('Mounting the component')
     if (this.$route.params.idSubmission.indexOf("_local") >= 0) {
       console.log('offline')
       let resuls = await Submission.local().get(

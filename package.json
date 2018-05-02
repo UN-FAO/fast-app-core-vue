@@ -1,8 +1,8 @@
 {
   "name": "fast",
-  "version": "0.8.7",
-  "deployAppName": "MEDAID",
-  "deployAppID": "5a97d0ae8590243a117921ea",
+  "version": "0.9.3",
+  "deployAppName": "SHARP+",
+  "deployAppID": "59b112c7678919000775f921",
   "description": "A data collection application for FORM.io",
   "author": "Ignacio Cabrera <ignacio.cabrera@fao.org>",
   "scripts": {
@@ -11,7 +11,7 @@
     "build": "node build/script.build.js",
     "lint": "eslint --ext .js,.vue src",
     "cypress": "./node_modules/.bin/cypress open",
-    "es5": "file=$(find ./dist/js -name '0.*') && echo $file && npx babel --no-babelrc $file --out-file $file --presets es2015,minify --plugins transform-es2015-arrow-functions",
+    "es5": "file=$(find ./dist/js -name '0.*') && echo $file",
     "deploy:web": "sh deploys/web/web_deploy.sh",
     "deploy:docs": "sh deploys/docs/deploy.sh",
     "deploy:android": "sh deploys/cordova/deploy_android.sh",
