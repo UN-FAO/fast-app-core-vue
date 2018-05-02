@@ -296,7 +296,7 @@ export default {
     },
     handleReport() {
       let rows = this.selectedRows;
-      console.log('rows', rows);
+
       if (rows.length > 1) {
         this.$swal({
           title: this.$t('Report for multiple rows'),
@@ -306,7 +306,7 @@ export default {
         return;
       }
       let submission = this.selectedRows[0];
-      console.log('submission', submission);
+
       this.$router.push({
         name: 'formio_submission_report',
         params: {

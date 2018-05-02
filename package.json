@@ -11,7 +11,8 @@
     "build": "node build/script.build.js",
     "lint": "eslint --ext .js,.vue src",
     "cypress": "./node_modules/.bin/cypress open",
-    "es5": "file=$(find ./dist/js -name '0.*') && echo $file",
+    "es5":
+      "file=$(find ./dist/js -name '0.*') && echo $file && npx babel --no-babelrc $file --out-file $file --presets es2015,minify --plugins transform-es2015-arrow-functions",
     "deploy:web": "sh deploys/web/web_deploy.sh",
     "deploy:docs": "sh deploys/docs/deploy.sh",
     "deploy:android": "sh deploys/cordova/deploy_android.sh",
