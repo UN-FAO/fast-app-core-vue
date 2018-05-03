@@ -1,14 +1,14 @@
 
 <script>
-// Load speperate modules
-import { Radar, mixins } from 'vue-chartjs';
-
+import VueCharts from 'vue-chartjs'
 export default {
-  extends: Radar,
-  mixins: [mixins.reactiveProp],
-  props: ['chartData', 'options'],
-  mounted() {
-    this.renderChart(this.chartData, this.options);
-  },
-};
+    name: 'radar',
+    extends: VueCharts.Radar,
+    mixins: [VueCharts.mixins.reactiveProp],
+    props: ['chartData', 'options'],
+    mounted () {
+        this.renderChart(this.chartData, this.options)
+    }
+
+}
 </script>

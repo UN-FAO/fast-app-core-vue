@@ -110,15 +110,12 @@ exports.TRANSLATIONS = [
   'The participant name can´t be empty',
   'You must select a group',
   'Select a group to assign',
-  'next',
-  'previous',
   'Score',
   'Loading...',
   "Can't change group",
   'There is no group assign to this submission',
   'You have errors in the submission',
   'Error',
-  'required',
   'Updating...',
   'App Updated',
   'Save as draft',
@@ -138,13 +135,48 @@ exports.TRANSLATIONS = [
   "You don't have access to modify this submission",
   'Conexion error',
   "We couldn't get the submission from the server",
+
+  // Formio Translations
+  'complete',
+  'error',
+  'required',
+  'pattern',
+  'minLength',
+  'maxLength',
+  'min',
+  'max',
+  'invalid_email',
+  'invalid_regex',
+  'invalid_date',
+  'mask',
+  'stripe',
+  'month',
+  'day',
+  'year',
+  'january',
+  'february',
+  'march',
+  'april',
+  'may',
+  'june',
+  'july',
+  'august',
+  'september',
+  'october',
+  'november',
+  'december',
+  'next',
+  'previous',
+  'cancel',
+  'submit'
+
   // MedAid Translations
-/*
+  /*
   'Welcome to the APP for the Survey on Social Acceptability of Aquaculture',
   'Please note that',
   'This online application offers the possibility of saving a draft of the questionnaire at any time you want and completing it afterwards. This option is available clicking the',
   'icon visible on the top right corner during the process',
   'You can find a glossary of aquaculture terms',
-  'The survey is carried out within the project "Mediterranean Aquaculture Integrated Development(MedAID)" supported by the European Union in the frame of Horizon 2020, grant agreement number 727315.'
+  'The survey is carried out within the project "Mediterranean Aquaculture Integrated DevelopmentMedAID)" supported by the European Union in the frame of Horizon 2020, grant agreement number 727315.'
 */
 ];

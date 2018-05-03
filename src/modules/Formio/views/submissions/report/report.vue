@@ -53,18 +53,18 @@
 </template>
 
 <script>
-import { QCard, QCardTitle, QCardSeparator, QCardMain } from 'quasar';
-import relative from './components/tables/relativeResilence';
-import radarGroups from './components/radars/radarGroups';
-import radarModules from './components/radars/radarModules';
-import naquestions from './components/tables/naQuestions';
-import importance from './components/tables/importanceLevels';
-import priorities from './components/tables/priorities';
+import { QCard, QCardTitle, QCardSeparator, QCardMain } from "quasar";
+import relative from "./components/tables/relativeResilence";
+import radarGroups from "./components/radars/radarGroups";
+import radarModules from "./components/radars/radarModules";
+import naquestions from "./components/tables/naQuestions";
+import importance from "./components/tables/importanceLevels";
+import priorities from "./components/tables/priorities";
 export default {
-  name: 'report',
-  props: ['submission'],
+  name: "report",
+  props: ["submission"],
   watch: {
-    submission: function(val) {},
+    submission: function(val) {}
   },
   components: {
     importance,
@@ -76,8 +76,8 @@ export default {
     QCard,
     QCardTitle,
     QCardSeparator,
-    QCardMain,
-  },
+    QCardMain
+  }
 };
 </script>
 <style SCOPED>

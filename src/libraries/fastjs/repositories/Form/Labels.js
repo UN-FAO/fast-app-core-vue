@@ -27,8 +27,6 @@ let FormLabels = class {
     formNameFilter = formNameFilter || undefined
     languageFilter = languageFilter || allLanguages
 
-    console.log('formNameFilter', formNameFilter)
-    console.log('languageFilter', languageFilter)
     languageFilter.push('label')
 
     let formFilter = formNameFilter && {
@@ -186,8 +184,6 @@ let FormLabels = class {
       stats: stats,
       labelsObject: labelsObject
     };
-
-    console.log('result', result)
 
     return result
   }

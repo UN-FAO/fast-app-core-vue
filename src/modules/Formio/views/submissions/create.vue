@@ -208,10 +208,6 @@ export default {
     QItemSide,
   },
   async mounted() {
-    console.log(
-      'this.$route.params.FAST_EDIT_MODE',
-      this.$route.params.FAST_EDIT_MODE,
-    );
     this.$eventHub.on('formio.mounted', formio => {
       this.pages = formio.pages ? formio.pages : [];
     });

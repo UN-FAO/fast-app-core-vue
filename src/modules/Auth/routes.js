@@ -1,7 +1,10 @@
-const Login = r => require.ensure([], () => r(require('./views/Login')), 'offline-module')
-const Register = r => require.ensure([], () => r(require('./views/Register')), 'offline-module')
+const Login = (r) =>
+  require.ensure([], () => r(require('./views/Login')), 'offline-module');
+const Register = (r) =>
+  require.ensure([], () => r(require('./views/Register')), 'offline-module');
 
-let AuthRoutes = [{
+let AuthRoutes = [
+  {
     path: '/login',
     component: Login,
     name: 'login'
@@ -16,6 +19,6 @@ let AuthRoutes = [{
     component: Login,
     name: 'login_redirect'
   }
-]
+];
 
-export default AuthRoutes
+export default AuthRoutes;

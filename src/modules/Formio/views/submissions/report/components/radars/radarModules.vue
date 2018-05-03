@@ -17,24 +17,24 @@
 </div>
 </template>
 <script>
-import scoresByModule from '../scoresByModule';
-import radar from './radar';
-import { QRadio, QBtnToggle } from 'quasar';
+import scoresByModule from "../scoresByModule";
+import radar from "./radar";
+import { QRadio, QBtnToggle } from "quasar";
 export default {
-  name: 'radarModules',
+  name: "radarModules",
   data() {
     return {
-      option: 'Agronomic',
+      option: "Agronomic"
     };
   },
   components: {
     radar,
     QRadio,
-    QBtnToggle,
+    QBtnToggle
   },
-  props: ['submission'],
+  props: ["submission"],
   watch: {
-    submission: function(val) {},
+    submission: function(val) {}
   },
   computed: {
     data() {
@@ -53,7 +53,9 @@ export default {
       }
       scores.forEach((score, index) => {
         if (score.pillar === pillar) {
-          modules.push(2 + index + ' - ' + score.abbreviation);
+          modules.push(
+            2 + index + " - " + score.abbreviation
+          );
           let calculatedScore =
             (parseFloat(this.submission[score.academic]) || 0) +
             parseFloat(this.submission[score.adequacy] || 0);
@@ -75,63 +77,63 @@ export default {
           {
             label: "Respondent's Score",
             data: results,
-            backgroundColor: 'rgba(54, 162, 235, 0)',
-            borderColor: 'rgba(0, 0, 0, 0.6)',
+            backgroundColor: "rgba(54, 162, 235, 0)",
+            borderColor: "rgba(0, 0, 0, 0.6)",
             borderWidth: 2,
             pointRadius: 4,
-            pointBackgroundColor: 'rgba(0, 0, 0, 0.6)',
-            pointBorderColor: 'rgba(0, 0, 0, 0.6)',
+            pointBackgroundColor: "rgba(0, 0, 0, 0.6)",
+            pointBorderColor: "rgba(0, 0, 0, 0.6)"
           },
-          {
-            label: 'Low Resilience',
+              {
+            label: "Low Resilience",
             data: min,
-            backgroundColor: 'rgba(242, 31, 31, 0.4)',
-            borderColor: 'rgba(242, 31, 31, 0)',
+            backgroundColor: "rgba(242, 31, 31, 0.4)",
+            borderColor: "rgba(242, 31, 31, 0)",
             borderWidth: 0,
             pointRadius: 0,
-            pointBackgroundColor: 'rgb(255, 99, 132)',
+            pointBackgroundColor: "rgb(255, 99, 132)"
           },
-          {
-            label: 'Mid Resilience',
+            {
+            label: "Mid Resilience",
             data: middle,
-            backgroundColor: 'rgba(255, 255, 51, 0.65)',
-            borderColor: 'rgba(255, 255, 51, 0)',
+            backgroundColor: "rgba(255, 255, 51, 0.65)",
+            borderColor: "rgba(255, 255, 51, 0)",
             borderWidth: 0,
             pointRadius: 0,
-            pointBackgroundColor: 'rgb(255, 99, 132)',
+            pointBackgroundColor: "rgb(255, 99, 132)"
           },
           {
-            label: 'High Resilience',
+            label: "High Resilience",
             data: max,
-            backgroundColor: 'rgba(128, 255, 128, 0.2)',
-            borderColor: 'rgba(128, 255, 128, 0.2)',
+            backgroundColor: "rgba(128, 255, 128, 0.2)",
+            borderColor: "rgba(128, 255, 128, 0.2)",
             borderWidth: 0,
             pointRadius: 0,
-            pointBackgroundColor: 'rgb(255, 99, 132)',
-          },
-        ],
+            pointBackgroundColor: "rgb(255, 99, 132)"
+          }
+        ]
       };
     },
     reportOptions() {
       return {
         title: {
           display: false,
-          text: '',
+          text: ""
         },
         legend: {
-          position: 'bottom',
+          position: "bottom"
         },
         scale: {
           pointLabels: {
-            fontSize: 12,
+            fontSize: 12
           },
           ticks: {
             beginAtZero: true,
-            max: 20,
-          },
-        },
+            max: 20
+          }
+        }
       };
-    },
-  },
+    }
+  }
 };
 </script>

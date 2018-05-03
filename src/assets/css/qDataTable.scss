@@ -1,58 +1,53 @@
-.tableContainer{
+.tableContainer {
   background: white;
 }
 
 .q-data-table table thead tr {
-    border-bottom: 1px solid white;
-    /* min-height: 56px; */
-    line-height: 1.9;
-    height: 56px;
+  border-bottom: 1px solid white;
+  /* min-height: 56px; */
+  line-height: 1.9;
+  height: 56px;
 }
 
 .q-data-table {
   color: rgba(0, 0, 0, 0.87);
   font-size: 13.4px;
   font-weight: 350;
-  border: none
+  border: none;
 }
 
 .q-data-table-toolbar.upper-toolbar.row.col.items-center {
-    width: 40%;
-    float: right;
+  width: 40%;
 }
 
 .q-data-table-container {
-    position: relative;
-    overflow: hidden;
-    margin-top: 5px;
-    display: inline-grid;
-    margin-top: 30px;
+  position: relative;
+  overflow: hidden;
+  margin-top: 5px;
+  display: inline-grid;
+  margin-top: 30px;
 }
 
 .q-data-table table:not(.responsive) th {
-    border-bottom: none !important;
+  border-bottom: none !important;
 }
-
 
 .q-data-table th span {
-    color: rgba(0,0,0,0.54);
-    font-weight: 400;
+  color: rgba(0, 0, 0, 0.54);
+  font-weight: 400;
 }
-
-
-
 
 /*
   ##Device = Tablets, Ipads (portrait)
   ##Screen = B/w 768px to 1024px
 */
 @media (min-width: 768px) and (max-width: 1024px) {
-  .responsiveTableContainer{
+  .responsiveTableContainer {
     padding: 0px;
     margin: 0px;
   }
-  .responsiveTableContainer .q-card.relative-position{
-    margin:0px;
+  .responsiveTableContainer .q-card.relative-position {
+    margin: 0px;
   }
 }
 
@@ -62,12 +57,12 @@
 */
 
 @media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
-  .responsiveTableContainer{
+  .responsiveTableContainer {
     padding: 0px;
     margin: 0px;
   }
-   .responsiveTableContainer .q-card.relative-position{
-    margin:0px;
+  .responsiveTableContainer .q-card.relative-position {
+    margin: 0px;
   }
 }
 
@@ -77,12 +72,12 @@
 */
 
 @media (min-width: 481px) and (max-width: 767px) {
-  .responsiveTableContainer{
+  .responsiveTableContainer {
     padding: 0px;
     margin: 0px;
   }
-   .responsiveTableContainer .q-card.relative-position{
-    margin:0px;
+  .responsiveTableContainer .q-card.relative-position {
+    margin: 0px;
   }
 }
 /*
@@ -90,11 +85,11 @@
   ##Screen = B/w 320px to 479px
 */
 @media (min-width: 320px) and (max-width: 480px) {
-  .responsiveTableContainer{
+  .responsiveTableContainer {
     padding: 0px;
     margin: 0px;
   }
-   .responsiveTableContainer .q-card.relative-position{
-    margin:0px;
+  .responsiveTableContainer .q-card.relative-position {
+    margin: 0px;
   }
 }

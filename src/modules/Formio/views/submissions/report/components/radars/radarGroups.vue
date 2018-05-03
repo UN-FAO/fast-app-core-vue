@@ -4,17 +4,17 @@
   </div>
 </template>
 <script>
-import scoresByModule from '../scoresByModule';
-import radar from './radar';
-import _map from 'lodash/map';
+import scoresByModule from "../scoresByModule";
+import radar from "./radar";
+import _map from "lodash/map";
 export default {
-  name: 'radarGroups',
+  name: "radarGroups",
   components: {
-    radar,
+    radar
   },
-  props: ['submission'],
+  props: ["submission"],
   watch: {
-    submission: function(val) {},
+    submission: function(val) {}
   },
   computed: {
     data() {
@@ -22,7 +22,7 @@ export default {
         return [{}];
       }
       let scores = scoresByModule.get();
-      let uniquePillars = _map(scores, 'pillar');
+      let uniquePillars = _map(scores, "pillar");
       uniquePillars = Array.from(new Set(uniquePillars));
       if (!uniquePillars) {
         return [{}];
@@ -68,63 +68,63 @@ export default {
           {
             label: "Respondent's Score",
             data: results,
-            backgroundColor: 'rgba(54, 162, 235, 0)',
-            borderColor: 'rgba(0, 0, 0, 0.6)',
+            backgroundColor: "rgba(54, 162, 235, 0)",
+            borderColor: "rgba(0, 0, 0, 0.6)",
             borderWidth: 2,
             pointRadius: 4,
-            pointBackgroundColor: 'rgba(0, 0, 0, 0.6)',
-            pointBorderColor: 'rgba(0, 0, 0, 0.6)',
+            pointBackgroundColor: "rgba(0, 0, 0, 0.6)",
+            pointBorderColor: "rgba(0, 0, 0, 0.6)"
           },
           {
-            label: 'Low Resilience',
+            label: "Low Resilience",
             data: [7, 7, 7, 7, 7],
-            backgroundColor: 'rgba(242, 31, 31, 0.4)',
-            borderColor: 'rgba(242, 31, 31, 0)',
+            backgroundColor: "rgba(242, 31, 31, 0.4)",
+            borderColor: "rgba(242, 31, 31, 0)",
             borderWidth: 0,
             pointRadius: 0,
-            pointBackgroundColor: 'rgb(255, 99, 132)',
+            pointBackgroundColor: "rgb(255, 99, 132)"
           },
-          {
-            label: 'Mid Resilience',
+            {
+            label: "Mid Resilience",
             data: [12, 12, 12, 12, 12],
-            backgroundColor: 'rgba(255, 255, 51, 0.65)',
-            borderColor: 'rgba(255, 255, 51, 0)',
+            backgroundColor: "rgba(255, 255, 51, 0.65)",
+            borderColor: "rgba(255, 255, 51, 0)",
             borderWidth: 0,
             pointRadius: 0,
-            pointBackgroundColor: 'rgb(255, 99, 132)',
+            pointBackgroundColor: "rgb(255, 99, 132)"
           },
           {
-            label: 'High Resilience',
+            label: "High Resilience",
             data: [20, 20, 20, 20, 20],
-            backgroundColor: 'rgba(128, 255, 128, 0.2)',
-            borderColor: 'rgba(128, 255, 128, 0.2)',
+            backgroundColor: "rgba(128, 255, 128, 0.2)",
+            borderColor: "rgba(128, 255, 128, 0.2)",
             borderWidth: 0,
             pointRadius: 0,
-            pointBackgroundColor: 'rgb(255, 99, 132)',
-          },
-        ],
+            pointBackgroundColor: "rgb(255, 99, 132)"
+          }
+        ]
       };
     },
     reportOptions() {
       return {
         title: {
           display: false,
-          text: '',
+          text: ""
         },
         legend: {
-          position: 'bottom',
+          position: "bottom"
         },
         scale: {
           pointLabels: {
-            fontSize: 15,
+            fontSize: 15
           },
           ticks: {
             beginAtZero: true,
-            max: 20,
-          },
-        },
+            max: 20
+          }
+        }
       };
-    },
-  },
+    }
+  }
 };
 </script>

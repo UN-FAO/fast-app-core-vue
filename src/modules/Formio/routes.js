@@ -1,13 +1,26 @@
-const FormShow = r =>
-  require.ensure([], () => r(require('./views/submissions/show')), 'offline-module')
+const FormShow = (r) =>
+  require.ensure(
+    [],
+    () => r(require('./views/submissions/show')),
+    'offline-module'
+  );
 
-const Submission = r =>
-  require.ensure([], () => r(require('./views/submissions/create')), 'offline-module')
+const Submission = (r) =>
+  require.ensure(
+    [],
+    () => r(require('./views/submissions/create')),
+    'offline-module'
+  );
 
-const Report = r =>
-  require.ensure([], () => r(require('./views/submissions/report')), 'offline-module')
+const Report = (r) =>
+  require.ensure(
+    [],
+    () => r(require('./views/submissions/report')),
+    'offline-module'
+  );
 
-let FormioRoutes = [{
+let FormioRoutes = [
+  {
     path: '/formio/forms/:idForm',
     component: FormShow,
     name: 'formio_form_show',
@@ -31,7 +44,7 @@ let FormioRoutes = [{
       requiresAuth: true
     }
   },
-    {
+  {
     path: '/formio/forms/:idForm/submissions/:idSubmission/report',
     component: Report,
     name: 'formio_submission_report',
@@ -39,6 +52,6 @@ let FormioRoutes = [{
       requiresAuth: true
     }
   }
-]
+];
 
-export default FormioRoutes
+export default FormioRoutes;

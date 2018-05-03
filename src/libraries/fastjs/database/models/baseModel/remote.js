@@ -70,10 +70,23 @@ const remoteModel = (() => {
       })
     );
     if (error) {
+      let path;
+      switch (formPath) {
+        case 'custom':
+          path = await config.get().baseURL;
+          break;
+        case undefined:
+          path = await config.get().url;
+          break;
+        default:
+          path = await config.get().baseURL;
+          path = path + '/' + formPath;
+          break;
+      }
       let e =
-        'The API call to ' +
-        formPath +
-        ' could not be completed, server responded with ' +
+        'The API call to "' +
+        path +
+        '" could not be completed, server responded with ' +
         JSON.stringify(error);
       throw new Error(e);
     }
