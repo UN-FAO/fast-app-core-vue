@@ -135,6 +135,7 @@ export default {
           select: Columns.getTableView(this.currentForm.data).map(
             o => 'data.' + o.path,
           ),
+          vm: this
         };
         if (Auth.hasRole('Reviewer')) {
           queryParams.filter = [

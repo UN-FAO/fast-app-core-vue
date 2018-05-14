@@ -253,6 +253,11 @@
                           </i> The app is very intuitive and easy to use – it should take about 10 minutes to learn
 
                         </li>
+
+                        <li>
+                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
+                          </i> FAMEWS was inspired by AWorldBridge (aworldbridge.com) students and developed by FAO IT-Solutions based on their ideas and inputs from affected countries and other partners
+                        </li>
                       </ul>
                     </div>
                   </div>
@@ -517,6 +522,10 @@
                           <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
                           </i> L'application est très intuitive et facile à utiliser – cela devrait prendre environ 10 minutes pour apprendre
                         </li>
+                        <li>
+                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
+                          </i> FAMEWS a été inspiré par AWorldBridge (aworldbridge.com) étudiants et développé par FAO IT-Solutions en fonction de leurs idées et des contributions des pays touchés et d'autres partenaires
+                        </li>
                       </ul>
                     </div>
                   </div>
@@ -540,28 +549,28 @@
 <script>
 export default {
   async mounted() {
-    this.$eventHub.on("lenguageSelection", async language => {
+    this.$eventHub.on('lenguageSelection', async language => {
       this.language = language.code;
     });
   },
   computed: {
     selectedLanguage() {
       return this.language;
-    }
+    },
   },
   data: function() {
     return {
       show: false,
-      language: localStorage.getItem("defaultLenguage")
-        ? localStorage.getItem("defaultLenguage")
-        : "en"
+      language: localStorage.getItem('defaultLenguage')
+        ? localStorage.getItem('defaultLenguage')
+        : 'en',
     };
   },
   methods: {
     togglePage(value) {
       this.show = value;
-    }
-  }
+    },
+  },
 };
 </script>
 

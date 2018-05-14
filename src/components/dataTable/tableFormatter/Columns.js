@@ -24,22 +24,11 @@ let Columns = class {
   static getShow({ form, data, fastMode, vm }) {
     let columns = [];
     // First two Columns for the Table
-    columns.push(
-      {
-        label: vm.$t('Status'),
-        field: 'status',
-        filter: true,
-        sort: true,
-        width: '90px'
-      },
-      {
-        label: vm.$t('Updated at'),
-        field: 'HumanUpdated',
-        filter: true,
-        sort: true,
-        width: '150px'
-      }
-    );
+    columns.push({
+      label: '',
+      field: 'status',
+      width: '45px'
+    });
     // If we have a normal table
     let visibleColumns = Columns.getTableView(form);
 
@@ -63,6 +52,14 @@ let Columns = class {
       width: "80px"
     });
     */
+
+    columns.push({
+      label: vm.$t('Updated at'),
+      field: 'HumanUpdated',
+      filter: true,
+      sort: true,
+      width: '150px'
+    });
 
     return columns;
   }
@@ -91,7 +88,8 @@ let Columns = class {
         field: column.key,
         filter: true,
         sort: true,
-        width: '200px'
+        type: 'string',
+        width: '110px'
       };
       columns.push(visibleColum);
     });
@@ -106,6 +104,8 @@ let Columns = class {
 
     columns = columns.concat(Columns.format({ visibleColumns, vm }));
     // Add the last column for the actions
+
+    /*
     columns.push({
       label: 'Actions',
       field: 'actions',
@@ -113,6 +113,7 @@ let Columns = class {
       sort: false,
       width: '150px'
     });
+    */
 
     return columns;
   }

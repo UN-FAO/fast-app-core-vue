@@ -170,6 +170,12 @@ exports.TRANSLATIONS = [
   'cancel',
   'submit'
 
+  // FAW translations
+  /*
+  'Scouting and traps',
+  'Scouting',
+  'Traps'
+  *
   // MedAid Translations
   /*
   'Welcome to the APP for the Survey on Social Acceptability of Aquaculture',

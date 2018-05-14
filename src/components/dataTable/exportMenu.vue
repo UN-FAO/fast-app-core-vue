@@ -96,6 +96,20 @@
                     />
                   </q-field>
 
+                   <q-field
+                    icon="fa-file-pdf-o"
+                    label="PDF form"
+                  >
+                    <q-option-group
+                      type="radio"
+                      color="primary"
+                      v-model="exportFormat"
+                      :options="[
+                        { label: 'pdf  &nbsp| Portable Document Format File', value: 'pdf-form' },
+                      ]"
+                    />
+                  </q-field>
+
           </sweet-modal-tab>
           <q-btn small slot="button" @click="closeMenu()">Cancel</q-btn>
           <q-btn  small slot="button" color="primary" @click="exportSelection()">Export</q-btn>

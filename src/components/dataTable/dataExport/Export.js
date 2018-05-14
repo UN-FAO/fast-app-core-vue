@@ -4,6 +4,7 @@ import Download from './Download';
 import Promise from 'bluebird';
 import flatten from 'flat';
 import FormioExcel from 'libraries/formio-excel/formioExcel';
+import FormioExport from 'formio-export';
 import Csv from './Csv';
 
 let Export = class {
@@ -70,6 +71,37 @@ let Export = class {
           if (excelDownload) {
             resolve();
           }
+          break;
+        case 'pdf-form':
+          let submission = {
+            _id: data[0]._id,
+            data: data[0],
+            owner: data[0].owner ? data[0].owner : '',
+            modified: ''
+          };
+
+          let exporter = new FormioExport(formioForm, submission, options);
+          let config = {
+            download: false,
+            filename: 'example.pdf'
+          };
+
+          exporter.toPdf(config).then(async (pdf) => {
+            // get the datauri string
+            pdf.save();
+            resolve();
+            /*
+            let datauri = pdf.output('datauristring');
+            let pdfForm = await Download.file({
+              content: datauri,
+              fileName: 'PDFFORM.pdf'
+            });
+            if (pdfForm) {
+              resolve();
+            }
+            */
+          });
+
           break;
         default:
           let aoaOther = await Csv.get({ json: formattedData, rawArray: true });

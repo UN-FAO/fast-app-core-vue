@@ -1,7 +1,7 @@
 *:not(i):not(.fa) {
   /* box-sizing: border-box; */
-  font-family: 'Open Sans', haptik, Helvetica Neue, Helvetica, sans-serif !important;
-  line-height: 1.5;
+  font-family: 'Open Sans', sans-serif !important;
+  /* line-height: 1.5; */
   text-rendering: optimizeLegibility;
 }
 
@@ -25,7 +25,6 @@ ul.list-group.list-group-striped {
   color: #666;
 }
 */
-
 
 legend {
   font-size: 16px !important;
@@ -64,7 +63,7 @@ p {
   position: inherit;
   width: max-content !important;
   min-width: -webkit-fill-available;
-  color:black;
+  color: black;
 }
 
 ul.list-inline {
@@ -101,8 +100,7 @@ button.btn.btn-primary.submitForm {
   font-size: 1.5em;
   text-transform: capitalize !important;
 }
-f
-button.btn.btn-default.saveAsDraft:hover,
+f button.btn.btn-default.saveAsDraft:hover,
 button.btn.btn-primary.btn-wizard-nav-submit:hover {
   opacity: 0.8;
   color: white;
@@ -169,7 +167,7 @@ input.col.q-input-target.text-left:focus {
 }
 
 body {
-  font-family: "Open Sans", sans-serif !important;
+  font-family: 'Open Sans', sans-serif !important;
   color: #333;
   overflow-x: hidden;
 }
@@ -227,27 +225,27 @@ label.control-label {
 .radio-inline label,
 .checkbox-inline label,
 .checkbox label {
-  font-weight: 400!important;
+  font-weight: 400 !important;
   font-size: small !important;
 }
 
-input[type="radio"] {
+input[type='radio'] {
   display: none;
   margin: 10px;
 }
 
-table input[type="radio"] {
+table input[type='radio'] {
   display: block;
   margin: 10px;
 }
 
-.noCheckboxLabels table input[type="checkbox"] {
+.noCheckboxLabels table input[type='checkbox'] {
   display: none;
   margin: 10px;
 }
 
-input[type="radio"]+span,
-input[type="checkbox"]+span {
+input[type='radio'] + span,
+input[type='checkbox'] + span {
   padding: 6px 12px;
   background-color: rgb(231, 231, 231);
   border-radius: 5px;
@@ -262,8 +260,8 @@ input[type="checkbox"]+span {
   font-size: 1.15em;
 }
 
-input[type="radio"]:checked+span,
-input[type="checkbox"]:checked+span {
+input[type='radio']:checked + span,
+input[type='checkbox']:checked + span {
   background-color: #0e6da5;
   color: white;
   padding: 6px 12px;
@@ -320,11 +318,10 @@ input[type="checkbox"]:checked+span {
 }
 
 .field-required:after {
-  content: " *";
+  content: ' *';
   color: red;
   font-size: x-large;
 }
-
 
 .router-link-active {
   background: none !important;
@@ -373,9 +370,10 @@ label {
   font-weight: 700;
 }
 
-.required.formio-component input.form-control::-webkit-input-placeholder::before {
+.required.formio-component
+  input.form-control::-webkit-input-placeholder::before {
   color: #666;
-  content: "Line";
+  content: 'Line';
 }
 
 .radio-inline {
@@ -383,7 +381,7 @@ label {
 }
 
 .glyphicon-remove-circle:before {
-  content: "x";
+  content: 'x';
 }
 
 .formio-component-fieldset {
@@ -400,19 +398,24 @@ label {
 
 .background-app {
   /*background: linear-gradient(180deg, rgba(67, 165, 200, 0.8), rgba(99, 111, 189, 0.9));*/
-  background: #F2F2F2
+  background: #f2f2f2;
   /* background: #fff; */
 }
 
-.background-login  {
-  background: linear-gradient(180deg, rgba(67, 165, 200, 0.8), rgba(99, 111, 189, 0.9)), url("../imgs/loginBig.jpg") no-repeat center;
+.background-login {
+  background: linear-gradient(
+      180deg,
+      rgba(67, 165, 200, 0.8),
+      rgba(99, 111, 189, 0.9)
+    ),
+    url('../imgs/loginBig.jpg') no-repeat center;
   background-size: cover;
 }
 
 body {
   padding: 0;
   margin: 0;
-  background: #F2F2F2
+  background: #f2f2f2;
 }
 
 .wrap {
@@ -429,17 +432,18 @@ p.form-title {
   font-family: 'Open Sans', sans-serif;
   font-size: 4em;
   text-align: center;
-  color: #FFFFFF;
+  color: #ffffff;
   margin-top: 5%;
   text-transform: initial;
   margin-bottom: 0px;
+  line-height: 1.2em !important;
 }
 
 .form-subtitle {
   font-size: 1.5em;
   font-weight: 400;
   text-align: center;
-  color: #FFFFFF;
+  color: #ffffff;
   margin-bottom: 1.5em;
   line-height: 1.2em !important;
 }
@@ -465,7 +469,7 @@ p.form-title {
   position: relative;
   margin-top: 22%;
   z-index: 999;
-  background: #FFFFFF;
+  background: #ffffff;
   padding: 20px 15px;
 }
 
@@ -475,7 +479,7 @@ p.form-title {
   margin-bottom: 15px;
 }
 
-.pass-reset input[type="email"] {
+.pass-reset input[type='email'] {
   width: 100%;
   margin: 5px 0 0 0;
   padding: 5px 10px;
@@ -492,7 +496,7 @@ p.form-title {
   outline: 0;
 }
 
-.pass-reset input[type="submit"] {
+.pass-reset input[type='submit'] {
   width: 100%;
   border: 0;
   font-size: 14px;
@@ -504,21 +508,18 @@ p.form-title {
   letter-spacing: 1px;
 }
 
-.pass-reset input[type="submit"]:hover {
+.pass-reset input[type='submit']:hover {
   transition: background-color 0.5s ease;
 }
 
-
-
-.formContainer div[role="alert"] {
+.formContainer div[role='alert'] {
   display: none;
 }
 
-
-.modalCancel{
+.modalCancel {
   background-color: white !important;
   border: 1px solid #d33 !important;
-  color:#d33 !important;
+  color: #d33 !important;
   font-weight: 400 !important;
 }
 .modalCancel:hover {
@@ -528,93 +529,157 @@ p.form-title {
   font-weight: 400 !important;
 }
 
-
 .formio-dialog {
-    width: 70% !important;
-    position: unset !important;
-    top: 45px !important;
-    border-radius: 5px !important;
-    height: 100% !important;
-    transform: none;
-    overflow-x:scroll;
-  overflow-y:scroll;
+  width: 70% !important;
+  position: unset !important;
+  top: 45px !important;
+  border-radius: 5px !important;
+  height: 100% !important;
+  transform: none;
+  overflow-x: scroll;
+  overflow-y: scroll;
 }
 
-
-th, th.field-required {
-    color: black;
+th,
+th.field-required {
+  color: black;
 }
 
-.q-btn-standard .q-icon {font-size: 35px;}
-.q-toolbar {min-height: 50px;}
-.q-toolbar-title {font-size: 1.5em; font-weight: 300; max-width: auto;}
+.q-btn-standard .q-icon {
+  font-size: 35px;
+}
+.q-toolbar {
+  min-height: 50px;
+}
+.q-toolbar-title {
+  font-size: 1.5em;
+  font-weight: 300;
+  max-width: auto;
+}
 .q-toolbar-fao-logo {
   max-width: 100%;
   display: flex;
 }
-.nav-default-fao {background:rgb(5, 116, 169); color:#ffffff;}
-.nav-transparent {background: transparent;}
-.layout-page h1 {margin-top: 10px; margin-bottom: 40px; font-weight: 400; color:#5c5c5c;}
-.layout-page h1:hover {cursor: pointer;}
+.nav-default-fao {
+  background: rgb(5, 116, 169);
+  color: #ffffff;
+}
+.nav-transparent {
+  background: transparent;
+}
+.layout-page h1 {
+  margin-top: 10px;
+  margin-bottom: 40px;
+  font-weight: 400;
+  color: #5c5c5c;
+}
+.layout-page h1:hover {
+  cursor: pointer;
+}
 
 .form-group .q-field-content,
 .formio-component-email,
-.formio-component-password {text-align: left;}
-.form-group .q-field-content input {background: #ffffff !important; border:1px solid #ffffff;}
+.formio-component-password {
+  text-align: left;
+}
+.form-group .q-field-content input {
+  background: #ffffff !important;
+  border: 1px solid #ffffff;
+}
 
-.panel {border: none; box-shadow: none; -webkit-box-shadow: none; }
-.panel-title {font-size: 1.5em;}
-.panel-success>.panel-heading {color: #464646; background-color: #d8e4f0; border-color: #d8e4f0; margin-bottom: 3em;}
+.panel {
+  border: none;
+  box-shadow: none;
+  -webkit-box-shadow: none;
+}
+.panel-title {
+  font-size: 1.5em;
+}
+.panel-success > .panel-heading {
+  color: #464646;
+  background-color: #d8e4f0;
+  border-color: #d8e4f0;
+  margin-bottom: 3em;
+}
 
-.form-group > div:after {clear: both; display: block; content:'';}
+.form-group > div:after {
+  clear: both;
+  display: block;
+  content: '';
+}
 
-.form-group .radio {margin-bottom: 0px; margin-top: 10px; margin-bottom: 10px; }
-.form-group .radio label {margin-right: 15px; margin-left: 15px; padding-left: 0px;}
+.form-group .radio {
+  margin-bottom: 0px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.form-group .radio label {
+  margin-right: 15px;
+  margin-left: 15px;
+  padding-left: 0px;
+}
 
+.input-group .radio span {
+  min-width: 315px;
+  text-align: center;
+}
 
-.input-group .radio span {min-width: 315px;text-align: center;}
+.sc-table .tool-bar button {
+  margin-right: 3em;
+}
 
-.sc-table .tool-bar button {margin-right: 3em;}
+.el-button--text {
+  color: #333;
+}
+.el-button--text i {
+  font-size: 1.2em;
+}
+.el-button--text span {
+  color: #333;
+}
 
-.el-button--text {color:#333;}
-.el-button--text i {font-size: 1.2em;}
-.el-button--text span {color:#333;}
+.el-table th.is-leaf {
+  vertical-align: top;
+}
+.el-table th > .cell {
+  height: 30px;
+}
 
-.el-table th.is-leaf {vertical-align: top;}
-.el-table th>.cell {height: 30px; }
-
-.el-table .el-tag {background-color: transparent !important; border: none;}
+.el-table .el-tag {
+  background-color: transparent !important;
+  border: none;
+}
 
 .q-loading {
-    background: rgba(0,0,0,0.4);
-    z-index: 9999;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 9999;
 }
-.floatingPagination{
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 68px;
-    z-index: 1000;
+.floatingPagination {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 68px;
+  z-index: 1000;
 }
 
-#registerForm label.control-label, #registerForm label.control-label.field-required {
-  color: white
+#registerForm label.control-label,
+#registerForm label.control-label.field-required {
+  color: white;
 }
 
 .formio-component-survey {
-    color: black !important;
+  color: black !important;
 }
 .activePage {
   background-color: #0e6da5;
   color: white;
-  margin: 0px -10px;
   padding: 0px 10px !important;
   border-radius: 0px !important;
 }
 
-input[type="radio"] + span,
-input[type="checkbox"] + span {
+input[type='radio'] + span,
+input[type='checkbox'] + span {
   background-color: rgb(226, 233, 236);
 }
 label.control-label {
@@ -670,88 +735,79 @@ button.btn.btn-primary.btn-wizard-nav-previous {
 
 button.btn.btn-primary.btn-wizard-nav-next {
   background-color: #0e6da5;
-  color: white !important
+  color: white !important;
 }
 
 .cardRibbon {
   border-left: 22px solid #0574a9;
 }
-.cardRibbon:hover{
-  background:#eee !important;
+.cardRibbon:hover {
+  background: #eee !important;
 }
-.pageTitle{
+.pageTitle {
   font-size: 30px;
-       padding-top: 30px;
-      text-align: center;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    font-weight: bold;
-    color: #0574a9;
-    font-variant: small-caps;
+  padding-top: 30px;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: bold;
+  color: #0574a9;
+  font-variant: small-caps;
 }
 
-
-.formioPagination .q-item-avatar, .q-item-avatar img {
-    width: 50px;
-    height: 60px;
-    border-radius: 50%;
+.formioPagination .q-item-avatar,
+.q-item-avatar img {
+  width: 50px;
+  height: 60px;
+  border-radius: 50%;
 }
 
 .formioPagination .q-item-icon {
-    font-size: 26px;
-    margin-left: 15px;
+  font-size: 26px;
+  margin-left: 15px;
 }
 
-
 .q-data-table-toolbar .q-search {
- border-bottom: 1px solid rgba(165, 163, 163, 0.87) !important;
+  border-bottom: 1px solid rgba(165, 163, 163, 0.87) !important;
 }
 
 .q-card-subtitle .q-btn:not(:first-of-type) {
   margin-left: 10px !important;
 }
 
-.q-data-table table tbody tr:nth-child(odd) td, .q-data-table table tbody tr:nth-child(odd) th {
-    background: #fff;
-    background-image: initial;
-    background-position-x: initial;
-    background-position-y: initial;
-    background-size: initial;
-    background-repeat-x: initial;
-    background-repeat-y: initial;
-    background-attachment: initial;
-    background-origin: initial;
-    background-clip: initial;
-    background-color: rgb(255, 255, 255);
+.q-data-table table tbody tr:nth-child(odd) td,
+.q-data-table table tbody tr:nth-child(odd) th {
+  background: #fff;
+  background-image: initial;
+  background-position-x: initial;
+  background-position-y: initial;
+  background-size: initial;
+  background-repeat-x: initial;
+  background-repeat-y: initial;
+  background-attachment: initial;
+  background-origin: initial;
+  background-clip: initial;
+  background-color: rgb(255, 255, 255);
 }
 
 .q-data-table-toolbar.bottom-toolbar {
-    border-top: none
+  border-top: none;
 }
-
-
-
-
-
-
 
 .bg-faded {
-    background: #f5f5f5 !important;
+  background: #f5f5f5 !important;
 }
 
-
-
-
 .layout-aside-left {
-  background: #F2F2F2 !important;
+  background: #f2f2f2 !important;
   color: #1d2433;
   opacity: 1;
-  background-color: #F2F2F2 !important;
+  background-color: #f2f2f2 !important;
 }
 
 .layout-aside.fixed.on-layout {
-    box-shadow: none;
-    width: 232px;
+  box-shadow: none;
+  width: 232px;
 }
 
 .layout-aside-left .q-list {
@@ -762,7 +818,6 @@ button.btn.btn-primary.btn-wizard-nav-next {
 .layout-aside-left .q-item-side {
   text-align: center;
 }
-
 
 .layout-aside-left .q-list-header center {
   font-size: 1.6em;
@@ -777,52 +832,43 @@ button.btn.btn-primary.btn-wizard-nav-next {
 }
 
 .router-link-exact-active.router-link-active {
-  background-color: rgba(0,0,0,.05) !important;
+  background-color: rgba(0, 0, 0, 0.05) !important;
 }
 
-
-
-
-
 .q-card {
-    background-color: #fdfdfd;
-    border: 1px solid #dde6f3;
-    border-radius: 5px;
-    margin-bottom: 1.25rem;
-    box-shadow: 0 8px 13px 0 rgba(0,0,0,.12);
+  background-color: #fdfdfd;
+  border: 1px solid #dde6f3;
+  border-radius: 5px;
+  margin-bottom: 1.25rem;
+  box-shadow: 0 8px 13px 0 rgba(0, 0, 0, 0.12);
 }
 
 .q-card:hover {
-    box-shadow: none;
-    transition: box-shadow 0.4s ease-in-out;
+  box-shadow: none;
+  transition: box-shadow 0.4s ease-in-out;
 }
 
 .q-card-primary.q-card-container.row.no-wrap {
-    background: #fdfdfd;
-    position: relative;
-    padding: 1.25rem;
+  background: #fdfdfd;
+  position: relative;
+  padding: 1.25rem;
 }
 
-.q-card-title{
-    font-size: 1.375rem;
-    color: #354052;
-    text-transform: capitalize;
-    font-weight: 500;
-    margin: 0;
+.q-card-title {
+  font-size: 1.375rem;
+  color: #354052;
+  text-transform: capitalize;
+  font-weight: 500;
+  margin: 0;
 }
 
-
-
-  .sweet-modal.is-mobile-fullscreen .sweet-buttons {
-    box-sizing: border-box;
-    position: relative;
-    bottom: 0;
-    left: 0;
-    width: 100%;
+.sweet-modal.is-mobile-fullscreen .sweet-buttons {
+  box-sizing: border-box;
+  position: relative;
+  bottom: 0;
+  left: 0;
+  width: 100%;
 }
-
-
-
 
 @import 'custom/custom.scss';
 @import 'qDataTable.scss';

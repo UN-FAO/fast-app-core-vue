@@ -88,13 +88,13 @@ let Submission = (args) => {
     select,
     pagination,
     populate,
-    dataExport
+    dataExport,
+    vm
   }) {
     let page = (pagination && pagination.page) || 1;
     let pageLimit = (pagination && pagination.limit) || 500;
     let paginationInfo = {};
     let submissions = [];
-
     submissions = await Submission.find({
       form,
       limit,
@@ -181,6 +181,24 @@ let Submission = (args) => {
       };
       if (s._lid) {
         sub._lid = s._lid;
+      }
+
+      // We need to remove this from here and create
+      // A proper extension to allow tables to have custom visuali
+      // of complex data
+      if (s.dataCollected) {
+        if (s.dataCollected.scouting && s.dataCollected.traps) {
+          s.dataCollected = vm.$t('Scouting and traps');
+        } else if (s.dataCollected.scouting) {
+          s.dataCollected = vm.$t('Scouting');
+        } else if (s.dataCollected.traps) {
+          s.dataCollected = vm.$t('Traps');
+        } else {
+          s.dataCollected = '-';
+        }
+      }
+      if (s.date) {
+        s.date = moment(s.date).format('DD-MM-YYYY HH:mm:ss');
       }
 
       if (!select) {
