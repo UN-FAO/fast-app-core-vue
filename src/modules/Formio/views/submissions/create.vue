@@ -41,6 +41,11 @@
                     <q-item-main :label="$t('Show scores')" />
                   </q-item>
 
+                  <q-item @click="$refs.popover.close(), showReport()"  v-if="$FAST_CONFIG.HAS_REPORT">
+                    <q-item-side icon="assignment"  />
+                    <q-item-main :label="$t('Report')" />
+                  </q-item>
+
                   <q-item @click="$refs.popover.close(), addSurvey()" v-if="this.$route.params.FAST_EDIT_MODE !== 'online' && $FAST_CONFIG.PARALLEL_SURVEYS && this.$route.params.FAST_EDIT_MODE !== 'online-review'" >
                     <q-item-side icon="person_add"  />
                     <q-item-main :label="$t('Add participant')" />
@@ -395,6 +400,15 @@ export default {
     };
   },
   methods: {
+    showReport() {
+      this.$router.push({
+        name: 'formio_submission_report',
+        params: {
+          idForm: this.$route.params.idForm,
+          idSubmission: this.$route.params.idSubmission,
+        },
+      });
+    },
     async reviewSubmission(revision) {
       let err;
       let submission = this.$route.params.fullSubmision;
