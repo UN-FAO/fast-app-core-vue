@@ -1,4 +1,5 @@
 <template>
+<div>
   <q-layout ref="layout"
     :view="layoutStore.view"
     :left-breakpoint="layoutStore.leftBreakpoint"
@@ -16,7 +17,9 @@
   <connection-alert></connection-alert>
     <router-view :key="$route.path" class="background-app"/>
   </q-layout>
-
+    <div v-if="!isLogin && !appLoaded" class="container-fluid" style="align-items: center;justify-content: center;display: flex; width: 100%; height: 100%">
+        <div class="bb"></div>
+    </div>
   <q-layout ref="layout"
     :view="layoutStore.view"
     :left-breakpoint="layoutStore.leftBreakpoint"
@@ -24,11 +27,12 @@
     :reveal="layoutStore.reveal"
     class='background-login'
     :dir="ltr ? 'ltr' : 'rtl' "
-    v-else
+    v-if="isLogin"
     >
     <toolbar slot="header"></toolbar>
     <router-view :key="$route.path" class="background-login"/>
   </q-layout>
+</div>
 </template>
 
 <script>
