@@ -1,11 +1,9 @@
 <template>
   <div class="row">
-        <div class="col-lg-10 col-lg-offset-1 col-md-12  col-sm-12 col-xs-12 responsiveTableContainer">
+        <div class="col-lg-12 col-md-12  col-sm-12 col-xs-12 responsiveTableContainer">
           <q-card class="relative-position">
             <q-card-title>
               {{formTitle}}
-
-
            <q-icon slot="right" name="fa-plus-circle" @click="emitEvent('FAST:GO:CREATE')" color="primary" style="cursor:pointer; padding-right: 20px">
 
             </q-icon>

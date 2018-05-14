@@ -799,14 +799,18 @@ button.btn.btn-primary.btn-wizard-nav-next {
 }
 
 .layout-aside-left {
-  background: #f2f2f2 !important;
+  background: white !important;
   color: #1d2433;
   opacity: 1;
-  background-color: #f2f2f2 !important;
+  background-color: white !important;
+  box-shadow: 0 1px 1px -1px rgba(0,0,0,0.2), 0 1px 1px 1px rgba(0,0,0,0.14), 0 1px 20px 0px rgba(0,0,0,0.12);
+}
+.q-popover.show-menu .q-item-label {
+    font-size: smaller;
 }
 
 .layout-aside.fixed.on-layout {
-  box-shadow: none;
+  background: white !important;
   width: 232px;
 }
 

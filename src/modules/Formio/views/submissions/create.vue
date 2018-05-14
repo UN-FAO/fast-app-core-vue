@@ -33,7 +33,7 @@
             </q-icon>
 
               <q-icon slot="right" name="more_vert" color="grey" style="cursor:pointer; margin-left:20px">
-              <q-popover ref="popover">
+              <q-popover ref="popover" class="show-menu">
                 <q-list link class="no-border" dense separator no-border>
 
                   <q-item @click="$refs.popover.close(), openRightDrawer()"  v-if="$FAST_CONFIG.HAS_SCORES">

@@ -136,8 +136,6 @@ export default {
 .landing {
   z-index: 2;
   margin: 25px auto;
-  box-shadow: 0 3px 30px rgba(0, 0, 0, 0.3);
-  overflow: hidden;
 }
 
 .landing .base {
