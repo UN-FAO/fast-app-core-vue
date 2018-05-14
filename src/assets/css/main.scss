@@ -834,6 +834,9 @@ button.btn.btn-primary.btn-wizard-nav-next {
 .layout-aside-left .q-item-side {
   min-width: 40px;
 }
+.q-item-main.q-item-section {
+    font-size: 0.9rem;
+}
 
 .router-link-exact-active.router-link-active {
   background-color: rgba(0, 0, 0, 0.05) !important;
