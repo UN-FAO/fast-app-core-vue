@@ -1,6 +1,6 @@
 {
   "name": "fast",
-  "version": "0.9.7",
+  "version": "0.9.8",
   "deployAppName": "SHARP+",
   "deployAppID": "59b112c7678919000775f921",
   "description": "A data collection application based on FORM.io",
@@ -43,6 +43,7 @@
     "choices.js": "^3.0.3",
     "deep-diff": "^0.3.8",
     "element-ui": "^1.4.3",
+    "fast-downloads": "0.0.6",
     "fastclick": "^1.0.6",
     "flat": "^4.0.0",
     "formio-export": "^0.3.0",

@@ -1,29 +1,32 @@
 <template>
   <div>
     <div v-if="!hasTranslation()">
-      <div class="translations-action-bar pull-right">
-        <q-btn round color="primary" icon="translate" @click="createTranslations">
-          <q-tooltip>
-            {{$t('Create translations')}}
-          </q-tooltip>
-        </q-btn>
-        <q-btn round color="primary" icon="refresh" @click="updateValues">
-          <q-tooltip>
-            {{$t('Reload Translations')}}
-          </q-tooltip>
-        </q-btn>
+      <div class="pull-right">
+        <q-icon name="more_vert" color="grey" style="cursor:pointer;float:left" size="30px">
+              <q-popover ref="popover" class="show-menu">
+                <q-list link class="no-border" dense separator no-border>
 
-        <q-btn round color="primary" icon="fa-plus" @click="addLanguage">
-          <q-tooltip>
-            {{$t('Add Language')}}
-          </q-tooltip>
-        </q-btn>
+                  <q-item @click="$refs.popover.close(), createTranslations()">
+                    <q-item-side icon="translate"  />
+                    <q-item-main :label="$t('Find new translations')" />
+                  </q-item>
+
+                  <q-item @click="$refs.popover.close(), updateValues()">
+                    <q-item-side icon="refresh"  />
+                    <q-item-main :label="$t('Reload Translations')" />
+                  </q-item>
+
+                    <q-item @click="$refs.popover.close(), addLanguage()">
+                    <q-item-side icon="fa-plus"  />
+                    <q-item-main :label="$t('Add Language')" />
+                  </q-item>
+
+                </q-list>
+              </q-popover>
+            </q-icon>
       </div>
     </div>
     <div class="justify-center">
-      <div class="loading" v-if="hasTranslation()">
-        <q-spinner-gears size="50px" color="primary"></q-spinner-gears>
-      </div>
 
         <div class="section-title pageTitle" style="margin:auto">
           {{ $t("Translations") }}
@@ -33,8 +36,13 @@
          <hr>
         </div>
 
+      <div v-if="!hasTranslation()" class="relative-position">
 
-      <div v-if="!hasTranslation()">
+                  <q-inner-loading :visible="true">
+        <q-spinner-gear size="50px" color="primary"></q-spinner-gear>
+      </q-inner-loading>
+
+
         <tstats :stats="translations.stats"> </tstats>
         <div class="col-lg-12">
           <q-btn icon="fa-filter" ref="target" color="primary" outline>
@@ -91,6 +99,7 @@
 
         </div>
         <hottable :translations="translations" :labels="filteredLabels"></hottable>
+
       </div>
     </div>
   </div>
@@ -103,28 +112,33 @@
 </style>
 
 <script>
-import Form from "libraries/fastjs/database/models/Form";
-import FormLabels from "libraries/fastjs/repositories/Form/Labels";
-import Translation from "libraries/fastjs/database/models/Translation";
-import Localization from "libraries/fastjs/repositories/Localization/Localization";
-import { mapActions } from "vuex";
+import Form from 'libraries/fastjs/database/models/Form';
+import FormLabels from 'libraries/fastjs/repositories/Form/Labels';
+import Translation from 'libraries/fastjs/database/models/Translation';
+import Localization from 'libraries/fastjs/repositories/Localization/Localization';
+import { mapActions } from 'vuex';
 import {
   QBtn,
   QTooltip,
+  QPopover,
+  QIcon,
+  QList,
+  QItem,
+  QItemSide,
+  QItemMain,
   Toast,
-  QSpinnerGears,
+  QSpinnerGear,
   QInnerLoading,
   QCheckbox,
-  QPopover,
   QInput
-} from "quasar";
-import tstats from "./stats";
-import hottable from "./hottable";
-import Promise from "bluebird";
-import _forEach from "lodash/forEach";
-import _isEmpty from "lodash/isEmpty";
-import _map from "lodash/map";
-import FAST from "libraries/fastjs/start";
+} from 'quasar';
+import tstats from './stats';
+import hottable from './hottable';
+import Promise from 'bluebird';
+import _forEach from 'lodash/forEach';
+import _isEmpty from 'lodash/isEmpty';
+import _map from 'lodash/map';
+import FAST from 'libraries/fastjs/start';
 
 export default {
   data: function() {
@@ -135,43 +149,48 @@ export default {
       languageSelection: [],
       formNameFilters: [],
       languageNameFilters: [],
-      search: "",
-      languageSearch: "",
-      searchBox: "",
+      search: '',
+      languageSearch: '',
+      searchBox: '',
       untranslated: false
     };
   },
   async mounted() {
     this.updateValues();
-    this.$eventHub.on("Translation:updated", data => {
+    this.$eventHub.on('Translation:updated', (data) => {
       // this.updateValues();
     });
 
-    this.$eventHub.on("Translation:missing", data => {
+    this.$eventHub.on('Translation:missing', (data) => {
       this.createTranslations();
     });
 
     this.formNameFilters = await Form.local().find();
     this.languageNameFilters = await Translation.local().supportedLanguages();
-    this.selection = _map(this.formNameFilters, "data.title");
-    this.selection.push("Application");
-    this.languageSelection = _map(this.languageNameFilters, "code");
+    this.selection = _map(this.formNameFilters, 'data.title');
+    this.selection.push('Application');
+    this.languageSelection = _map(this.languageNameFilters, 'code');
   },
   components: {
     QBtn,
     QTooltip,
     tstats,
     hottable,
-    QSpinnerGears,
+    QSpinnerGear,
     QInnerLoading,
     QCheckbox,
     QPopover,
-    QInput
+    QInput,
+    QIcon,
+    QList,
+    QItem,
+    QItemSide,
+    QItemMain
   },
   computed: {
     filteredForms: function() {
       // application
-      let forms = this.formNameFilters.filter(formNameFilter => {
+      let forms = this.formNameFilters.filter((formNameFilter) => {
         return (
           formNameFilter.data.title
             .toLowerCase()
@@ -180,14 +199,14 @@ export default {
       });
       let app = {
         data: {
-          title: "Application"
+          title: 'Application'
         }
       };
       forms.push(app);
       return forms;
     },
     filteredLanguages: function() {
-      return this.languageNameFilters.filter(languageNameFilter => {
+      return this.languageNameFilters.filter((languageNameFilter) => {
         return (
           languageNameFilter.label
             .toLowerCase()
@@ -197,22 +216,22 @@ export default {
     },
     filteredLabels: function() {
       this.searchBox.toLowerCase();
-      let labels = this.translations.labels.filter(translation => {
+      let labels = this.translations.labels.filter((translation) => {
         if (this.untranslated) {
           let undefinedElements = 0;
-          _forEach(translation, trans => {
-            if (typeof trans === "undefined" || trans === "") {
+          _forEach(translation, (trans) => {
+            if (typeof trans === 'undefined' || trans === '') {
               undefinedElements = undefinedElements + 1;
             }
           });
           return (
-            translation.join(",").indexOf(this.searchBox.toLowerCase()) > -1 &&
+            translation.join(',').indexOf(this.searchBox.toLowerCase()) > -1 &&
             undefinedElements >= 1
           );
         }
         return (
           translation
-            .join(",")
+            .join(',')
             .toLowerCase()
             .indexOf(this.searchBox.toLowerCase()) > -1
         );
@@ -221,16 +240,16 @@ export default {
     }
   },
   methods: {
-    ...mapActions(["getResources"]),
+    ...mapActions(['getResources']),
     async removeDuplicated() {},
     hasTranslation() {
       return _isEmpty(this.translations);
     },
     allFilters() {
-      this.selection = _map(this.formNameFilters, "data.title");
+      this.selection = _map(this.formNameFilters, 'data.title');
     },
     allLanguageFilters() {
-      this.languageSelection = _map(this.languageNameFilters, "code");
+      this.languageSelection = _map(this.languageNameFilters, 'code');
     },
     clearLanguageFilters() {
       this.languageSelection = [];
@@ -250,46 +269,46 @@ export default {
       if (totalTranslations > 0) {
         this.$swal({
           title:
-            this.$t("Creating") +
-            " " +
+            this.$t('Creating') +
+            ' ' +
             totalTranslations +
-            " " +
-            this.$t("translations..."),
+            ' ' +
+            this.$t('translations...'),
           text: this.$t(
-            "Wait until the translations are created. This can take a couple minutes..."
+            'Wait until the translations are created. This can take a couple minutes...'
           ),
           showCancelButton: false,
           onOpen: () => {
             this.$swal.showLoading();
 
             return Promise.each(translations, async (translation, index) => {
-              if (typeof translation !== "undefined" && translation !== "") {
+              if (typeof translation !== 'undefined' && translation !== '') {
                 await Localization.createTranslation(translation);
                 this.progress = Math.floor(index / totalTranslations);
                 console.log(
-                  "Total",
+                  'Total',
                   totalTranslations,
-                  "Current",
+                  'Current',
                   index,
-                  "Por",
+                  'Por',
                   index / totalTranslations * 100
                 );
                 this.$swal.title = this.progress;
               }
             })
-              .then(async result => {
+              .then(async (result) => {
                 this.$swal.close();
                 this.updateValues();
                 Toast.create.positive({
-                  html: this.$t("TRANSLATIONS CREATED")
+                  html: this.$t('TRANSLATIONS CREATED')
                 });
               })
-              .catch(async e => {
+              .catch(async (e) => {
                 this.$swal.close();
                 this.updateValues();
                 console.log(e);
                 Toast.create.negative({
-                  html: this.$t("TRANSLATIONS FAILED")
+                  html: this.$t('TRANSLATIONS FAILED')
                 });
               });
           },
@@ -297,15 +316,15 @@ export default {
         });
       } else {
         Toast.create.positive({
-          html: this.$t("NO TRANSLATIONS TO CREATE")
+          html: this.$t('NO TRANSLATIONS TO CREATE')
         });
       }
     },
     async updateValues() {
       this.$swal({
-        title: "Updating...",
+        title: 'Updating...',
         text: this.$t(
-          "Wait until the App is Updated. This can take a couple minutes..."
+          'Wait until the App is Updated. This can take a couple minutes...'
         ),
         showCancelButton: false,
         onOpen: async () => {
@@ -322,20 +341,20 @@ export default {
     async addLanguage() {
       let options = Translation.local().getIsoLanguages();
       let customOptions = {};
-      _forEach(options, option => {
+      _forEach(options, (option) => {
         customOptions[option.code] = option.label;
       });
 
       const language = await this.$swal({
-        title: this.$t("Select the language"),
-        input: "select",
+        title: this.$t('Select the language'),
+        input: 'select',
         inputOptions: customOptions,
-        inputPlaceholder: this.$t("Select a language"),
+        inputPlaceholder: this.$t('Select a language'),
         showCancelButton: true,
-        inputValidator: value => {
-          return new Promise(resolve => {
-            if (value === "") {
-              resolve(this.$t("You need to select a language"));
+        inputValidator: (value) => {
+          return new Promise((resolve) => {
+            if (value === '') {
+              resolve(this.$t('You need to select a language'));
             }
             resolve();
           });
@@ -343,12 +362,12 @@ export default {
       });
 
       if (language) {
-        this.$swal(this.$t("New language created: ") + customOptions[language]);
+        this.$swal(this.$t('New language created: ') + customOptions[language]);
         this.translations.columns.push(language);
-        _forEach(this.translations.labels, label => {
+        _forEach(this.translations.labels, (label) => {
           label.push(undefined);
         });
-        this.$eventHub.emit("Translation:languageAdded", {
+        this.$eventHub.emit('Translation:languageAdded', {
           language: customOptions[language]
         });
       }

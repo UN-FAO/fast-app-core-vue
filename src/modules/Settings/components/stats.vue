@@ -1,39 +1,47 @@
 <template>
   <div class="row">
 
-    <div class="statBubbleContainer">
-      <div class="statBubble websitesLaunched">
-        <div class="statNum">
-          {{totalTranslations}}
-        </div>
-      </div>
-      <h3>Total Labels</h3>
-    </div>
+    <div style="color:black">
+    Languages: {{ totalSupportedLanguages }}
+    <span>
 
-    <div class="statBubbleContainer">
-      <div class="statBubble websitesLaunched">
+    </span>
+  </div>
 
-        <div class="statNum">
-          {{englishPorcentage}}%
-        </div>
-      </div>
-      <h3>English Translations</h3>
-    </div>
+<q-list no-border>
+  <q-item v-for="language in languages" v-bind:key="language">
+    <q-item-side />
+    <q-item-main>
+      <q-item-tile label color="black">{{getLanguageName(language)}}</q-item-tile>
+    </q-item-main>
+    <q-item-side right>
+      {{(stats.translations[language].translated * 100).toFixed(
+          1
+        ) + ' %'}}
+    </q-item-side>
+  </q-item>
+</q-list>
 
-    <div class="statBubbleContainer">
-      <div class="statBubble websitesLaunched">
-        <div class="statNum">
-          {{frenchPorcentage}}%
-        </div>
-      </div>
-      <h3>French Translations</h3>
-    </div>
   </div>
 </template>
 
 <script>
+import { QList, QItem, QItemSide, QItemMain, QItemTile } from 'quasar';
+import Translation from 'libraries/fastjs/database/models/Translation';
 export default {
-  name: "tstats",
+  name: 'tstats',
+  components: {
+    QList,
+    QItem,
+    QItemSide,
+    QItemMain,
+    QItemTile
+  },
+  data() {
+    return {
+      IsoLanguages: Translation.local().getIsoLanguages()
+    };
+  },
   props: {
     stats: {
       required: true
@@ -45,6 +53,14 @@ export default {
     }
   },
   computed: {
+    totalSupportedLanguages() {
+      return Object.keys(this.stats.translations).length - 1;
+    },
+    languages() {
+      let lang = Object.keys(this.stats.translations);
+      lang.shift();
+      return lang
+    },
     totalTranslations() {
       if (this.stats && this.stats.totalTranslations) {
         return this.stats.totalTranslations;
@@ -57,7 +73,7 @@ export default {
           1
         );
         if (porcentage < 100) {
-          this.$eventHub.emit("Translation:missing");
+          this.$eventHub.emit('Translation:missing');
         }
         return porcentage;
       }
@@ -69,107 +85,19 @@ export default {
       }
       return 0;
     }
+  },
+  methods: {
+    getLanguageName(languageCode) {
+      let lang = this.IsoLanguages.filter((lang) => {
+        return lang.code === languageCode;
+      });
+      if (lang.length === 0) {
+        return 'Labels';
+      }
+      return lang[0].label;
+    }
   }
 };
 </script>
-
-<style>
-.translations-action-bar {
-  padding-bottom: 30px;
-}
-
-.underline {
-  text-decoration: underline;
-}
-
-.statBubbleContainer {
-  width: 163px;
-  height: 250px;
-  position: relative;
-  cursor: pointer;
-  text-align: center;
-  margin: auto;
-  margin-top: 50px;
-  display: inline-block;
-  margin-left: 36px;
-  margin-right: 36px;
-}
-
-.nounderline {
-  text-decoration: none;
-}
-
-.statBubbleContainer h3 {
-  font-family: "segoe ui bold", arial;
-  font-size: 14px;
-  color: #828282;
-  -webkit-transition: all 0.3s ease-in-out;
-  -ms-transition: all 0.3s ease-in-out;
-  -moz-transition: all 0.3s ease-in-out;
-  -o-transition: all 0.3s ease-in-out;
-  -apple-transition: all 0.3s ease-in-out;
-  transition: all 0.3s ease-in-out;
-}
-
-.statBubbleContainer:hover > h3 {
-  color: #0e76bc;
-}
-
-.statBubbleContainer:hover > .statBubble {
-  border: 6px solid #0e76bc;
-  background-position: center -140px;
-}
-
-.statBubbleContainer:hover .statNum {
-  color: #0e76bc;
-}
-
-.websitesLaunched::after {
-  content: "\f1ab";
-  font-family: FontAwesome;
-  font-style: normal;
-  font-weight: normal;
-  text-decoration: inherit;
-  padding-top: 40px;
-  font-size: 90px;
-  color: lightgray;
-}
-
-.statBubble {
-  margin: auto;
-  width: 150px;
-  height: 150px;
-  border-radius: 100%;
-  border: 6px solid #ddd;
-  background-repeat: no-repeat;
-  background-position: center 25px;
-  position: relative;
-  text-align: center;
-  -webkit-transition: all 0.3s ease-in-out;
-  -ms-transition: all 0.3s ease-in-out;
-  -moz-transition: all 0.3s ease-in-out;
-  -o-transition: all 0.3s ease-in-out;
-  -apple-transition: all 0.3s ease-in-out;
-  transition: all 0.3s ease-in-out;
-}
-
-.statNum {
-  position: absolute;
-  font-family: "segoe ui light", arial;
-  left: 0;
-  right: 0;
-  margin-top: 30%;
-  line-height: 150px;
-  vertical-align: middle;
-  font-size: 40px;
-  color: black;
-  -webkit-transition: all 0.3s ease-in-out;
-  -ms-transition: all 0.3s ease-in-out;
-  -moz-transition: all 0.3s ease-in-out;
-  -o-transition: all 0.3s ease-in-out;
-  -apple-transition: all 0.3s ease-in-out;
-  transition: all 0.3s ease-in-out;
-}
-</style>
 
 

@@ -59,7 +59,7 @@ exports.TRANSLATIONS = [
   'search...',
   'Forms',
   'Add Language',
-  'Create translations',
+  'Find new translations',
   'The language was changed.',
   'Language Changed',
   'No, Later',

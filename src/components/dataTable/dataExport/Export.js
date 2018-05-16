@@ -1,6 +1,6 @@
 import FormioUtils from 'formiojs/utils';
 import _forEach from 'lodash/forEach';
-import Download from './Download';
+import Download from 'fast-downloads';
 import Promise from 'bluebird';
 import flatten from 'flat';
 import FormioExcel from 'libraries/formio-excel/formioExcel';
