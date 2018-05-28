@@ -1,10 +1,10 @@
-# Quasar App
+# FAST - Vue app core
 
-> A Quasar project
+> A UN-FAST application
 
 ## Build Setup
 
-``` bash
+```bash
 # install Quasar Cli globaly
 npm install -g quasar-cli
 
