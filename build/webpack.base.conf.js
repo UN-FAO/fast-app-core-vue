@@ -43,7 +43,11 @@ module.exports = {
       {
         test: /\.js$/,
         loader: 'babel-loader',
-        include: path.join(projectRoot, 'node_modules', 'vue-handsontable-official')
+        include: path.join(
+          projectRoot,
+          'node_modules',
+          'vue-handsontable-official'
+        )
       },
       {
         test: /\.js$/,
