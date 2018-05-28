@@ -11,24 +11,23 @@
 
 </template>
 <style>
-
 </style>
 
 <script>
-import actioncards from "../components/actionCards";
-import Form from "libraries/fastjs/database/models/Form";
+import actioncards from '../components/actionCards';
+import { Form } from 'fast-fastjs';
 export default {
   components: {
     actioncards
   },
-   asyncData: {
+  asyncData: {
     newForms: {
       async get() {
         let result = await Form.local().cardFormattedForms('list');
-         if (result.cards.length === 1) {
-          this.redirectTo(result.cards[0].actions[0], "submission");
+        if (result.cards.length === 1) {
+          this.redirectTo(result.cards[0].actions[0], 'submission');
         }
-        return result
+        return result;
       },
       transform(result) {
         return result;
@@ -39,9 +38,9 @@ export default {
     redirectTo(action) {
       if (action.formPath) {
         let name =
-          action.view === "list"
-            ? "formio_form_show"
-            : "formio_form_submission";
+          action.view === 'list'
+            ? 'formio_form_show'
+            : 'formio_form_submission';
         let to = {
           name: name,
           params: { idForm: action.formPath }

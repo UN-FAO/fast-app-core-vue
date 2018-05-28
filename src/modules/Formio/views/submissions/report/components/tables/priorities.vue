@@ -13,67 +13,68 @@
 
 </template>
 <script>
-import { QDataTable } from "quasar";
-import scoresByModule from "../scoresByModule";
+import { QDataTable } from 'quasar';
+import scoresByModule from '../scoresByModule';
 export default {
-  name: "priorities",
+  name: 'priorities',
   data() {
     return {
       sub: {},
       config: {
-        title: "SHARP+ ranking",
+        title: 'SHARP+ ranking',
         refresh: false,
         noHeader: false,
         columnPicker: false,
         leftStickyColumns: 0,
         rightStickyColumns: 0,
-        rowHeight: "70px",
+        rowHeight: '70px',
         responsive: true,
         pagination: {
           rowsPerPage: 5,
           options: [5, 10, 20, 40]
         },
         messages: {
-          noData: this.$t("No data available to show."),
+          noData: this.$t('No data available to show.'),
           noDataAfterFiltering: this.$t(
-            "No results. Please refine your search terms."
+            'No results. Please refine your search terms.'
           )
         },
         // (optional) Override default labels. Useful for I18n.
         labels: {
-          columns: this.$t("Columns"),
-          allCols: this.$t("All Columns"),
-          rows: this.$t("Rows"),
+          columns: this.$t('Columns'),
+          allCols: this.$t('All Columns'),
+          rows: this.$t('Rows'),
           selected: {
-            singular: this.$t("item selected."),
-            plural: this.$t("items selected.")
+            singular: this.$t('item selected.'),
+            plural: this.$t('items selected.')
           },
-          clear: this.$t("clear"),
-          search: this.$t("Search"),
-          all: this.$t("All")
+          clear: this.$t('clear'),
+          search: this.$t('Search'),
+          all: this.$t('All')
         }
       },
       columns: [
         {
-          label: "Rank",
-          field: "rank",
-          type: "string",
-          width: "12%",
-          style: { "text-align": "center" }
+          label: 'Rank',
+          field: 'rank',
+          type: 'string',
+          width: '12%',
+          style: { 'text-align': 'center' }
         },
         {
-          label: "Module",
-          field: "module",
-          type: "string",
-          width: "60%",
-          style: { "text-align": "center" }
+          label: 'Module',
+          field: 'module',
+          type: 'string',
+          width: '60%',
+          style: { 'text-align': 'center' }
         },
         {
-          label: "Compound score*",
-          field: "score",
-          type: "string",
-          width: "30%",
-          style: {'text-align': 'center'}
+          label: 'Compound score*',
+          field: 'score',
+          type: 'number',
+          width: '30%',
+          sort: true,
+          style: { 'text-align': 'center' }
         }
       ]
     };
@@ -81,7 +82,7 @@ export default {
   components: {
     QDataTable
   },
-  props: ["submission"],
+  props: ['submission'],
   watch: {
     submission: function(val) {
       this.sub = val;
@@ -93,9 +94,9 @@ export default {
       let scores = scoresByModule.get();
       let table = [];
       if (!scores || !submission) {
-        return {}
+        return {};
       }
-      let i = 0
+      let i = 0;
       scores.forEach((score, index) => {
         let moduleNumber =
           submission[score.academic] &&
@@ -105,19 +106,25 @@ export default {
             : undefined;
         let jsonData = {};
         if (moduleNumber) {
-          jsonData["module"] = score.abbreviation;
+          jsonData['module'] = score.abbreviation;
           let calculatedScore =
             (parseFloat(submission[score.academic]) || 0) +
             (parseFloat(submission[score.adequacy]) || 0) +
             (parseFloat(submission[score.importance]) || 0);
-          jsonData["score"] =
+          jsonData['score'] =
             calculatedScore <= 30
               ? parseFloat(Math.round(calculatedScore * 100) / 100).toFixed(2)
               : 30;
-          jsonData["rank"] = i + 1
-          i++
+          jsonData['rank'] = i + 1;
+          i++;
           table.push(jsonData);
         }
+      });
+
+      table.sort((a, b) => {
+        if (parseFloat(a.score) < parseFloat(b.score)) return -1;
+        if (parseFloat(a.score) > parseFloat(b.score)) return 1;
+        return 0;
       });
       return table;
     }

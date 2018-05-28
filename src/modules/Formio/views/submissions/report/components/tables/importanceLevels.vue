@@ -12,11 +12,11 @@
 </div>
 </template>
 <script>
-import { QDataTable } from "quasar";
-import scoresByModule from "../scoresByModule";
-import _chunk from "lodash/chunk";
+import { QDataTable } from 'quasar';
+import scoresByModule from '../scoresByModule';
+import _chunk from 'lodash/chunk';
 export default {
-  name: "importance",
+  name: 'importance',
   data() {
     return {
       config: {
@@ -26,48 +26,48 @@ export default {
         columnPicker: false,
         leftStickyColumns: 0,
         rightStickyColumns: 0,
-        rowHeight: "70px",
+        rowHeight: '70px',
         responsive: true,
         pagination: {
           rowsPerPage: 5,
           options: [5, 10, 20, 40]
         },
         messages: {
-          noData: this.$t("No data available to show."),
+          noData: this.$t('No data available to show.'),
           noDataAfterFiltering: this.$t(
-            "No results. Please refine your search terms."
+            'No results. Please refine your search terms.'
           )
         },
         // (optional) Override default labels. Useful for I18n.
         labels: {
-          columns: this.$t("Columns"),
-          allCols: this.$t("All Columns"),
-          rows: this.$t("Rows"),
+          columns: this.$t('Columns'),
+          allCols: this.$t('All Columns'),
+          rows: this.$t('Rows'),
           selected: {
-            singular: this.$t("item selected."),
-            plural: this.$t("items selected.")
+            singular: this.$t('item selected.'),
+            plural: this.$t('items selected.')
           },
-          clear: this.$t("clear"),
-          search: this.$t("Search"),
-          all: this.$t("All")
+          clear: this.$t('clear'),
+          search: this.$t('Search'),
+          all: this.$t('All')
         }
       },
       columns: [
         {
-          label: "Priority level",
-          field: "module",
-          sort: true,
-          type: "string",
-          width: "20px",
-          style: { "text-align": "center" }
+          label: 'Priority level',
+          field: 'module',
+          sort: false,
+          type: 'string',
+          width: '20px',
+          style: { 'text-align': 'center' }
         },
         {
-          label: "Module",
-          field: "score",
-          sort: true,
-          type: "string",
-          width: "20px",
-          style: { "text-align": "center" }
+          label: 'Module',
+          field: 'score',
+          sort: false,
+          type: 'string',
+          width: '20px',
+          style: { 'text-align': 'center' }
         }
       ]
     };
@@ -75,7 +75,7 @@ export default {
   components: {
     QDataTable
   },
-  props: ["submission"],
+  props: ['submission'],
   watch: {
     submission: function(val) {}
   },
@@ -93,26 +93,26 @@ export default {
         very: []
       };
       if (!scores || !submission) {
-        return {}
+        return {};
       }
 
       scores.forEach((score, index) => {
-        score.importanceElements.forEach(element => {
-          let module = (index + 2) + " - " + score.abbreviation
+        score.importanceElements.forEach((element) => {
+          let module = index + 2 + ' - ' + score.abbreviation;
           switch (submission[element]) {
-            case "notAtAll":
+            case 'notAtAll':
               levels.notAtAll.push(module);
               break;
-            case "aLittle":
+            case 'aLittle':
               levels.aLittle.push(module);
               break;
-            case "average":
+            case 'average':
               levels.average.push(module);
               break;
-            case "aLot":
+            case 'aLot':
               levels.aLot.push(module);
               break;
-            case "very":
+            case 'very':
               levels.very.push(module);
               break;
           }
@@ -120,32 +120,49 @@ export default {
       });
 
       table.push({
-        module: "Very high priority",
-        score: this.formatImportanceModules(levels.very)
-      });
-
-       table.push({
-        module: "High priority",
-        score: this.formatImportanceModules(levels.aLot)
-      });
-
-      table.push({
-        module: "Medium priority",
-        score: this.formatImportanceModules(levels.average)
+        module: 'Very high priority',
+        score: this.formatImportanceModules(
+          levels.very.filter(function(item, pos, a) {
+            return a.indexOf(item) === pos;
+          })
+        )
       });
 
       table.push({
-        module: "Low priority",
-        score: this.formatImportanceModules(levels.aLittle)
+        module: 'High priority',
+        score: this.formatImportanceModules(
+          levels.aLot.filter(function(item, pos, a) {
+            return a.indexOf(item) === pos;
+          })
+        )
       });
 
       table.push({
-        module: "Not a priority",
-        score: this.formatImportanceModules(levels.notAtAll)
+        module: 'Medium priority',
+        score: this.formatImportanceModules(
+          levels.average.filter(function(item, pos, a) {
+            return a.indexOf(item) === pos;
+          })
+        )
       });
 
+      table.push({
+        module: 'Low priority',
+        score: this.formatImportanceModules(
+          levels.aLittle.filter(function(item, pos, a) {
+            return a.indexOf(item) === pos;
+          })
+        )
+      });
 
-
+      table.push({
+        module: 'Not a priority',
+        score: this.formatImportanceModules(
+          levels.notAtAll.filter(function(item, pos, a) {
+            return a.indexOf(item) === pos;
+          })
+        )
+      });
 
       return table;
     }
@@ -153,12 +170,12 @@ export default {
   methods: {
     formatImportanceModules(modulesArray) {
       let chunks = _chunk(modulesArray, 1);
-      let modules = "";
+      let modules = '';
       if (!chunks) {
         return [];
       }
-      chunks.forEach(chunk => {
-        modules = modules + chunk.join(" - ") + "</br>";
+      chunks.forEach((chunk) => {
+        modules = modules + chunk.join(' - ') + '</br>';
       });
       return modules;
     }

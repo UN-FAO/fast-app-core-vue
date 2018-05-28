@@ -37,7 +37,7 @@
                   :tableActions="$FAST_CONFIG.HAS_REPORT ? ['edit', 'delete', 'report'] : ['edit', 'delete']"
                   fastMode="show"
                   v-on:refresh="refreshData"
-                  v-if="currentForm && currentForm.data.title !== '' && !noSubmissions"
+                  v-if="currentForm && currentForm.data && currentForm.data.title !== '' && !noSubmissions"
                 />
             </q-card-main>
           </q-card>
@@ -66,11 +66,8 @@ import {
   QBtn
 } from "quasar";
 import datatable from "components/dataTable/dataTable";
-import Form from "libraries/fastjs/database/models/Form";
-import Auth from "libraries/fastjs/repositories/Auth/Auth";
+import {Form, Auth, Event, Submission} from "fast-fastjs";
 import Columns from "components/dataTable/tableFormatter/Columns";
-import Submission from "libraries/fastjs/database/models/Submission";
-import Event from "libraries/fastjs/Wrappers/Event";
 
 export default {
   async mounted() {
@@ -161,7 +158,7 @@ export default {
         limit: 1000,
         filter: {
           "data.formio.formId": this.$route.params.idForm,
-          "data.user_email": Auth.userEmail()
+          "data.user_email": Auth.email()
         },
         select: Columns.getTableView(this.currentForm.data).map(
           o => "data." + o.path

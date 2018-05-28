@@ -65,13 +65,10 @@ import {
   QList,
   QItem,
 } from 'quasar';
-import Form from 'libraries/fastjs/database/models/Form';
+import {Form, Submission, Auth, Event} from 'fast-fastjs';
 import FormioUtils from 'formiojs/utils';
 import datatable from 'components/dataTable/dataTable';
-import Submission from 'libraries/fastjs/database/models/Submission';
 import Columns from 'components/dataTable/tableFormatter/Columns';
-import Auth from 'libraries/fastjs/repositories/Auth/Auth';
-import Event from 'libraries/fastjs/Wrappers/Event';
 
 export default {
   async mounted() {

@@ -14,43 +14,43 @@ import Formio from 'formiojs';
 import FormioForm from 'formiojs/form';
 import FormioWizard from 'formiojs/wizard';
 import FormioUtils from 'formiojs/utils';
-import OFFLINE_PLUGIN from './src/offlinePlugin';
 import GPS from './src/gps';
 import Lenguage from './src/lenguage';
-import Event from 'libraries/fastjs/Wrappers/Event';
+import { Event, Configuration, OfflinePlugin } from 'fast-fastjs';
+import router from 'config/router';
 // import SMS from './src/sms'
 
 export default {
   name: 'formio',
   props: {
     formURL: {
-      required: true,
+      required: true
     },
     submission: {
-      required: false,
+      required: false
     },
     hashField: {
-      required: false,
+      required: false
     },
     formioToken: {
-      required: false,
+      required: false
     },
     localDraft: {
-      required: false,
+      required: false
     },
     parentPage: {
-      required: false,
+      required: false
     },
     options: {
       type: Object,
-      default: () => ({}),
+      default: () => ({})
     },
     autoCreate: {
-      required: false,
+      required: false
     },
     editMode: {
-      required: false,
-    },
+      required: false
+    }
   },
   watch: {
     submission: function(value) {
@@ -59,7 +59,7 @@ export default {
     },
     language: function() {
       this.renderForm();
-    },
+    }
   },
   mounted() {
     Formio.setToken(this.formioToken);
@@ -83,7 +83,7 @@ export default {
       formIO: null,
       jsonSubmission: undefined,
       offlineModePlugin: null,
-      saved: false,
+      saved: false
     };
   },
   methods: {
@@ -109,7 +109,7 @@ export default {
      * @return {[type]}            [description]
      */
     loadExternalResources(Components) {
-      // return OFFLINE_PLUGIN.externalResources(Components)
+      // return OfflinePlugin.externalResources(Components)
     },
     /**
      * [setTranslations description]
@@ -117,10 +117,10 @@ export default {
      */
     setTranslations(Components) {
       let comps = FormioUtils.findComponents(Components, {
-        type: 'htmlelement',
+        type: 'htmlelement'
       });
 
-      _map(comps, comp => {
+      _map(comps, (comp) => {
         if (this.$t(comp.content) !== comp.content) {
           comp.content = this.$t(comp.content);
         }
@@ -136,11 +136,11 @@ export default {
       Formio.deregisterPlugin('offline');
       // Register the plugin for offline mode
       Formio.registerPlugin(
-        OFFLINE_PLUGIN.getPlugin({
+        OfflinePlugin.getPlugin({
           formio: new Formio(this.formURL),
-          hashField: this.hashField,
+          hashField: this.hashField
         }),
-        'offline',
+        'offline'
       );
     },
     /**
@@ -154,13 +154,13 @@ export default {
         redirect: true,
         draft: true,
         syncError: false,
-        trigger: 'saveAsLocalDraft',
+        trigger: 'saveAsLocalDraft'
       };
       this.save(formSubmission);
       this.$swal(
         'Draft Saved!',
         'Your submission has been saved! You can continue editing later',
-        'success',
+        'success'
       );
     },
     /**
@@ -174,7 +174,7 @@ export default {
         redirect: false,
         draft: true,
         syncError: false,
-        trigger: 'autoSaveAsDraft',
+        trigger: 'autoSaveAsDraft'
       };
       this.save(formSubmission);
     },
@@ -201,7 +201,7 @@ export default {
         data: this.formIO.data,
         redirect: 'Update',
         draft: true,
-        trigger: 'createLocalDraft',
+        trigger: 'createLocalDraft'
       };
       this.save(formSubmission);
     },
@@ -215,12 +215,12 @@ export default {
         formSubmission._id = _get(
           this.jsonSubmission,
           'data._id',
-          this.jsonSubmission._id,
+          this.jsonSubmission._id
         );
         formSubmission._lid = _get(
           this.jsonSubmission,
           'data._lid',
-          this.jsonSubmission._id,
+          this.jsonSubmission._id
         );
       }
       let formio = new Formio(this.formURL);
@@ -234,13 +234,56 @@ export default {
         this.onlineReview(formSubmission, formio);
         return;
       }
-      formio.saveSubmission(formSubmission);
+      formio.saveSubmission(formSubmission).then((created) => {
+        this.redirectIntended({ submission: formSubmission, created, formio });
+      });
+    },
+    async redirectIntended({ submission, created, formio }) {
+      if (submission._id) {
+        let config = await Configuration.getLocal();
+        if (submission.redirect === true) {
+          switch (config.SAVE_REDIRECT) {
+            case 'dashboard':
+              router.push({
+                name: 'dashboard'
+              });
+              break;
+            case 'collected':
+              router.push({
+                name: 'formio_form_show',
+                params: {
+                  idForm: formio.formId
+                }
+              });
+              break;
+            default:
+              router.push({
+                name: 'dashboard'
+              });
+              break;
+          }
+        }
+      } else if (
+        created.data &&
+        created.data.trigger &&
+        created.data.trigger === 'importSubmission'
+      ) {
+        return;
+      } else {
+        router.push({
+          name: 'formio_submission_update',
+          params: {
+            idForm: formio.formId,
+            idSubmission: created._id
+          }
+        });
+      }
     },
     onlineSave(submission, formio) {
       this.$swal({
         title: 'Saving...',
         text: this.$t(
-          'The information is being saved. This can take a couple seconds...',
+          'The information is being saved. This can take a couple seconds...'
         ),
         showCancelButton: false,
         onOpen: async () => {
@@ -248,33 +291,33 @@ export default {
           this.$swal.showLoading();
           formio
             .saveSubmission(submission)
-            .then(updated => {
+            .then((updated) => {
               this.$swal.close();
               if (this.parentPage) {
                 this.$router.push({
-                  name: this.parentPage,
+                  name: this.parentPage
                 });
               } else if (this.editMode === 'online-review') {
                 this.$router.push({
-                  name: 'reviewers',
+                  name: 'reviewers'
                 });
               } else if (this.editMode === 'online') {
                 this.$router.push({
                   name: 'formio_form_show',
-                  params: { idForm: formio.formId },
+                  params: { idForm: formio.formId }
                 });
               }
             })
-            .catch(e => {
+            .catch((e) => {
               console.log(e);
               this.$swal(
                 'Error',
                 'There was a problem while trying to save the submission. ' +
                   JSON.stringify(e),
-                'error',
+                'error'
               );
             });
-        },
+        }
       });
     },
     setSubmission(onlineJsonForm) {
@@ -284,7 +327,7 @@ export default {
         !this.jsonSubmission
       ) {
         this.formIO.submission = {
-          data: _get(this.submission, 'data.data', {}),
+          data: _get(this.submission, 'data.data', {})
         };
 
         // If we are creating a wizard
@@ -294,7 +337,7 @@ export default {
         this.jsonSubmission = this.submission;
       } else {
         this.formIO.submission = {
-          data: _get(this.jsonSubmission, 'data.data', {}),
+          data: _get(this.jsonSubmission, 'data.data', {})
         };
 
         // If we are creating a wizard
@@ -334,8 +377,8 @@ export default {
       // Create FormIOJS plugin instace (Manipulation)
       let formio = new Formio(this.formURL);
 
-      formio.loadForm().then(async onlineJsonForm => {
-        let translations = await OFFLINE_PLUGIN.getLocalTranslations();
+      formio.loadForm().then(async (onlineJsonForm) => {
+        let translations = await OfflinePlugin.getLocalTranslations();
 
         this.createFormioInstance(onlineJsonForm, translations);
 
@@ -358,19 +401,19 @@ export default {
 
         // Load data stored locally
         cloneJsonForm.components = this.loadExternalResources(
-          onlineJsonForm.components,
+          onlineJsonForm.components
         );
 
         // Generate some custom translations
         cloneJsonForm.components = this.setTranslations(
-          _cloneDeep(onlineJsonForm.components),
+          _cloneDeep(onlineJsonForm.components)
         );
 
         // Fixing problem with data not updating on loading
         // TODO this should be removed and ask for a fix in the library
         let components = FormioUtils.findComponents(cloneJsonForm.components, {
           input: true,
-          type: 'number',
+          type: 'number'
         });
         _map(components, function(c) {
           c.defaultValue = 'default';
@@ -390,28 +433,28 @@ export default {
         let events = this.formIO.eventListeners;
 
         // Add error event listener only if we do not have it
-        if (events.filter(e => e.type === 'formio.render').length < 1) {
-          this.formIO.on('render', render => {
+        if (events.filter((e) => e.type === 'formio.render').length < 1) {
+          this.formIO.on('render', (render) => {
             this.$eventHub.$emit('formio.render', {
               render: render,
-              formio: this.formIO,
+              formio: this.formIO
             });
           });
         }
 
         // Add error event listener only if we do not have it
-        if (events.filter(e => e.type === 'formio.error').length < 1) {
-          this.formIO.on('error', error => {
+        if (events.filter((e) => e.type === 'formio.error').length < 1) {
+          this.formIO.on('error', (error) => {
             this.$eventHub.$emit('formio.error', {
               error: error,
-              formio: this.formIO,
+              formio: this.formIO
             });
           });
         }
         let timeoutId;
 
-        if (events.filter(e => e.type === 'formio.change').length < 1) {
-          this.formIO.on('change', change => {
+        if (events.filter((e) => e.type === 'formio.change').length < 1) {
+          this.formIO.on('change', (change) => {
             this.removeDuplicatedPagination();
             if (
               this.localDraft &&
@@ -422,7 +465,7 @@ export default {
               Event.emit({
                 name: 'FAST:SUBMISSION:CHANGED',
                 data: false,
-                text: 'Draft not Saved',
+                text: 'Draft not Saved'
               });
               // AutoSave functionality
               // If a timer was already started, clear it.
@@ -436,33 +479,33 @@ export default {
             }
             this.$eventHub.$emit('formio.change', {
               change: change,
-              formio: this.formIO,
+              formio: this.formIO
             });
           });
         }
 
         // Add error event listener only if we do not have it
-        if (events.filter(e => e.type === 'formio.nextPage').length < 1) {
-          this.formIO.on('nextPage', nextPage => {
+        if (events.filter((e) => e.type === 'formio.nextPage').length < 1) {
+          this.formIO.on('nextPage', (nextPage) => {
             this.$eventHub.$emit('formio.nextPage', {
               nextPage: nextPage,
-              formio: this.formIO,
+              formio: this.formIO
             });
           });
         }
 
         // Add error event listener only if we do not have it
-        if (events.filter(e => e.type === 'formio.prevPage').length < 1) {
-          this.formIO.on('prevPage', prevPage => {
+        if (events.filter((e) => e.type === 'formio.prevPage').length < 1) {
+          this.formIO.on('prevPage', (prevPage) => {
             this.$eventHub.$emit('formio.prevPage', {
               prevPage: prevPage,
-              formio: this.formIO,
+              formio: this.formIO
             });
           });
         }
 
         // Ad submit event listener only if its not present before
-        if (events.filter(e => e.type === 'formio.submit').length < 1) {
+        if (events.filter((e) => e.type === 'formio.submit').length < 1) {
           /**
            * This function manages how the form is
            * submitted for Offline behaivor
@@ -470,20 +513,20 @@ export default {
            * @param  {[type]} (submission [description]
            * @return {[type]}             [description]
            */
-          this.formIO.on('submit', submission => {
+          this.formIO.on('submit', (submission) => {
             let formSubmission = {
               data: this.formIO.data,
               draft: false,
               redirect: true,
               trigger: 'formioSubmit',
-              syncError: false,
+              syncError: false
             };
 
             this.save(formSubmission);
           });
         }
       });
-    },
-  },
+    }
+  }
 };
 </script>

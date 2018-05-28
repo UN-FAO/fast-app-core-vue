@@ -57,7 +57,7 @@
 
 
     <div class="light text-italic" style="padding-left: 25px;">
-      {{userEmail()}}
+      {{email()}}
     </div>
     <p>
 
@@ -67,7 +67,7 @@
   </q-scroll-area>
 </template>
 <script>
-import Auth from "libraries/fastjs/repositories/Auth/Auth";
+import { Auth, FAST, PagesRepo } from 'fast-fastjs';
 import {
   QScrollArea,
   QSideLink,
@@ -82,11 +82,10 @@ import {
   QList,
   QItem,
   QItemSeparator
-} from "quasar";
-import pageLinks from "./components/pageLinks";
-import collectionpagelinks from "./components/collectionPageLinks";
-import Pages from "libraries/fastjs/repositories/Configuration/Pages";
-import FAST from "libraries/fastjs/start";
+} from 'quasar';
+import pageLinks from './components/pageLinks';
+import collectionpagelinks from './components/collectionPageLinks';
+
 export default {
   components: {
     QScrollArea,
@@ -108,7 +107,7 @@ export default {
   asyncData: {
     PAGES: {
       async get() {
-        let pages = await Pages.getLocal();
+        let pages = await PagesRepo.getLocal();
         return pages;
       },
       transform(result) {
@@ -121,11 +120,11 @@ export default {
       this.$refs.leftDrawer.close();
     },
     async syncApp() {
-      this.$eventHub.$emit("openLeftDrawer");
+      this.$eventHub.$emit('openLeftDrawer');
       this.$swal({
-        title: this.$t("Updating..."),
+        title: this.$t('Updating...'),
         text: this.$t(
-          "Wait until the App is Updated. This can take a couple minutes..."
+          'Wait until the App is Updated. This can take a couple minutes...'
         ),
         showCancelButton: false,
         onOpen: async () => {
@@ -133,16 +132,16 @@ export default {
           await FAST.sync({ Vue: this, interval: false });
           this.$swal.close();
           this.$swal({
-            title: this.$t("App Updated"),
+            title: this.$t('App Updated'),
             text: this.$t(
-              "You need to reload the page to see the changes. Want to do it now?"
+              'You need to reload the page to see the changes. Want to do it now?'
             ),
-            type: "success",
+            type: 'success',
             showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonClass: "modalCancel",
-            confirmButtonText: this.$t("Yes, reaload it!"),
-            cancelButtonText: this.$t("No, Later")
+            confirmButtonColor: '#3085d6',
+            cancelButtonClass: 'modalCancel',
+            confirmButtonText: this.$t('Yes, reaload it!'),
+            cancelButtonText: this.$t('No, Later')
           }).then(async () => {
             window.location.reload(true);
           });
@@ -150,20 +149,20 @@ export default {
       });
     },
     async handleLogout() {
-      this.$eventHub.$emit("openLeftDrawer");
+      this.$eventHub.$emit('openLeftDrawer');
       await Auth.logOut();
       this.$router.push({
-        path: "/login"
+        path: '/login'
       });
     },
     isAdmin() {
-      return Auth.hasRole("Administrator");
+      return Auth.hasRole('Administrator');
     },
     isReviewer() {
-      return Auth.hasRole("Reviewer");
+      return Auth.hasRole('Reviewer');
     },
-    userEmail() {
-      return Auth.userEmail();
+    email() {
+      return Auth.email();
     }
   }
 };

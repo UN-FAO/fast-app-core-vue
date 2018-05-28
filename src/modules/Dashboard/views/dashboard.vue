@@ -5,10 +5,9 @@
   </div>
 </template>
 <script>
-
-import Auth from 'libraries/fastjs/repositories/Auth/Auth'
-import appdashboard from "../components/appDashboard"
-import collectiondashboard from "../components/collectionDashboard"
+import {Auth} from 'fast-fastjs';
+import appdashboard from '../components/appDashboard';
+import collectiondashboard from '../components/collectionDashboard';
 export default {
   components: {
     appdashboard,
@@ -16,7 +15,7 @@ export default {
   },
   methods: {
     isAdmin() {
-      return Auth.hasRole("Administrator");
+      return Auth.hasRole('Administrator');
     }
   }
 };

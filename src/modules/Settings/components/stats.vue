@@ -27,7 +27,8 @@
 
 <script>
 import { QList, QItem, QItemSide, QItemMain, QItemTile } from 'quasar';
-import Translation from 'libraries/fastjs/database/models/Translation';
+import { Translation } from 'fast-fastjs';
+
 export default {
   name: 'tstats',
   components: {
@@ -59,7 +60,7 @@ export default {
     languages() {
       let lang = Object.keys(this.stats.translations);
       lang.shift();
-      return lang
+      return lang;
     },
     totalTranslations() {
       if (this.stats && this.stats.totalTranslations) {

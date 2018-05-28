@@ -135,6 +135,8 @@ exports.TRANSLATIONS = [
   "You don't have access to modify this submission",
   'Conexion error',
   "We couldn't get the submission from the server",
+  "Exported!",
+  'The file has been exported. File name:',
 
   // Formio Translations
   'complete',

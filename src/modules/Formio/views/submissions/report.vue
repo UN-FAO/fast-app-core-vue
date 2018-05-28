@@ -5,14 +5,14 @@
 </template>
 
 <script>
-import report from "./report/report";
-import Submission from "libraries/fastjs/database/models/Submission";
+import report from './report/report';
+import { Submission } from 'fast-fastjs';
 export default {
   components: {
     report
   },
   async mounted() {
-    if (this.$route.params.idSubmission.indexOf("_local") >= 0) {
+    if (this.$route.params.idSubmission.indexOf('_local') >= 0) {
       let resuls = await Submission.local().get(
         this.$route.params.idSubmission
       );
@@ -23,8 +23,8 @@ export default {
         form: this.$route.params.idForm,
         filter: [
           {
-            element: "_id",
-            query: "=",
+            element: '_id',
+            query: '=',
             value: this.$route.params.idSubmission
           }
         ],

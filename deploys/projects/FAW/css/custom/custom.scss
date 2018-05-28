@@ -5,7 +5,7 @@
   }
   .formio-component-datagrid {
     overflow-x: unset;
-    margin-left: -55px;
+    margin-left: -35px;
     width: 99vw !important;
     transform: scale(0.92);
   }
@@ -25,14 +25,9 @@
     margin-left: 0px;
   }
 
-  legend,
-  .card-header.panel-heading {
-    margin-left: 15px;
-  }
-
   .table-responsive {
     overflow-x: unset;
-    margin-left: -75px !important;
+    margin-left: -35px !important;
     width: 100vw !important;
     transform: scale(0.88);
   }
@@ -92,33 +87,20 @@
   .formio-component-fieldset {
     margin-top: 0px;
   }
-
-  fieldset div.row {
-    display: block;
-    margin-left: -100px;
-  }
-  fieldset {
-    margin-left: -30px;
-  }
-
-  .card-header.panel-heading {
-    width: 85vw;
-    margin-left: -25px;
-  }
 }
 
 .table-responsive tr:first-child td {
-    text-align: center;
+  text-align: center;
 }
 .table-responsive tr:first-child td p {
-    font-weight: 900;
-    color: rgba(0, 0, 0, 0.65);
+  font-weight: 900;
+  color: rgba(0, 0, 0, 0.65);
 }
 
 .table-responsive tr:first-child {
-    background:rgb(214, 212, 212) !important;
+  background: rgb(214, 212, 212) !important;
 }
 
 .table-responsive tr:nth-child(7) {
-    background:rgb(214, 212, 212) !important;
+  background: rgb(214, 212, 212) !important;
 }

@@ -16,7 +16,7 @@
 
 <script>
 import actioncards from "../components/actionCards";
-import Form from "libraries/fastjs/database/models/Form";
+import {Form} from "fast-fastjs";
 export default {
   components: {
     actioncards

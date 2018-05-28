@@ -877,6 +877,14 @@ button.btn.btn-primary.btn-wizard-nav-next {
   width: 100%;
 }
 
+.formPageContainer .q-card-main.q-card-container {
+    padding: 0px;
+    padding-top: 0px;
+    padding-right: 0px;
+    padding-bottom: 0px;
+    padding-left: 0px;
+}
+
 @import 'custom/custom.scss';
 @import 'qDataTable.scss';
 @import 'errorResponsiveTable.scss';
@@ -887,4 +895,5 @@ button.btn.btn-primary.btn-wizard-nav-next {
 @import 'formContainer.scss';
 @import 'formNav.scss';
 @import 'formCard.scss';
+@import 'loading.scss';
 @import 'fastIcons/fastIcons.scss';

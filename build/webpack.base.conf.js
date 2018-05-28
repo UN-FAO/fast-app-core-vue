@@ -1,5 +1,4 @@
-var
-  path = require('path'),
+var path = require('path'),
   webpack = require('webpack'),
   config = require('../config'),
   cssUtils = require('./css-utils'),
@@ -9,10 +8,10 @@ var
   ProgressBarPlugin = require('progress-bar-webpack-plugin'),
   useCssSourceMap =
     (env.dev && config.dev.cssSourceMap) ||
-    (env.prod && config.build.productionSourceMap)
+    (env.prod && config.build.productionSourceMap);
 
-function resolve (dir) {
-  return path.join(__dirname, '..', dir)
+function resolve(dir) {
+  return path.join(__dirname, '..', dir);
 }
 
 module.exports = {
@@ -25,15 +24,13 @@ module.exports = {
   },
   resolve: {
     extensions: ['.js', '.vue', '.json'],
-    modules: [
-      resolve('src'),
-      resolve('node_modules')
-    ],
+    modules: [resolve('src'), resolve('node_modules')],
     alias: config.aliases
   },
   module: {
     rules: [
-      { // eslint
+      {
+        // eslint
         enforce: 'pre',
         test: /\.(vue|js)$/,
         loader: 'eslint-loader',
@@ -46,6 +43,11 @@ module.exports = {
       {
         test: /\.js$/,
         loader: 'babel-loader',
+        include: path.join(projectRoot, 'node_modules', 'vue-handsontable-official')
+      },
+      {
+        test: /\.js$/,
+        loader: 'babel-loader',
         include: projectRoot,
         exclude: /node_modules/
       },
@@ -54,10 +56,13 @@ module.exports = {
         loader: 'vue-loader',
         options: {
           postcss: cssUtils.postcss,
-          loaders: merge({js: 'babel-loader'}, cssUtils.styleLoaders({
-            sourceMap: useCssSourceMap,
-            extract: env.prod
-          }))
+          loaders: merge(
+            { js: 'babel-loader' },
+            cssUtils.styleLoaders({
+              sourceMap: useCssSourceMap,
+              extract: env.prod
+            })
+          )
         }
       },
       {
@@ -90,9 +95,9 @@ module.exports = {
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
     new webpack.DefinePlugin({
       'process.env': config[env.prod ? 'build' : 'dev'].env,
-      'DEV': env.dev,
-      'PROD': env.prod,
-      '__THEME': '"' + env.platform.theme + '"'
+      DEV: env.dev,
+      PROD: env.prod,
+      __THEME: '"' + env.platform.theme + '"'
     }),
     new webpack.LoaderOptionsPlugin({
       minimize: env.prod,
@@ -120,4 +125,4 @@ module.exports = {
     tls: 'empty',
     child_process: 'empty'
   }
-}
+};

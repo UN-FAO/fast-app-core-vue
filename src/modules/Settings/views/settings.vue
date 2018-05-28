@@ -45,7 +45,8 @@
 </template>
 
 <script>
-import Auth from "libraries/fastjs/repositories/Auth/Auth";
+import { Auth } from 'fast-fastjs';
+
 import {
   QCard,
   QCardTitle,
@@ -69,7 +70,7 @@ import {
   QItemMain,
   QTransition,
   QInnerLoading
-} from "quasar";
+} from 'quasar';
 export default {
   components: {
     QCard,
@@ -97,12 +98,12 @@ export default {
   },
   computed: {
     getFormClass() {
-      let className = "";
+      let className = '';
       if (this.showPages) {
-        className = "col-xl-8 col-lg-8  col-md-12 col-sm-12 col-xs-12";
+        className = 'col-xl-8 col-lg-8  col-md-12 col-sm-12 col-xs-12';
       } else {
         className =
-          "col-xl-10 col-lg-10  col-md-12 col-sm-12 col-lg-offset-1 col-md-offset-1 col-xl-offset-1";
+          'col-xl-10 col-lg-10  col-md-12 col-sm-12 col-lg-offset-1 col-md-offset-1 col-xl-offset-1';
       }
       return className;
     }
@@ -122,7 +123,7 @@ export default {
       });
     },
     isAdmin() {
-      return Auth.hasRole("Administrator");
+      return Auth.hasRole('Administrator');
     }
   }
 };

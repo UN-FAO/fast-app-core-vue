@@ -2,13 +2,11 @@
 </template>
 
 <script>
-import Connection from "libraries/fastjs/Wrappers/Connection";
-import Auth from "libraries/fastjs/repositories/Auth/Auth";
+import {Connection, Auth, Event} from 'fast-fastjs'
 import { Alert } from "quasar";
 import "quasar-extras/animate/bounceInRight.css";
 import "quasar-extras/animate/bounceOutRight.css";
 import _debounce from "lodash/debounce";
-import Event from "libraries/fastjs/Wrappers/Event";
 export default {
   name: "connectionAlert",
   mounted: function() {

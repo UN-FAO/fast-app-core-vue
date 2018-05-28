@@ -6,7 +6,7 @@
 
 <script>
 import { QIcon } from "quasar";
-import Event from "libraries/fastjs/Wrappers/Event";
+import {Event} from "fast-fastjs";
 export default {
   name: "wifiDisplay",
   components: {

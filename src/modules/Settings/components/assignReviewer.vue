@@ -42,7 +42,6 @@
 </div>
 </template>
 <script>
-import User from "libraries/fastjs/database/models/User";
 import {
   QDataTable,
   QSelect,
@@ -52,7 +51,7 @@ import {
   QSpinnerGears,
   QInnerLoading
 } from "quasar";
-import countryList from "libraries/fastjs/database/resources/countries.json";
+import {countryList, User} from "fast-fastjs";
 export default {
   name: "reviewer",
   components: {

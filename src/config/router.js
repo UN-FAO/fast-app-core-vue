@@ -1,16 +1,16 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import setRoutes from 'config/setRoutes'
-import Auth from 'libraries/fastjs/repositories/Auth/Auth'
+import Vue from 'vue';
+import VueRouter from 'vue-router';
+import setRoutes from 'config/setRoutes';
+import { Auth } from 'fast-fastjs';
 /**
  * Import routes from modules
  */
-import AuthRoutes from 'modules/Auth/routes'
-import DashboardRoutes from 'modules/Dashboard/routes'
-import FormioRoutes from 'modules/Formio/routes'
-import SettingsRoutes from 'modules/Settings/routes'
+import AuthRoutes from 'modules/Auth/routes';
+import DashboardRoutes from 'modules/Dashboard/routes';
+import FormioRoutes from 'modules/Formio/routes';
+import SettingsRoutes from 'modules/Settings/routes';
 
-Vue.use(VueRouter)
+Vue.use(VueRouter);
 /*
  |--------------------------------------------------------------------------
  | Mount Modules Routes
@@ -24,20 +24,29 @@ Vue.use(VueRouter)
  |   routes.push({path: '/somePath', component: someComponent, name: 'someName'})
  |
  */
-let routes = setRoutes([AuthRoutes, DashboardRoutes, FormioRoutes, SettingsRoutes])
+let routes = setRoutes([
+  AuthRoutes,
+  DashboardRoutes,
+  FormioRoutes,
+  SettingsRoutes
+]);
 
 // Default 404
-const Error404 = r =>
-  require.ensure([], () => r(require('../modules/Auth/views/Error404')), 'offline-module')
-routes.push({ path: '*', component: Error404, name: 'error404' })
+const Error404 = (r) =>
+  require.ensure(
+    [],
+    () => r(require('../modules/Auth/views/Error404')),
+    'offline-module'
+  );
+routes.push({ path: '*', component: Error404, name: 'error404' });
 
 const router = new VueRouter({
   mode: 'hash',
   routes,
-  scrollBehavior (to, from, savedPosition) {
-    return { x: 0, y: 0 }
+  scrollBehavior(to, from, savedPosition) {
+    return { x: 0, y: 0 };
   }
-})
+});
 
 /*
  |--------------------------------------------------------------------------
@@ -54,14 +63,17 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
   // If the route requires Auth
   if (to.meta.requiresAuth && Auth.user() === false) {
-    next(false)
-    router.push({ path: '/login' })
-  } else if (Auth.user() && (to.name === 'login' || to.name === 'login_redirect')) {
-    router.push({ name: 'dashboard' })
+    next(false);
+    router.push({ path: '/login' });
+  } else if (
+    Auth.user() &&
+    (to.name === 'login' || to.name === 'login_redirect')
+  ) {
+    router.push({ name: 'dashboard' });
   } else {
-    window.scrollTo(0, 0)
-    next()
+    window.scrollTo(0, 0);
+    next();
   }
-})
+});
 
-export default router
+export default router;

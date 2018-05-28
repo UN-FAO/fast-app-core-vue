@@ -12,54 +12,54 @@
 </div>
 </template>
 <script>
-import { QDataTable } from "quasar";
-import scoresByModule from "../scoresByModule";
+import { QDataTable } from 'quasar';
+import scoresByModule from '../scoresByModule';
 export default {
-  name: "naquestions",
+  name: 'naquestions',
   data() {
     return {
       sub: {},
       config: {
-        title: "Non-applicable modules*",
+        title: 'Non-applicable modules*',
         refresh: false,
         noHeader: false,
         columnPicker: false,
         leftStickyColumns: 0,
         rightStickyColumns: 0,
-        rowHeight: "70px",
+        rowHeight: '70px',
         responsive: true,
         pagination: {
           rowsPerPage: 5,
           options: [5, 10, 20, 40]
         },
         messages: {
-          noData: this.$t("No data available to show."),
+          noData: this.$t('No data available to show.'),
           noDataAfterFiltering: this.$t(
-            "No results. Please refine your search terms."
+            'No results. Please refine your search terms.'
           )
         },
         // (optional) Override default labels. Useful for I18n.
         labels: {
-          columns: this.$t("Columns"),
-          allCols: this.$t("All Columns"),
-          rows: this.$t("Rows"),
+          columns: this.$t('Columns'),
+          allCols: this.$t('All Columns'),
+          rows: this.$t('Rows'),
           selected: {
-            singular: this.$t("item selected."),
-            plural: this.$t("items selected.")
+            singular: this.$t('item selected.'),
+            plural: this.$t('items selected.')
           },
-          clear: this.$t("clear"),
-          search: this.$t("Search"),
-          all: this.$t("All")
+          clear: this.$t('clear'),
+          search: this.$t('Search'),
+          all: this.$t('All')
         }
       },
       columns: [
         {
-          label: "Module",
-          field: "module",
-          sort: true,
-          type: "string",
-          width: "20px",
-          style: { "text-align": "center" }
+          label: 'Module',
+          field: 'module',
+          sort: false,
+          type: 'string',
+          width: '20px',
+          style: { 'text-align': 'center' }
         }
       ]
     };
@@ -67,7 +67,7 @@ export default {
   components: {
     QDataTable
   },
-  props: ["submission"],
+  props: ['submission'],
   watch: {
     submission: function(val) {
       this.sub = val;
@@ -79,20 +79,20 @@ export default {
       let scores = scoresByModule.get();
       let table = [];
       if (!scores || !submission) {
-        return {}
+        return {};
       }
       scores.forEach((score, index) => {
         let jsonData = {};
         score.adequacyElements.forEach((adequacyElement, elIndex) => {
           if (
-            typeof submission[adequacyElement] === "undefined" ||
-            submission[adequacyElement] === "NA"
+            typeof submission[adequacyElement] === 'undefined' ||
+            submission[adequacyElement] === 'NA'
           ) {
             let moduleNumber =
               elIndex > 0
-                ? (index + 2).toString() + "." + (elIndex + 1).toString()
+                ? (index + 2).toString() + '.' + (elIndex + 1).toString()
                 : (index + 2).toString();
-            jsonData["module"] = moduleNumber + " - " + score.abbreviation;
+            jsonData['module'] = moduleNumber + ' - ' + score.abbreviation;
             table.push(jsonData);
           }
         });

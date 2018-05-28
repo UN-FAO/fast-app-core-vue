@@ -27,12 +27,8 @@
                             </q-field>
                   </div>
 
-                <q-btn color="green" @click="handleLogin" :disable="!appLoaded">
-                  <div v-if="appLoaded">{{$t('Login')}}</div>
-                 <div v-else>
-                 <q-spinner-mat color="white" :size="40" />
-                 <span style="color: white">{{$t('Loading...')}}</span>
-                 </div>
+                <q-btn color="green" @click="handleLogin" >
+                  <div>{{$t('Login')}}</div>
                 </q-btn>
 
                   <br>
@@ -57,16 +53,9 @@
 </template>
 
 <script>
-import Auth from "libraries/fastjs/repositories/Auth/Auth";
-import { Loading, QField, QInput, QBtn, QIcon, QSpinnerMat } from "quasar";
-import Event from "libraries/fastjs/Wrappers/Event";
+import { Auth } from 'fast-fastjs';
+import { Loading, QField, QInput, QBtn, QIcon, QSpinnerMat } from 'quasar';
 export default {
-  mounted() {
-    Event.listen({
-      name: "FAST:APPLICATION:LOADED",
-      callback: this.handleLoadedApp
-    });
-  },
   components: {
     QField,
     QInput,
@@ -77,11 +66,10 @@ export default {
   data() {
     return {
       credentials: {
-        username: "",
-        password: ""
+        username: '',
+        password: ''
       },
-      isAdminLogin: false,
-      appLoaded: this.$APP_LOADED
+      isAdminLogin: false
     };
   },
   /**
@@ -99,33 +87,35 @@ export default {
       this.credentials.password = this.credentials.password.trim();
       this.credentials.username = this.credentials.username.trim();
       // Try to authenticate the User
-      Loading.show("Loging in...");
+      Loading.show('Loging in...');
       Auth.attempt(
         this.credentials,
         this.$FAST_CONFIG.APP_URL,
-        this.isAdminLogin ? "admin" : undefined
+        this.isAdminLogin ? 'admin' : undefined
       )
-        .then(User => {
+        .then((User) => {
           Loading.hide();
+          console.log(
+            'window.$APP_LOADED',
+            this.$root.APP_LOADED,
+            window.APP_LOADED
+          );
           this.$router.push({
-            name: "dashboard"
+            name: 'dashboard'
           });
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error);
           Loading.hide();
           this.$swal(
-            "Wrong Credentials!",
-            "Wrong username or password...try again",
-            "error"
+            'Wrong Credentials!',
+            'Wrong username or password...try again',
+            'error'
           );
         });
     },
     adminLogin() {
       this.isAdminLogin = !this.isAdminLogin;
-    },
-    handleLoadedApp() {
-      this.appLoaded = this.$APP_LOADED;
     }
   }
 };

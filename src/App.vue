@@ -7,7 +7,7 @@
     :reveal="layoutStore.reveal"
     class='background-app'
     :dir="ltr ? 'ltr' : 'rtl' "
-    v-if="!isLogin && appLoaded"
+    v-if="!isLogin"
     >
     <toolbar slot="header"></toolbar>
     <template >
@@ -17,9 +17,7 @@
   <connection-alert></connection-alert>
     <router-view :key="$route.path" class="background-app"/>
   </q-layout>
-    <div v-if="!isLogin && !appLoaded" class="container-fluid" style="align-items: center;justify-content: center;display: flex; width: 100%; height: 100%">
-        <div class="bb"></div>
-    </div>
+
   <q-layout ref="layout"
     :view="layoutStore.view"
     :left-breakpoint="layoutStore.leftBreakpoint"
@@ -42,20 +40,18 @@ import toolbar from 'layout/toolbar';
 import leftdrawer from 'layout/left_drawer';
 import rightdrawer from 'layout/right_drawer';
 import connectionAlert from 'modules/Connection/components/alert';
-import Connection from 'libraries/fastjs/Wrappers/Connection';
 import { QLayout, Toast, Platform } from 'quasar';
 import layoutStore from 'layout/layout-store';
 import FastClick from 'fastclick';
-import FAST from 'libraries/fastjs/start';
-import Event from 'libraries/fastjs/Wrappers/Event';
+import { FAST, Event, Connection } from 'fast-fastjs';
 
 export default {
   name: 'app',
-  mounted() {
-    FAST.loadRemainingConfig({ Vue: this, interval: true });
+  async mounted() {
+    await FAST.loadRemainingConfig({ interval: true });
     Event.listen({
       name: 'FAST:APPLICATION:LOADED',
-      callback: this.handleLoadedApp,
+      callback: this.handleLoadedApp
     });
     window.addEventListener(
       'load',
@@ -64,14 +60,14 @@ export default {
           FastClick(document.body);
         }
       },
-      false,
+      false
     );
 
-    let emailValidationMessage = email => {
+    let emailValidationMessage = (email) => {
       this.$swal(
         'Email already taken',
         "The email '" + email + "' is already taken. Try a different one.",
-        'error',
+        'error'
       );
     };
 
@@ -84,23 +80,23 @@ export default {
         },
         function(error) {
           return console.log(error);
-        },
+        }
       );
     }
 
-    document.addEventListener('FAST:USER:REGISTRATION:ERROR', error => {
+    document.addEventListener('FAST:USER:REGISTRATION:ERROR', (error) => {
       emailValidationMessage(error.detail.data.submission.email);
     });
 
-    this.$eventHub.on('FAST:USER:REGISTRATION:ERROR', error => {
+    this.$eventHub.on('FAST:USER:REGISTRATION:ERROR', (error) => {
       emailValidationMessage(error.email);
     });
 
-    this.$eventHub.on('lenguageSelection', lenguage => {
+    this.$eventHub.on('lenguageSelection', (lenguage) => {
       this.toggleRtl(lenguage);
     });
 
-    this.$eventHub.on('connectionStatusChanged', status => {
+    this.$eventHub.on('connectionStatusChanged', (status) => {
       this.$store.dispatch('changeIsOnlineStatus', status);
     });
 
@@ -116,16 +112,13 @@ export default {
   methods: {
     toggleRtl: function(lenguage) {
       this.ltr = lenguage.direction === 'ltr';
-    },
-    handleLoadedApp() {
-      this.appLoaded = this.$APP_LOADED;
-    },
+    }
   },
   data() {
     return {
       ltr: true,
       layoutStore,
-      appLoaded: this.$APP_LOADED,
+      appLoaded: window.$APP_LOADED
     };
   },
   computed: {
@@ -135,7 +128,7 @@ export default {
         this.$route.name === 'register' ||
         this.$route.name === 'login_redirect'
       );
-    },
+    }
   },
   components: {
     leftdrawer,
@@ -143,8 +136,8 @@ export default {
     connectionAlert,
     toolbar,
     QLayout,
-    Toast,
-  },
+    Toast
+  }
 };
 </script>
 

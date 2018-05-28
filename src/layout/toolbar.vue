@@ -25,7 +25,7 @@
 import Localization from "modules/Localization/components/selector";
 import wifiDisplay from "modules/Connection/components/display";
 import { QToolbar, QToolbarTitle, QAjaxBar, QBtn, QIcon } from "quasar";
-import Auth from 'libraries/fastjs/repositories/Auth/Auth'
+import {Auth} from 'fast-fastjs'
 import { mapMutations } from "vuex";
 export default {
   components: {
@@ -49,8 +49,8 @@ export default {
   },
   methods: {
     ...mapMutations(["setLayoutNeeded", "setIsLoginPage"]),
-    userEmail() {
-        return Auth.userEmail()
+    email() {
+        return Auth.email()
     },
     openLeftDrawer() {
       this.$eventHub.$emit("openLeftDrawer");

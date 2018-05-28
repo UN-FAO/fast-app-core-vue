@@ -112,10 +112,7 @@
 </style>
 
 <script>
-import Form from 'libraries/fastjs/database/models/Form';
-import FormLabels from 'libraries/fastjs/repositories/Form/Labels';
-import Translation from 'libraries/fastjs/database/models/Translation';
-import Localization from 'libraries/fastjs/repositories/Localization/Localization';
+import { Translation, Form, FormLabels, Localization, FAST } from 'fast-fastjs';
 import { mapActions } from 'vuex';
 import {
   QBtn,
@@ -138,7 +135,6 @@ import Promise from 'bluebird';
 import _forEach from 'lodash/forEach';
 import _isEmpty from 'lodash/isEmpty';
 import _map from 'lodash/map';
-import FAST from 'libraries/fastjs/start';
 
 export default {
   data: function() {
@@ -329,7 +325,7 @@ export default {
         showCancelButton: false,
         onOpen: async () => {
           this.$swal.showLoading();
-          await FAST.sync({ Vue: this, interval: false });
+          await FAST.sync({ interval: false, appConf: this.$appConf });
           this.translations = await FormLabels.get(
             this.selection,
             this.languageSelection

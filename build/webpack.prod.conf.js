@@ -13,7 +13,7 @@ var path = require('path'),
 var configVars = require('../src/config/env');
 
 module.exports = merge(baseWebpackConfig, {
-  entry: ['babel-polyfill', './src/main.js'],
+  entry: './src/main.js',
   module: {
     rules: cssUtils.styleRules({
       sourceMap: config.build.productionSourceMap,
@@ -30,13 +30,12 @@ module.exports = merge(baseWebpackConfig, {
         ecma: 5,
         output: {
           comments: false,
-          beautify: false,
+          beautify: false
         },
         warnings: false
       }
     }),
     */
-
     new webpack.NoEmitOnErrorsPlugin(),
     /*
     new CompressionPlugin({

@@ -21,14 +21,6 @@ const Report = (r) =>
 
 let FormioRoutes = [
   {
-    path: '/formio/forms/:idForm',
-    component: FormShow,
-    name: 'formio_form_show',
-    meta: {
-      requiresAuth: true
-    }
-  },
-  {
     path: '/formio/forms/:idForm/submissions',
     component: Submission,
     name: 'formio_form_submission',
@@ -48,6 +40,14 @@ let FormioRoutes = [
     path: '/formio/forms/:idForm/submissions/:idSubmission/report',
     component: Report,
     name: 'formio_submission_report',
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/formio/forms/:idForm',
+    component: FormShow,
+    name: 'formio_form_show',
     meta: {
       requiresAuth: true
     }

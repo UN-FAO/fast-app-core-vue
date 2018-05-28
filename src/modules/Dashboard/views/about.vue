@@ -99,14 +99,14 @@
 export default {
   data: function() {
     return {
-      show: true
+      show: true,
     };
   },
   methods: {
     togglePage(value) {
-      this.show = value
-    }
-  }
+      this.show = value;
+    },
+  },
 };
 </script>
 
@@ -119,7 +119,8 @@ export default {
   cursor: pointer;
 }
 
-.showing:hover, .notShowing:hover {
+.showing:hover,
+.notShowing:hover {
   background: rgb(14, 109, 165);
   color: white;
 }
@@ -183,21 +184,40 @@ export default {
   display: block;
   text-indent: 3px;
 }
-    .copy .image {margin-bottom: 30px;}
-    .copy .image img {width: 100%; max-width: 450px;}
+.copy .image {
+  margin-bottom: 30px;
+}
+.copy .image img {
+  width: 100%;
+  max-width: 450px;
+}
 
-    .copy .text {
-      color: #282652;
-      font-size: 100%;
-    }
+.copy .text {
+  color: #282652;
+  font-size: 100%;
+}
 
-    .copy .text .highlight {font-size:1.4em; color:#b70509; font-weight: 500; letter-spacing: -0.25px;}
+.copy .text .highlight {
+  font-size: 1.4em;
+  color: #b70509;
+  font-weight: 500;
+  letter-spacing: -0.25px;
+}
 
-    .copy .text ul {margin-top: 20px; margin-bottom: 30px;}
-    .copy .text li {margin-bottom: 15px;}
-    .copy .text li i {font-size: 1.4em;}
+.copy .text ul {
+  margin-top: 20px;
+  margin-bottom: 30px;
+}
+.copy .text li {
+  margin-bottom: 15px;
+}
+.copy .text li i {
+  font-size: 1.4em;
+}
 
-    .copy .text p {font-size: inherit;}
+.copy .text p {
+  font-size: inherit;
+}
 
 .copy .cta {
   cursor: pointer;
@@ -215,5 +235,4 @@ export default {
 .base.overlay .title {
   background-image: linear-gradient(0, #fff, #fff);
 }
-
 </style>

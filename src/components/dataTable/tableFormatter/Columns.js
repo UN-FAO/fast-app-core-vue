@@ -66,7 +66,7 @@ let Columns = class {
 
   static getEditGrid({ form, data, fastMode, vm }) {
     let columns = [];
-    let wantedKeys = Object.keys(data[0]);
+    let wantedKeys = data && data[0] ? Object.keys(data[0]) : [];
     // If we have and edit table
     let visibleColumns = FormioUtils.findComponents(form.components, {
       input: true,

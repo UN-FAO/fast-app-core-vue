@@ -119,7 +119,7 @@
 </template>
 
 <script>
-import { SweetModal, SweetModalTab } from "sweet-modal-vue";
+import { SweetModal, SweetModalTab } from 'sweet-modal-vue';
 import {
   QFixedPosition,
   QFab,
@@ -130,8 +130,8 @@ import {
   QOptionGroup,
   QCollapsible,
   QList
-} from "quasar";
-import Event from "libraries/fastjs/Wrappers/Event";
+} from 'quasar';
+import { Event } from 'fast-fastjs';
 export default {
   components: {
     QFixedPosition,
@@ -146,7 +146,7 @@ export default {
     QCollapsible,
     QList
   },
-  name: "export-menu",
+  name: 'export-menu',
   props: {
     render: {
       required: true
@@ -170,13 +170,13 @@ export default {
       this.$eventHub.emit(event, params);
     },
     exportSelection() {
-      this.emitEvent("FAST:EXPORT", {
+      this.emitEvent('FAST:EXPORT', {
         format: this.exportFormat,
         options: this.exportOptions
       });
-      this.closeMenu()
-      this.exportFormat = undefined
-      this.exportOptions = []
+      this.closeMenu();
+      this.exportFormat = undefined;
+      this.exportOptions = [];
     },
     openMenu() {
       this.$refs.optionsModal.open('tab1');
@@ -187,13 +187,13 @@ export default {
   },
   mounted() {
     Event.listen({
-      name: "FAST:EXPORT:OPENMENU",
+      name: 'FAST:EXPORT:OPENMENU',
       callback: this.openMenu
     });
   },
   beforeDestroy() {
     Event.remove({
-      name: "FAST:EXPORT:OPENMENU",
+      name: 'FAST:EXPORT:OPENMENU',
       callback: this.openMenu
     });
   }

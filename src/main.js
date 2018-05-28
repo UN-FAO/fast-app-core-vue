@@ -1,3 +1,4 @@
+import 'babel-polyfill';
 // === DEFAULT / CUSTOM STYLE ===
 // WARNING! always comment out ONE of the two require() calls below.
 // 1. use next line to activate CUSTOM STYLE (./src/themes)
@@ -29,6 +30,7 @@ import VueI18n from 'vue-i18n';
 Vue.use(VueI18n);
 import EventHub from 'vue-event-hub';
 Vue.use(EventHub);
+
 /* eslint-disable */
 import 'quasar-extras/material-icons';
 import 'quasar-extras/ionicons';
@@ -41,17 +43,20 @@ Vue.use(AsyncComputed);
 import VueAsyncProperties from 'vue-async-properties';
 Vue.use(VueAsyncProperties);
 
-import Moment from 'libraries/fastjs/repositories/Date/moment';
+import { Moment, FAST, Event } from 'fast-fastjs';
 Moment.setLocales();
 
-import FASTConfig from 'libraries/fastjs/config';
-import FAST from 'libraries/fastjs/start';
-
 import { CONFIG_URL, APP_CONFIG_ID } from 'config/env';
-FASTConfig.set({ baseURL: CONFIG_URL, submissionId: APP_CONFIG_ID });
+import { TRANSLATIONS } from 'modules/Localization/appTranslations';
+let appConf = {
+  type: 'remote',
+  appConfigId: APP_CONFIG_ID,
+  appConfigUrl: CONFIG_URL,
+  translations: TRANSLATIONS
+};
 
 Vue.config.productionTip = false;
-
+Vue.prototype.$appConf = appConf;
 Vue.prototype.$http = axios;
 
 if (__THEME === 'mat') {
@@ -63,16 +68,33 @@ if (__THEME === 'mat') {
  */
 Quasar.start(async () => {
   try {
-    let config = await FAST.start({ Vue: Vue, interval: true });
+    let config = await FAST.start({ Vue: Vue, interval: true, appConf });
     // Set the translations into the Plugin
     const i18n = new VueI18n({
       locale: config.defaultLenguage, // set locale
       messages: config.translations // set locale messages
     });
+    window.APP_LOADED = false;
+    Event.listen({
+      name: 'FAST:APPLICATION:LOADED',
+      callback: () => {
+        window.APP_LOADED = true;
+      }
+    });
+
+    let mixin = {
+      computed: {
+        APP_LOADED: function() {
+          return window.APP_LOADED;
+        }
+      }
+    };
+
     /* eslint-disable no-new */
     new Vue({
       i18n,
       el: '#q-app',
+      mixins: [mixin],
       router,
       store,
       render: (h) => h(require('./App'))

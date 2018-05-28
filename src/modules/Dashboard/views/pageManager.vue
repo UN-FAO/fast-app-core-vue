@@ -11,7 +11,6 @@
 
 </template>
 <style>
-
 </style>
 
 <script>
@@ -36,10 +35,10 @@ import {
   QList,
   QItem,
   QItemSeparator
-} from "quasar";
+} from 'quasar';
 
-import Pages from "libraries/fastjs/repositories/Configuration/Pages";
-import actioncards from "../components/actionCards";
+import { Pages } from 'fast-fastjs';
+import actioncards from '../components/actionCards';
 export default {
   components: {
     actioncards,
@@ -78,7 +77,7 @@ export default {
   },
   methods: {
     filterPage(pages, nextRoute) {
-      let page = pages.filter(page => {
+      let page = pages.filter((page) => {
         return page.url === nextRoute;
       });
       return page[0];

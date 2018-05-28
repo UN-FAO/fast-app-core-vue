@@ -24,7 +24,6 @@ DEPLOY_APP_NAME=$(cat package.json \
 ###################################################
 
 echo ${PRODUCTNAME}
-sh ./deploys/getAppRoles.sh
 quasar build
 npm run es5
 sh ./deploys/cordova/deploy_all.sh && \

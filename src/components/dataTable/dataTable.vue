@@ -67,15 +67,14 @@
 
 <script>
 import _get from 'lodash/get';
+import _camelCase from 'lodash/camelCase';
 import Promise from 'bluebird';
 import exportMenu from './exportMenu';
 import Export from './dataExport/Export';
 import Columns from './tableFormatter/Columns';
 import { QTooltip, QBtn, QDataTable, QChip, QIcon } from 'quasar';
-import Import from 'libraries/fastjs/repositories/Submission/Import';
-import Submission from 'libraries/fastjs/database/models/Submission';
+import {Import, Submission, Auth} from 'fast-fastjs'
 import ErrorFormatter from 'components/dataTable/submission/errorFormatter';
-import Auth from 'libraries/fastjs/repositories/Auth/Auth';
 import to from 'await-to-js';
 
 export default {
@@ -85,37 +84,37 @@ export default {
     QBtn,
     QDataTable,
     QChip,
-    exportMenu,
+    exportMenu
   },
   name: 'datatable',
   props: {
     data: {
-      required: true,
+      required: true
     },
     form: {
-      required: true,
+      required: true
     },
     tableActions: {
       required: true,
       type: Array,
-      default: [],
+      default: []
     },
     menuActions: {
       required: true,
       type: Array,
-      default: [],
+      default: []
     },
     fastMode: {
       required: false,
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
   },
   mounted() {
-    this.$eventHub.on('FAST:EXPORT', params => {
+    this.$eventHub.on('FAST:EXPORT', (params) => {
       this.exportTo(params);
     });
-    this.$eventHub.on('FAST:IMPORT', type => {
+    this.$eventHub.on('FAST:IMPORT', (type) => {
       this.importSubmission();
     });
     this.$eventHub.on('FAST:GO:CREATE', () => {
@@ -134,7 +133,7 @@ export default {
     data: function(data) {},
     form: function(data) {},
     tableActions: function(data) {},
-    menuActions: function(data) {},
+    menuActions: function(data) {}
   },
   methods: {
     isOnlineSubmission(_id, _lid) {
@@ -144,7 +143,7 @@ export default {
       this.$swal({
         title: 'Exporting...',
         text: this.$t(
-          'Wait until the file is ready. This can take a couple minutes...',
+          'Wait until the file is ready. This can take a couple minutes...'
         ),
         showCancelButton: false,
         onOpen: async () => {
@@ -152,19 +151,36 @@ export default {
           let data = [];
           data = this.selectedRows.length === 0 ? this.data : this.selectedRows;
           let submissions = await this.getFullSubmissions(data, params.options);
+          let date = new Date()
+            .toJSON()
+            .replace(/-/g, '')
+            .replace(/T/g, '_')
+            .replace(/:/g, '')
+            .slice(0, 15);
+
+          let fileName = _camelCase(this.form.data.title) + '_' + date;
+
           await Export.jsonTo({
+            fileName: fileName,
             output: params.format,
             options: params.options,
             data: submissions,
             formioForm: this.form.data,
-            vm: this,
+            vm: this
           });
-          this.$swal('Exported!', 'The file has been exported.', 'success');
-        },
+          this.$swal(
+            this.$t('Exported!'),
+            this.$t('The file has been exported. File name:') +
+              '<br><strong>' +
+              fileName +
+              '</strong>',
+            'success'
+          );
+        }
       });
     },
     handleSelectionChange(number, rows) {
-      this.selectedRows = rows.map(r => {
+      this.selectedRows = rows.map((r) => {
         return r.data;
       });
     },
@@ -177,9 +193,9 @@ export default {
         form: this.form.data.path,
         filter: {
           'data.formio.formId': this.form.data.path,
-          'data.user_email': Auth.userEmail(),
+          'data.user_email': Auth.email()
         },
-        dataExport: true,
+        dataExport: true
       };
 
       if (options.includes('ownerEmail')) {
@@ -196,7 +212,7 @@ export default {
       }, []);
 
       // Filter the ids
-      sub = sub.filter(s => {
+      sub = sub.filter((s) => {
         return ids.includes(s._id);
       });
       return sub;
@@ -207,7 +223,7 @@ export default {
         this.$swal({
           title: this.$t('Review for multiple rows'),
           text: this.$t("You can't review more than one row"),
-          type: 'error',
+          type: 'error'
         });
         return;
       }
@@ -217,7 +233,7 @@ export default {
       await this.$swal({
         title: 'Loading...',
         text: this.$t(
-          'Getting the submission. This can take a couple seconds...',
+          'Getting the submission. This can take a couple seconds...'
         ),
         showCancelButton: false,
         onOpen: async () => {
@@ -235,13 +251,13 @@ export default {
               idSubmission: submission.content._id,
               fullSubmision: {
                 data: submission.content.data,
-                _id: submission.content._id,
+                _id: submission.content._id
               },
               formio: submission.formio,
-              FAST_EDIT_MODE: 'online-review',
-            },
+              FAST_EDIT_MODE: 'online-review'
+            }
           });
-        },
+        }
       });
     },
     async handleOnlineEdit(submission, formId) {
@@ -253,11 +269,11 @@ export default {
           idSubmission: submission._id,
           fullSubmision: {
             data: loadedSubmission.content.data,
-            _id: submission._id,
+            _id: submission._id
           },
           formio: loadedSubmission.formio,
-          FAST_EDIT_MODE: 'online',
-        },
+          FAST_EDIT_MODE: 'online'
+        }
       });
     },
     async loadSubmission(_id) {
@@ -272,11 +288,11 @@ export default {
             {
               element: '_id',
               query: '=',
-              value: _id,
-            },
+              value: _id
+            }
           ],
-          limit: 1,
-        }),
+          limit: 1
+        })
       );
 
       if (err) {
@@ -284,14 +300,14 @@ export default {
         this.$swal(
           this.$t('Conexion error'),
           this.$t("We couldn't get the submission from the server"),
-          'error',
+          'error'
         );
         throw new Error('Submission was not retreived');
       }
 
       this.loading = false;
       return {
-        content: submission[0],
+        content: submission[0]
       };
     },
     handleReport() {
@@ -301,7 +317,7 @@ export default {
         this.$swal({
           title: this.$t('Report for multiple rows'),
           text: this.$t("You can't see the report more than one row"),
-          type: 'error',
+          type: 'error'
         });
         return;
       }
@@ -311,8 +327,8 @@ export default {
         name: 'formio_submission_report',
         params: {
           idForm: this.form.data.path,
-          idSubmission: submission._lid || submission._id,
-        },
+          idSubmission: submission._lid || submission._id
+        }
       });
     },
     handleDelete() {
@@ -322,7 +338,7 @@ export default {
         this.$swal({
           title: this.$t('No row selected'),
           text: this.$t('You must select at least one row to delete'),
-          type: 'error',
+          type: 'error'
         });
         return;
       }
@@ -334,20 +350,20 @@ export default {
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
         confirmButtonText: this.$t('Yes, delete it!'),
-        cancelButtonText: this.$t('Cancel'),
+        cancelButtonText: this.$t('Cancel')
       }).then(async () => {
-        Promise.each(rows, async submission => {
+        Promise.each(rows, async (submission) => {
           let deleteSubmission = await Submission.local().find({
             filter: {
-              _id: submission._id,
-            },
+              _id: submission._id
+            }
           });
 
           if (deleteSubmission.length === 0) {
             throw new Error('cannot delete an online submission');
           }
           await Submission.local().findAndRemove({
-            _id: deleteSubmission[0]._id,
+            _id: deleteSubmission[0]._id
           });
         })
           .then(async () => {
@@ -355,15 +371,15 @@ export default {
             self.$swal(
               this.$t('Deleted!'),
               this.$t('Your submission has been deleted.'),
-              'success',
+              'success'
             );
           })
-          .catch(error => {
+          .catch((error) => {
             console.log(error);
             this.$swal(
               this.$t('Error!'),
               this.$t("Can't delete online submission."),
-              'error',
+              'error'
             );
           });
       });
@@ -374,8 +390,8 @@ export default {
         input: 'file',
         inputAttributes: {
           accept: '.json',
-          'aria-label': this.$t('Upload your JSON File'),
-        },
+          'aria-label': this.$t('Upload your JSON File')
+        }
       });
       if (file) {
         Import.fromJsonFile(file, this);
@@ -389,7 +405,7 @@ export default {
         html: errorString,
         showCloseButton: true,
         showCancelButton: false,
-        confirmButtonText: 'OK',
+        confirmButtonText: 'OK'
       });
     },
     goToCreateView() {
@@ -404,8 +420,8 @@ export default {
       this.$router.push({
         name: 'formio_form_submission',
         params: {
-          idForm: formId,
-        },
+          idForm: formId
+        }
       });
     },
     goToEditView(props) {
@@ -414,7 +430,7 @@ export default {
         this.$swal({
           title: this.$t('Edit Multiple Rows'),
           text: this.$t("You can't edit more than one row"),
-          type: 'error',
+          type: 'error'
         });
         return;
       }
@@ -430,8 +446,8 @@ export default {
         name: 'formio_submission_update',
         params: {
           idForm: formId,
-          idSubmission: submissionId,
-        },
+          idSubmission: submissionId
+        }
       });
     },
     async editCell(data) {
@@ -441,7 +457,7 @@ export default {
         input: 'text',
         inputPlaceholder: 'Enter amount for ' + data.col.label,
         inputValue: data.data,
-        showCancelButton: true,
+        showCancelButton: true
       });
 
       if (value) {
@@ -458,7 +474,7 @@ export default {
         document.dispatchEvent(autoSave);
         */
       }
-    },
+    }
   },
   computed: {
     columns() {
@@ -466,9 +482,9 @@ export default {
         form: this.form.data,
         data: this.data,
         fastMode: this.fastMode,
-        vm: this,
+        vm: this
       });
-    },
+    }
   },
   data() {
     return {
@@ -483,13 +499,13 @@ export default {
         responsive: false,
         pagination: {
           rowsPerPage: 10,
-          options: [10, 30, 50, 100],
+          options: [10, 30, 50, 100]
         },
         messages: {
           noData: this.$t('No data available to show.'),
           noDataAfterFiltering: this.$t(
-            'No results. Please refine your search terms.',
-          ),
+            'No results. Please refine your search terms.'
+          )
         },
         // (optional) Override default labels. Useful for I18n.
         labels: {
@@ -498,19 +514,19 @@ export default {
           rows: this.$t('Rows'),
           selected: {
             singular: this.$t('item selected.'),
-            plural: this.$t('items selected.'),
+            plural: this.$t('items selected.')
           },
           clear: this.$t('Clear Selection'),
           search: this.$t('Search'),
-          all: this.$t('All'),
+          all: this.$t('All')
         },
-        selection: this.fastMode !== 'editGrid' ? 'multiple' : 0,
+        selection: this.fastMode !== 'editGrid' ? 'multiple' : 0
       },
       selectedRows: [],
       clickedRow: null,
-      visibleColumns: [],
+      visibleColumns: []
     };
-  },
+  }
 };
 </script>
 
