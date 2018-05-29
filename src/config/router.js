@@ -9,7 +9,7 @@ import AuthRoutes from 'modules/Auth/routes';
 import DashboardRoutes from 'modules/Dashboard/routes';
 import FormioRoutes from 'modules/Formio/routes';
 import SettingsRoutes from 'modules/Settings/routes';
-import CustomRoutes from '../../../src/router/routes';
+import CustomRoutes from '_src/router/routes';
 
 Vue.use(VueRouter);
 /*
