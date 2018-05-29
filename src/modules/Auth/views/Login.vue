@@ -95,11 +95,6 @@ export default {
       )
         .then((User) => {
           Loading.hide();
-          console.log(
-            'window.$APP_LOADED',
-            this.$root.APP_LOADED,
-            window.APP_LOADED
-          );
           this.$router.push({
             name: 'dashboard'
           });

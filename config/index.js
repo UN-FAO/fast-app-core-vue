@@ -7,8 +7,7 @@ module.exports = {
     src: path.resolve(__dirname, '../src'),
     assets: path.resolve(__dirname, '../src/assets'),
     '@': path.resolve(__dirname, '../src/components'),
-    variables: path.resolve(__dirname, '../src/themes/quasar.variables.styl'),
-    _src: path.resolve(__dirname, '../../../src')
+    variables: path.resolve(__dirname, '../src/themes/quasar.variables.styl')
   },
 
   // Progress Bar Webpack plugin format
