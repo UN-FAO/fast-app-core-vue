@@ -25,7 +25,7 @@
     :reveal="layoutStore.reveal"
     class='background-login'
     :dir="ltr ? 'ltr' : 'rtl' "
-    v-if="isLogin"
+    v-else
     >
     <toolbar slot="header"></toolbar>
     <router-view :key="$route.path" class="background-login"/>
@@ -126,7 +126,7 @@ export default {
       return (
         this.$route.name === 'login' ||
         this.$route.name === 'register' ||
-        this.$route.name === 'login_redirect'
+        this.$route.path === '/'
       );
     }
   },

@@ -16,8 +16,7 @@ let AuthRoutes = [
   },
   {
     path: '/',
-    component: Login,
-    name: 'login_redirect'
+    redirect: '/login'
   }
 ];
 

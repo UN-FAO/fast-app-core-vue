@@ -64,11 +64,8 @@ router.beforeEach((to, from, next) => {
   // If the route requires Auth
   if (to.meta.requiresAuth && Auth.user() === false) {
     next(false);
-    router.push({ path: '/login' });
-  } else if (
-    Auth.user() &&
-    (to.name === 'login' || to.name === 'login_redirect')
-  ) {
+    router.push({ name: 'login' });
+  } else if (Auth.user() && !to.meta.requiresAuth) {
     router.push({ name: 'dashboard' });
   } else {
     window.scrollTo(0, 0);

@@ -16,9 +16,6 @@ import Vue from 'vue';
 import Quasar from 'quasar';
 Vue.use(Quasar); // Install Quasar Framework
 
-// import Raven from 'config/raven'
-// Raven.set(Vue)
-
 import router from 'config/router';
 import store from 'config/store';
 import axios from 'config/axios';
