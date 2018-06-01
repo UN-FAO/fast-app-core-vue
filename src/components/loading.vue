@@ -1,17 +1,17 @@
 <template>
   <div style="text-align: center;">
-    <q-inner-loading  v-if="show && showLoading">
+    <q-inner-loading  v-if="true">
       <q-spinner-audio size="50px" color="primary"></q-spinner-audio>
       <h5>{{$t('Loading...')}}</h5>
     </q-inner-loading>
   </div>
 </template>
 <script>
-import { QinnerLoading, QSpinnerAudio } from "quasar";
+import { QInnerLoading, QSpinnerAudio } from "quasar";
 export default {
   name: "loading",
   components: {
-    QinnerLoading,
+    QInnerLoading,
     QSpinnerAudio
   },
   props: {

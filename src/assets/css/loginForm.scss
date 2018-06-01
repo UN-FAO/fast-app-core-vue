@@ -150,7 +150,6 @@ border-radius:45px;
       margin: 0 auto;
       background: rgba(0, 0, 0, 0.3);
       padding: 25px 25px 50px 25px;
-      text-align: center;
       position: relative;
       max-height: 65vh;
       overflow-y: scroll;
@@ -174,4 +173,13 @@ border-radius:45px;
   color: white;
   text-align: -webkit-center;
   text-transform: uppercase;
+}
+
+
+#registerForm .formio-component-submit {
+  text-align: center;
+}
+
+#registerForm .formio-component-submit button {
+  background-color: green
 }

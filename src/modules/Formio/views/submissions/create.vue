@@ -64,12 +64,21 @@
                 <q-btn @click="submitForm()" class="pull-right primary" color="danger">Submit</q-btn>
               -->
             <!--<q-icon name="thumb_up" />-->
-            <q-tabs inverted id="contentForm" v-model="selectedTab">
+            <q-tabs inverted id="contentForm" >
               <!-- Tabs - notice slot="title" -->
 
               <q-tab v-bind:class="!$FAST_CONFIG.PARALLEL_SURVEYS ? 'hidden' : ''" default slot="title" name="tab-1" icon="person" :label="participantName" :color="saved ? 'primary' : 'red'" />
               <!-- Targets -->
-              <q-tab slot="title" v-if="participant.submissionId !== $route.params.idSubmission" v-for="participant in participants" :key="participant.submissionId" icon="person" :label="participant.participantName" :color="saved ? 'primary' : 'red'" @click="goToSurvey(participant.submissionId)"
+              <q-tab 
+                slot="title" 
+                v-if="participant.submissionId !== $route.params.idSubmission" 
+                v-for="participant in participants" 
+                :key="participant.submissionId" 
+                icon="person" 
+                :label="participant.participantName" 
+                :name="participant.participantName" 
+                :color="saved ? 'primary' : 'red'" 
+                @click="goToSurvey(participant.submissionId)"
               />
 
               <q-tab-pane name="tab-1" ref="tab1">
@@ -131,7 +140,15 @@
       </div>
     </div>
     <q-tabs slot="footer" v-model="tab" v-if="$FAST_CONFIG.TAB_MENU">
-      <q-tab icon="fa-file" slot="title" v-for="(page, index) in _pages" :key="page.title" @click="goToPage(index)" :ref="'page-'+ index + 1" :name="index + 1" v-bind:class="currentPage === index ? 'activePage' : ''" :label="$t(getLabelForPage(page))">
+      <q-tab 
+        icon="fa-file" 
+        slot="title" 
+        v-for="(page, index) in _pages" 
+        :key="page.title" @click="goToPage(index)" 
+        :ref="'page-'+ index + 1" 
+        :name="(index + 1).toString()" 
+        v-bind:class="currentPage === index ? 'activePage' : ''" 
+        :label="$t(getLabelForPage(page))">
       </q-tab>
     </q-tabs>
   </div>
@@ -213,14 +230,14 @@ export default {
 
     this.$eventHub.on('formio.nextPage', (data) => {
       this.currentPage = data.nextPage.page;
-      this.tab = data.nextPage.page + 1;
+      this.tab = (data.nextPage.page + 1).toString();
       this.currentQuestion = -1;
       window.scrollTo(0, 0);
     });
 
     this.$eventHub.on('formio.prevPage', (data) => {
       this.currentPage = data.prevPage.page;
-      this.tab = data.prevPage.page + 1;
+      this.tab = (data.prevPage.page + 1).toString();
       this.currentQuestion = -1;
       window.scrollTo(0, 0);
     });
@@ -388,7 +405,7 @@ export default {
       parallelSub: [],
       autoCreate: !this.$route.params.idSubmission,
       readOnly: false,
-      tab: 1,
+      tab: "1",
       customRender: false,
       customRenderArray: []
     };
@@ -479,20 +496,20 @@ export default {
 
         this.customRender = true;
         this.currentPage = index;
-        this.tab = index + 1;
+        this.tab = (index + 1).toString();
         this.currentQuestion = -1;
         window.scrollTo(0, 0);
         return;
       }
       this.customRender = false;
       try {
-        let pageNumber = index + 1;
+        let pageNumber = (index + 1).toString();
         let page = document.querySelectorAll(
           'ul.pagination li:nth-of-type(' + pageNumber + ')'
         )[0];
         page.click();
         this.currentPage = index;
-        this.tab = index + 1;
+        this.tab = (index + 1).toString();
         this.currentQuestion = -1;
         window.scrollTo(0, 0);
         if (this.$FAST_CONFIG.NAVIGATION_AUTOCLOSE_ON_SELECTION) {

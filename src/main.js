@@ -44,12 +44,13 @@ import { Moment, FAST, Event } from 'fast-fastjs';
 Moment.setLocales();
 
 import { CONFIG_URL, APP_CONFIG_ID } from 'config/env';
-import { TRANSLATIONS } from 'modules/Localization/appTranslations';
+import TRANSLATIONS from 'modules/Localization/appTranslations';
+
 let appConf = {
   type: 'remote',
   appConfigId: APP_CONFIG_ID,
   appConfigUrl: CONFIG_URL,
-  translations: TRANSLATIONS
+  i18n: TRANSLATIONS
 };
 
 Vue.config.productionTip = false;

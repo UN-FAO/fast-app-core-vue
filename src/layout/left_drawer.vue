@@ -32,19 +32,19 @@
       <collectionpagelinks v-if="$FAST_CONFIG.IS_SURVEY"></collectionpagelinks>
 
 
-    <q-side-link v-if="isReviewer()" multiline highlight item :to="{path: '/settings/alldata'}" :key="settings">
+    <q-side-link v-if="isReviewer()" multiline highlight item :to="{path: '/settings/alldata'}" key="settings">
       <q-item-side icon="fa-cog" />
       <q-item-main :label="$t('Review Data')"/>
     </q-side-link>
 
 
-    <q-side-link v-if="isAdmin()" multiline highlight item :to="{path: '/settings/alldata'}" :key="settings">
+    <q-side-link v-if="isAdmin()" multiline highlight item :to="{path: '/settings/alldata'}" key="settings">
       <q-item-side icon="fa-cog" />
       <q-item-main :label="$t('Application Settings')"/>
     </q-side-link>
 
 
-    <q-side-link multiline highlight item :to="{name: 'About'}" :key="about" v-if="$FAST_CONFIG.HAS_ABOUT">
+    <q-side-link multiline highlight item :to="{name: 'About'}" key="about" v-if="$FAST_CONFIG.HAS_ABOUT">
       <q-item-side icon="tablet_mac" />
       <q-item-main :label="$t('About') +' '+ $FAST_CONFIG.APP_FANTACY_NAME" />
     </q-side-link>

@@ -1,8 +1,10 @@
 <template>
 <div class="container">
     <div class="row">
+    
         <div class="col-xl-6 col-lg-6 col-md-9 col-sm-12 col-xs-12" style="margin:auto">
             <div class="wrap">
+            
                 <p class="form-title">
                     {{$FAST_CONFIG.APP_FANTACY_NAME}}
                  <div class="form-subtitle"> {{$FAST_CONFIG.APP_PHRASE}}</div>
@@ -10,13 +12,14 @@
 
 
                 <div class="form-login" id="registerForm" >
+                <p class="text-center pull-right" style="text-decoration:underline"><router-link :to="{ path: 'login' }"><h5>{{$t('Back to login')}}</h5></router-link></p>
                   <br>
                         <formio
                           :formURL="$FAST_CONFIG.APP_URL + '/userregister'"
                           hashField="password"
                         />
                     <br>
-                <p class="text-center"><router-link :to="{ path: 'login' }">{{$t('Back to login')}}</router-link></p>
+                <p class="text-center"><router-link :to="{ path: 'login' }"><h5>{{$t('Back to login')}}</h5></router-link></p>
                 </div>
             </div>
         </div>

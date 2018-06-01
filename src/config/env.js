@@ -1,2 +1,2 @@
-exports.APP_CONFIG_ID = process.env.APP_CONFIG_ID;
-exports.CONFIG_URL = process.env.CONFIG_URL;
+exports.APP_CONFIG_ID = '5aa8e7376d2d1e82bc67e8a9'
+exports.CONFIG_URL = 'https://ydvahgxgqliaeuf.form.io/configuration/submission/'

@@ -26,19 +26,18 @@
                                        @keyup.enter="handleLogin"/>
                             </q-field>
                   </div>
-
-                <q-btn color="green" @click="handleLogin" :disable="LoadingLogIn" >
+                <div class="text-center">
+                <q-btn  color="green" @click="handleLogin" :disable="LoadingLogIn" >
                   <div>{{$t('Login')}} <q-spinner-mat v-if="LoadingLogIn"></q-spinner-mat></div>
                 </q-btn>
-
+                </div>
                   <br>
-                  <p class="text-center _new-user"><router-link :to="{ path: 'register' }">{{$t('New user')}}?</router-link></p>
+                  <p class="text-center"><router-link :to="{ path: 'register' }"><h5>{{$t('New user')}}?</h5></router-link></p>
                   <p class="text-center" style="color: grey !important">
                     {{$t('Version')}}   {{$FAST_CONFIG.FAST_VERSION}}
                      <q-icon name="fa-cog" color="white" @click="adminLogin" style="cursor:pointer;" v-if="!isAdminLogin"/>
                        <q-icon style="cursor:pointer;" name="fa-arrow-circle-left" color="white" @click="adminLogin" v-if="isAdminLogin"/>
                   </p>
-                  <a href="fastapp://">Open the App!</a>
                 </div>
 
                      <div class="sponsors" >

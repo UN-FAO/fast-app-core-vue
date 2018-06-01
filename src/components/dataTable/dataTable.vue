@@ -33,20 +33,20 @@
 
 <template slot="selection" slot-scope="props">
 
-  <q-btn v-if="tableActions.includes('review')" color="primary"  flat  @click='handleReview(props)'>
+  <q-btn v-if="tableActions && tableActions.includes('review')" color="primary"  flat  @click='handleReview(props)'>
     <q-icon name="remove_red_eye" />
     <q-tooltip>{{$t('Review')}}</q-tooltip>
   </q-btn>
-  <q-btn v-if="tableActions.includes('edit')" color="primary" flat   @click='goToEditView(props)'>
+  <q-btn v-if="tableActions && tableActions.includes('edit')" color="primary" flat   @click='goToEditView(props)'>
     <q-icon name="edit" />
     <q-tooltip>{{$t('Edit')}}</q-tooltip>
   </q-btn>
-  <q-btn v-if="tableActions.includes('report')" color="primary" flat  @click='handleReport(props)'>
+  <q-btn v-if="tableActions && tableActions.includes('report')" color="primary" flat  @click='handleReport(props)'>
   <q-icon name="assignment" />
     <q-tooltip>{{$t('Report')}}</q-tooltip>
   </q-btn>
 
-   <q-btn flat v-if="tableActions.includes('delete')" color="grey" @click="handleDelete(props)">
+   <q-btn flat v-if="tableActions && tableActions.includes('delete')" color="grey" @click="handleDelete(props)">
     <q-icon name="delete" />
     <q-tooltip>{{$t('Delete')}}</q-tooltip>
   </q-btn>
@@ -73,7 +73,7 @@ import exportMenu from './exportMenu';
 import Export from './dataExport/Export';
 import Columns from './tableFormatter/Columns';
 import { QTooltip, QBtn, QDataTable, QChip, QIcon } from 'quasar';
-import {Import, Submission, Auth} from 'fast-fastjs'
+import { Import, Submission, Auth } from 'fast-fastjs';
 import ErrorFormatter from 'components/dataTable/submission/errorFormatter';
 import to from 'await-to-js';
 
@@ -95,18 +95,18 @@ export default {
       required: true
     },
     tableActions: {
-      required: true,
+      required: false,
       type: Array,
-      default: []
+      default: () => { [] }
     },
     menuActions: {
-      required: true,
+      required: false,
       type: Array,
-      default: []
+      default: () => { [] }
     },
     fastMode: {
       required: false,
-      type: Boolean,
+      type: String,
       default: false
     }
   },
@@ -198,7 +198,7 @@ export default {
         dataExport: true
       };
 
-      if (options.includes('ownerEmail')) {
+      if (options && options.includes('ownerEmail')) {
         query.populate = ['owner'];
       }
       let sub = await Submission.merged().showView(query);
@@ -520,7 +520,7 @@ export default {
           search: this.$t('Search'),
           all: this.$t('All')
         },
-        selection: this.fastMode !== 'editGrid' ? 'multiple' : 0
+        selection: this.fastMode !== 'editGrid' ? 'multiple' : false
       },
       selectedRows: [],
       clickedRow: null,

@@ -119,7 +119,6 @@ export default {
                   }
                 });
                 delete translations['Form Label'];
-                console.log(translations, 'translations');
                 await self.updateTranslation(changedLabel, translations);
               }
             });

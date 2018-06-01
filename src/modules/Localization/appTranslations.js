@@ -1,4 +1,4 @@
-exports.TRANSLATIONS = [
+let t = [
   'Collected data',
   'New Survey',
   'Filter results...',
@@ -135,8 +135,15 @@ exports.TRANSLATIONS = [
   "You don't have access to modify this submission",
   'Conexion error',
   "We couldn't get the submission from the server",
-  "Exported!",
+  'Exported!',
   'The file has been exported. File name:',
+  'Export',
+  'Import',
+  'item selected.',
+  'All Data',
+  'Data reviewers',
+  'Online Submission',
+  'Draft',
 
   // Formio Translations
   'complete',
@@ -173,11 +180,14 @@ exports.TRANSLATIONS = [
   'submit',
 
   // FAW translations
-  /*
+
   'Scouting and traps',
   'Scouting',
-  'Traps'
-  */
+  'Traps',
+  'Fall Armyworm Monitoring and Early Warning System',
+  'FAMEWS',
+
+  /*
   // MedAid Translations
 
   'Welcome to the APP for the Survey on Social Acceptability of Aquaculture',
@@ -186,5 +196,6 @@ exports.TRANSLATIONS = [
   'icon visible on the top right corner during the process',
   'You can find a glossary of aquaculture terms',
   'The survey is carried out within the project "Mediterranean Aquaculture Integrated DevelopmentMedAID)" supported by the European Union in the frame of Horizon 2020, grant agreement number 727315.'
-
+   */
 ];
+export default t;

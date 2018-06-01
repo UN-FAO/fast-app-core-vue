@@ -5,16 +5,16 @@
       <q-card-main>
         <q-list separator style="border: none !important">
 
-           <q-item class="formioPagination" @click="goToRoute('alldata')"  multiline style="text-align: left; text-transform: uppercase; min-height: 60px; border-radius: 5px;" link v-bind:class="activePage">
+           <q-item class="formioPagination" @click="goToRoute('alldata')"  multiline style="text-align: left; text-transform: uppercase; min-height: 60px; border-radius: 5px;" link>
              <q-item-tile avatar>
                <img src="statics/customSVG/allData.svg">
               </q-item-tile>
-            <q-item-main style=" margin-top: auto;  margin-bottom: auto; margin-left:10px" :label="$t('All data')" label-lines="3" />
+            <q-item-main style=" margin-top: auto;  margin-bottom: auto; margin-left:10px" :label="$t('All Data')" label-lines="3" />
           </q-item>
 
 
 
-           <q-item class="formioPagination" v-if="$FAST_CONFIG.DATA_REVIEWERS && isAdmin()" @click="goToRoute('reviewers')"  multiline style="text-align: left; text-transform: uppercase; min-height: 60px; border-radius: 5px;" link v-bind:class="activePage">
+           <q-item class="formioPagination" v-if="$FAST_CONFIG.DATA_REVIEWERS && isAdmin()" @click="goToRoute('reviewers')"  multiline style="text-align: left; text-transform: uppercase; min-height: 60px; border-radius: 5px;" link>
              <q-item-tile avatar>
                <img src="statics/customSVG/reviewer.svg">
               </q-item-tile>
@@ -22,7 +22,7 @@
           </q-item>
 
 
-           <q-item class="formioPagination" v-if="isAdmin()" multiline @click="goToRoute('translations')" style="text-align: left; text-transform: uppercase; min-height: 60px; border-radius: 5px;" link v-bind:class="activePage">
+           <q-item class="formioPagination" v-if="isAdmin()" multiline @click="goToRoute('translations')" style="text-align: left; text-transform: uppercase; min-height: 60px; border-radius: 5px;" link>
               <q-item-tile icon="translate">
               </q-item-tile>
             <q-item-main  style=" margin-top: auto;  margin-bottom: auto; margin-left:20px" :label="$t('Translations')" label-lines="3" />
@@ -32,7 +32,7 @@
       </q-card-main>
     </q-card>
 
-    <q-card color="white" v-bind:class="getFormClass" style="position:inherit !important;">
+    <q-card v-bind:class="getFormClass" style="position:inherit !important;">
       <q-card-main>
 
         <q-btn flat @click="togglePages" icon="menu" style="color:black;"></q-btn>

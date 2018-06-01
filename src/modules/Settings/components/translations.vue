@@ -38,10 +38,10 @@
 
       <div v-if="!hasTranslation()" class="relative-position">
 
-                  <q-inner-loading :visible="true">
-        <q-spinner-gear size="50px" color="primary"></q-spinner-gear>
+      <q-inner-loading :visible="true">
+          <q-spinner-audio size="50px" color="primary"></q-spinner-audio>
       </q-inner-loading>
-
+      </div>
 
         <tstats :stats="translations.stats"> </tstats>
         <div class="col-lg-12">
@@ -124,7 +124,7 @@ import {
   QItemSide,
   QItemMain,
   Toast,
-  QSpinnerGear,
+  QSpinnerAudio,
   QInnerLoading,
   QCheckbox,
   QInput
@@ -172,7 +172,7 @@ export default {
     QTooltip,
     tstats,
     hottable,
-    QSpinnerGear,
+    QSpinnerAudio,
     QInnerLoading,
     QCheckbox,
     QPopover,
@@ -185,6 +185,9 @@ export default {
   },
   computed: {
     filteredForms: function() {
+      if (!this.formNameFilters) {
+        return []
+      }
       // application
       let forms = this.formNameFilters.filter((formNameFilter) => {
         return (
@@ -202,6 +205,9 @@ export default {
       return forms;
     },
     filteredLanguages: function() {
+       if (!this.formNameFilters) {
+        return []
+      }
       return this.languageNameFilters.filter((languageNameFilter) => {
         return (
           languageNameFilter.label
@@ -211,6 +217,9 @@ export default {
       });
     },
     filteredLabels: function() {
+      if (!this.translations.labels) {
+        return []
+      }
       this.searchBox.toLowerCase();
       let labels = this.translations.labels.filter((translation) => {
         if (this.untranslated) {
