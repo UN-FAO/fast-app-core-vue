@@ -1,4 +1,5 @@
 import 'babel-polyfill';
+require('offline-plugin/runtime').install();
 // === DEFAULT / CUSTOM STYLE ===
 // WARNING! always comment out ONE of the two require() calls below.
 // 1. use next line to activate CUSTOM STYLE (./src/themes)

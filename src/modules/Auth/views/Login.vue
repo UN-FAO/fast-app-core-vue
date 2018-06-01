@@ -27,8 +27,8 @@
                             </q-field>
                   </div>
 
-                <q-btn color="green" @click="handleLogin" >
-                  <div>{{$t('Login')}}</div>
+                <q-btn color="green" @click="handleLogin" :disable="LoadingLogIn" >
+                  <div>{{$t('Login')}} <q-spinner-mat v-if="LoadingLogIn"></q-spinner-mat></div>
                 </q-btn>
 
                   <br>
@@ -69,7 +69,8 @@ export default {
         username: '',
         password: ''
       },
-      isAdminLogin: false
+      isAdminLogin: false,
+      LoadingLogIn: false
     };
   },
   /**
@@ -84,6 +85,7 @@ export default {
      * @return {[type]} [description]
      */
     handleLogin(event, done) {
+      this.LoadingLogIn = true
       this.credentials.password = this.credentials.password.trim();
       this.credentials.username = this.credentials.username.trim();
       // Try to authenticate the User
