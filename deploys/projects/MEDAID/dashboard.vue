@@ -3,12 +3,12 @@
     <div class="section-title pageTitle">
       {{ $t("Home") }}
     </div>
-    <hr style="border-top: 1px solid lightgray;">
+
 
     <div class="row">
-      <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-xs-12" style="margin:auto;">
-        <q-card style="background:white;">
-          <q-card-title>
+      <div class="col-xl-12" >
+        <q-card flat style="background:transparent;border: none;">
+          <q-card-title style="background:transparent;">
             <h4>
               {{ $t("Welcome to the APP for the Survey on Social Acceptability of Aquaculture") }}(*)
 
@@ -103,8 +103,8 @@
 
 
     <div class="row">
-      <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-xs-12" style="margin:auto;">
-        <q-card style="background:white;">
+      <div class="col-xl-12" style="margin:auto;">
+        <q-card flat style="background:transparent;border: none;">
           <q-card-main>
             <q-list class="no-border">
               <q-item>
@@ -143,10 +143,14 @@ import {
   QTooltip,
   QList,
   QItem,
-  QItemSeparator,
+  QItemTile,
+  QItemMain,
+  QItemSeparator
 } from 'quasar';
 export default {
   components: {
+    QItemTile,
+    QItemMain,
     QCard,
     QCardMedia,
     QItemSide,
@@ -166,8 +170,8 @@ export default {
     QTooltip,
     QList,
     QItem,
-    QItemSeparator,
+    QItemSeparator
   },
-  name: 'collectiondashboard',
+  name: 'collectiondashboard'
 };
 </script>

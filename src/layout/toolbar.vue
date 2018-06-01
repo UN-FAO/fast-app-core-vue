@@ -23,7 +23,7 @@
 </template>
 <script>
 import Localization from "modules/Localization/components/selector";
-import wifiDisplay from "modules/Connection/components/display";
+import wifiDisplay from "components/Connection/components/display";
 import faologo from "components/faologo"
 import { QToolbar, QToolbarTitle, QAjaxBar, QBtn, QIcon } from "quasar";
 import {Auth} from 'fast-fastjs'
