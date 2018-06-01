@@ -7,8 +7,8 @@
 
     <div class="row">
       <div class="col-xl-12" >
-        <q-card style="background:white;">
-          <q-card-title>
+        <q-card flat style="background:transparent;border: none;">
+          <q-card-title style="background:transparent;">
             <h4>
               {{ $t("Welcome to the APP for the Survey on Social Acceptability of Aquaculture") }}(*)
 
@@ -104,7 +104,7 @@
 
     <div class="row">
       <div class="col-xl-12" style="margin:auto;">
-        <q-card style="background:white;">
+        <q-card flat style="background:transparent;border: none;">
           <q-card-main>
             <q-list class="no-border">
               <q-item>
@@ -143,10 +143,14 @@ import {
   QTooltip,
   QList,
   QItem,
+  QItemTile,
+  QItemMain,
   QItemSeparator,
 } from 'quasar';
 export default {
   components: {
+    QItemTile,
+    QItemMain,
     QCard,
     QCardMedia,
     QItemSide,

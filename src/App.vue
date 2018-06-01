@@ -38,7 +38,7 @@
 import toolbar from 'layout/toolbar';
 import leftdrawer from 'layout/left_drawer';
 import rightdrawer from 'layout/right_drawer';
-import connectionAlert from 'modules/Connection/components/alert';
+import connectionAlert from 'components/Connection/components/alert';
 import { QLayout, Toast, Platform } from 'quasar';
 import layoutStore from 'layout/layout-store';
 import FastClick from 'fastclick';

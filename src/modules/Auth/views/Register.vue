@@ -2,14 +2,6 @@
 <div class="container">
     <div class="row">
         <div class="col-xl-6 col-lg-6 col-md-9 col-sm-12 col-xs-12" style="margin:auto">
-            <div class="pr-wrap">
-                <div class="pass-reset">
-                    <label>
-                        Enter the email you signed up with</label>
-                    <input type="email" placeholder="Email" />
-                    <input type="submit" value="Submit" class="pass-reset-submit btn btn-success btn-sm" />
-                </div>
-            </div>
             <div class="wrap">
                 <p class="form-title">
                     {{$FAST_CONFIG.APP_FANTACY_NAME}}
@@ -24,7 +16,7 @@
                           hashField="password"
                         />
                     <br>
-                <p class="text-center _new-user"><router-link :to="{ path: 'login' }">{{$t('Back to login')}}</router-link></p>
+                <p class="text-center"><router-link :to="{ path: 'login' }">{{$t('Back to login')}}</router-link></p>
                 </div>
             </div>
         </div>

@@ -1,5 +1,5 @@
 <template>
-<q-btn ref="target" flat="true" v-if="show" class="absolute-right">
+<q-btn ref="target" flat v-if="show" class="absolute-right">
     <q-icon name="language" color="white" />
   <!-- Direct child of target -->
   <q-popover ref="popover">
@@ -7,7 +7,7 @@
       <q-item
         v-bind:class="{ active: isActive(lenguage.code)}"
         @click="setLanguage({code: lenguage.code, direction: lenguage.direction}), $refs.popover.close()"
-        v-for="lenguage in lenguages"
+        v-for="lenguage in languages"
         :key="lenguage.code"
       >
       {{lenguage.label}}
@@ -58,16 +58,16 @@ export default {
     QCardMain
   },
   async mounted() {
-    this.lenguages = await Translation.local().supportedLanguages();
+    this.languages = await Translation.local().supportedLanguages();
     this.rerender();
 
     this.$eventHub.on("Translation:languageAdded", async data => {
-      this.lenguages = await Translation.local().supportedLanguages();
+      this.languages = await Translation.local().supportedLanguages();
       this.rerender();
     });
 
     this.$eventHub.on("Translation:updated", async data => {
-      this.lenguages = await Translation.local().supportedLanguages();
+      this.languages = await Translation.local().supportedLanguages();
       this.rerender();
     });
   },
@@ -85,8 +85,7 @@ export default {
       return (
         this.$route.name !== "login" &&
         this.$route.name !== "register" &&
-        this.$route.name !== "login_redirect" &&
-        this.$route.name !== "adminLogin"
+        this.$route.name !== "login_redirect"
       );
     }
   },
@@ -122,7 +121,7 @@ export default {
       this.lenguage = lenguage.code;
       Moment.changeLanguage(lenguage.code)
       localStorage.setItem("defaultLenguage", lenguage.code);
-      this.$eventHub.$emit("lenguageSelection", lenguage);
+      this.$eventHub.$emit("languageselection", lenguage);
       this.$swal({
         title: this.$t("Language Changed"),
         text: this.$t("The language was changed."),
