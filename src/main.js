@@ -18,7 +18,6 @@ Vue.use(Quasar); // Install Quasar Framework
 
 import router from 'config/router';
 import store from 'config/store';
-import axios from 'config/axios';
 
 import VueSweetAlert from 'vue-sweetalert';
 Vue.use(VueSweetAlert);
@@ -54,7 +53,6 @@ let appConf = {
 
 Vue.config.productionTip = false;
 Vue.prototype.$appConf = appConf;
-Vue.prototype.$http = axios;
 
 if (__THEME === 'mat') {
   require('quasar-extras/roboto-font');
