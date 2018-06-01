@@ -38,6 +38,7 @@
     "bootstrap-rtl-ondemand": "^3.3.4",
     "chart.js": "^2.7.2",
     "choices.js": "^3.0.4",
+    "dotenv-webpack": "^1.5.5",
     "fast-downloads": "0.0.10",
     "fast-fastjs": "0.0.9",
     "fast-submission2any": "0.0.5",

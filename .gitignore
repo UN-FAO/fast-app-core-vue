@@ -17,3 +17,4 @@ electron/
 deploys/all/*
 cypress/screenshots/*
 deploys/all
+.env

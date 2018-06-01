@@ -9,6 +9,7 @@ var path = require('path'),
   useCssSourceMap =
     (env.dev && config.dev.cssSourceMap) ||
     (env.prod && config.build.productionSourceMap);
+const Dotenv = require('dotenv-webpack');
 
 function resolve(dir) {
   return path.join(__dirname, '..', dir);
@@ -96,6 +97,10 @@ module.exports = {
     ]
   },
   plugins: [
+    new Dotenv({
+      safe: true,
+      systemvars: true
+    }),
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
     new webpack.DefinePlugin({
       'process.env': config[env.prod ? 'build' : 'dev'].env,
