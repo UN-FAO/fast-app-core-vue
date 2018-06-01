@@ -499,7 +499,7 @@ export default {
         responsive: false,
         pagination: {
           rowsPerPage: 10,
-          options: [10, 30, 50, 100]
+          options: [10, 30, 50, 100, 200]
         },
         messages: {
           noData: this.$t('No data available to show.'),

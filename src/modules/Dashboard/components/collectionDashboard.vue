@@ -3,10 +3,10 @@
     <div class="section-title pageTitle">
       {{ $t("Home") }}
     </div>
-    <hr style="border-top: 1px solid lightgray;">
+
 
     <div class="row">
-      <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-xs-12" style="margin:auto;">
+      <div class="col-xl-12" >
         <q-card style="background:white;">
           <q-card-title>
             <h4>
@@ -103,7 +103,7 @@
 
 
     <div class="row">
-      <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-xs-12" style="margin:auto;">
+      <div class="col-xl-12" style="margin:auto;">
         <q-card style="background:white;">
           <q-card-main>
             <q-list class="no-border">

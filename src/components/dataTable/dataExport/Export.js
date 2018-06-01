@@ -2,7 +2,7 @@ import Promise from 'bluebird';
 import Download from 'fast-downloads';
 import AnyExporter from 'fast-submission2any';
 import FormioExport from 'formio-export';
-import {Translation} from 'fast-fastjs';
+import { Translation } from 'fast-fastjs';
 import _mapValues from 'lodash/mapValues';
 
 let Export = class {
@@ -17,13 +17,16 @@ let Export = class {
       : 'en';
     let mimeType;
 
-    let exportedFile = await AnyExporter.to({
-      output,
-      data: data,
-      formioForm,
-      translations,
-      language
-    });
+    if (output !== 'pdf-form') {
+      var exportedFile = await AnyExporter.to({
+        output,
+        data: data,
+        formioForm,
+        translations,
+        language
+      });
+    }
+
     return new Promise(async (resolve, reject) => {
       switch (output.toLowerCase()) {
         case 'csv':
@@ -41,28 +44,12 @@ let Export = class {
             modified: ''
           };
 
-          let exporter = new FormioExport(formioForm, submission, options);
-          let config = {
-            download: false,
-            filename: 'example.pdf'
-          };
-
-          exporter.toPdf(config).then(async (pdf) => {
-            // get the datauri string
-            pdf.save();
-            resolve();
-            /*
-            let datauri = pdf.output('datauristring');
-            let pdfForm = await Download.file({
-              content: datauri,
-              fileName: 'PDFFORM.pdf'
-            });
-            if (pdfForm) {
-              resolve();
-            }
-            */
+          let exporter = new FormioExport(formioForm, submission, {
+            filename: fileName + '.pdf'
           });
-
+          let pdf = await exporter.toPdf();
+          exportedFile = pdf.output('arraybuffer');
+          mimeType = 'application/pdf;encoding:utf-8';
           break;
         default:
           mimeType =
@@ -71,6 +58,7 @@ let Export = class {
               : 'application/octet-stream';
           break;
       }
+      output = output === 'pdf-form' ? 'pdf' : output;
 
       let download = await Download.file({
         content: exportedFile,

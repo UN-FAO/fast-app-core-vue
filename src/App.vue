@@ -23,12 +23,11 @@
     :left-breakpoint="layoutStore.leftBreakpoint"
     :right-breakpoint="layoutStore.rightBreakpoint"
     :reveal="layoutStore.reveal"
-    class='background-login'
     :dir="ltr ? 'ltr' : 'rtl' "
     v-else
     >
     <toolbar slot="header"></toolbar>
-    <router-view :key="$route.path" class="background-login"/>
+    <router-view :key="$route.path"/>
   </q-layout>
 </div>
 </template>

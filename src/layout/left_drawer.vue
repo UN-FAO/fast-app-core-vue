@@ -16,6 +16,7 @@
       <q-item-main :label="$t('Home')" />
     </q-side-link>
     <q-item-separator />
+
     <q-item  style="color:#1d2433; cursor:pointer" @click="syncApp()" >
         <q-tooltip anchor="center right" self="center left" :offset="[10, 0]">
           <strong>{{ $t("Sync app") }}</strong>
@@ -129,7 +130,7 @@ export default {
         showCancelButton: false,
         onOpen: async () => {
           this.$swal.showLoading();
-          await FAST.sync({ Vue: this, interval: false });
+          await FAST.sync({ interval: false, appConf: this.$appConf });
           this.$swal.close();
           this.$swal({
             title: this.$t('App Updated'),

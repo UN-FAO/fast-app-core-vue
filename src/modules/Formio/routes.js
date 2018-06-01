@@ -2,21 +2,21 @@ const FormShow = (r) =>
   require.ensure(
     [],
     () => r(require('./views/submissions/show')),
-    'offline-module'
+    'submission-module'
   );
 
 const Submission = (r) =>
   require.ensure(
     [],
     () => r(require('./views/submissions/create')),
-    'offline-module'
+    'submission-module'
   );
 
 const Report = (r) =>
   require.ensure(
     [],
     () => r(require('./views/submissions/report')),
-    'offline-module'
+    'report-module'
   );
 
 let FormioRoutes = [

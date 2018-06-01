@@ -139,33 +139,22 @@
 }
 
 .login-form-holder button {
-  height: 45px;
+  height: 50px;
+}
+.form-login{
+border-radius:45px;
 }
 
-@media screen and (max-height: 749px){
-    .form-login {
+ .form-login {
       width: 100%;
       margin: 0 auto;
       background: rgba(0, 0, 0, 0.3);
       padding: 25px 25px 50px 25px;
       text-align: center;
       position: relative;
-      height: 360px;
+      max-height: 65vh;
       overflow-y: scroll;
   }
-}
- @media screen and (min-height: 750px){
-     .form-login {
-      width: 100%;
-      margin: 0 auto;
-      background: rgba(0, 0, 0, 0.3);
-      padding: 25px 25px 50px 25px;
-      text-align: center;
-      position: relative;
-      max-height: 600px;
-      overflow-y: scroll;
-  }
-}
 
 .form-login .q-if-control {
   cursor: pointer;

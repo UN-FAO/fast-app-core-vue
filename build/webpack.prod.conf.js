@@ -11,6 +11,7 @@ var path = require('path'),
   CompressionPlugin = require('compression-webpack-plugin'),
   UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 var configVars = require('../src/config/env');
+var OfflinePlugin = require('offline-plugin');
 
 module.exports = merge(baseWebpackConfig, {
   entry: './src/main.js',
@@ -23,11 +24,8 @@ module.exports = merge(baseWebpackConfig, {
   },
   devtool: config.build.productionSourceMap ? '#source-map' : false,
   plugins: [
-    /*
     new UglifyJSPlugin({
       uglifyOptions: {
-        ie8: true,
-        ecma: 5,
         output: {
           comments: false,
           beautify: false
@@ -35,7 +33,6 @@ module.exports = merge(baseWebpackConfig, {
         warnings: false
       }
     }),
-    */
     new webpack.NoEmitOnErrorsPlugin(),
     /*
     new CompressionPlugin({
@@ -102,6 +99,7 @@ module.exports = merge(baseWebpackConfig, {
     new webpack.optimize.CommonsChunkPlugin({
       name: 'manifest',
       chunks: ['vendor']
-    })
+    }),
+    new OfflinePlugin()
   ]
 });

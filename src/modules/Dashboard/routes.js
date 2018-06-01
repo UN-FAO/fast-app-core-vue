@@ -1,21 +1,33 @@
 const Dashboard = (r) =>
-  require.ensure([], () => r(require('./views/dashboard')), 'offline-module');
+  require.ensure(
+    [],
+    () => r(require('./views/dashboard')),
+    'submission-module'
+  );
 
 const Survey = (r) =>
-  require.ensure([], () => r(require('./views/newSurvey')), 'offline-module');
+  require.ensure(
+    [],
+    () => r(require('./views/newSurvey')),
+    'submission-module'
+  );
 
 const CollectedData = (r) =>
   require.ensure(
     [],
     () => r(require('./views/collectedData')),
-    'offline-module'
+    'submission-module'
   );
 
 const About = (r) =>
-  require.ensure([], () => r(require('./views/about')), 'offline-module');
+  require.ensure([], () => r(require('./views/about')), 'about-module');
 
 const PageManeger = (r) =>
-  require.ensure([], () => r(require('./views/pageManager')), 'offline-module');
+  require.ensure(
+    [],
+    () => r(require('./views/pageManager')),
+    'pagemanager-module'
+  );
 
 let DashboardRoutes = [
   {

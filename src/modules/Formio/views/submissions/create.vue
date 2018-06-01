@@ -18,7 +18,7 @@
           </q-card-main>
         </q-card>
 
-        <q-card color="white" v-bind:class="getFormClass" style="margin:0px !important">
+        <q-card v-bind:class="getFormClass" style="margin:0px !important">
           <q-card-main>
             <q-card-title>
 
@@ -130,7 +130,7 @@
           -->
       </div>
     </div>
-    <q-tabs slot="footer" v-model="tab" v-if="$FAST_CONFIG.TAB_MENU" class="floatingPagination">
+    <q-tabs slot="footer" v-model="tab" v-if="$FAST_CONFIG.TAB_MENU">
       <q-tab icon="fa-file" slot="title" v-for="(page, index) in _pages" :key="page.title" @click="goToPage(index)" :ref="'page-'+ index + 1" :name="index + 1" v-bind:class="currentPage === index ? 'activePage' : ''" :label="$t(getLabelForPage(page))">
       </q-tab>
     </q-tabs>

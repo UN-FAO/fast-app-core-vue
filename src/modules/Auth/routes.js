@@ -1,7 +1,7 @@
 const Login = (r) =>
-  require.ensure([], () => r(require('./views/Login')), 'offline-module');
+  require.ensure([], () => r(require('./views/Login')), 'login-module');
 const Register = (r) =>
-  require.ensure([], () => r(require('./views/Register')), 'offline-module');
+  require.ensure([], () => r(require('./views/Register')), 'register-module');
 
 let AuthRoutes = [
   {

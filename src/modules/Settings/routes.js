@@ -1,25 +1,25 @@
 const Settings = (r) =>
-  require.ensure([], () => r(require('./views/settings')), 'offline-module');
+  require.ensure([], () => r(require('./views/settings')), 'settings-module');
 
 const Translations = (r) =>
   require.ensure(
     [],
     () => r(require('./components/translations')),
-    'offline-module'
+    'translations-module'
   );
 
 const Reviewer = (r) =>
   require.ensure(
     [],
     () => r(require('./components/assignReviewer')),
-    'offline-module'
+    'reviewer-module'
   );
 
 const AllData = (r) =>
   require.ensure(
     [],
     () => r(require('./components/allData')),
-    'offline-module'
+    'alldata-module'
   );
 
 let SettingsRoutes = [
