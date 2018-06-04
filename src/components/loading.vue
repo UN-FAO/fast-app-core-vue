@@ -1,7 +1,7 @@
 <template>
   <div style="text-align: center;">
-    <q-inner-loading  v-if="true">
-      <q-spinner-audio size="50px" color="primary"></q-spinner-audio>
+    <q-inner-loading  v-if="show && showLoading">
+      <q-spinner-audio size="50px" color="blue"></q-spinner-audio>
       <h5>{{$t('Loading...')}}</h5>
     </q-inner-loading>
   </div>

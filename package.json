@@ -1,6 +1,6 @@
 {
   "name": "fast-app-core-vue",
-  "version": "0.11.6",
+  "version": "0.12.0",
   "deployAppName": "FAW",
   "deployAppID": "5a65a0b902b5450001fbc4cd",
   "description": "A data collection application based on FORM.io",
@@ -50,7 +50,6 @@
     "quasar-framework": "^0.14.9",
     "sweet-modal-vue": "^2.0.0",
     "vue": "~2.3.4",
-    "vue-async-computed": "^3.3.1",
     "vue-async-properties": "^0.2.3",
     "vue-chartjs": "^3.3.1",
     "vue-event-hub": "^1.0.1",

@@ -1,7 +1,8 @@
 <template>
   <div class="row">
         <div class="col-lg-12 col-md-12  col-sm-12 col-xs-12 responsiveTableContainer">
-          <q-card class="relative-position">
+          <q-card>
+
             <q-card-title>
               {{formTitle}}
            <q-icon slot="right" name="fa-plus-circle" @click="emitEvent('FAST:GO:CREATE')" color="primary" style="cursor:pointer; padding-right: 20px">
@@ -25,11 +26,9 @@
                 </q-list>
               </q-popover>
             </q-icon>
-
-
             </q-card-title>
-              <q-card-main style="padding: 0px" >
-                  <loading :visible="noSubmissions"></loading>
+              <q-card-main style="padding: 0px" class="relative-position"  >
+
                 <datatable
                   :data="submissions"
                   :form="currentForm"
@@ -37,8 +36,9 @@
                   :tableActions="$FAST_CONFIG.HAS_REPORT ? ['edit', 'delete', 'report'] : ['edit', 'delete']"
                   fastMode="show"
                   v-on:refresh="refreshData"
-                  v-if="currentForm && currentForm.data && currentForm.data.title !== '' && !noSubmissions"
+                  v-if="!noSubmissions"
                 />
+                <loading :visible="noSubmissions" v-else></loading>
             </q-card-main>
           </q-card>
 
@@ -48,7 +48,7 @@
 </template>
 
 <script>
-import loading from "components/loading";
+import loading from 'components/loading';
 import {
   QCard,
   QCardMain,
@@ -64,47 +64,48 @@ import {
   QField,
   QOptionGroup,
   QBtn
-} from "quasar";
-import datatable from "components/dataTable/dataTable";
-import {Form, Auth, Event, Submission} from "fast-fastjs";
-import Columns from "components/dataTable/tableFormatter/Columns";
+} from 'quasar';
+import datatable from 'components/dataTable/dataTable';
+import { Form, Auth, Event, Submission } from 'fast-fastjs';
+import Columns from 'components/dataTable/tableFormatter/Columns';
 
 export default {
   async mounted() {
     this.currentForm = await Form.local().findOne({
-      "data.path": this.$route.params.idForm
+      'data.path': this.$route.params.idForm
     });
+
     this.refreshData();
 
     Event.listen({
-      name: "FAST:SUBMISSION:SYNCED",
+      name: 'FAST:SUBMISSION:SYNCED',
       callback: this.handleDataSynced
     });
     Event.listen({
-      name: "FAST:DATA:IMPORTED",
+      name: 'FAST:DATA:IMPORTED',
       callback: this.handleDataImported
     });
 
-    this.$eventHub.on("lenguageSelection", async data => {
+    this.$eventHub.on('lenguageSelection', async (data) => {
       await this.refreshData();
     });
   },
   beforeDestroy() {
     Event.remove({
-      name: "FAST:SUBMISSION:SYNCED",
+      name: 'FAST:SUBMISSION:SYNCED',
       callback: this.handleDataSynced
     });
   },
   computed: {
     formTitle() {
-      let title = "";
+      let title = '';
       if (this.currentForm) {
-        title = this.currentForm.data ? this.currentForm.data.title : "";
+        title = this.currentForm.data ? this.currentForm.data.title : '';
       }
       return this.$t(title);
     },
     noSubmissions() {
-      return typeof this.submissions === "undefined";
+      return typeof this.submissions === 'undefined';
     }
   },
   components: {
@@ -127,8 +128,7 @@ export default {
   data() {
     return {
       currentForm: {},
-      submissions: undefined,
-      loading: false
+      submissions: undefined
     };
   },
   methods: {
@@ -137,36 +137,34 @@ export default {
     },
     async createDialog() {
       Event.emit({
-        name: "FAST:EXPORT:OPENMENU",
+        name: 'FAST:EXPORT:OPENMENU',
         data: undefined,
-        text: "Triggering Open Export Menu"
+        text: 'Triggering Open Export Menu'
       });
     },
     async handleDataImported() {
       await this.refreshData();
       Loading.hide();
-      this.$swal("Imported!", "Your submission were imported", "success");
+      this.$swal('Imported!', 'Your submission were imported', 'success');
     },
     async handleDataSynced() {
       await this.refreshData();
-      Toast.create.positive({ html: "Your data was uploaded!" });
+      Toast.create.positive({ html: 'Your data was uploaded!' });
     },
     async refreshData() {
-      this.loading = true;
       let submissions = await Submission.merged().showView({
         form: this.$route.params.idForm,
         limit: 1000,
         filter: {
-          "data.formio.formId": this.$route.params.idForm,
-          "data.user_email": Auth.email()
+          'data.formio.formId': this.$route.params.idForm,
+          'data.user_email': Auth.email()
         },
         select: Columns.getTableView(this.currentForm.data).map(
-          o => "data." + o.path
+          (o) => 'data.' + o.path
         ),
         vm: this
       });
       this.submissions = submissions.results;
-      this.loading = false;
     }
   }
 };

@@ -34,9 +34,6 @@ import 'quasar-extras/ionicons';
 import 'quasar-extras/fontawesome';
 // import 'quasar-extras/animate'
 
-import AsyncComputed from 'vue-async-computed';
-Vue.use(AsyncComputed);
-
 import VueAsyncProperties from 'vue-async-properties';
 Vue.use(VueAsyncProperties);
 

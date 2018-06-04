@@ -31,22 +31,21 @@
   <i class="material-icons" style="color: red;font-size: x-large; cursor: pointer;" v-if="scope.row.syncError && scope.row.syncError ==='Unauthorized' " @click="displayError(scope.row.syncError)">block</i>
 </template>
 
-<template slot="selection" slot-scope="props">
-
-  <q-btn v-if="tableActions && tableActions.includes('review')" color="primary"  flat  @click='handleReview(props)'>
+<template slot="selection" >
+  <q-btn v-if="tableActions && tableActions.includes('review')" color="primary"  flat  @click='handleReview()'>
     <q-icon name="remove_red_eye" />
     <q-tooltip>{{$t('Review')}}</q-tooltip>
   </q-btn>
-  <q-btn v-if="tableActions && tableActions.includes('edit')" color="primary" flat   @click='goToEditView(props)'>
+  <q-btn v-if="tableActions && tableActions.includes('edit')" color="primary" flat   @click='goToEditView()'>
     <q-icon name="edit" />
     <q-tooltip>{{$t('Edit')}}</q-tooltip>
   </q-btn>
-  <q-btn v-if="tableActions && tableActions.includes('report')" color="primary" flat  @click='handleReport(props)'>
+  <q-btn v-if="tableActions && tableActions.includes('report')" color="primary" flat  @click='handleReport()'>
   <q-icon name="assignment" />
     <q-tooltip>{{$t('Report')}}</q-tooltip>
   </q-btn>
 
-   <q-btn flat v-if="tableActions && tableActions.includes('delete')" color="grey" @click="handleDelete(props)">
+   <q-btn flat v-if="tableActions && tableActions.includes('delete')" color="grey" @click="handleDelete()">
     <q-icon name="delete" />
     <q-tooltip>{{$t('Delete')}}</q-tooltip>
   </q-btn>
@@ -217,7 +216,7 @@ export default {
       });
       return sub;
     },
-    async handleReview(data) {
+    async handleReview() {
       let rows = this.selectedRows;
       if (rows.length > 1) {
         this.$swal({
@@ -424,7 +423,7 @@ export default {
         }
       });
     },
-    goToEditView(props) {
+    goToEditView() {
       let rows = this.selectedRows;
       if (rows.length > 1) {
         this.$swal({

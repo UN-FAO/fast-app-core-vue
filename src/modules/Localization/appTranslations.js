@@ -144,6 +144,14 @@ let t = [
   'Data reviewers',
   'Online Submission',
   'Draft',
+  'Review Data',
+  'Scope',
+  'Wait until the file is ready. This can take a couple minutes...',
+  'Review',
+  'Reviewer name',
+  'Reviewer country',
+  'Reviewer email',
+  'Data Reviewers',
 
   // Formio Translations
   'complete',
@@ -185,7 +193,7 @@ let t = [
   'Scouting',
   'Traps',
   'Fall Armyworm Monitoring and Early Warning System',
-  'FAMEWS',
+  'FAMEWS'
 
   /*
   // MedAid Translations

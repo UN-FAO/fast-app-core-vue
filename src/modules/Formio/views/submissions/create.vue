@@ -69,15 +69,15 @@
 
               <q-tab v-bind:class="!$FAST_CONFIG.PARALLEL_SURVEYS ? 'hidden' : ''" default slot="title" name="tab-1" icon="person" :label="participantName" :color="saved ? 'primary' : 'red'" />
               <!-- Targets -->
-              <q-tab 
-                slot="title" 
-                v-if="participant.submissionId !== $route.params.idSubmission" 
-                v-for="participant in participants" 
-                :key="participant.submissionId" 
-                icon="person" 
-                :label="participant.participantName" 
-                :name="participant.participantName" 
-                :color="saved ? 'primary' : 'red'" 
+              <q-tab
+                slot="title"
+                v-if="participant.submissionId !== $route.params.idSubmission"
+                v-for="participant in participants"
+                :key="participant.submissionId"
+                icon="person"
+                :label="participant.participantName"
+                :name="participant.participantName"
+                :color="saved ? 'primary' : 'red'"
                 @click="goToSurvey(participant.submissionId)"
               />
 
@@ -88,7 +88,7 @@
                 :submission="submission"
                 :formioToken="formioToken"
                 :localDraft="$FAST_CONFIG.LOCAL_DRAFT_ENABLED"
-                :readOnly="readOnly"
+                :readOnly="false"
                 :autoCreate="autoCreate"
                 :editMode="this.$route.params.FAST_EDIT_MODE"
                 :parentPage="this.$route.params.FAST_PARENT_PAGE"
@@ -140,14 +140,14 @@
       </div>
     </div>
     <q-tabs slot="footer" v-model="tab" v-if="$FAST_CONFIG.TAB_MENU">
-      <q-tab 
-        icon="fa-file" 
-        slot="title" 
-        v-for="(page, index) in _pages" 
-        :key="page.title" @click="goToPage(index)" 
-        :ref="'page-'+ index + 1" 
-        :name="(index + 1).toString()" 
-        v-bind:class="currentPage === index ? 'activePage' : ''" 
+      <q-tab
+        icon="fa-file"
+        slot="title"
+        v-for="(page, index) in _pages"
+        :key="page.title" @click="goToPage(index)"
+        :ref="'page-'+ index + 1"
+        :name="(index + 1).toString()"
+        v-bind:class="currentPage === index ? 'activePage' : ''"
         :label="$t(getLabelForPage(page))">
       </q-tab>
     </q-tabs>
@@ -326,12 +326,10 @@ export default {
       transform(result) {
         return result;
       }
-    }
-  },
-  asyncComputed: {
+    },
     currentForm: {
       get() {
-        if (this.$route.params.idForm) {
+        if (this.$route.params.idForm && !Form.message) {
           return Form.local().findOne({
             'data.path': this.$route.params.idForm
           });
@@ -342,6 +340,9 @@ export default {
             }
           };
         }
+      },
+      transform(result) {
+        return result;
       }
     }
   },
@@ -404,8 +405,7 @@ export default {
       displayDown: true,
       parallelSub: [],
       autoCreate: !this.$route.params.idSubmission,
-      readOnly: false,
-      tab: "1",
+      tab: '1',
       customRender: false,
       customRenderArray: []
     };

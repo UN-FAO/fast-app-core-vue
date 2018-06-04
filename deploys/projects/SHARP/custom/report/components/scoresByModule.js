@@ -22,7 +22,7 @@ let ScoresByModule = class {
         adequacyElements: ["AG-agr-suffHouseholdNeeds"],
         importanceElements: ["AG-agr-diversityFarmSystem"],
         pillar: "Agronomic",
-        abbreviation: "Agricultural activities ",
+        abbreviation: "Agricultural activities",
         icon: "1147035"
       },
       {
