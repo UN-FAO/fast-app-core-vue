@@ -12,16 +12,16 @@
     </q-list>
 
     <q-side-link item :to="{name: 'dashboard', exact: true}" >
-      <q-item-side icon="pin_drop" color="primary"/>
+      <q-item-side icon="pin_drop"/>
       <q-item-main :label="$t('Home')" />
     </q-side-link>
     <q-item-separator />
 
-    <q-item  style="color:#1d2433; cursor:pointer" @click="syncApp()" >
+    <q-item  style="cursor:pointer" @click="syncApp()" >
         <q-tooltip anchor="center right" self="center left" :offset="[10, 0]">
           <strong>{{ $t("Sync app") }}</strong>
         </q-tooltip>
-      <q-item-side icon="cloud_download" left style="color:#2cb924"/>
+      <q-item-side icon="cloud_download" left/>
       <q-item-main :label="$t('Sync Application')" />
     </q-item>
      <q-item-separator  />

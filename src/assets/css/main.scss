@@ -15,12 +15,10 @@ body {
   background: #f2f2f2;
 }
 
-
 .row {
   margin-right: 0 !important;
   margin-left: 0 !important;
 }
-
 
 legend {
   font-size: 16px !important;
@@ -46,7 +44,6 @@ button.btn.btn-default.btn-wizard-nav-cancel {
 .adequacy-panel {
   background-color: whitesmoke;
 }
-
 
 .choices__list.choices__list--dropdown {
   position: inherit;
@@ -188,7 +185,6 @@ input[type='checkbox']:checked + span {
   color: black;
 }
 
-
 .field-required:after {
   content: ' *';
   color: red;
@@ -213,7 +209,6 @@ input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
   transition: background-color 5000s ease-in-out 0s;
 }
-
 
 .tableColumnTitle {
   font-weight: 700;
@@ -353,9 +348,6 @@ p.form-title {
   text-align: center;
 }
 
-
-
-
 #registerForm label.control-label,
 #registerForm label.control-label.field-required {
   color: white;
@@ -378,10 +370,9 @@ p.form-title {
   background: #0e6da5;
 }
 
-
 label.control-label {
   color: #2d2d2d;
-   font-weight: 400 !important;
+  font-weight: 400 !important;
 }
 
 ul.list-inline {
@@ -410,15 +401,14 @@ button.btn.btn-primary.btn-wizard-nav-next {
   color: white !important;
 }
 
-
 .pageTitle {
- font-size: 2.2vh;
-    padding-top: 30px;
-    text-align: right;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    color: #b5bbbd;
-    font-variant: small-caps;
+  font-size: 2.2vh;
+  padding-top: 30px;
+  text-align: right;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #b5bbbd;
+  font-variant: small-caps;
 }
 
 .formioPagination .q-item-avatar,
@@ -436,7 +426,6 @@ button.btn.btn-primary.btn-wizard-nav-next {
 .q-data-table-toolbar .q-search {
   border-bottom: 1px solid rgba(165, 163, 163, 0.87) !important;
 }
-
 
 .q-data-table table tbody tr:nth-child(odd) td,
 .q-data-table table tbody tr:nth-child(odd) th {
@@ -557,3 +546,4 @@ button.btn.btn-primary.btn-wizard-nav-next {
 @import 'formCard.scss';
 @import 'loading.scss';
 @import 'fastIcons/fastIcons.scss';
+@import 'leftDrawer.scss';
