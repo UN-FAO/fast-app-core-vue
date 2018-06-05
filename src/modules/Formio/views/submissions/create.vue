@@ -38,7 +38,7 @@
               <q-tooltip>{{$t('Save as draft')}}</q-tooltip>
             </q-icon>
 
-              <q-icon slot="right" name="more_vert" color="grey" style="cursor:pointer; margin-left:20px">
+            <q-icon slot="right" name="more_vert" color="grey" style="cursor:pointer; margin-left:20px">
               <q-popover ref="popover" class="show-menu">
                 <q-list link class="no-border" dense separator no-border>
 
@@ -65,6 +65,7 @@
                 </q-list>
               </q-popover>
             </q-icon>
+
             </q-card-title>
             <!--
               <q-btn @click="singleNext()" class="pull-right primary" color="primary">Next Page</q-btn>
@@ -147,7 +148,10 @@
           -->
       </div>
     </div>
-    <q-tabs slot="footer" v-model="tab" v-if="$FAST_CONFIG.TAB_MENU">
+    <q-tabs slot="footer" style="position: fixed;
+    bottom: 0;
+    width: 100%;
+    z-index: 99;" v-model="tab" v-if="$FAST_CONFIG.TAB_MENU">
       <q-tab
         icon="fa-file"
         slot="title"
