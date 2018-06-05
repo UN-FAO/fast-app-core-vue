@@ -12,7 +12,7 @@
                         <div class="segment-title">{{isAdminLogin ? $t('Admin Login'): $t('User Login')}}</div>
                     <q-field >
                     <q-input v-model="credentials.username"
-                    :stack-label="$t('Email')" :placeholder="$t('Email')" name="Email" />
+                    :stack-label="$t('User')" :placeholder="$t('User')" name="user" />
                     </q-field>
                   </div>
                   <div class="form-group">
@@ -84,7 +84,7 @@ export default {
      * @return {[type]} [description]
      */
     handleLogin(event, done) {
-      this.LoadingLogIn = true
+      this.LoadingLogIn = true;
       this.credentials.password = this.credentials.password.trim();
       this.credentials.username = this.credentials.username.trim();
       // Try to authenticate the User
@@ -103,6 +103,7 @@ export default {
         .catch((error) => {
           console.log(error);
           Loading.hide();
+          this.LoadingLogIn = false;
           this.$swal(
             'Wrong Credentials!',
             'Wrong username or password...try again',

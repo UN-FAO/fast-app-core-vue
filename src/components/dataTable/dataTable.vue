@@ -36,6 +36,10 @@
     <q-icon name="remove_red_eye" />
     <q-tooltip>{{$t('Review')}}</q-tooltip>
   </q-btn>
+  <q-btn v-if="tableActions && tableActions.includes('read-only')" color="primary"  flat  @click='handleReview({readOnly:true})'>
+    <q-icon name="remove_red_eye" />
+    <q-tooltip>{{$t('Read Only')}}</q-tooltip>
+  </q-btn>
   <q-btn v-if="tableActions && tableActions.includes('edit')" color="primary" flat   @click='goToEditView()'>
     <q-icon name="edit" />
     <q-tooltip>{{$t('Edit')}}</q-tooltip>
@@ -96,12 +100,16 @@ export default {
     tableActions: {
       required: false,
       type: Array,
-      default: () => { [] }
+      default: () => {
+        [];
+      }
     },
     menuActions: {
       required: false,
       type: Array,
-      default: () => { [] }
+      default: () => {
+        [];
+      }
     },
     fastMode: {
       required: false,
@@ -216,7 +224,7 @@ export default {
       });
       return sub;
     },
-    async handleReview() {
+    async handleReview({ readOnly }) {
       let rows = this.selectedRows;
       if (rows.length > 1) {
         this.$swal({
@@ -237,23 +245,27 @@ export default {
         showCancelButton: false,
         onOpen: async () => {
           this.$swal.showLoading();
-          [err, submission] = await to(this.loadSubmission(submission._id));
+          [err, submission] = await to(
+            this.loadSubmission(submission._id, readOnly)
+          );
 
           if (err) {
             this.$swal.close();
           }
           this.$swal.close();
+          submission = _get(submission, '[0].data', submission);
+
           this.$router.push({
             name: 'formio_submission_update',
             params: {
               idForm: this.form.data.path,
-              idSubmission: submission.content._id,
+              idSubmission: submission._id,
               fullSubmision: {
-                data: submission.content.data,
-                _id: submission.content._id
+                data: submission.data,
+                _id: submission._id
               },
               formio: submission.formio,
-              FAST_EDIT_MODE: 'online-review'
+              FAST_EDIT_MODE: readOnly ? 'read-only' : 'online-review'
             }
           });
         }
@@ -267,7 +279,7 @@ export default {
           idForm: formId,
           idSubmission: submission._id,
           fullSubmision: {
-            data: loadedSubmission.content.data,
+            data: loadedSubmission.data,
             _id: submission._id
           },
           formio: loadedSubmission.formio,
@@ -275,7 +287,7 @@ export default {
         }
       });
     },
-    async loadSubmission(_id) {
+    async loadSubmission(_id, includeLocal) {
       this.loading = true;
       let err;
       let submission;
@@ -293,7 +305,17 @@ export default {
           limit: 1
         })
       );
+      submission = submission && submission[0] ? submission[0] : null;
 
+      if (includeLocal && err) {
+        [err, submission] = await to(
+          Submission.local().find({
+            filter: {
+              _id
+            }
+          })
+        );
+      }
       if (err) {
         this.$swal.close();
         this.$swal(
@@ -305,9 +327,7 @@ export default {
       }
 
       this.loading = false;
-      return {
-        content: submission[0]
-      };
+      return submission;
     },
     handleReport() {
       let rows = this.selectedRows;
@@ -408,14 +428,10 @@ export default {
       });
     },
     goToCreateView() {
-      let formId = this.form.data.path;
-      if (
-        this.form.data &&
-        this.form.data.properties &&
-        this.form.data.properties['create-view']
-      ) {
-        formId = this.form.data.properties['create-view'];
-      }
+      let formId =
+        _get(this.form, 'data.properties["fast-create-view"]') ||
+        this.form.data.path;
+
       this.$router.push({
         name: 'formio_form_submission',
         params: {
@@ -435,7 +451,8 @@ export default {
       }
       let submission = this.selectedRows[0];
       let formId =
-        _get(this.form, 'data.properties["edit-view"]') || this.form.data.path;
+        _get(this.form, 'data.properties["fast-edit-view"]') ||
+        this.form.data.path;
       if (submission.status === 'online' && !submission._lid) {
         this.handleOnlineEdit(submission, formId);
         return;

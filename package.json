@@ -1,6 +1,6 @@
 {
   "name": "fast-app-core-vue",
-  "version": "0.12.0",
+  "version": "0.12.1",
   "deployAppName": "FAW",
   "deployAppID": "5a65a0b902b5450001fbc4cd",
   "description": "A data collection application based on FORM.io",
@@ -39,7 +39,7 @@
     "choices.js": "^3.0.4",
     "dotenv-webpack": "^1.5.5",
     "fast-downloads": "0.0.10",
-    "fast-fastjs": "0.0.11",
+    "fast-fastjs": "0.0.12",
     "fast-submission2any": "0.0.5",
     "fastclick": "^1.0.6",
     "formio-export": "^0.3.0",

@@ -234,6 +234,10 @@ export default {
         this.onlineReview(formSubmission, formio);
         return;
       }
+      if (this.editMode === 'read-only') {
+        this.$swal('Error', 'Cannot submit on read only mode', 'error');
+        return
+      }
       formio.saveSubmission(formSubmission).then((created) => {
         this.redirectIntended({ submission: formSubmission, created, formio });
       });
@@ -301,7 +305,10 @@ export default {
                 this.$router.push({
                   name: 'reviewers'
                 });
-              } else if (this.editMode === 'online') {
+              } else if (
+                this.editMode === 'online' ||
+                this.editMode === 'read-only'
+              ) {
                 this.$router.push({
                   name: 'formio_form_show',
                   params: { idForm: formio.formId }
@@ -353,7 +360,9 @@ export default {
      * @return {[type]}                [description]
      */
     createFormioInstance(onlineJsonForm, translations) {
-      translations.readOnly = !!(this.editMode === 'online-review');
+      translations.readOnly = !!(
+        this.editMode === 'online-review' || this.editMode === 'read-only'
+      );
       if (!_isEmpty(this.formIO)) {
         return;
       }
@@ -459,7 +468,8 @@ export default {
             if (
               this.localDraft &&
               this.editMode !== 'online' &&
-              this.editMode !== 'online-review'
+              this.editMode !== 'online-review' &&
+              this.editMode !== 'read-only'
             ) {
               this.saved = false;
               Event.emit({

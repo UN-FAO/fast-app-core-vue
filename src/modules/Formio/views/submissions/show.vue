@@ -33,7 +33,7 @@
                   :data="submissions"
                   :form="currentForm"
                   :menuActions="['create', 'export', 'import']"
-                  :tableActions="$FAST_CONFIG.HAS_REPORT ? ['edit', 'delete', 'report'] : ['edit', 'delete']"
+                  :tableActions="$FAST_CONFIG.HAS_REPORT ? ['read-only','edit', 'delete', 'report'] : ['edit', 'delete', 'read-only']"
                   fastMode="show"
                   v-on:refresh="refreshData"
                   v-if="!noSubmissions"
@@ -75,7 +75,7 @@ export default {
       'data.path': this.$route.params.idForm
     });
 
-    this.refreshData();
+    await this.refreshData();
 
     Event.listen({
       name: 'FAST:SUBMISSION:SYNCED',

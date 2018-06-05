@@ -26,7 +26,15 @@
               <q-tooltip>{{$t('Show pages')}}</q-tooltip>
             </q-icon>
 
-            <q-icon slot="right" flat color="primary" @click="saveAsDraft()" name="fa-floppy-o" v-if="this.$route.params.FAST_EDIT_MODE !== 'online' && this.$route.params.FAST_EDIT_MODE !== 'online-review'">
+            <q-icon
+              slot="right"
+              flat
+              color="primary"
+              @click="saveAsDraft()"
+              name="fa-floppy-o"
+              v-if="this.$route.params.FAST_EDIT_MODE !== 'online' &&
+               this.$route.params.FAST_EDIT_MODE !== 'online-review' &&
+               this.$route.params.FAST_EDIT_MODE !== 'read-only'">
               <q-tooltip>{{$t('Save as draft')}}</q-tooltip>
             </q-icon>
 

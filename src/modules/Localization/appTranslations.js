@@ -152,7 +152,11 @@ let t = [
   'Reviewer country',
   'Reviewer email',
   'Data Reviewers',
-
+  'Accept',
+  'Info',
+  'The language was changed',
+  'Getting the submission. This can take a couple seconds...',
+  'Read Only',
   // Formio Translations
   'complete',
   'error',
