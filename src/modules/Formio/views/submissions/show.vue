@@ -27,7 +27,7 @@
               </q-popover>
             </q-icon>
             </q-card-title>
-              <q-card-main style="padding: 0px" class="relative-position"  >
+              <q-card-main style="padding: 0px; min-height: 150px" class="relative-position"  >
 
                 <datatable
                   :data="submissions"
@@ -38,7 +38,7 @@
                   v-on:refresh="refreshData"
                   v-if="!noSubmissions"
                 />
-                <loading :visible="noSubmissions" v-else></loading>
+                <loading :visible="noSubmissions"></loading>
             </q-card-main>
           </q-card>
 
