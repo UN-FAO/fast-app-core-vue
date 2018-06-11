@@ -192,6 +192,7 @@ let t = [
   'submit',
 
   // FAW translations
+  /*
   'The date of survey cannot be set in the future.',
   'Please select a date prior to the date of submission.',
   'Scouting and traps',
@@ -199,15 +200,15 @@ let t = [
   'Traps',
   'Fall Armyworm Monitoring and Early Warning System',
   'FAMEWS'
-
+  */
   // MedAid Translations
-  /*
+
+  'here',
   'Welcome to the APP for the Survey on Social Acceptability of Aquaculture',
   'Please note that',
   'This online application offers the possibility of saving a draft of the questionnaire at any time you want and completing it afterwards. This option is available clicking the',
   'icon visible on the top right corner during the process',
   'You can find a glossary of aquaculture terms',
   'The survey is carried out within the project "Mediterranean Aquaculture Integrated DevelopmentMedAID)" supported by the European Union in the frame of Horizon 2020, grant agreement number 727315.'
-*/
 ];
 export default t;

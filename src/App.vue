@@ -124,8 +124,9 @@ export default {
   data() {
     return {
       ltr:
-        localStorage.getItem('defaultLenguage') &&
-        localStorage.getItem('defaultLenguage') !== 'ar',
+        (localStorage.getItem('defaultLenguage') &&
+          localStorage.getItem('defaultLenguage') !== 'ar') ||
+        !localStorage.getItem('defaultLenguage'),
       layoutStore
     };
   },
