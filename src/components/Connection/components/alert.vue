@@ -2,23 +2,23 @@
 </template>
 
 <script>
-import {Connection, Auth, Event} from 'fast-fastjs'
-import { Alert } from "quasar";
-import "quasar-extras/animate/bounceInRight.css";
-import "quasar-extras/animate/bounceOutRight.css";
-import _debounce from "lodash/debounce";
+import { Connection, Auth, Event } from 'fast-fastjs';
+import { Alert } from 'quasar';
+import 'quasar-extras/animate/bounceInRight.css';
+import 'quasar-extras/animate/bounceOutRight.css';
+import _debounce from 'lodash/debounce';
 export default {
-  name: "connectionAlert",
+  name: 'connectionAlert',
   mounted: function() {
     this.showPopUp = _debounce(this.showPopUp, 3000);
     Event.listen({
-      name: "FAST:CONNECTION:ONLINE",
+      name: 'FAST:CONNECTION:ONLINE',
       callback: this.showPopUp
     });
   },
   beforeDestroy() {
     Event.remove({
-      name: "FAST:CONNECTION:ONLINE",
+      name: 'FAST:CONNECTION:ONLINE',
       callback: this.showPopUp
     });
   },
@@ -29,28 +29,28 @@ export default {
     showPopUp() {
       let self = this;
       if (
-        this.$route.name !== "login" &&
-        this.$route.name !== "register" &&
-        this.$route.name !== "login_redirect" &&
+        this.$route.name !== 'login' &&
+        this.$route.name !== 'register' &&
+        this.$route.name !== 'login_redirect' &&
         !Auth.check() &&
         Connection.isOnline()
       ) {
         Alert.create({
-          enter: "bounceInRight",
-          leave: "bounceOutRight",
-          color: "positive",
-          icon: "wifi",
-          html: `You have connection now! It's time to login and sync you data`,
-          position: "top-right",
+          enter: 'bounceInRight',
+          leave: 'bounceOutRight',
+          color: 'positive',
+          icon: 'wifi',
+          html: this.$t('You have connection now! Login and sync you data'),
+          position: 'top-right',
           actions: [
             {
-              label: "Snooze",
+              label: this.$t('Snooze'),
               handler() {
-                console.log("acting");
+                console.log('acting');
               }
             },
             {
-              label: "Go to Login",
+              label: this.$t('Go to Login'),
               handler() {
                 self.handleLogout();
               }

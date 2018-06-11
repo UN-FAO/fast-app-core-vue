@@ -157,6 +157,9 @@ let t = [
   'The language was changed',
   'Getting the submission. This can take a couple seconds...',
   'Read Only',
+  'You have connection now! Login and sync you data',
+  'Snooze',
+  'Go to Login',
   // Formio Translations
   'complete',
   'error',

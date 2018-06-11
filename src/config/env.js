@@ -1,2 +1,13 @@
-exports.APP_CONFIG_ID = '5aa8e7376d2d1e82bc67e8a9'
-exports.CONFIG_URL = 'https://ydvahgxgqliaeuf.form.io/configuration/submission/'
+/*
+ |--------------------------------------------------------------------------
+ | App Env Variables
+ |--------------------------------------------------------------------------
+ |
+ | This variables come from the .env file located at the root level
+ |
+ | You can manually redefine them if for some reason you don't
+ | want to use dontenv in the project
+ |
+ */
+exports.APP_CONFIG_ID = process.env.APP_CONFIG_ID;
+exports.CONFIG_URL = process.env.CONFIG_URL;

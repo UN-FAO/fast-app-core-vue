@@ -5,13 +5,6 @@ const Dashboard = (r) =>
     'submission-module'
   );
 
-const Survey = (r) =>
-  require.ensure(
-    [],
-    () => r(require('./views/newSurvey')),
-    'submission-module'
-  );
-
 const CollectedData = (r) =>
   require.ensure(
     [],
@@ -38,7 +31,7 @@ let DashboardRoutes = [
   },
   {
     path: '/survey',
-    component: Survey,
+    component: CollectedData,
     name: 'newSurvey',
     meta: { requiresAuth: true }
   },

@@ -42,7 +42,7 @@ import connectionAlert from 'components/Connection/components/alert';
 import { QLayout, Toast, Platform } from 'quasar';
 import layoutStore from 'layout/layout-store';
 import FastClick from 'fastclick';
-import { FAST, Event, Connection } from 'fast-fastjs';
+import { Event, Connection, FAST } from 'fast-fastjs';
 
 export default {
   name: 'app',
@@ -116,8 +116,7 @@ export default {
   data() {
     return {
       ltr: true,
-      layoutStore,
-      appLoaded: window.$APP_LOADED
+      layoutStore
     };
   },
   computed: {

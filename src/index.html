@@ -22,10 +22,10 @@
     }
 
     .bb {
-      width: 130px;
-      height: 130px;
+      width: 310px;
+      height: 110px;
       margin: auto;
-      background: url("./statics/2000px-FAO_logo_reverse.png") no-repeat 50%/70% rgb(14, 109, 165);
+      background: url(./statics/fao-logo-white.svg) no-repeat 50%/70% rgba(14, 109, 165, 1);
       color: #69ca62;
       box-shadow: inset 0 0 0 1px rgba(105, 202, 98, 0.5);
     }
@@ -46,16 +46,16 @@
     @keyframes clipMe {
       0%,
       100% {
-        clip: rect(0px, 150px, 2px, 0px);
+        clip: rect(0px 320px 2px 0px);
       }
       25% {
-        clip: rect(0px, 2px, 150px, 0px);
+        clip: rect(0px 2px 110px 0px);
       }
       50% {
-        clip: rect(150px, 150px, 150px, 0px);
+        clip: rect(110px 320px 310px 0px);
       }
       75% {
-        clip: rect(0px, 150px, 150px, 150px);
+        clip: rect(110px 310px 110px 310px);
       }
     }
 
@@ -87,6 +87,73 @@
 
       window.CustomEvent = CustomEvent
     })()
+
+    var getGpsPosition = function (latitudField, longitudField) {
+      // Create the events
+      var requestedEvent = new CustomEvent('gpsRequested', {
+        detail: {
+          data: {
+            latitudField: latitudField,
+            longitudField: longitudField
+          },
+          text: 'GPS requested'
+        }
+      });
+      var doneEvent = new CustomEvent('gpsSucceeded', {
+        detail: {
+          data: {
+            latitudField: latitudField,
+            longitudField: longitudField
+          },
+          text: 'GPS Succeeded'
+        }
+      });
+
+      function error(e) {
+        console.log('GPS error', e);
+        var errorEvent = new CustomEvent('gpsError', {
+          detail: {
+            data: e,
+            text: 'GPS Error'
+          }
+        });
+        document.dispatchEvent(errorEvent);
+      }
+
+      function getLocation() {
+        if (navigator.geolocation) {
+          document.dispatchEvent(requestedEvent);
+          navigator.geolocation.getCurrentPosition(showPosition, error, {
+            maximumAge: 3000,
+            timeout: 15000,
+            enableHighAccuracy: true
+          });
+        } else {
+          document.dispatchEvent(doneEvent);
+          console.log('Geolocation is not supported by this browser.');
+        }
+
+        function showPosition(position) {
+          try {
+            document.getElementsByName('data[' + longitudField + ']')[0].value =
+              position.coords.longitude;
+            document.getElementsByName('data[' + latitudField + ']')[0].value =
+              position.coords.latitude;
+            document.dispatchEvent(doneEvent);
+          } catch (error) {
+            console.log('error', error);
+            var errorEvent = new CustomEvent('gpsError', {
+              detail: {
+                data: error,
+                text: 'GPS Error'
+              }
+            });
+            document.dispatchEvent(errorEvent);
+          }
+        }
+      }
+      getLocation();
+    };
   </script>
 </head>
 
@@ -99,7 +166,6 @@
       </div>
     </div>
   </div>
-  <script src="statics/componentFunctions.js" type="text/javascript" async></script>
 </body>
 
 </html>

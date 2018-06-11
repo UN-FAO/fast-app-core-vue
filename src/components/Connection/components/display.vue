@@ -1,6 +1,6 @@
 <template>
  <div>
-<q-icon name="signal_wifi_off" style="font-size: 24px;" color="red" v-if="!isOnline" />
+  <q-icon name="signal_wifi_off" style="font-size: 24px;" color="red" v-if="!isOnline" />
 </div>
 </template>
 

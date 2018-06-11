@@ -53,6 +53,15 @@ let appConf = {
 Vue.config.productionTip = false;
 Vue.prototype.$appConf = appConf;
 
+Vue.prototype.$isInsideApp = (route) => {
+  return (
+    route.name !== 'login' &&
+    route.name !== 'register' &&
+    route.name !== 'login_redirect' &&
+    route.name !== 'adminLogin'
+  );
+};
+
 if (__THEME === 'mat') {
   require('quasar-extras/roboto-font');
 }
@@ -63,32 +72,16 @@ if (__THEME === 'mat') {
 Quasar.start(async () => {
   try {
     let config = await FAST.start({ Vue: Vue, interval: true, appConf });
+
     // Set the translations into the Plugin
     const i18n = new VueI18n({
       locale: config.defaultLenguage, // set locale
       messages: config.translations // set locale messages
     });
-    window.APP_LOADED = false;
-    Event.listen({
-      name: 'FAST:APPLICATION:LOADED',
-      callback: () => {
-        window.APP_LOADED = true;
-      }
-    });
-
-    let mixin = {
-      computed: {
-        APP_LOADED: function() {
-          return window.APP_LOADED;
-        }
-      }
-    };
-
     /* eslint-disable no-new */
     new Vue({
       i18n,
       el: '#q-app',
-      mixins: [mixin],
       router,
       store,
       render: (h) => h(require('./App'))

@@ -27,18 +27,15 @@
      <q-item-separator  />
 
 
-      <pageLinks :pages="PAGES" v-if="!$FAST_CONFIG.IS_SURVEY"></pageLinks>
+      <pageLinks :pages="PAGES"></pageLinks>
 
-      <collectionpagelinks v-if="$FAST_CONFIG.IS_SURVEY"></collectionpagelinks>
-
-
-    <q-side-link v-if="isReviewer()" multiline highlight item :to="{path: '/settings/alldata'}" key="settings">
+    <q-side-link v-if="hasRole(['Reviewer'])" multiline highlight item :to="{path: '/settings/alldata'}" key="settings">
       <q-item-side icon="fa-cog" />
       <q-item-main :label="$t('Review Data')"/>
     </q-side-link>
 
 
-    <q-side-link v-if="isAdmin()" multiline highlight item :to="{path: '/settings/alldata'}" key="settings">
+    <q-side-link v-if="hasRole(['Administrator'])" multiline highlight item :to="{path: '/settings/alldata'}" key="settings">
       <q-item-side icon="fa-cog" />
       <q-item-main :label="$t('Application Settings')"/>
     </q-side-link>
@@ -85,8 +82,7 @@ import {
   QItemSeparator
 } from 'quasar';
 import pageLinks from './components/pageLinks';
-import collectionpagelinks from './components/collectionPageLinks';
-
+import _sortBy from 'lodash/sortBy'
 export default {
   components: {
     QScrollArea,
@@ -102,17 +98,15 @@ export default {
     QList,
     QItem,
     QItemSeparator,
-    pageLinks,
-    collectionpagelinks
+    pageLinks
   },
   asyncData: {
     PAGES: {
-      async get() {
-        let pages = await PagesRepo.getLocal();
-        return pages;
+      get() {
+        return PagesRepo.getLocal();
       },
       transform(result) {
-        return result.pages;
+        return _sortBy(result.pages, 'index');
       }
     }
   },
@@ -156,11 +150,10 @@ export default {
         path: '/login'
       });
     },
-    isAdmin() {
-      return Auth.hasRole('Administrator');
-    },
-    isReviewer() {
-      return Auth.hasRole('Reviewer');
+    hasRole(roles) {
+      return roles.some((role) => {
+        return Auth.hasRole(role);
+      });
     },
     email() {
       return Auth.email();
