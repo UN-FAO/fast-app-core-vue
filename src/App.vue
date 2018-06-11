@@ -2,8 +2,8 @@
 <div>
   <q-layout ref="layout"
     :view="layoutStore.view"
-    :left-breakpoint="layoutStore.leftBreakpoint"
-    :right-breakpoint="layoutStore.rightBreakpoint"
+    :left-breakpoint="ltr ? layoutStore.leftBreakpoint : layoutStore.rightBreakpoint"
+    :right-breakpoint="ltr ? layoutStore.rightBreakpoint: layoutStore.leftBreakpoint "
     :reveal="layoutStore.reveal"
     class='background-app'
     :dir="ltr ? 'ltr' : 'rtl' "
@@ -11,8 +11,8 @@
     >
     <toolbar slot="header"></toolbar>
     <template >
-      <leftdrawer slot="left"></leftdrawer>
-      <rightdrawer slot="right"></rightdrawer>
+      <leftdrawer :slot="ltr ? 'left' : 'right'"></leftdrawer>
+      <rightdrawer :slot="!ltr ? 'left' : 'right'"></rightdrawer>
   </template>
   <connection-alert></connection-alert>
     <router-view :key="$route.path" class="background-app"/>
@@ -100,11 +100,19 @@ export default {
     });
 
     this.$eventHub.$on('openLeftDrawer', () => {
-      this.$refs.layout.toggleLeft();
+      if (this.ltr) {
+        this.$refs.layout.toggleLeft();
+        return;
+      }
+      this.$refs.layout.toggleRight();
     });
 
     this.$eventHub.$on('openRightDrawer', () => {
-      this.$refs.layout.toggleRight();
+      if (this.ltr) {
+        this.$refs.layout.toggleRight();
+        return;
+      }
+      this.$refs.layout.toggleLeft();
     });
     Connection.initEventListeners();
   },
@@ -115,7 +123,9 @@ export default {
   },
   data() {
     return {
-      ltr: true,
+      ltr:
+        localStorage.getItem('defaultLenguage') &&
+        localStorage.getItem('defaultLenguage') !== 'ar',
       layoutStore
     };
   },
