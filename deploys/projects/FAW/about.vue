@@ -2,10 +2,275 @@
   <div class="container-fluid">
     <div class="row">
       <div class="landing col-lg-10  col-md-10 col-sm-12">
-        <div class="base">
+         <div class="base">
+                 <div class="copy" v-if="selectedLanguage === 'fr'">
+                  <div style="text-align: right; color: rgb(14, 109, 165); font-size: 16px;">
+                    <small>
+
+                    <div v-if="!show">
+                    <span>Au sujet de </span><span @click="togglePage(true)"  v-bind:class="[show ? 'showing' : '', 'notShowing']"> FAW</span>
+                    </div>
+
+                    <span v-if="show">Au sujet de </span> <span @click="togglePage(false)" v-if="show" v-bind:class="[!show ? 'showing' : '', 'notShowing']"> FAMEWS</span> </small>
+                  </div>
+
+                  <div id="FallArmy" v-if="show">
+                    <div style="background: rgb(14, 109, 165);
+                    height: 30px;
+                    color: white;
+                    font-size: 20px;
+                    font-weight: 700;
+                    text-align: center;
+                    margin-top: 30px;">
+                        Au sujet de FAW
+                    </div>
+                    <div class="title">
+                      <small>VOUS NE DEVRIEZ PAS PANIQUER  </small>AU SIGNE DE FAW DANS VOTRE FERME
+                    </div>
+
+                    <div class="title">
+                      <small>ACTION IMMÉDIATE À PRENDRE</small>
+                    </div>
 
 
-              <div class="copy" v-if="selectedLanguage === 'en'">
+                    <div class="text">
+                      <ul class="fa-ul">
+                        <li>
+                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-check-square">
+                          </i> Vérifiez vos fermes dès que les semis apparaissent et continuez au moins deux fois par semaine
+                        </li>
+                        <li>
+                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-check-square">
+                          </i> Utilisez vos doigts pour écraser les masses d'œufs blanchâtres ou grisâtres (environ la taille de votre pouce) et les jeunes larves (vers) sur le haut et le bas des feuilles
+                        </li>
+                        <li>
+                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-check-square">
+                          </i> Certains paysans ont répandu de la cendre, du sable ou de la terre dans les verticilles, d'autres utilisent du savon ou des solutions botaniques locales
+                        </li>
+                        <li>
+                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-check-square">
+                          </i> Certains insecticides botaniques (par exemple Neem) et pathogènes (virus, bactéries, champignons) connus pour être efficaces
+                        </li>
+                        <li>
+                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-check-square">
+                          </i> L'application directement dans les verticilles des plantes qui montrent des dommages FAW peut être très efficace
+                        </li>
+                        <li>
+                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-check-square">
+                          </i> Les pièges à phéromones peuvent être utilisés pour aider à détecter la présence, l'accumulation et le mouvement de FAW dans votre région
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div class="title">
+                      <small>CAUTION</small>
+                    </div>
+
+
+                    <div class="text">
+                      <ul class="fa-ul">
+                        <li>
+                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-exclamation">
+                          </i> L'application d'insecticides tôt dans le cycle de la culture tue les ennemis naturels et peut ne pas être économique
+
+                        </li>
+                        <li>
+                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-exclamation">
+                          </i> Les pesticides plus anciens peuvent être dangereux pour la santé humaine et peuvent être interdits dans d'autres pays
+
+                        </li>
+                        <li>
+                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-exclamation">
+                          </i> L'efficacité des insecticides contre les FAW dépend de la technique d'application, de la dose et de la formulation
+
+                        </li>
+                        <li>
+                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-exclamation">
+                          </i> Une fois que FAW est dans le verticille, les insecticides doivent les atteindre
+                        </li>
+                        <li>
+                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-exclamation">
+                          </i> L'application de pesticides avec des pulvérisateurs à dos sans fournir d'insecticides directement dans le verticille est souvent inefficace
+                        </li>
+                        <li>
+                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-exclamation">
+                          </i> L'application d'insecticides à plusieurs reprises peut augmenter considérablement les coûts de production, rendant le maïs économiquement non viable
+                        </li>
+
+                        <li>
+                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-exclamation">
+                          </i> Les plantes de maïs ont une capacité à compenser l'infestation FAW de niveau inférieur. Tous les dégâts causés par les FAW n'entraînent pas une réduction significative du rendement du maïs.
+                        </li>
+                      </ul>
+                    </div>
+
+
+
+
+                    <div class="title">
+                      <small>FAW FAQ</small>
+                    </div>
+
+
+                    <div class="text">
+                      <ul class="fa-ul">
+                        <li>
+                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
+                          </i> Originaire des Amériques, FAW est maintenant en Afrique pour rester
+
+                        </li>
+                        <li>
+                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
+                          </i> Un ravageur de plus de 80 espèces végétales
+
+                        </li>
+                        <li>
+                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
+                          </i> FAW vit environ 35–61 jours
+
+
+                        </li>
+                        <li>
+                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
+                          </i> Les femelles adultes pondent leurs oeufs directement sur les feuilles de maïs et éclosent en 3–5 jours
+
+                        </li>
+                        <li>
+                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
+                          </i> Les larves (ver ou chenille) se développent en 14–28 jours, se déplaçant de la feuille au verticille et parfois à l'épi de maïs
+
+                        </li>
+                        <li>
+                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
+                          </i> Après le développement, les larves tombent au sol pour se nymphoser dans le sol pendant 7–14 jours
+
+                        </li>
+
+                        <li>
+                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
+                          </i> Le papillon apparaît et vit en tant qu'adulte pendant 11–14 jours, et peut voler jusqu'à 100 km par nuit
+
+                        </li>
+                        <li>
+                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
+                          </i> FAW peut se reproduire en continu, causant plusieurs générations par an
+
+                        </li>
+                        <li>
+                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
+                          </i> Dans les Amériques, le contrôle biologique naturel (prédateurs, parasitoïdes et pathogènes) tue jusqu'à 50% des FAW dans les champs de maïs non traités
+
+                        </li>
+                        <li>
+                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
+                          </i> La date de plantation est très importante – le maïs tardif est attaqué beaucoup plus que le maïs planté tôt
+
+                        </li>
+                        <li>
+                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
+                          </i> L'augmentation de la diversité végétale (telle que la culture intercalaire) peut réduire la ponte FAW et augmenter les populations d'ennemis naturels
+
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+
+
+                  <div id="FAMEWS" v-if="!show">
+
+                    <div style="background: rgb(14, 109, 165);
+                    height: 30px;
+                    color: white;
+                    font-size: 20px;
+                    font-weight: 700;
+                    text-align: center;
+                    margin-top: 30px;">
+                        Au sujet de FAMEWS
+                    </div>
+                    <br>
+
+                    <div style="font-size: 20px; font-weight: 600;  text-transform: uppercase;cursor: pointer; color: rgb(14, 109, 165);">
+                      <small>FAMEWS = <strong style="font-size: 25px;">F</strong>all <strong style="font-size: 25px;">A</strong>rmyworm <strong style="font-size: 25px;">M</strong>onitoring and
+                        <strong style="font-size: 25px;">E</strong>arly <strong style="font-size: 25px;">W</strong>arning <strong style="font-size: 25px;">S</strong>ystem</small>
+                    </div>
+                    <p>
+
+                    <div class="text">
+                      <ul class="fa-ul">
+                        <li>
+                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
+                          </i> L'application doit être utilisée à chaque fois que les fermes sont vérifiés (surveillance) et les pièges à phéromones sont comptés pour les légionnaires d'automne (FAW), les légionnaires de l'Afrique (AAW) et les perce-tiges
+                        </li>
+                        <li>
+                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
+                          </i> L'utilisateur principal est l'agriculteur, complété par des points focaux communautaires, des agents de vulgarisation et des agents de protection des végétaux lorsque l'agriculteur n'a pas de smartphone
+
+                        </li>
+                        <li>
+                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
+                          </i> S'appuyer seulement sur les agents de vulgarisation ou les agents de protection des végétaux peut ne pas offrir la couverture désirée, car il est peu probable qu'ils puissent visiter toutes les fermes de façon régulière et opportune
+
+                        </li>
+                        <li>
+                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
+                          </i> L'application comporte trois sections : Informations Générales, Surveillance et Pièges à phéromones
+
+                        </li>
+                        <li>
+                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
+                          </i> Certaines informations sont requises (indiquées par un astérisque rouge) qui doivent être enregistré avant de continuer
+
+                        </li>
+                        <li>
+                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
+                          </i> L'application est multilingue - initialement anglais et français
+
+                        </li>
+
+                        <li>
+                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
+                          </i> L'application doit être utilisée conjointement avec les Notes d'orientation de la FAO sur le Surveillance et le Piégeage
+
+                        </li>
+                        <li>
+                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
+                          </i> Les données peuvent être transmises immédiatement ou stockées et envoyées une fois qu'une connexion est disponible
+
+                        </li>
+                        <li>
+                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
+                          </i> L'application permet aux utilisateurs de surveiller FAW, AAW et perce-tige
+
+                        </li>
+                        <li>
+                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
+                          </i> Les données de l'application fournissent aux agriculteurs, aux communautés et aux pays un avertissement précoce et des conseils sur les changements dans les niveaux de population FAW et la distribution afin de protéger leurs cultures
+
+                        </li>
+                        <li>
+                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
+                          </i> L'application est très intuitive et facile à utiliser – cela devrait prendre environ 10 minutes pour apprendre
+                        </li>
+                        <li>
+                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
+                          </i> FAMEWS a été inspiré par AWorldBridge (aworldbridge.com) étudiants et développé par FAO IT-Solutions en fonction de leurs idées et des contributions des pays touchés et d'autres partenaires
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div style="text-align: right; color: rgb(14, 109, 165); font-size: 16px;">
+                    <small>
+
+                    <div v-if="!show">
+                    <span>Au sujet de </span><span @click="togglePage(true)"  v-bind:class="[show ? 'showing' : '', 'notShowing']"> FAW</span>
+                  </div>
+
+                    <span v-if="show">Au sujet de </span> <span @click="togglePage(false)" v-if="show" v-bind:class="[!show ? 'showing' : '', 'notShowing']"> FAMEWS</span> </small>
+                 </div>
+              </div>
+
+              <div class="copy" v-if="selectedLanguage !== 'fr'">
                   <div style="text-align: right; color: rgb(14, 109, 165); font-size: 16px;">
                     <small>
 
@@ -273,273 +538,6 @@
                  </div>
               </div>
 
-
-              <div class="copy" v-if="selectedLanguage === 'fr'">
-                  <div style="text-align: right; color: rgb(14, 109, 165); font-size: 16px;">
-                    <small>
-
-                    <div v-if="!show">
-                    <span>Au sujet de </span><span @click="togglePage(true)"  v-bind:class="[show ? 'showing' : '', 'notShowing']"> FAW</span>
-                    </div>
-
-                    <span v-if="show">Au sujet de </span> <span @click="togglePage(false)" v-if="show" v-bind:class="[!show ? 'showing' : '', 'notShowing']"> FAMEWS</span> </small>
-                  </div>
-
-                  <div id="FallArmy" v-if="show">
-                    <div style="background: rgb(14, 109, 165);
-                    height: 30px;
-                    color: white;
-                    font-size: 20px;
-                    font-weight: 700;
-                    text-align: center;
-                    margin-top: 30px;">
-                        Au sujet de FAW
-                    </div>
-                    <div class="title">
-                      <small>VOUS NE DEVRIEZ PAS PANIQUER  </small>AU SIGNE DE FAW DANS VOTRE FERME
-                    </div>
-
-                    <div class="title">
-                      <small>ACTION IMMÉDIATE À PRENDRE</small>
-                    </div>
-
-
-                    <div class="text">
-                      <ul class="fa-ul">
-                        <li>
-                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-check-square">
-                          </i> Vérifiez vos fermes dès que les semis apparaissent et continuez au moins deux fois par semaine
-                        </li>
-                        <li>
-                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-check-square">
-                          </i> Utilisez vos doigts pour écraser les masses d'œufs blanchâtres ou grisâtres (environ la taille de votre pouce) et les jeunes larves (vers) sur le haut et le bas des feuilles
-                        </li>
-                        <li>
-                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-check-square">
-                          </i> Certains paysans ont répandu de la cendre, du sable ou de la terre dans les verticilles, d'autres utilisent du savon ou des solutions botaniques locales
-                        </li>
-                        <li>
-                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-check-square">
-                          </i> Certains insecticides botaniques (par exemple Neem) et pathogènes (virus, bactéries, champignons) connus pour être efficaces
-                        </li>
-                        <li>
-                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-check-square">
-                          </i> L'application directement dans les verticilles des plantes qui montrent des dommages FAW peut être très efficace
-                        </li>
-                        <li>
-                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-check-square">
-                          </i> Les pièges à phéromones peuvent être utilisés pour aider à détecter la présence, l'accumulation et le mouvement de FAW dans votre région
-                        </li>
-                      </ul>
-                    </div>
-
-                    <div class="title">
-                      <small>CAUTION</small>
-                    </div>
-
-
-                    <div class="text">
-                      <ul class="fa-ul">
-                        <li>
-                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-exclamation">
-                          </i> L'application d'insecticides tôt dans le cycle de la culture tue les ennemis naturels et peut ne pas être économique
-
-                        </li>
-                        <li>
-                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-exclamation">
-                          </i> Les pesticides plus anciens peuvent être dangereux pour la santé humaine et peuvent être interdits dans d'autres pays
-
-                        </li>
-                        <li>
-                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-exclamation">
-                          </i> L'efficacité des insecticides contre les FAW dépend de la technique d'application, de la dose et de la formulation
-
-                        </li>
-                        <li>
-                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-exclamation">
-                          </i> Une fois que FAW est dans le verticille, les insecticides doivent les atteindre
-                        </li>
-                        <li>
-                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-exclamation">
-                          </i> L'application de pesticides avec des pulvérisateurs à dos sans fournir d'insecticides directement dans le verticille est souvent inefficace
-                        </li>
-                        <li>
-                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-exclamation">
-                          </i> L'application d'insecticides à plusieurs reprises peut augmenter considérablement les coûts de production, rendant le maïs économiquement non viable
-                        </li>
-
-                        <li>
-                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-exclamation">
-                          </i> Les plantes de maïs ont une capacité à compenser l'infestation FAW de niveau inférieur. Tous les dégâts causés par les FAW n'entraînent pas une réduction significative du rendement du maïs.
-                        </li>
-                      </ul>
-                    </div>
-
-
-
-
-                    <div class="title">
-                      <small>FAW FAQ</small>
-                    </div>
-
-
-                    <div class="text">
-                      <ul class="fa-ul">
-                        <li>
-                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
-                          </i> Originaire des Amériques, FAW est maintenant en Afrique pour rester
-
-                        </li>
-                        <li>
-                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
-                          </i> Un ravageur de plus de 80 espèces végétales
-
-                        </li>
-                        <li>
-                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
-                          </i> FAW vit environ 35–61 jours
-
-
-                        </li>
-                        <li>
-                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
-                          </i> Les femelles adultes pondent leurs oeufs directement sur les feuilles de maïs et éclosent en 3–5 jours
-
-                        </li>
-                        <li>
-                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
-                          </i> Les larves (ver ou chenille) se développent en 14–28 jours, se déplaçant de la feuille au verticille et parfois à l'épi de maïs
-
-                        </li>
-                        <li>
-                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
-                          </i> Après le développement, les larves tombent au sol pour se nymphoser dans le sol pendant 7–14 jours
-
-                        </li>
-
-                        <li>
-                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
-                          </i> Le papillon apparaît et vit en tant qu'adulte pendant 11–14 jours, et peut voler jusqu'à 100 km par nuit
-
-                        </li>
-                        <li>
-                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
-                          </i> FAW peut se reproduire en continu, causant plusieurs générations par an
-
-                        </li>
-                        <li>
-                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
-                          </i> Dans les Amériques, le contrôle biologique naturel (prédateurs, parasitoïdes et pathogènes) tue jusqu'à 50% des FAW dans les champs de maïs non traités
-
-                        </li>
-                        <li>
-                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
-                          </i> La date de plantation est très importante – le maïs tardif est attaqué beaucoup plus que le maïs planté tôt
-
-                        </li>
-                        <li>
-                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
-                          </i> L'augmentation de la diversité végétale (telle que la culture intercalaire) peut réduire la ponte FAW et augmenter les populations d'ennemis naturels
-
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-
-
-                  <div id="FAMEWS" v-if="!show">
-
-                    <div style="background: rgb(14, 109, 165);
-                    height: 30px;
-                    color: white;
-                    font-size: 20px;
-                    font-weight: 700;
-                    text-align: center;
-                    margin-top: 30px;">
-                        Au sujet de FAMEWS
-                    </div>
-                    <br>
-
-                    <div style="font-size: 20px; font-weight: 600;  text-transform: uppercase;cursor: pointer; color: rgb(14, 109, 165);">
-                      <small>FAMEWS = <strong style="font-size: 25px;">F</strong>all <strong style="font-size: 25px;">A</strong>rmyworm <strong style="font-size: 25px;">M</strong>onitoring and
-                        <strong style="font-size: 25px;">E</strong>arly <strong style="font-size: 25px;">W</strong>arning <strong style="font-size: 25px;">S</strong>ystem</small>
-                    </div>
-                    <p>
-
-                    <div class="text">
-                      <ul class="fa-ul">
-                        <li>
-                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
-                          </i> L'application doit être utilisée à chaque fois que les fermes sont vérifiés (surveillance) et les pièges à phéromones sont comptés pour les légionnaires d'automne (FAW), les légionnaires de l'Afrique (AAW) et les perce-tiges
-                        </li>
-                        <li>
-                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
-                          </i> L'utilisateur principal est l'agriculteur, complété par des points focaux communautaires, des agents de vulgarisation et des agents de protection des végétaux lorsque l'agriculteur n'a pas de smartphone
-
-                        </li>
-                        <li>
-                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
-                          </i> S'appuyer seulement sur les agents de vulgarisation ou les agents de protection des végétaux peut ne pas offrir la couverture désirée, car il est peu probable qu'ils puissent visiter toutes les fermes de façon régulière et opportune
-
-                        </li>
-                        <li>
-                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
-                          </i> L'application comporte trois sections : Informations Générales, Surveillance et Pièges à phéromones
-
-                        </li>
-                        <li>
-                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
-                          </i> Certaines informations sont requises (indiquées par un astérisque rouge) qui doivent être enregistré avant de continuer
-
-                        </li>
-                        <li>
-                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
-                          </i> L'application est multilingue - initialement anglais et français
-
-                        </li>
-
-                        <li>
-                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
-                          </i> L'application doit être utilisée conjointement avec les Notes d'orientation de la FAO sur le Surveillance et le Piégeage
-
-                        </li>
-                        <li>
-                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
-                          </i> Les données peuvent être transmises immédiatement ou stockées et envoyées une fois qu'une connexion est disponible
-
-                        </li>
-                        <li>
-                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
-                          </i> L'application permet aux utilisateurs de surveiller FAW, AAW et perce-tige
-
-                        </li>
-                        <li>
-                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
-                          </i> Les données de l'application fournissent aux agriculteurs, aux communautés et aux pays un avertissement précoce et des conseils sur les changements dans les niveaux de population FAW et la distribution afin de protéger leurs cultures
-
-                        </li>
-                        <li>
-                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
-                          </i> L'application est très intuitive et facile à utiliser – cela devrait prendre environ 10 minutes pour apprendre
-                        </li>
-                        <li>
-                          <i style="color:rgb(14, 109, 165)" class="fa-li fa fa-info-circle">
-                          </i> FAMEWS a été inspiré par AWorldBridge (aworldbridge.com) étudiants et développé par FAO IT-Solutions en fonction de leurs idées et des contributions des pays touchés et d'autres partenaires
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-
-                  <div style="text-align: right; color: rgb(14, 109, 165); font-size: 16px;">
-                    <small>
-
-                    <div v-if="!show">
-                    <span>Au sujet de </span><span @click="togglePage(true)"  v-bind:class="[show ? 'showing' : '', 'notShowing']"> FAW</span>
-                  </div>
-
-                    <span v-if="show">Au sujet de </span> <span @click="togglePage(false)" v-if="show" v-bind:class="[!show ? 'showing' : '', 'notShowing']"> FAMEWS</span> </small>
-                 </div>
-              </div>
         </div>
        </div>
     </div>
@@ -549,28 +547,28 @@
 <script>
 export default {
   async mounted() {
-    this.$eventHub.on('lenguageSelection', async language => {
+    this.$eventHub.on('FAST:LANGUAGE:CHANGED', async (language) => {
       this.language = language.code;
     });
   },
   computed: {
     selectedLanguage() {
       return this.language;
-    },
+    }
   },
   data: function() {
     return {
       show: false,
       language: localStorage.getItem('defaultLenguage')
         ? localStorage.getItem('defaultLenguage')
-        : 'en',
+        : 'en'
     };
   },
   methods: {
     togglePage(value) {
       this.show = value;
-    },
-  },
+    }
+  }
 };
 </script>
 
@@ -601,7 +599,6 @@ export default {
 .landing {
   z-index: 2;
   margin: 25px auto;
-  box-shadow: 0 3px 30px rgba(0, 0, 0, 0.3);
   overflow: hidden;
 }
 

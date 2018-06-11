@@ -75,7 +75,7 @@ Quasar.start(async () => {
 
     // Set the translations into the Plugin
     const i18n = new VueI18n({
-      locale: config.defaultLenguage, // set locale
+      locale: localStorage.getItem('defaultLenguage') || 'en', // set locale
       messages: config.translations // set locale messages
     });
     /* eslint-disable no-new */

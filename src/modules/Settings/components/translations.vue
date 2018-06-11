@@ -43,7 +43,8 @@
       </q-inner-loading>
       </div>
 
-        <tstats :stats="translations.stats"> </tstats>
+        <tstats :stats="translations.stats" v-if="translations && translations.stats"> </tstats>
+
         <div class="col-lg-12">
           <q-btn icon="fa-filter" ref="target" color="primary" outline>
             {{$t('Forms')}}
@@ -98,6 +99,7 @@
           <q-input v-model="searchBox" type="text" :stack-label="$t('TRANSLATION FILTER')" :placeholder="$t('Search...')" :after="[{  icon: 'fa-search'}]" clearable />
 
         </div>
+
         <hottable :translations="translations" :labels="filteredLabels"></hottable>
 
       </div>
@@ -113,7 +115,6 @@
 
 <script>
 import { Translation, Form, FormLabels, Localization, FAST } from 'fast-fastjs';
-import { mapActions } from 'vuex';
 import {
   QBtn,
   QTooltip,
@@ -245,7 +246,6 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['getResources']),
     async removeDuplicated() {},
     hasTranslation() {
       return _isEmpty(this.translations);

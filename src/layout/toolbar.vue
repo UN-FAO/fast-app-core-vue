@@ -12,16 +12,16 @@
       @click="openLeftDrawer()"
       color="white"
       flat
-      style="z-index:999"
+      style="z-index:99"
     >
       <q-icon name="menu" color="white" />
     </q-btn>
 
-    <q-toolbar-title/>
-
+  <q-toolbar-title>
     <faologo/>
+  </q-toolbar-title>
 
-    <localization/>
+    <localization style="z-index:999"/>
 
     <wifiDisplay/>
 

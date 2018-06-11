@@ -82,7 +82,7 @@ import {
   QItemSeparator
 } from 'quasar';
 import pageLinks from './components/pageLinks';
-import _sortBy from 'lodash/sortBy'
+import _sortBy from 'lodash/sortBy';
 export default {
   components: {
     QScrollArea,

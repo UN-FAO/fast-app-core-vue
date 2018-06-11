@@ -72,7 +72,7 @@ import Columns from 'components/dataTable/tableFormatter/Columns';
 
 export default {
   async mounted() {
-    this.$eventHub.on('lenguageSelection', async (data) => {
+    this.$eventHub.on('FAST:LANGUAGE:CHANGED', async (data) => {
       await this.updateLocalSubmissions();
     });
   },
@@ -248,7 +248,7 @@ export default {
   beforeDestroy() {
     this.$eventHub.off('FAST-DATA_SYNCED');
     this.$eventHub.off('FAST-DATA_IMPORTED');
-    this.$eventHub.off('lenguageSelection');
+    this.$eventHub.off('FAST:LANGUAGE:CHANGED');
   }
 };
 </script>

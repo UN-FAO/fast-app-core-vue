@@ -134,7 +134,7 @@ export default {
     this.$eventHub.off('FAST:IMPORT');
     this.$eventHub.off('FAST-DATA_SYNCED');
     this.$eventHub.off('FAST-DATA_IMPORTED');
-    this.$eventHub.off('lenguageSelection');
+    this.$eventHub.off('FAST:LANGUAGE:CHANGED');
   },
   watch: {
     data: function(data) {},

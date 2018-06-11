@@ -86,7 +86,7 @@ export default {
       callback: this.handleDataImported
     });
 
-    this.$eventHub.on('lenguageSelection', async (data) => {
+    this.$eventHub.on('FAST:LANGUAGE:CHANGED', async (data) => {
       await this.refreshData();
     });
   },

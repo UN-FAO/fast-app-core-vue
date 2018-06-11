@@ -1,5 +1,5 @@
 <template>
-<q-btn ref="target" flat v-if="show" class="absolute-right">
+<q-btn ref="target" flat v-if="show">
     <q-icon name="language" color="white" />
   <!-- Direct child of target -->
   <q-popover ref="popover">
@@ -121,7 +121,7 @@ export default {
       this.lenguage = lenguage.code;
       Moment.changeLanguage(lenguage.code)
       localStorage.setItem("defaultLenguage", lenguage.code);
-      this.$eventHub.$emit("languageselection", lenguage);
+      this.$eventHub.$emit("FAST:LANGUAGE:CHANGED", lenguage);
       this.$swal({
         title: this.$t("Language Changed"),
         text: this.$t("The language was changed."),

@@ -91,7 +91,7 @@ export default {
       emailValidationMessage(error.email);
     });
 
-    this.$eventHub.on('lenguageSelection', (lenguage) => {
+    this.$eventHub.on('FAST:LANGUAGE:CHANGED', (lenguage) => {
       this.toggleRtl(lenguage);
     });
 

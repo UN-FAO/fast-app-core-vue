@@ -23,8 +23,8 @@ node ./node_modules/json/lib/json.js -I -f package.json -e "this.deployAppID='${
 ###################################################
 # Copy the projects env into their dev locations
 #
-  rm -rf ./src/config/env.js
-	cp ./deploys/projects/${1}/env.js ./src/config/env.js
+  rm -rf ./.env
+	cp ./deploys/projects/${1}/.env ./.env
 
 ###################################################
 # Copy the projects about into their dev locations
