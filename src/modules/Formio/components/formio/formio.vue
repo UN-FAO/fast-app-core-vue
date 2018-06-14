@@ -62,6 +62,7 @@ export default {
     }
   },
   mounted() {
+    Formio.forms = {};
     Formio.setToken(this.formioToken);
     Lenguage.listen(this);
     GPS.listen(this);
@@ -236,7 +237,7 @@ export default {
       }
       if (this.editMode === 'read-only') {
         this.$swal('Error', 'Cannot submit on read only mode', 'error');
-        return
+        return;
       }
       formio.saveSubmission(formSubmission).then((created) => {
         this.redirectIntended({ submission: formSubmission, created, formio });

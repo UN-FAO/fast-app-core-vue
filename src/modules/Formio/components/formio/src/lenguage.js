@@ -5,10 +5,10 @@ const Lenguage = class {
    * @return {[type]}    [description]
    */
   static listen(vm) {
-    vm.$eventHub.$on('lenguageSelection', (lenguage) => {
-      vm.formIO.language = lenguage.code
-      vm.renderForm()
-    })
+    vm.$eventHub.$on('FAST:LANGUAGE:CHANGED', (lenguage) => {
+      vm.formIO.language = lenguage.code;
+      vm.renderForm();
+    });
   }
 
   /**
@@ -17,7 +17,7 @@ const Lenguage = class {
    * @return {[type]}    [description]
    */
   static off(vm) {
-    vm.$eventHub.$off('lenguageSelection', vm.renderForm)
+    vm.$eventHub.$off('FAST:LANGUAGE:CHANGED', vm.renderForm);
   }
-}
-export default Lenguage
+};
+export default Lenguage;

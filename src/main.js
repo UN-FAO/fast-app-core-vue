@@ -52,6 +52,7 @@ let appConf = {
 
 Vue.config.productionTip = false;
 Vue.prototype.$appConf = appConf;
+Vue.prototype.$appVersion = pjson.version
 
 Vue.prototype.$isInsideApp = (route) => {
   return (

@@ -189,7 +189,7 @@ let t = [
   'next',
   'previous',
   'cancel',
-  'submit',
+  'submit'
 
   // FAW translations
   /*
@@ -200,7 +200,7 @@ let t = [
   'Traps',
   'Fall Armyworm Monitoring and Early Warning System',
   'FAMEWS'
-  */
+
   // MedAid Translations
 
   'here',
@@ -210,5 +210,6 @@ let t = [
   'icon visible on the top right corner during the process',
   'You can find a glossary of aquaculture terms',
   'The survey is carried out within the project "Mediterranean Aquaculture Integrated DevelopmentMedAID)" supported by the European Union in the frame of Horizon 2020, grant agreement number 727315.'
+   */
 ];
 export default t;

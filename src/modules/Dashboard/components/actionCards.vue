@@ -10,7 +10,7 @@
       <q-card color="white" class="text-black cardRibbon">
       <q-card-title>
         <q-item>
-          <q-item-side  :icon="!card.customIcon && card.icon" :avatar="card.customIcon && card.icon"/>
+          <q-item-side  :icon="!card.customIcon && card.icon ? card.icon : null" :avatar="card.customIcon && card.icon ? card.icon : null"/>
           <q-item-main>
             <q-item-tile label>{{$t(card.title)}}</q-item-tile>
 
@@ -36,7 +36,7 @@
 }
 </style>
 <script>
-import _chunk from "lodash/chunk";
+import _chunk from 'lodash/chunk';
 import {
   QCard,
   QCardMedia,
@@ -58,14 +58,16 @@ import {
   QList,
   QItem,
   QItemSeparator,
-  QSearch
-} from "quasar";
+  QItemMain,
+  QSearch,
+  QItemTile
+} from 'quasar';
 export default {
-  name: "actioncards",
-  props: ["page"],
+  name: 'actioncards',
+  props: ['page'],
   data() {
     return {
-      filter: ""
+      filter: ''
     };
   },
   watch: {
@@ -94,16 +96,15 @@ export default {
     QTooltip,
     QList,
     QItem,
-    QItemSeparator
+    QItemSeparator,
+    QItemMain,
+    QItemTile
   },
   computed: {
     _cards() {
       let cards = this.page && this.page.cards ? this.page.cards : [];
-      cards = cards.filter(c => {
-        return (
-          c.title.toLowerCase().indexOf(this.filter.toLowerCase()) >
-          -1
-        );
+      cards = cards.filter((c) => {
+        return c.title.toLowerCase().indexOf(this.filter.toLowerCase()) > -1;
       });
       return _chunk(cards, 3);
     }
@@ -112,9 +113,9 @@ export default {
     applyAction(action) {
       if (action.formPath) {
         let name =
-          action.view === "list"
-            ? "formio_form_show"
-            : "formio_form_submission";
+          action.view === 'list'
+            ? 'formio_form_show'
+            : 'formio_form_submission';
         let to = {
           name: name,
           params: { idForm: action.formPath }
@@ -122,7 +123,7 @@ export default {
         this.$router.push(to);
       } else if (action.page) {
         let to = {
-          name: "pageManager",
+          name: 'pageManager',
           params: { pageId: action.page.url }
         };
         this.$router.push(to);

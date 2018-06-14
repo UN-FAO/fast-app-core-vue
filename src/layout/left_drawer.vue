@@ -60,7 +60,7 @@
     <p>
 
     <div class="fixed-bottom text-left light text-italic" style="padding-left: 65px;">
-      v {{$FAST_CONFIG.FAST_VERSION}}
+      v {{$appVersion}}
     </div>
   </q-scroll-area>
 </template>

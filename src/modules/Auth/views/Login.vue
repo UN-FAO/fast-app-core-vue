@@ -34,7 +34,7 @@
                                 <h5>{{$t('New user')}}?</h5></router-link>
                         </p>
                         <p class="text-center" style="color: grey !important">
-                            {{$t('Version')}} {{$FAST_CONFIG.FAST_VERSION}}
+                            {{$t('Version')}} {{$appVersion}}
                             <q-icon name="fa-cog" color="white" @click="adminLogin" style="cursor:pointer;" v-if="!isAdminLogin" />
                             <q-icon style="cursor:pointer;" name="fa-arrow-circle-left" color="white" @click="adminLogin" v-if="isAdminLogin" />
                         </p>
