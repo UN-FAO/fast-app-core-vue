@@ -101,7 +101,7 @@ export default {
           });
         })
         .catch((error) => {
-          console.log(error);
+          console.log('Could not login', error);
           Loading.hide();
           this.LoadingLogIn = false;
           this.$swal(

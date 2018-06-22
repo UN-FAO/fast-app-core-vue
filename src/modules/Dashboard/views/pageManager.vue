@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid col-lg-offset-1 col-lg-10" v-bind:key="$route.path" style="padding-bottom:50px" >
     <div class="section-title pageTitle">
-      {{$t(page.title)}}
+      {{page && page.title ? $t(page.title) : ''}}
     </div>
     <hr style="border-top: 1px solid lightgray;">
 
@@ -37,7 +37,7 @@ import {
   QItemSeparator
 } from 'quasar';
 
-import { Pages } from 'fast-fastjs';
+import { PagesRepo } from 'fast-fastjs';
 import actioncards from '../components/actionCards';
 export default {
   components: {
@@ -66,7 +66,8 @@ export default {
   asyncData: {
     page: {
       async get() {
-        let result = await Pages.getLocal();
+        let result = await PagesRepo.getLocal();
+
         let element = this.filterPage(result.pages, this.$route.params.pageId);
         return element;
       },

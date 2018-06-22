@@ -21,7 +21,7 @@
         <q-card v-bind:class="getFormClass" style="margin:0px !important">
           <q-card-main>
             <q-card-title>
-
+              {{currentForm && currentForm.data && currentForm.data.title ? currentForm.data.title : ''}}
             <q-icon  flat  color="grey" @click="togglePages" name="menu" v-if="_isWizard && !$FAST_CONFIG.TAB_MENU && !showPages">
               <q-tooltip>{{$t('Show pages')}}</q-tooltip>
             </q-icon>

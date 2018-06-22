@@ -112,13 +112,12 @@ export default {
   methods: {
     applyAction(action) {
       if (action.formPath) {
-        let name =
+         let path =
           action.view === 'list'
-            ? 'formio_form_show'
-            : 'formio_form_submission';
+            ? '/formio/forms/' + action.formPath
+            : '/formio/forms/' + action.formPath + '/submission'
         let to = {
-          name: name,
-          params: { idForm: action.formPath }
+          path
         };
         this.$router.push(to);
       } else if (action.page) {

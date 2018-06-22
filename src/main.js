@@ -52,7 +52,7 @@ let appConf = {
 
 Vue.config.productionTip = false;
 Vue.prototype.$appConf = appConf;
-Vue.prototype.$appVersion = pjson.version
+Vue.prototype.$appVersion = pjson.version;
 
 Vue.prototype.$isInsideApp = (route) => {
   return (
@@ -71,26 +71,19 @@ if (__THEME === 'mat') {
  *  On App start
  */
 Quasar.start(async () => {
-  try {
-    let config = await FAST.start({ Vue: Vue, interval: true, appConf });
+  let config = await FAST.start({ Vue: Vue, interval: true, appConf });
 
-    // Set the translations into the Plugin
-    const i18n = new VueI18n({
-      locale: localStorage.getItem('defaultLenguage') || 'en', // set locale
-      messages: config.translations // set locale messages
-    });
-    /* eslint-disable no-new */
-    new Vue({
-      i18n,
-      el: '#q-app',
-      router,
-      store,
-      render: (h) => h(require('./App'))
-    });
-  } catch (error) {
-    console.log(error);
-    alert(
-      'The application cannot Start. You must be connected to internet to start the App for the first time'
-    );
-  }
+  // Set the translations into the Plugin
+  const i18n = new VueI18n({
+    locale: localStorage.getItem('defaultLenguage') || 'en', // set locale
+    messages: config.translations // set locale messages
+  });
+  /* eslint-disable no-new */
+  new Vue({
+    i18n,
+    el: '#q-app',
+    router,
+    store,
+    render: (h) => h(require('./App'))
+  });
 });

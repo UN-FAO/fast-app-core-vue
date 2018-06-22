@@ -110,7 +110,6 @@ input.form-control {
 
 label.control-label {
   color: #505050;
-  font-size: medium !important;
   font-weight: 350 !important;
 }
 
@@ -331,6 +330,9 @@ p.form-title {
   display: block;
   content: '';
 }
+.layout-page {
+  overflow-y: scroll;
+}
 
 .form-group .radio {
   margin-bottom: 0px;
@@ -353,11 +355,38 @@ p.form-title {
   color: white;
 }
 
-.activePage {
-  background-color: #0e6da5;
-  color: white;
-  padding: 0px 10px !important;
-  border-radius: 0px !important;
+.formNav .q-list {
+
+padding-bottom: 0;
+
+}
+
+
+
+.formioPagination {
+
+border-top-left-radius: 0 !important;
+
+border-top-right-radius: 0 !important;
+
+}
+
+
+
+.formioPagination:not(:last-child) {
+
+border-bottom-left-radius: 0 !important;
+
+border-bottom-right-radius: 0 !important;
+
+}
+
+
+
+.formioPagination.activePage {
+
+background-color: #0e6da5;
+
 }
 
 .activePage .q-item-main .q-item-label {
