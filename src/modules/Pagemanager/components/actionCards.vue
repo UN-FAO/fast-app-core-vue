@@ -6,7 +6,7 @@
 </div>
 </div>
 <div v-for="(chunk, index) in _cards" v-bind:key="index" class="col-lg-12">
-     <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-xs-12" v-for="card in chunk" v-bind:key="card.title" style="margin:auto;">
+     <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-xs-12" v-for="card in chunk" v-bind:key="card.title" style="margin:auto;" v-if="card.shouldDisplay">
       <q-card color="white" class="text-black cardRibbon">
       <q-card-title>
         <q-item>
@@ -20,7 +20,7 @@
         <span slot="subtitle" class="pull-left text-grey" style="padding-top:10px;">
           {{$t(card.subtitle)}}
           <br>
-        <q-btn color="primary" style="margin-top:10px" @click="applyAction(action)" v-if="action.target" v-for="action in card.actions" v-bind:key="action.text">
+        <q-btn color="primary" style="margin-top:10px" @click="applyAction(action)" v-if="action.target && action.shouldDisplay"  v-for="action in card.actions" v-bind:key="action.text">
           {{$t(action.text)}}
         </q-btn>
         </span>
@@ -112,10 +112,10 @@ export default {
   methods: {
     applyAction(action) {
       if (action.formPath) {
-         let path =
+        let path =
           action.view === 'list'
-            ? '/formio/forms/' + action.formPath
-            : '/formio/forms/' + action.formPath + '/submission'
+            ? '/forms/' + action.formPath
+            : '/forms/' + action.formPath + '/submission';
         let to = {
           path
         };

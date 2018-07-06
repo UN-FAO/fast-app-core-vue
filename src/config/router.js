@@ -7,6 +7,7 @@ import { Auth } from 'fast-fastjs';
  */
 import AuthRoutes from 'modules/Auth/routes';
 import DashboardRoutes from 'modules/Dashboard/routes';
+import PageManegerRoutes from 'modules/Pagemanager/routes';
 import FormioRoutes from 'modules/Formio/routes';
 import SettingsRoutes from 'modules/Settings/routes';
 
@@ -27,6 +28,7 @@ Vue.use(VueRouter);
 let routes = setRoutes([
   AuthRoutes,
   DashboardRoutes,
+  PageManegerRoutes,
   FormioRoutes,
   SettingsRoutes
 ]);

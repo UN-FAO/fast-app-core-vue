@@ -102,11 +102,22 @@ export default {
   },
   asyncData: {
     PAGES: {
-      get() {
-        return PagesRepo.getLocal();
+      async get() {
+        let result = await PagesRepo.getLocal();
+        let pages = await result.pages.map(async (page) => {
+          page.cards.map(async (card) => {
+            card.shouldDisplay = await Auth.hasRoleIdIn(card.access);
+            card.actions.map(async (action) => {
+              action.shouldDisplay = await Auth.hasRoleIdIn(action.access);
+            });
+          });
+          page.shouldDisplay = await Auth.hasRoleIdIn(page.access);
+          return page;
+        });
+        return Promise.all(pages);
       },
       transform(result) {
-        return _sortBy(result.pages, 'index');
+        return _sortBy(result, 'index');
       }
     }
   },

@@ -1,6 +1,6 @@
 <template>
 <div style="color:black">
-   <q-side-link multiline highlight item v-if="page.SHOW_LD" :to='to(page)' :key="page.url" v-for="page in pages">
+   <q-side-link multiline highlight item v-if="page.SHOW_LD && page.shouldDisplay" :to='to(page)' :key="page.url" v-for="page in pages">
       <q-item-side :icon="page.icon" />
       <q-item-main :label="$t(page.title)"/>
     </q-side-link>

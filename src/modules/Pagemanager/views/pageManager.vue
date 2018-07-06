@@ -37,7 +37,7 @@ import {
   QItemSeparator
 } from 'quasar';
 
-import { PagesRepo } from 'fast-fastjs';
+import { PagesRepo, Auth } from 'fast-fastjs';
 import actioncards from '../components/actionCards';
 export default {
   components: {
@@ -67,19 +67,29 @@ export default {
     page: {
       async get() {
         let result = await PagesRepo.getLocal();
-
-        let element = this.filterPage(result.pages, this.$route.params.pageId);
-        return element;
+        let pages = await result.pages.map(async (page) => {
+          page.cards.map(async (card) => {
+            card.shouldDisplay = await Auth.hasRoleIdIn(card.access);
+            card.actions.map(async (action) => {
+              action.shouldDisplay = await Auth.hasRoleIdIn(action.access);
+              return action
+            });
+            return card
+          });
+          page.shouldDisplay = await Auth.hasRoleIdIn(page.access);
+          return page;
+        });
+        return Promise.all(pages);
       },
       transform(result) {
-        return result;
+        return this.filterPage(result, this.$route.params.pageId);
       }
     }
   },
   methods: {
-    filterPage(pages, nextRoute) {
+    filterPage(pages, pageId) {
       let page = pages.filter((page) => {
-        return page.url === nextRoute;
+        return page.url === pageId;
       });
       return page[0];
     }

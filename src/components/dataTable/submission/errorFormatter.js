@@ -1,49 +1,42 @@
-import FormioUtils from "formiojs/utils";
+import FormioUtils from 'formiojs/utils';
 let ErrorFormatter = (() => {
-  function format({ errors }) {
+  function format({ errors, vm }) {
     let errorString =
       '<div style="overflow-x:auto;"><table class="restable"><thead> <tr><th scope="col">' +
-      this.$t("Label") +
+      vm.$t('Field label') +
       '</th><th scope="col">' +
-      this.$t("Code") +
-      '</th><th scope="col">' +
-      this.$t("Module") +
-      "</th></tr></thead><tbody>";
+      vm.$t('Error') +
+      '</th></thead><tbody>';
 
-    errors.details.forEach(detail => {
-      let component = FormioUtils.getComponent(
-        this.currentForm.data.components,
-        detail.path[0]
-      );
-      let label = component ? this.$t(component.label) + ": " : "";
-      errorString = errorString + "<tr>";
+    errors.details.forEach((detail) => {
+      let components = vm.currentForm.data
+        ? vm.currentForm.data.components
+        : vm.currentForm.components;
+      let component = FormioUtils.getComponent(components, detail.path[0]);
+      let label = component ? vm.$t(component.label) : '';
+      errorString = errorString + '<tr>';
       errorString =
         errorString +
-        "<td data-label=" +
-        this.$t("Label") +
-        ">" +
+        '<td data-label=' +
+        vm.$t('Field label') +
+        '>' +
         label +
-        "</td>";
+        '</td>';
       errorString =
         errorString +
-        "<td data-label=" +
-        this.$t("Code") +
-        ">" +
+        '<td data-label=' +
+        vm.$t('Error') +
+        '>' +
         detail.message +
-        "</td>";
-      errorString =
-        errorString +
-        "<td data-label=" +
-        this.$t("Module") +
-        ">" +
-        detail.message +
-        "</td>";
-      errorString = errorString + "</tr>";
+        '</td>';
+      errorString = errorString + '</tr>';
     });
-    errorString = errorString + "</tbody></table></div>";
+    errorString = errorString + '</tbody></table></div>';
+
+    return errorString;
   }
   return Object.freeze({
     format
   });
-})()
-export default ErrorFormatter
+})();
+export default ErrorFormatter;

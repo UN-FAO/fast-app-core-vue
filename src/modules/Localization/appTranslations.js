@@ -189,10 +189,10 @@ let t = [
   'next',
   'previous',
   'cancel',
-  'submit',
+  'submit'
 
   // FAW translations
-
+  /*
   'The date of survey cannot be set in the future.',
   'Please select a date prior to the date of submission.',
   'Scouting and traps',

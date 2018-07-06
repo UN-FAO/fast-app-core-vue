@@ -15,12 +15,6 @@ const CollectedData = (r) =>
 const About = (r) =>
   require.ensure([], () => r(require('./views/about')), 'about-module');
 
-const PageManeger = (r) =>
-  require.ensure(
-    [],
-    () => r(require('./views/pageManager')),
-    'pagemanager-module'
-  );
 
 let DashboardRoutes = [
   {
@@ -45,12 +39,6 @@ let DashboardRoutes = [
     path: '/about',
     component: About,
     name: 'About',
-    meta: { requiresAuth: true }
-  },
-  {
-    path: '/pageManager/pageId/:pageId',
-    component: PageManeger,
-    name: 'pageManager',
     meta: { requiresAuth: true }
   }
 ];

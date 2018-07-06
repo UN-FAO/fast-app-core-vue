@@ -14,7 +14,7 @@
 </style>
 
 <script>
-import actioncards from '../components/actionCards';
+import actioncards from '../../Pagemanager/components/actionCards';
 import { Form } from 'fast-fastjs';
 export default {
   components: {

@@ -16,8 +16,9 @@ import FormioWizard from 'formiojs/wizard';
 import FormioUtils from 'formiojs/utils';
 import GPS from './src/gps';
 import Lenguage from './src/lenguage';
-import { Event, Configuration, OfflinePlugin } from 'fast-fastjs';
+import { Event, OfflinePlugin } from 'fast-fastjs';
 import router from 'config/router';
+import ErrorFormatter from 'components/dataTable/submission/errorFormatter';
 // import SMS from './src/sms'
 
 export default {
@@ -84,7 +85,8 @@ export default {
       formIO: null,
       jsonSubmission: undefined,
       offlineModePlugin: null,
-      saved: false
+      saved: false,
+      currentForm: null
     };
   },
   methods: {
@@ -211,7 +213,7 @@ export default {
      * @param  {[type]} formSubmission [description]
      * @return {[type]}                [description]
      */
-    save(formSubmission) {
+    async save(formSubmission) {
       if (this.jsonSubmission) {
         formSubmission._id = _get(
           this.jsonSubmission,
@@ -226,7 +228,7 @@ export default {
       }
       let formio = new Formio(this.formURL);
 
-      if (this.editMode === 'online') {
+      if (this.editMode === 'online' || !this.$FAST_CONFIG.OFFLINE_FIRST) {
         this.onlineSave(formSubmission, formio);
         return;
       }
@@ -245,9 +247,8 @@ export default {
     },
     async redirectIntended({ submission, created, formio }) {
       if (submission._id) {
-        let config = await Configuration.getLocal();
         if (submission.redirect === true) {
-          switch (config.SAVE_REDIRECT) {
+          switch (this.$FAST_CONFIG.SAVE_REDIRECT) {
             case 'dashboard':
               router.push({
                 name: 'dashboard'
@@ -308,7 +309,8 @@ export default {
                 });
               } else if (
                 this.editMode === 'online' ||
-                this.editMode === 'read-only'
+                this.editMode === 'read-only' ||
+                !this.$FAST_CONFIG.OFFLINE_FIRST
               ) {
                 this.$router.push({
                   name: 'formio_form_show',
@@ -318,12 +320,16 @@ export default {
             })
             .catch((e) => {
               console.log(e);
-              this.$swal(
-                'Error',
-                'There was a problem while trying to save the submission. ' +
-                  JSON.stringify(e),
-                'error'
-              );
+              let errorString = ErrorFormatter.format({ errors: e, vm: this });
+              this.$swal({
+                title: e.name,
+                type: 'info',
+                html: errorString,
+                showCloseButton: true,
+                showCancelButton: false,
+                confirmButtonText: 'OK'
+              });
+              this.renderForm();
             });
         }
       });
@@ -408,6 +414,7 @@ export default {
         }
         // Clone the original object to avoid changes
         let cloneJsonForm = _cloneDeep(onlineJsonForm);
+        this.currentForm = _cloneDeep(onlineJsonForm);
 
         // Load data stored locally
         cloneJsonForm.components = this.loadExternalResources(
@@ -484,8 +491,10 @@ export default {
 
               // Set timer that will save comment when it fires.
               timeoutId = setTimeout(() => {
-                this.autoSaveAsDraft();
-                this.saved = true;
+                if (this.$FAST_CONFIG.OFFLINE_FIRST) {
+                  this.autoSaveAsDraft();
+                  this.saved = true;
+                }
               }, 700);
             }
             this.$eventHub.$emit('formio.change', {

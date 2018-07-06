@@ -187,7 +187,6 @@ input[type='checkbox']:checked + span {
 .field-required:after {
   content: ' *';
   color: red;
-  font-size: x-large;
 }
 
 .router-link-active {

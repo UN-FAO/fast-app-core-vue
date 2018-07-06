@@ -34,11 +34,11 @@
               name="fa-floppy-o"
               v-if="this.$route.params.FAST_EDIT_MODE !== 'online' &&
                this.$route.params.FAST_EDIT_MODE !== 'online-review' &&
-               this.$route.params.FAST_EDIT_MODE !== 'read-only'">
+               this.$route.params.FAST_EDIT_MODE !== 'read-only' && this.$FAST_CONFIG.OFFLINE_FIRST">
               <q-tooltip>{{$t('Save as draft')}}</q-tooltip>
             </q-icon>
 
-            <q-icon slot="right" name="more_vert" color="grey" style="cursor:pointer; margin-left:20px">
+            <q-icon slot="right" name="more_vert" color="grey" style="cursor:pointer; margin-left:20px" v-if="this.$FAST_CONFIG.OFFLINE_FIRST">
               <q-popover ref="popover" class="show-menu">
                 <q-list link class="no-border" dense separator no-border>
 
@@ -416,7 +416,8 @@ export default {
       displayUp: false,
       displayDown: true,
       parallelSub: [],
-      autoCreate: !this.$route.params.idSubmission,
+      autoCreate:
+        !this.$route.params.idSubmission && this.$FAST_CONFIG.OFFLINE_FIRST,
       tab: '1',
       customRender: false,
       customRenderArray: []
