@@ -30,16 +30,9 @@ export default {
   methods: {
     to(page) {
       var to;
-      switch (page.url) {
-        case 'CollectedData':
-          to = { name: 'CollectedData' };
-          break;
-        case 'newSurvey':
-          to = { name: 'newSurvey' };
-          break;
-        default:
-          to = { name: 'pageManager', params: { pageId: page.url } };
-          break;
+      to = { name: 'pageManager', params: { pageId: page.url } };
+      if (page.internal) {
+        to = { name: page.internalUrl };
       }
       return to;
     }

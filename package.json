@@ -1,6 +1,6 @@
 {
   "name": "fast-app-core-vue",
-  "version": "0.12.16",
+  "version": "0.12.22",
   "deployAppName": "SSFK",
   "deployAppID": "5ad58b7ddc3e0104148241fe",
   "description": "A data collection application based on FORM.io",
@@ -37,7 +37,7 @@
     "chart.js": "^2.7.2",
     "dotenv-webpack": "^1.5.5",
     "fast-downloads": "0.0.10",
-    "fast-fastjs": "^0.1.9",
+    "fast-fastjs": "^0.1.11",
     "fast-submission2any": "0.0.5",
     "fastclick": "^1.0.6",
     "formio-export": "^0.3.0",

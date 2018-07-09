@@ -123,6 +123,9 @@ export default {
           path
         };
         this.$router.push(to);
+      } else if (action.internal) {
+        let to = { name: action.internalUrl }
+        this.$router.push(to);
       } else if (action.page) {
         let to = {
           name: 'pageManager',
