@@ -4,7 +4,31 @@
           <q-card>
 
             <q-card-title>
-              {{formTitle}}
+              <span
+                style="color: #0574a9;cursor:pointer"
+                @click="$router.push({name: 'dashboard', exact: true})"
+                class="appBreadcrumb"
+              >
+              {{
+                'HOME'
+              }}
+              </span>
+
+                <span
+                style="color: #0574a9;cursor:pointer"
+                @click="$router.push({name: 'pageManager', params: {pageId: JSON.parse($route.query.parent).url}})"
+                 class="appBreadcrumb"
+                >
+                {{$route.query && $route.query.parent && JSON.parse($route.query.parent).title  !== undefined ? '/ ' + JSON.parse($route.query.parent).title : ''}}
+                </span>
+
+                <span
+                  style="color: #0574a9;cursor:pointer"
+                   class="appBreadcrumb"
+                >
+                  {{ ' /'}}
+                </span>
+                {{formTitle}}
            <q-icon slot="right" name="fa-plus-circle" @click="emitEvent('FAST:GO:CREATE')" color="primary" style="cursor:pointer; padding-right: 20px">
 
             </q-icon>
@@ -103,6 +127,9 @@ export default {
         title = this.currentForm.data ? this.currentForm.data.title : '';
       }
       return this.$t(title);
+    },
+    breadcrum() {
+      return 'Home';
     },
     noSubmissions() {
       return typeof this.submissions === 'undefined';

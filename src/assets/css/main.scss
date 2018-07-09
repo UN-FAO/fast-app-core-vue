@@ -46,7 +46,7 @@ button.btn.btn-default.btn-wizard-nav-cancel {
 }
 
 .choices__list.choices__list--dropdown {
-  position: inherit;
+  position: absolute;
   width: max-content !important;
   min-width: -webkit-fill-available;
   color: black;
@@ -432,7 +432,7 @@ button.btn.btn-primary.btn-wizard-nav-next {
 .pageTitle {
   font-size: 2.2vh;
   padding-top: 30px;
-  text-align: right;
+  text-align: left;
   text-transform: uppercase;
   letter-spacing: 2px;
   color: #b5bbbd;
@@ -560,6 +560,15 @@ button.btn.btn-primary.btn-wizard-nav-next {
   padding-right: 0px;
   padding-bottom: 0px;
   padding-left: 0px;
+}
+
+.appBreadcrumb {
+    font-size: 1.3vh;
+    text-align: left;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-variant: small-caps;
+    background:inherit
 }
 
 @import 'custom/custom.scss';

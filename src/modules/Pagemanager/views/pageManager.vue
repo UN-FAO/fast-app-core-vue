@@ -1,9 +1,32 @@
 <template>
-  <div class="container-fluid col-lg-offset-1 col-lg-10" v-bind:key="$route.path" style="padding-bottom:50px" >
-    <div class="section-title pageTitle">
+  <div
+    class="container-fluid col-lg-offset-1 col-lg-10"
+    v-bind:key="$route.path"
+    style="padding-bottom:50px"
+  >
+    <div class="pageTitle">
       {{page && page.title ? $t(page.title) : ''}}
     </div>
-    <hr style="border-top: 1px solid lightgray;">
+    <div class="appBreadcrumb">
+      <span
+        style="color: #0574a9;cursor:pointer"
+        @click="$router.push({name: 'dashboard', exact: true})"
+      >
+      {{page && page.title ? 'HOME' : ''}}
+      </span>
+
+       <span
+        style="color: #0574a9;cursor:pointer"
+        @click="$router.push({name: 'pageManager', params: {pageId: $route.query.parent.url}})"
+      >
+      {{$route.query && $route.query.parent && $route.query.parent !== 'null' ? '/ ' + $route.query.parent.title : ''}}
+      </span>
+
+      <span style="color: rgb(181, 187, 189);">
+        {{page && page.title ? ' / '  + $t(page.title) : ''}}
+      </span>
+    </div>
+    <hr style="border-top: 1px solid lightgray">
 
     <actioncards :page="page" v-bind:key="$route.path"></actioncards>
 

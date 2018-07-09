@@ -138,7 +138,7 @@ export default {
           await FAST.sync({ interval: false, appConf: this.$appConf });
           this.$swal.close();
           this.$swal({
-            title: this.$t('App Updated'),
+            title: this.$t('Updated'),
             text: this.$t(
               'You need to reload the page to see the changes. Want to do it now?'
             ),
@@ -146,8 +146,8 @@ export default {
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonClass: 'modalCancel',
-            confirmButtonText: this.$t('Yes, reaload it!'),
-            cancelButtonText: this.$t('No, Later')
+            confirmButtonText: this.$t('Yes'),
+            cancelButtonText: this.$t('No')
           }).then(async () => {
             window.location.reload(true);
           });

@@ -18,23 +18,23 @@
           </q-card-main>
         </q-card>
 
-        <q-card v-bind:class="getFormClass" style="margin:0px !important">
+        <q-card v-bind:class="getFormClass">
           <q-card-main>
             <q-card-title>
-              {{currentForm && currentForm.data && currentForm.data.title ? currentForm.data.title : ''}}
+
             <q-icon  flat  color="grey" @click="togglePages" name="menu" v-if="_isWizard && !$FAST_CONFIG.TAB_MENU && !showPages">
               <q-tooltip>{{$t('Show pages')}}</q-tooltip>
             </q-icon>
-
+            {{currentForm && currentForm.data && currentForm.data.title ? $t(currentForm.data.title) : ''}}
             <q-icon
               slot="right"
               flat
               color="primary"
               @click="saveAsDraft()"
               name="fa-floppy-o"
-              v-if="this.$route.params.FAST_EDIT_MODE !== 'online' &&
-               this.$route.params.FAST_EDIT_MODE !== 'online-review' &&
-               this.$route.params.FAST_EDIT_MODE !== 'read-only' && this.$FAST_CONFIG.OFFLINE_FIRST">
+              v-if="this.$route.query.mode !== 'online' &&
+               this.$route.query.mode !== 'online-review' &&
+               this.$route.query.mode !== 'read-only' && this.$FAST_CONFIG.OFFLINE_FIRST">
               <q-tooltip>{{$t('Save as draft')}}</q-tooltip>
             </q-icon>
 
@@ -52,12 +52,12 @@
                     <q-item-main :label="$t('Report')" />
                   </q-item>
 
-                  <q-item @click="$refs.popover.close(), addSurvey()" v-if="this.$route.params.FAST_EDIT_MODE !== 'online' && $FAST_CONFIG.PARALLEL_SURVEYS && this.$route.params.FAST_EDIT_MODE !== 'online-review'" >
+                  <q-item @click="$refs.popover.close(), addSurvey()" v-if="this.$route.query.mode !== 'online' && $FAST_CONFIG.PARALLEL_SURVEYS && this.$route.query.mode !== 'online-review'" >
                     <q-item-side icon="person_add"  />
                     <q-item-main :label="$t('Add participant')" />
                   </q-item>
 
-                  <q-item @click="$refs.popover.close(), groupConfig()" v-if="this.$route.params.FAST_EDIT_MODE !== 'online' && $FAST_CONFIG.PARALLEL_SURVEYS && this.$route.params.FAST_EDIT_MODE !== 'online-review'" >
+                  <q-item @click="$refs.popover.close(), groupConfig()" v-if="this.$route.query.mode !== 'online' && $FAST_CONFIG.PARALLEL_SURVEYS && this.$route.query.mode !== 'online-review'" >
                     <q-item-side icon="fa-users"  />
                     <q-item-main :label="$t('Change Group')" />
                   </q-item>
@@ -99,7 +99,7 @@
                 :localDraft="$FAST_CONFIG.LOCAL_DRAFT_ENABLED"
                 :readOnly="false"
                 :autoCreate="autoCreate"
-                :editMode="this.$route.params.FAST_EDIT_MODE"
+                :editMode="this.$route.query.mode"
                 :parentPage="this.$route.params.FAST_PARENT_PAGE"
                 v-bind:style="{ display: !customRender ? 'initial' : 'none' }" />
 
@@ -119,9 +119,9 @@
           </q-card-main>
         </q-card>
 
-        <q-fixed-position corner="top-right" :offset="[18, 18]" v-if="this.$route.params.FAST_EDIT_MODE === 'online-review'">
+        <q-fixed-position corner="top-right" :offset="[18, 18]" v-if="this.$route.query.mode === 'online-review'">
 
-          <q-fab color="red" icon="add" direction="down" v-if="this.$route.params.FAST_EDIT_MODE === 'online-review'">
+          <q-fab color="red" icon="add" direction="down" v-if="this.$route.query.mode === 'online-review'">
 
             <q-fab-action color="green" @click="reviewSubmission('accept')" icon="fa-check">
               <q-tooltip>{{$t('Accept')}}</q-tooltip>
@@ -204,6 +204,7 @@ import FormioUtils from 'formiojs/utils';
 import { Form, Auth, Submission, Event, ParallelSurvey } from 'fast-fastjs';
 import formio from 'modules/Formio/components/formio/formio';
 import datatable from 'components/dataTable/dataTable';
+import { Promise } from 'bluebird';
 export default {
   components: {
     datatable,
@@ -313,16 +314,37 @@ export default {
   asyncData: {
     submission: {
       async get() {
-        if (this.$route.params.fullSubmision) {
-          return {
-            data: this.$route.params.fullSubmision
-          };
-        }
-        if (this.$route.params.idSubmission) {
-          return Submission.local().get(this.$route.params.idSubmission);
-        } else {
-          return undefined;
-        }
+        return new Promise((resolve, reject) => {
+          this.$swal({
+            title: 'Loading...',
+            text: this.$t(
+              'Getting the submission. This can take a couple seconds...'
+            ),
+            showCancelButton: false,
+            onOpen: async () => {
+              this.$swal.showLoading();
+              if (this.$route.query && this.$route.query.mode) {
+                let loadedSubmission = await this.loadSubmission(
+                  this.$route.params.idSubmission
+                );
+                this.$swal.close();
+                resolve({
+                  data: loadedSubmission
+                })
+              }
+              if (this.$route.params.idSubmission) {
+                this.$swal.close();
+                let s = await Submission.local().get(
+                  this.$route.params.idSubmission
+                );
+                resolve(s)
+              } else {
+                this.$swal.close();
+                resolve(undefined)
+              }
+            }
+          })
+        });
       },
       transform(result) {
         return result;
@@ -797,6 +819,48 @@ export default {
         components: errors,
         errorsByPage: groupedErrors
       });
+    },
+    async loadSubmission(_id, includeLocal) {
+      this.loading = true;
+      let err;
+      let submission;
+
+      [err, submission] = await to(
+        Submission.remote().find({
+          form: this.$route.params.idForm,
+          filter: [
+            {
+              element: '_id',
+              query: '=',
+              value: _id
+            }
+          ],
+          limit: 1
+        })
+      );
+      submission = submission && submission[0] ? submission[0] : null;
+
+      if (includeLocal && err) {
+        [err, submission] = await to(
+          Submission.local().find({
+            filter: {
+              _id
+            }
+          })
+        );
+      }
+      if (err) {
+        this.$swal.close();
+        this.$swal(
+          this.$t('Conexion error'),
+          this.$t("We couldn't get the submission from the server"),
+          'error'
+        );
+        throw new Error('Submission was not retreived');
+      }
+
+      this.loading = false;
+      return submission;
     }
   }
 };

@@ -111,10 +111,13 @@ export default {
   },
   methods: {
     applyAction(action) {
+      let parent =
+        action.parent && action.parent !== '' ? action.parent : 'null';
+
       if (action.formPath) {
         let path =
           action.view === 'list'
-            ? '/forms/' + action.formPath
+            ? '/forms/' + action.formPath + '?parent=' + JSON.stringify(parent)
             : '/forms/' + action.formPath + '/submission';
         let to = {
           path
@@ -123,7 +126,8 @@ export default {
       } else if (action.page) {
         let to = {
           name: 'pageManager',
-          params: { pageId: action.page.url }
+          params: { pageId: action.page.url },
+          query: { parent: action.parent ? action.parent : 'null' }
         };
         this.$router.push(to);
       }

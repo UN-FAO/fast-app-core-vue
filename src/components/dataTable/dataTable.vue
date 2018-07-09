@@ -1,70 +1,89 @@
 <template>
-  <div class="tableContainer" v-if="show">
-    <q-data-table :data="data" :config="config" :columns="columns" @selection="handleSelectionChange" @rowclick="handleRowClick">
-      <template :slot="'col-' + col.field" scope='scope' v-for="col in columns">
-                    <q-btn flat color="black" @click="editCell(scope)" v-bind:key="col.field" v-if="fastMode === 'editGrid' && col.field.indexOf('val') >= 0" >
-                        {{scope.data ? scope.data : '-'}}
-                    </q-btn>
-                    <span  v-bind:key="col.field" v-else>
-                    {{scope.data}}
-                    </span>
-</template>
+<div class="tableContainer" v-if="show">
+    <q-data-table
+      :data="data"
+      :config="config"
+      :columns="columns"
+      @selection="handleSelectionChange"
+      @rowclick="handleRowClick"
+    >
+        <template :slot="'col-' + col.field" scope='scope' v-for="col in columns">
+            <q-btn
+              flat
+              color="black"
+              @click="editCell(scope)"
+              v-bind:key="col.field"
+              v-if="fastMode === 'editGrid' && col.field.indexOf('val') >= 0"
+            >
+                {{scope.data ? scope.data : '-'}}
+            </q-btn>
+            <span v-bind:key="col.field" v-else>
+            {{scope.data}}
+      </span>
+        </template>
 
-<template slot="col-status" scope="scope">
-  <div v-if="scope.row.status === 'offline' && scope.row.draft">
-    <i class="material-icons tag--grey">description</i>
-    <q-tooltip>{{$t('Draft')}}</q-tooltip>
-  </div>
-  <div v-else-if="scope.row.status === 'offline'">
-    <i class="material-icons tag--offline">description</i>
-    <q-tooltip>{{$t('Offline submission')}}</q-tooltip>
-  </div>
-   <div v-else-if="isOnlineSubmission(scope.row._id, scope.row._lid)">
-    <i class="material-icons tag--green">cloud_done</i>
-    <q-tooltip>{{$t('Online Submission')}}</q-tooltip>
-  </div>
-  <div v-else>
-    <i class="material-icons tag--green">cloud_download</i>
-    <q-tooltip>{{$t('Synced Submission')}}</q-tooltip>
-  </div>
-  <i class="material-icons" style="color: red;font-size: x-large; cursor: pointer;" v-if="scope.row.syncError && scope.row.syncError !=='Unauthorized' " @click="displayError(scope.row.syncError)">block</i>
-  <i class="material-icons" style="color: red;font-size: x-large; cursor: pointer;" v-if="scope.row.syncError && scope.row.syncError ==='Unauthorized' " @click="displayError(scope.row.syncError)">block</i>
-</template>
+        <template slot="col-status" scope="scope">
+            <div v-if="scope.row.status === 'offline' && scope.row.draft">
+                <i class="material-icons tag--grey">description</i>
+                <q-tooltip>{{$t('Draft')}}</q-tooltip>
+            </div>
+            <div v-else-if="scope.row.status === 'offline'">
+                <i class="material-icons tag--offline">description</i>
+                <q-tooltip>{{$t('Offline submission')}}</q-tooltip>
+            </div>
+            <div v-else-if="isOnlineSubmission(scope.row._id, scope.row._lid)">
+                <i class="material-icons tag--green">cloud_done</i>
+                <q-tooltip>{{$t('Online Submission')}}</q-tooltip>
+            </div>
+            <div v-else>
+                <i class="material-icons tag--green">cloud_download</i>
+                <q-tooltip>{{$t('Synced Submission')}}</q-tooltip>
+            </div>
+            <i
+              class="material-icons"
+              style="color: red;font-size: x-large; cursor: pointer;"
+              v-if="scope.row.syncError && scope.row.syncError !=='Unauthorized' "
+              @click="displayError(scope.row.syncError)"
+            >block</i>
+            <i class="material-icons" style="color: red;font-size: x-large; cursor: pointer;"
+              v-if="scope.row.syncError && scope.row.syncError ==='Unauthorized' "
+              @click="displayError(scope.row.syncError)">block</i>
+        </template>
 
-<template slot="selection" >
-  <q-btn v-if="tableActions && tableActions.includes('review')" color="primary"  flat  @click='handleReview()'>
-    <q-icon name="remove_red_eye" />
-    <q-tooltip>{{$t('Review')}}</q-tooltip>
-  </q-btn>
-  <q-btn v-if="tableActions && tableActions.includes('read-only')" color="primary"  flat  @click='handleReview({readOnly:true})'>
-    <q-icon name="remove_red_eye" />
-    <q-tooltip>{{$t('Read Only')}}</q-tooltip>
-  </q-btn>
-  <q-btn v-if="tableActions && tableActions.includes('edit')" color="primary" flat   @click='goToEditView()'>
-    <q-icon name="edit" />
-    <q-tooltip>{{$t('Edit')}}</q-tooltip>
-  </q-btn>
-  <q-btn v-if="tableActions && tableActions.includes('report')" color="primary" flat  @click='handleReport()'>
-  <q-icon name="assignment" />
-    <q-tooltip>{{$t('Report')}}</q-tooltip>
-  </q-btn>
+        <template slot="selection">
+            <q-btn v-if="tableActions && tableActions.includes('review')" color="primary" flat @click='handleReview()'>
+                <q-icon name="remove_red_eye" />
+                <q-tooltip>{{$t('Review')}}</q-tooltip>
+            </q-btn>
+            <q-btn v-if="tableActions && tableActions.includes('read-only')" color="primary" flat @click='handleReview({readOnly:true})'>
+                <q-icon name="remove_red_eye" />
+                <q-tooltip>{{$t('Read Only')}}</q-tooltip>
+            </q-btn>
+            <q-btn v-if="tableActions && tableActions.includes('edit')" color="primary" flat @click='goToEditView()'>
+                <q-icon name="edit" />
+                <q-tooltip>{{$t('Edit')}}</q-tooltip>
+            </q-btn>
+            <q-btn v-if="tableActions && tableActions.includes('report')" color="primary" flat @click='handleReport()'>
+                <q-icon name="assignment" />
+                <q-tooltip>{{$t('Report')}}</q-tooltip>
+            </q-btn>
 
-   <q-btn flat v-if="tableActions && tableActions.includes('delete')" color="grey" @click="handleDelete()">
-    <q-icon name="delete" />
-    <q-tooltip>{{$t('Delete')}}</q-tooltip>
-  </q-btn>
-</template>
+            <q-btn flat v-if="tableActions && tableActions.includes('delete')" color="grey" @click="handleDelete()">
+                <q-icon name="delete" />
+                <q-tooltip>{{$t('Delete')}}</q-tooltip>
+            </q-btn>
+        </template>
 
-<template slot='col-deleted' scope='scope'>
-  <q-chip icon="fa-ban" small color="red" v-if="scope.row.deleted && scope.row.deleted === true">
-  </q-chip>
+        <template slot='col-deleted' scope='scope'>
+            <q-chip icon="fa-ban" small color="red" v-if="scope.row.deleted && scope.row.deleted === true">
+            </q-chip>
 
-  <q-chip icon="fa-check" small color="green" v-else>
-  </q-chip>
-</template>
-        </q-data-table>
+            <q-chip icon="fa-check" small color="green" v-else>
+            </q-chip>
+        </template>
+    </q-data-table>
 
-     <export-menu render="outside" :actions="menuActions"/>
+    <export-menu render="outside" :actions="menuActions" />
 </div>
 </template>
 
@@ -235,60 +254,30 @@ export default {
         return;
       }
       let submission = this.selectedRows[0];
-      let err;
-
-      await this.$swal({
-        title: 'Loading...',
-        text: this.$t(
-          'Getting the submission. This can take a couple seconds...'
-        ),
-        showCancelButton: false,
-        onOpen: async () => {
-          this.$swal.showLoading();
-          [err, submission] = await to(
-            this.loadSubmission(submission._id, readOnly)
-          );
-
-          if (err) {
-            this.$swal.close();
-          }
-          this.$swal.close();
-          submission = _get(submission, '[0].data', submission);
-
-          this.$router.push({
-            name: 'formio_submission_update',
-            params: {
-              idForm: this.form.data.path,
-              idSubmission: submission._id,
-              fullSubmision: {
-                data: submission.data,
-                _id: submission._id
-              },
-              formio: submission.formio,
-              FAST_EDIT_MODE: readOnly ? 'read-only' : 'online-review'
-            }
-          });
+      this.$router.push({
+        name: 'formio_submission_update',
+        query: {
+          mode: readOnly ? 'read-only' : 'online-review'
+        },
+        params: {
+          idForm: this.form.data.path,
+          idSubmission: submission._id
         }
       });
     },
     async handleOnlineEdit(submission, formId) {
-      let loadedSubmission = await this.loadSubmission(submission._id);
       this.$router.push({
         name: 'formio_submission_update',
+        query: {
+          mode: 'online'
+        },
         params: {
           idForm: formId,
-          idSubmission: submission._id,
-          fullSubmision: {
-            data: loadedSubmission.data,
-            _id: submission._id
-          },
-          formio: loadedSubmission.formio,
-          FAST_EDIT_MODE: 'online'
+          idSubmission: submission._id
         }
       });
     },
     async loadSubmission(_id, includeLocal) {
-      this.loading = true;
       let err;
       let submission;
 
@@ -326,7 +315,6 @@ export default {
         throw new Error('Submission was not retreived');
       }
 
-      this.loading = false;
       return submission;
     },
     handleReport() {
@@ -372,18 +360,21 @@ export default {
         cancelButtonText: this.$t('Cancel')
       }).then(async () => {
         Promise.each(rows, async (submission) => {
-          let deleteSubmission = await Submission.local().find({
-            filter: {
+          if (
+            submission._id &&
+            submission._id.indexOf('local') < 0 &&
+            !submission._lid
+          ) {
+            await Submission.remote().remove(
+              null,
+              submission._id,
+              this.form.data.path
+            );
+          } else {
+            await Submission.local().findAndRemove({
               _id: submission._id
-            }
-          });
-
-          if (deleteSubmission.length === 0) {
-            throw new Error('cannot delete an online submission');
+            });
           }
-          await Submission.local().findAndRemove({
-            _id: deleteSubmission[0]._id
-          });
         })
           .then(async () => {
             this.$emit('refresh');
