@@ -1,9 +1,3 @@
-*:not(i):not(.fa):not(.q-icon) {
-  font-family: 'Roboto', sans-serif !important;
-  /* line-height: 1.5; */
-  text-rendering: optimizeLegibility;
-}
-
 html {
   font-size: inherit !important;
   line-height: inherit !important;
@@ -78,7 +72,7 @@ table.table.datagrid-table.table-bordered.form-group.formio-data-grid.table-stri
 }
 
 div.formio-component-datagrid {
-  overflow-x: auto;
+  overflow-x: unset;
 }
 
 input.form-control {

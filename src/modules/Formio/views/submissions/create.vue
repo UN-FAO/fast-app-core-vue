@@ -19,7 +19,7 @@
         </q-card>
 
         <q-card v-bind:class="getFormClass">
-          <q-card-main>
+          <q-card-main style="min-height:100vh">
             <q-card-title>
 
             <q-icon  flat  color="grey" @click="togglePages" name="menu" v-if="_isWizard && !$FAST_CONFIG.TAB_MENU && !showPages">
@@ -105,11 +105,29 @@
 
                 <div v-bind:style="{ display: customRender ? 'initial' : 'none', color: 'black' }">
 
+                <div v-if="customRenderType === 'script'" style='font-family: Monaco, Menlo, "Ubuntu Mono", Consolas, source-code-pro, monospace !important;'>
+                  Write your custom R script
+                  <editor v-model="content" @init="editorInit" lang="r" theme="chrome" width="100%" height="50vh"></editor>
+
+                  <q-btn loader @click="executeScript">
+                    Execute script
+                    <!--
+                      Notice slot="loading". This is optional.
+                      If missing, the default theme spinner will be used.
+                    -->
+                    <span slot="loading">Loading...</span>
+                  </q-btn>
+                  <q-btn @click="response = ''">
+                    Clear output
+                  </q-btn>
+                  <q-input :min-rows="5" v-model="response" disable type="textarea" float-label="Output" />
+
+                </div>
                   <datatable
                     :data="customRenderArray"
                     :form="currentForm"
                     fastMode="editGrid"
-                    v-if="currentForm && currentForm.data.title !== ''"
+                    v-if="currentForm && currentForm.data.title !== '' && customRenderType === 'datagrid'"
                   />
                 </div>
               </q-tab-pane>
@@ -168,6 +186,7 @@
 
 <script>
 import {
+  QInput,
   QCard,
   QCardTitle,
   QCardSeparator,
@@ -196,6 +215,7 @@ import {
   QItemSide
 } from 'quasar';
 import to from 'await-to-js';
+import axios from 'axios';
 import _get from 'lodash/get';
 import _forEach from 'lodash/forEach';
 import _groupBy from 'lodash/groupBy';
@@ -234,7 +254,9 @@ export default {
     QInnerLoading,
     QSpinnerAudio,
     QPopover,
-    QItemSide
+    QItemSide,
+    QInput,
+    editor: require('vue2-ace-editor')
   },
   async mounted() {
     this.$eventHub.on('formio.mounted', (formio) => {
@@ -269,6 +291,21 @@ export default {
     Event.listen({
       name: 'FAST:SUBMISSION:CHANGED',
       callback: this.draftStatusChanged
+    });
+
+    Event.listen({
+      name: 'FAST:SUBMISSION:CLONE',
+      callback: this.clone
+    });
+
+    Event.listen({
+      name: 'FAST:SUBMISSION:SOFTDELETE',
+      callback: this.softDelete
+    });
+    // document.addEventListener('FAST:SUBMISSION:CANCEL', this.cancel);
+    Event.listen({
+      name: 'FAST:SUBMISSION:CANCEL',
+      callback: this.cancel
     });
 
     this.$eventHub.$on('formio.error', (error) => {
@@ -307,6 +344,18 @@ export default {
       name: 'FAST:SUBMISSION:CHANGED',
       callback: this.draftStatusChanged
     });
+    Event.remove({
+      name: 'FAST:SUBMISSION:CLONE',
+      callback: this.clone
+    });
+    Event.remove({
+      name: 'FAST:SUBMISSION:SOFTDELETE',
+      callback: this.softDelete
+    });
+    Event.remove({
+      name: 'FAST:SUBMISSION:CANCEL',
+      callback: this.cancel
+    });
 
     this.$eventHub.$off('formio.error');
     this.$eventHub.$off('VALIDATION_ERRORS');
@@ -330,20 +379,20 @@ export default {
                 this.$swal.close();
                 resolve({
                   data: loadedSubmission
-                })
+                });
               }
               if (this.$route.params.idSubmission) {
                 this.$swal.close();
                 let s = await Submission.local().get(
                   this.$route.params.idSubmission
                 );
-                resolve(s)
+                resolve(s);
               } else {
                 this.$swal.close();
-                resolve(undefined)
+                resolve(undefined);
               }
             }
-          })
+          });
         });
       },
       transform(result) {
@@ -442,10 +491,64 @@ export default {
         !this.$route.params.idSubmission && this.$FAST_CONFIG.OFFLINE_FIRST,
       tab: '1',
       customRender: false,
-      customRenderArray: []
+      customRenderType: '',
+      customRenderArray: [],
+      content: '',
+      response: null
     };
   },
   methods: {
+    cancel() {
+      window.history.back();
+    },
+    async softDelete() {
+      await Submission.remote().softDelete({
+        id: this.$route.params.idSubmission,
+        formPath: this.$route.params.idForm
+      });
+      this.cancel();
+    },
+    // notice parameter "done" (Function)
+    executeScript(event, done) {
+      var bodyFormData = new FormData();
+      bodyFormData.set('x', this.content);
+      let url = '';
+      axios({
+        method: 'post',
+        url: 'https://public.opencpu.org/ocpu/library/base/R/identity',
+        data: bodyFormData,
+        config: { headers: { 'Content-Type': 'multipart/form-data' } }
+      })
+        .then((response) => {
+          url = response.data.split('/ocpu/').map((r) => {
+            r = r.replace(/\n/g, '');
+            return r;
+          });
+          url = url.find((o) => {
+            return o.indexOf('/stdout') > -1;
+          });
+          axios
+            .get('https://public.opencpu.org/ocpu/' + url + '/text')
+            .then((response) => {
+              console.log(response);
+              this.response = response.data;
+              done();
+            })
+            .catch((error) => {
+              this.response = error.response.data;
+              done();
+            });
+        })
+        .catch((error) => {
+          this.response = error.response.data;
+          done();
+        });
+    },
+    editorInit: function() {
+      require('brace/ext/language_tools'); // language extension prerequsite...
+      require('brace/mode/r');
+      require('brace/snippets/r');
+    },
     showReport() {
       this.$router.push({
         name: 'formio_submission_report',
@@ -506,10 +609,10 @@ export default {
       if (
         this._pages[index] &&
         this._pages[index].properties &&
-        this._pages[index].properties['custom-render']
+        this._pages[index].properties['FAST_CUSTOM_DG']
       ) {
-        let dataGridName = this._pages[index].properties['custom-render'];
-
+        let dataGridName = this._pages[index].properties['FAST_CUSTOM_DG'];
+        this.customRenderType = 'datagrid';
         let component = FormioUtils.getComponent(
           this.currentForm.data.components,
           dataGridName
@@ -536,6 +639,29 @@ export default {
         window.scrollTo(0, 0);
         return;
       }
+
+      if (
+        this._pages[index] &&
+        this._pages[index].properties &&
+        this._pages[index].properties['FAST_CUSTOM_SCRIPT']
+      ) {
+        let scriptName = this._pages[index].properties['FAST_CUSTOM_SCRIPT'];
+        this.customRenderType = 'script';
+        let component = FormioUtils.getComponent(
+          this.currentForm.data.components,
+          scriptName
+        );
+
+        console.log(component);
+
+        this.customRender = true;
+        this.currentPage = index;
+        this.tab = (index + 1).toString();
+        this.currentQuestion = -1;
+        window.scrollTo(0, 0);
+        return;
+      }
+
       this.customRender = false;
       try {
         let pageNumber = (index + 1).toString();

@@ -154,6 +154,39 @@
       }
       getLocation();
     };
+
+    var FAST_SUBMISSION_CANCEL = function () {
+      var cloneEvent = new CustomEvent('FAST:SUBMISSION:CANCEL', {
+        detail: {
+          data: {
+          },
+          text: 'SUBMISSION CANCELED'
+        }
+      });
+      window.dispatchEvent(cloneEvent)
+    }
+
+    var FAST_SUBMISSION_CLONE = function () {
+      var cloneEvent = new CustomEvent('FAST:SUBMISSION:CLONE', {
+        detail: {
+          data: {
+          },
+          text: 'SUBMISSION CLONED'
+        }
+      });
+      window.dispatchEvent(cloneEvent);
+    }
+
+    var FAST_SUBMISSION_SOFTDELETE = function () {
+      var cloneEvent = new CustomEvent('FAST:SUBMISSION:SOFTDELETE', {
+        detail: {
+          data: {
+          },
+          text: 'SUBMISSION SOFTDELETED'
+        }
+      });
+      window.dispatchEvent(cloneEvent);
+    }
   </script>
 </head>
 
