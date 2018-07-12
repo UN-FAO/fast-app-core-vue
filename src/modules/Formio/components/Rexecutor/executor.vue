@@ -335,7 +335,7 @@ export default {
           #' @examples
           #' selectToString()
           selectToString = function(select){
-            selectString <- '_id'
+            selectString <- '_id,'
             for(attribute in select){
               selectString = paste(selectString,attribute,',',sep='')
             }
