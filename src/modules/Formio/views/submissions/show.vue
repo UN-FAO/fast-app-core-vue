@@ -10,23 +10,23 @@
                 class="appBreadcrumb"
               >
               {{
-                'HOME'
+                $t('Home')
               }}
               </span>
 
                 <span
                 style="color: #0574a9;cursor:pointer"
-                @click="$router.push({name: 'pageManager', params: {pageId: JSON.parse($route.query.parent).url}})"
+                @click="breadCrumClick"
                  class="appBreadcrumb"
                 >
-                {{$route.query && $route.query.parent && JSON.parse($route.query.parent).title  !== undefined ? '/ ' + JSON.parse($route.query.parent).title : ''}}
+                {{breadCrumTitle}}
                 </span>
 
                 <span
                   style="color: #0574a9;cursor:pointer"
                    class="appBreadcrumb"
                 >
-                  {{ ' /'}}
+                  {{ ' /' }}
                 </span>
                 {{formTitle}}
            <q-icon slot="right" name="fa-plus-circle" @click="emitEvent('FAST:GO:CREATE')" color="primary" style="cursor:pointer; padding-right: 20px">
@@ -155,10 +155,17 @@ export default {
   data() {
     return {
       currentForm: {},
-      submissions: undefined
+      submissions: undefined,
+      breadCrumTitle: this.$route.query && this.$route.query.parent && JSON.parse(atob(this.$route.query.parent)).title !== undefined ? '/ ' + JSON.parse(window.atob(this.$route.query.parent)).title : ''
     };
   },
   methods: {
+    breadCrumClick() {
+      this.$router.push({
+        name: 'pageManager',
+        params: { pageId: JSON.parse(window.atob(this.$route.query.parent)).url }
+      });
+    },
     emitEvent(event, params) {
       this.$eventHub.emit(event, params);
     },

@@ -117,7 +117,7 @@ export default {
       if (action.formPath) {
         let path =
           action.view === 'list'
-            ? '/forms/' + action.formPath + '?parent=' + JSON.stringify(parent)
+            ? '/forms/' + action.formPath + '?parent=' + btoa(JSON.stringify(parent))
             : '/forms/' + action.formPath + '/submission';
         let to = {
           path
@@ -130,7 +130,7 @@ export default {
         let to = {
           name: 'pageManager',
           params: { pageId: action.page.url },
-          query: { parent: action.parent ? action.parent : 'null' }
+          query: { parent: action.parent ? btoa(JSON.stringify(action.parent)) : btoa(JSON.stringify('null')) }
         };
         this.$router.push(to);
       }

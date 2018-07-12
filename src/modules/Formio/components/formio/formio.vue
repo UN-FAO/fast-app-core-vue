@@ -473,34 +473,35 @@ export default {
         if (events.filter((e) => e.type === 'formio.change').length < 1) {
           this.formIO.on('change', (change) => {
             this.removeDuplicatedPagination();
+            Event.emit({
+              name: 'FAST:FORMIO:CHANGE',
+              data: { change: change, formio: this.formIO },
+              text: 'Submission changed'
+            });
             if (
               this.localDraft &&
               this.editMode !== 'online' &&
               this.editMode !== 'online-review' &&
               this.editMode !== 'read-only'
             ) {
-              this.saved = false;
-              Event.emit({
-                name: 'FAST:SUBMISSION:CHANGED',
-                data: false,
-                text: 'Draft not Saved'
-              });
-              // AutoSave functionality
-              // If a timer was already started, clear it.
-              if (timeoutId) clearTimeout(timeoutId);
+              if (this.$FAST_CONFIG.OFFLINE_FIRST) {
+                this.saved = false;
+                Event.emit({
+                  name: 'FAST:SUBMISSION:CHANGED',
+                  data: false,
+                  text: 'Draft not Saved'
+                });
+                // AutoSave functionality
+                // If a timer was already started, clear it.
+                if (timeoutId) clearTimeout(timeoutId);
 
-              // Set timer that will save comment when it fires.
-              timeoutId = setTimeout(() => {
-                if (this.$FAST_CONFIG.OFFLINE_FIRST) {
+                // Set timer that will save comment when it fires.
+                timeoutId = setTimeout(() => {
                   this.autoSaveAsDraft();
                   this.saved = true;
-                }
-              }, 700);
+                }, 700);
+              }
             }
-            this.$eventHub.$emit('formio.change', {
-              change: change,
-              formio: this.formIO
-            });
           });
         }
 

@@ -17,9 +17,9 @@
 
        <span
         style="color: #0574a9;cursor:pointer"
-        @click="$router.push({name: 'pageManager', params: {pageId: $route.query.parent.url}})"
+        @click="breadCrumClick"
       >
-      {{$route.query && $route.query.parent && $route.query.parent !== 'null' ? '/ ' + $route.query.parent.title : ''}}
+      {{breadCrumTitle}}
       </span>
 
       <span style="color: rgb(181, 187, 189);">
@@ -95,9 +95,9 @@ export default {
             card.shouldDisplay = await Auth.hasRoleIdIn(card.access);
             card.actions.map(async (action) => {
               action.shouldDisplay = await Auth.hasRoleIdIn(action.access);
-              return action
+              return action;
             });
-            return card
+            return card;
           });
           page.shouldDisplay = await Auth.hasRoleIdIn(page.access);
           return page;
@@ -109,7 +109,23 @@ export default {
       }
     }
   },
+  data() {
+    return {
+      breadCrumTitle:
+        this.$route.query &&
+        this.$route.query.parent &&
+        this.$route.query.parent !== 'null'
+          ? '/ ' + JSON.parse(atob(this.$route.query.parent)).title
+          : ''
+    };
+  },
   methods: {
+    breadCrumClick() {
+      this.$router.push({
+        name: 'pageManager',
+        params: { pageId: JSON.parse(atob(this.$route.query.parent)).url }
+      });
+    },
     filterPage(pages, pageId) {
       let page = pages.filter((page) => {
         return page.url === pageId;
