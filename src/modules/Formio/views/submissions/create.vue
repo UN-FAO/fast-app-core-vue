@@ -109,7 +109,7 @@
                   v-bind:style="{ display: customRenderType === 'script' ? 'initial' : 'none' }"
                 >
                  <executor
-                  :submission="JSON.stringify(submission)"
+                  :submission="changeEvent"
                   openCpuUrl="https://public.opencpu.org"
                   :formioUrl="$FAST_CONFIG.APP_URL"
                   :token="formioToken"
@@ -478,6 +478,9 @@ export default {
     onSubmissionChange(event) {
       let data = event.detail.data;
       this.pages = data.formio.pages ? data.formio.pages : [];
+      if (data.formio.data && data.formio.data.variables) {
+        this.changeEvent = JSON.stringify(data.formio.data);
+      }
     },
     cancel() {
       window.history.back();

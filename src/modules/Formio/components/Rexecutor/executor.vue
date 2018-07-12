@@ -53,8 +53,10 @@ export default {
     formioUrl: function(url) {},
     token: function(url) {},
     submission: function(submission) {
-      let data = JSON.parse(submission).data.data;
-      this.onSubmissionChange(data);
+      if (submission) {
+        let data = JSON.parse(submission);
+        this.onSubmissionChange(data);
+      }
     }
   },
   data() {
@@ -99,7 +101,7 @@ export default {
       }
       rScript = rScript + this.getExampleText();
 
-      if (this.firstLoad) {
+      if (this.firstLoad && data.script) {
         this.content = rScript + data.script;
         this.firstLoad = false;
       } else {
@@ -111,8 +113,7 @@ export default {
       fullScript = fullScript + this.getRLibrary() + '; \n';
       let classInit = '';
 
-      let data = JSON.parse(this.submission).data.data;
-      data.variables.forEach((variable) => {
+      JSON.parse(this.submission).variables.forEach((variable) => {
         if (variable.name && variable.path && variable.name !== '') {
           classInit =
             classInit +
@@ -165,7 +166,6 @@ export default {
             axios
               .get(this.openCpuUrl + '/ocpu/' + sdtoutUrl + '/text')
               .then((response) => {
-                console.log(response);
                 this.stdout = response.data;
                 done();
               })
@@ -181,7 +181,6 @@ export default {
             axios
               .get(this.openCpuUrl + '/ocpu/' + valUrl)
               .then((response) => {
-                console.log(response);
                 this.valout = response.data;
                 done();
               })
@@ -198,7 +197,6 @@ export default {
             axios
               .get(this.openCpuUrl + '/ocpu/' + consoleUrl)
               .then((response) => {
-                console.log(response);
                 this.consoleout = response.data;
                 done();
               })
