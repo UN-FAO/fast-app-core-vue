@@ -68,6 +68,10 @@ export default {
     Lenguage.listen(this);
     GPS.listen(this);
     // SMS.listen(this)
+    Event.listen({
+      name: 'FAST:SUBMISSION:SUBMIT',
+      callback: this.remoteSubmit
+    });
 
     document.addEventListener('saveAsDraft', this.saveAsLocalDraft);
     document.addEventListener('autoSaveDraft', this.autoSaveAsDraft);
@@ -77,6 +81,10 @@ export default {
   },
   beforeDestroy() {
     Lenguage.off(this);
+    Event.remove({
+      name: 'FAST:SUBMISSION:SUBMIT',
+      callback: this.remoteSubmit
+    });
     document.removeEventListener('saveAsDraft', this.saveAsLocalDraft);
     document.removeEventListener('autoSaveDraft', this.autoSaveAsDraft);
   },
@@ -547,6 +555,22 @@ export default {
           });
         }
       });
+    },
+    remoteSubmit(event) {
+      let data = event.detail.data;
+      if (data.isScript) {
+        this.formIO.data[data.field] = data.script;
+      }
+
+      let formSubmission = {
+        data: this.formIO.data,
+        draft: false,
+        redirect: true,
+        trigger: 'formioSubmit',
+        syncError: false
+      };
+
+      this.save(formSubmission);
     }
   }
 };

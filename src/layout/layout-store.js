@@ -4,6 +4,6 @@ export default {
   leftScroll: true,
   rightScroll: true,
   leftBreakpoint: 996,
-  rightBreakpoint: 2000,
+  rightBreakpoint: 9999999,
   hideTabs: false
 };
