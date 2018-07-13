@@ -7,25 +7,11 @@
     <div class="pageTitle">
       {{page && page.title ? $t(page.title) : ''}}
     </div>
-    <div class="appBreadcrumb">
-      <span
-        style="color: #0574a9;cursor:pointer"
-        @click="$router.push({name: 'dashboard', exact: true})"
-      >
-      {{page && page.title ? 'HOME' : ''}}
-      </span>
+    <breadcrum
+      :parent="$route.query.parent"
+      :currentPageTitle="pageTitle"
+    />
 
-       <span
-        style="color: #0574a9;cursor:pointer"
-        @click="breadCrumClick"
-      >
-      {{breadCrumTitle}}
-      </span>
-
-      <span style="color: rgb(181, 187, 189);">
-        {{page && page.title ? ' / '  + $t(page.title) : ''}}
-      </span>
-    </div>
     <hr style="border-top: 1px solid lightgray">
 
     <actioncards :page="page" v-bind:key="$route.path"></actioncards>
@@ -62,8 +48,10 @@ import {
 
 import { PagesRepo, Auth } from 'fast-fastjs';
 import actioncards from '../components/actionCards';
+import breadcrum from 'components/breadcrum';
 export default {
   components: {
+    breadcrum,
     actioncards,
     QCard,
     QCardMedia,
@@ -131,6 +119,11 @@ export default {
         return page.url === pageId;
       });
       return page[0];
+    }
+  },
+  computed: {
+    pageTitle() {
+      return this.page && this.page.title ? this.$t(this.page.title) : '';
     }
   }
 };

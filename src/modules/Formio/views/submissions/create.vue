@@ -25,7 +25,11 @@
             <q-icon  flat  color="grey" @click="togglePages" name="menu" v-if="_isWizard && !$FAST_CONFIG.TAB_MENU && !showPages">
               <q-tooltip>{{$t('Show pages')}}</q-tooltip>
             </q-icon>
-            {{currentForm && currentForm.data && currentForm.data.title ? $t(currentForm.data.title) : ''}}
+              <breadcrum
+                :parent="$route.query.parent"
+                :currentPageTitle="formTitle"
+                :isSubmission="true"
+              />
             <q-icon
               slot="right"
               flat
@@ -211,11 +215,13 @@ import _get from 'lodash/get';
 import FormioUtils from 'formiojs/utils';
 import { Form, Auth, Submission, Event, ParallelSurvey } from 'fast-fastjs';
 import formio from 'modules/Formio/components/formio/formio';
+import breadcrum from 'components/breadcrum';
 import datatable from 'components/dataTable/dataTable';
 import { Promise } from 'bluebird';
 import executor from '../../components/Rexecutor/executor';
 export default {
   components: {
+    breadcrum,
     datatable,
     formio,
     QCard,
@@ -330,10 +336,6 @@ export default {
       name: 'FAST:SUBMISSION:SOFTDELETE',
       callback: this.softDelete
     });
-    Event.remove({
-      name: 'FAST:SUBMISSION:CANCEL',
-      callback: this.cancel
-    });
 
     this.$eventHub.$off('formio.error');
     this.$eventHub.$off('VALIDATION_ERRORS');
@@ -408,6 +410,13 @@ export default {
     }
   },
   computed: {
+    formTitle() {
+      return this.currentForm &&
+        this.currentForm.data &&
+        this.currentForm.data.title
+        ? this.$t(this.currentForm.data.title)
+        : '';
+    },
     participantName() {
       let parallelSurvey = null;
       let submission = this.currentSubmission;
@@ -483,6 +492,10 @@ export default {
       }
     },
     cancel() {
+      if (document.getElementsByClassName('formio-dialog').length > 0) {
+        document.getElementsByClassName("formio-dialog-close pull-right")[0].click();
+        return;
+      }
       window.history.back();
     },
     async softDelete() {

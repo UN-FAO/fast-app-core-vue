@@ -374,18 +374,40 @@ export default {
      * @param  {[type]} translations   [description]
      * @return {[type]}                [description]
      */
-    createFormioInstance(onlineJsonForm, translations) {
-      translations.readOnly = !!(
+    createFormioInstance(onlineJsonForm, options) {
+      options.readOnly = !!(
         this.editMode === 'online-review' || this.editMode === 'read-only'
       );
+      /* eslint-disable */
+      options.buttonSettings = {
+        showCanel:
+          onlineJsonForm.properties &&
+          onlineJsonForm.properties.FAST_WIZARD_SHOW_CANCEL &&
+          onlineJsonForm.properties.FAST_WIZARD_SHOW_CANCEL === 'false'
+            ? false
+            : true,
+        showNext: onlineJsonForm.properties &&
+          onlineJsonForm.properties.FAST_WIZARD_SHOW_NEXT &&
+          onlineJsonForm.properties.FAST_WIZARD_SHOW_NEXT === 'false'
+            ? false
+            : true,
+        showPrevious: onlineJsonForm.properties &&
+          onlineJsonForm.properties.FAST_WIZARD_SHOW_PREVIOUS &&
+          onlineJsonForm.properties.FAST_WIZARD_SHOW_PREVIOUS === 'false'
+            ? false
+            : true,
+        /* eslint-enable */
+        clickable: true
+      };
+
       if (!_isEmpty(this.formIO)) {
         return;
       }
       // Create the formIOForm Instance (Renderer)
       if (onlineJsonForm.display === 'wizard') {
-        this.formIO = new FormioWizard(this.$refs.formIO, translations);
+        this.formIO = new FormioWizard(this.$refs.formIO, options);
       } else {
-        this.formIO = new FormioForm(this.$refs.formIO, translations);
+        this.formIO = new FormioForm(this.$refs.formIO, options);
       }
       this.formIO.url = this.formURL;
     },

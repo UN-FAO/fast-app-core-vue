@@ -54,15 +54,6 @@ ul.list-inline {
   min-height: 63px;
 }
 
-button.btn.btn-primary.btn-wizard-nav-next,
-button.btn.btn-primary.btn-wizard-nav-previous {
-  color: #337ab7;
-  background-color: whitesmoke;
-  border-color: #337ab7;
-  height: 60px;
-  width: 200px;
-}
-
 ul.pagination {
   display: none;
 }
@@ -81,10 +72,6 @@ input.form-control {
 
 .transition-generic {
   transition: all 0.1s !important;
-}
-
-.btn.btn-primary {
-  background-color: #1976d3;
 }
 
 .centered {
@@ -403,24 +390,6 @@ ul.list-inline {
 .list-inline > li {
   padding-right: 10px;
   padding-left: 10px;
-}
-
-button.btn.btn-primary.btn-wizard-nav-next,
-button.btn.btn-primary.btn-wizard-nav-previous {
-  background-color: #dcdcdc;
-  color: grey !important;
-  border: none;
-  font-size: 1.8vh;
-  text-transform: uppercase;
-  height: 45px;
-  width: 200px;
-  font-weight: 500;
-  margin-right: 70px;
-}
-
-button.btn.btn-primary.btn-wizard-nav-next {
-  background-color: #0e6da5;
-  color: white !important;
 }
 
 .pageTitle {

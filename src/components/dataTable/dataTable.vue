@@ -97,7 +97,6 @@ import Columns from './tableFormatter/Columns';
 import { QTooltip, QBtn, QDataTable, QChip, QIcon } from 'quasar';
 import { Import, Submission, Auth } from 'fast-fastjs';
 import ErrorFormatter from 'components/dataTable/submission/errorFormatter';
-import to from 'await-to-js';
 
 export default {
   components: {
@@ -257,7 +256,8 @@ export default {
       this.$router.push({
         name: 'formio_submission_update',
         query: {
-          mode: readOnly ? 'read-only' : 'online-review'
+          mode: readOnly ? 'read-only' : 'online-review',
+          parent: this.$route.query.parent
         },
         params: {
           idForm: this.form.data.path,
@@ -269,53 +269,14 @@ export default {
       this.$router.push({
         name: 'formio_submission_update',
         query: {
-          mode: 'online'
+          mode: 'online',
+          parent: this.$route.query.parent
         },
         params: {
           idForm: formId,
           idSubmission: submission._id
         }
       });
-    },
-    async loadSubmission(_id, includeLocal) {
-      let err;
-      let submission;
-
-      [err, submission] = await to(
-        Submission.remote().find({
-          form: this.form.data.path,
-          filter: [
-            {
-              element: '_id',
-              query: '=',
-              value: _id
-            }
-          ],
-          limit: 1
-        })
-      );
-      submission = submission && submission[0] ? submission[0] : null;
-
-      if (includeLocal && err) {
-        [err, submission] = await to(
-          Submission.local().find({
-            filter: {
-              _id
-            }
-          })
-        );
-      }
-      if (err) {
-        this.$swal.close();
-        this.$swal(
-          this.$t('Conexion error'),
-          this.$t("We couldn't get the submission from the server"),
-          'error'
-        );
-        throw new Error('Submission was not retreived');
-      }
-
-      return submission;
     },
     handleReport() {
       let rows = this.selectedRows;
@@ -335,6 +296,9 @@ export default {
         params: {
           idForm: this.form.data.path,
           idSubmission: submission._lid || submission._id
+        },
+        query: {
+          parent: this.$route.query.parent
         }
       });
     },
@@ -427,6 +391,9 @@ export default {
         name: 'formio_form_submission',
         params: {
           idForm: formId
+        },
+        query: {
+          parent: this.$route.query.parent
         }
       });
     },
@@ -454,6 +421,9 @@ export default {
         params: {
           idForm: formId,
           idSubmission: submissionId
+        },
+        query: {
+          parent: this.$route.query.parent
         }
       });
     },

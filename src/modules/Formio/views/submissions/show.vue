@@ -4,31 +4,11 @@
           <q-card>
 
             <q-card-title>
-              <span
-                style="color: #0574a9;cursor:pointer"
-                @click="$router.push({name: 'dashboard', exact: true})"
-                class="appBreadcrumb"
-              >
-              {{
-                $t('Home')
-              }}
-              </span>
 
-                <span
-                style="color: #0574a9;cursor:pointer"
-                @click="breadCrumClick"
-                 class="appBreadcrumb"
-                >
-                {{breadCrumTitle}}
-                </span>
-
-                <span
-                  style="color: #0574a9;cursor:pointer"
-                   class="appBreadcrumb"
-                >
-                  {{ ' /' }}
-                </span>
-                {{formTitle}}
+              <breadcrum
+                :parent="$route.query.parent"
+                :currentPageTitle="formTitle"
+              />
            <q-icon slot="right" name="fa-plus-circle" @click="emitEvent('FAST:GO:CREATE')" color="primary" style="cursor:pointer; padding-right: 20px">
 
             </q-icon>
@@ -90,6 +70,7 @@ import {
   QBtn
 } from 'quasar';
 import datatable from 'components/dataTable/dataTable';
+import breadcrum from 'components/breadcrum';
 import { Form, Auth, Event, Submission } from 'fast-fastjs';
 import Columns from 'components/dataTable/tableFormatter/Columns';
 
@@ -136,6 +117,7 @@ export default {
     }
   },
   components: {
+    breadcrum,
     datatable,
     QCard,
     QCardMain,
@@ -155,15 +137,16 @@ export default {
   data() {
     return {
       currentForm: {},
-      submissions: undefined,
-      breadCrumTitle: this.$route.query && this.$route.query.parent && JSON.parse(atob(this.$route.query.parent)).title !== undefined ? '/ ' + JSON.parse(window.atob(this.$route.query.parent)).title : ''
+      submissions: undefined
     };
   },
   methods: {
     breadCrumClick() {
       this.$router.push({
         name: 'pageManager',
-        params: { pageId: JSON.parse(window.atob(this.$route.query.parent)).url }
+        params: {
+          pageId: JSON.parse(window.atob(this.$route.query.parent)).url
+        }
       });
     },
     emitEvent(event, params) {
