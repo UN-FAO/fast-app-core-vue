@@ -322,7 +322,8 @@ export default {
               ) {
                 this.$router.push({
                   name: 'formio_form_show',
-                  params: { idForm: formio.formId }
+                  params: { idForm: formio.formId },
+                  query: { parent: this.$route.query.parent }
                 });
               }
             })
@@ -386,12 +387,14 @@ export default {
           onlineJsonForm.properties.FAST_WIZARD_SHOW_CANCEL === 'false'
             ? false
             : true,
-        showNext: onlineJsonForm.properties &&
+        showNext:
+          onlineJsonForm.properties &&
           onlineJsonForm.properties.FAST_WIZARD_SHOW_NEXT &&
           onlineJsonForm.properties.FAST_WIZARD_SHOW_NEXT === 'false'
             ? false
             : true,
-        showPrevious: onlineJsonForm.properties &&
+        showPrevious:
+          onlineJsonForm.properties &&
           onlineJsonForm.properties.FAST_WIZARD_SHOW_PREVIOUS &&
           onlineJsonForm.properties.FAST_WIZARD_SHOW_PREVIOUS === 'false'
             ? false

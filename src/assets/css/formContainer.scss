@@ -5,12 +5,9 @@
 @media (min-width: 1281px) {
   .formPageContainer {
     position: relative;
-    width: 66%;
-    margin-right: auto;
-    margin-left: auto;
-    margin-top:30px;
-    /*overflow-x:scroll;*/
-    margin-bottom: 100px;
+    width: 90%;
+    max-width: 1280px;
+    margin: 30px auto 100px;
   }
 }
 /*
@@ -20,12 +17,8 @@
 @media (min-width: 1025px) and (max-width: 1280px) {
   .formPageContainer {
     position: relative;
-    width: 66%;
-    margin-right: auto;
-    margin-left: auto;
-    margin-top:30px;
-    /*overflow-x:scroll;*/
-    margin-bottom: 100px;
+    width: 90%;
+    margin: 30px auto 100px;
   }
 }
 /*
@@ -36,7 +29,7 @@
   .formPageContainer {
     position: relative;
     width: 100%;
-    margin-top:0px;
+    margin-top: 0px;
     /*overflow-x:scroll;*/
     margin-bottom: 50px;
   }
@@ -53,7 +46,7 @@
     width: 100%;
     margin-right: auto;
     margin-left: auto;
-    margin-top:0px;
+    margin-top: 0px;
     /*overflow-x:scroll;*/
     margin-bottom: 50px;
   }
@@ -70,7 +63,7 @@
     width: 100%;
     margin-right: auto;
     margin-left: auto;
-    margin-top:0px;
+    margin-top: 0px;
     /*overflow-x:scroll;*/
     margin-bottom: 50px;
   }
@@ -85,7 +78,7 @@
     width: 100%;
     margin-right: auto;
     margin-left: auto;
-    margin-top:0px;
+    margin-top: 0px;
     /*overflow-x:scroll;*/
     margin-bottom: 50px;
   }
