@@ -1,19 +1,22 @@
-var
-  config = require('../config'),
+var config = require('../config'),
   webpack = require('webpack'),
   merge = require('webpack-merge'),
   cssUtils = require('./css-utils'),
   baseWebpackConfig = require('./webpack.base.conf'),
   HtmlWebpackPlugin = require('html-webpack-plugin'),
-  FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
+  FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin');
 
-var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-var configVars = require('../src/config/env')
+var BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
+  .BundleAnalyzerPlugin;
+var configVars = require('../src/config/env');
 
 // add hot-reload related code to entry chunks
-Object.keys(baseWebpackConfig.entry).forEach(function (name) {
-  baseWebpackConfig.entry[name] = ['./build/hot-reload.js', baseWebpackConfig.entry[name]]
-})
+Object.keys(baseWebpackConfig.entry).forEach(function(name) {
+  baseWebpackConfig.entry[name] = [
+    './build/hot-reload.js',
+    baseWebpackConfig.entry[name]
+  ];
+});
 
 module.exports = merge(baseWebpackConfig, {
   // eval-source-map is faster for development
@@ -29,7 +32,7 @@ module.exports = merge(baseWebpackConfig, {
     })
   },
   plugins: [
-    new BundleAnalyzerPlugin(),
+    // new BundleAnalyzerPlugin(),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
     new HtmlWebpackPlugin({
@@ -45,4 +48,4 @@ module.exports = merge(baseWebpackConfig, {
   performance: {
     hints: false
   }
-})
+});

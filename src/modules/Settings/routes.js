@@ -1,6 +1,3 @@
-const Settings = (r) =>
-  require.ensure([], () => r(require('./views/settings')), 'settings-module');
-
 const Translations = (r) =>
   require.ensure(
     [],
@@ -24,31 +21,22 @@ const AllData = (r) =>
 
 let SettingsRoutes = [
   {
-    path: '/settings',
-    component: Settings,
-    name: 'settings',
-    children: [
-      {
-        // TRanslations will be renderer inside <router-view>
-        // when /settings/translations is matched
-        path: 'translations',
-        name: 'translations',
-        component: Translations,
-        meta: { requiresAuth: true }
-      },
-      {
-        path: 'reviewers',
-        name: 'reviewers',
-        component: Reviewer,
-        meta: { requiresAuth: true }
-      },
-      {
-        path: 'alldata',
-        name: 'alldata',
-        component: AllData,
-        meta: { requiresAuth: true }
-      }
-    ]
+    path: '/settings/translations',
+    name: 'translations',
+    component: Translations,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/settings/reviewers',
+    name: 'reviewers',
+    component: Reviewer,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/settings/alldata',
+    name: 'alldata',
+    component: AllData,
+    meta: { requiresAuth: true }
   }
 ];
 

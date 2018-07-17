@@ -78,22 +78,27 @@ export default {
     page: {
       async get() {
         let result = await PagesRepo.getLocal();
-        let pages = await result.pages.map(async (page) => {
+        result = this.filterPage(result.pages, this.$route.params.pageId);
+        result = [result]
+        // TODO We still have to figure out why All data is not resolving
+        let pages = await result.map(async (page) => {
           page.cards.map(async (card) => {
             card.shouldDisplay = await Auth.hasRoleIdIn(card.access);
             card.actions.map(async (action) => {
               action.shouldDisplay = await Auth.hasRoleIdIn(action.access);
               return action;
             });
+
             return card;
           });
           page.shouldDisplay = await Auth.hasRoleIdIn(page.access);
           return page;
         });
+
         return Promise.all(pages);
       },
       transform(result) {
-        return this.filterPage(result, this.$route.params.pageId);
+        return result[0]
       }
     }
   },

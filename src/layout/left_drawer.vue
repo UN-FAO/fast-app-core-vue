@@ -29,11 +29,25 @@
 
       <pageLinks :pages="PAGES"></pageLinks>
 
-    <q-side-link v-if="hasRole(['Reviewer'])" multiline highlight item :to="{path: '/settings/alldata'}" key="settings">
+    <q-side-link v-if="hasRole(['Reviewer']) && $FAST_CONFIG.IS_SURVEY" multiline highlight item :to="{path: '/settings/alldata'}" key="settings">
       <q-item-side icon="fa-cog" />
       <q-item-main :label="$t('Review Data')"/>
     </q-side-link>
 
+    <q-side-link v-if="hasRole(['Administrator']) && $FAST_CONFIG.IS_SURVEY" multiline highlight item :to="{path: '/settings/alldata'}" key="settings">
+      <q-item-side icon="assignment" />
+      <q-item-main :label="$t('All Data')"/>
+    </q-side-link>
+
+    <q-side-link v-if="hasRole(['Administrator']) && $FAST_CONFIG.IS_SURVEY" multiline highlight item :to="{path: '/settings/reviewers'}" key="settings">
+      <q-item-side icon="assignment_ind" />
+      <q-item-main :label="$t('Data reviewers')"/>
+    </q-side-link>
+
+    <q-side-link v-if="hasRole(['Administrator']) && $FAST_CONFIG.IS_SURVEY" multiline highlight item :to="{path: '/settings/translations'}" key="settings">
+      <q-item-side icon="translate" />
+      <q-item-main :label="$t('Translations')"/>
+    </q-side-link>
 
 
     <q-side-link multiline highlight item :to="{name: 'About'}" key="about" v-if="$FAST_CONFIG.HAS_ABOUT">

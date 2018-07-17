@@ -117,20 +117,37 @@ export default {
       if (action.formPath) {
         let path =
           action.view === 'list'
-            ? '/forms/' + action.formPath + '?parent=' + btoa(JSON.stringify(parent))
-            : '/forms/' + action.formPath + '/submission';
+            ? '/forms/' +
+              action.formPath +
+              '?parent=' +
+              btoa(JSON.stringify(parent))
+            : '/forms/' +
+              action.formPath +
+              '/submission?parent=' +
+              btoa(JSON.stringify(parent));
         let to = {
           path
         };
         this.$router.push(to);
       } else if (action.internal) {
-        let to = { name: action.internalUrl }
+        let to = {
+          name: action.internalUrl,
+          query: {
+            parent: action.parent
+              ? btoa(JSON.stringify(action.parent))
+              : btoa(JSON.stringify('null'))
+          }
+        };
         this.$router.push(to);
       } else if (action.page) {
         let to = {
           name: 'pageManager',
           params: { pageId: action.page.url },
-          query: { parent: action.parent ? btoa(JSON.stringify(action.parent)) : btoa(JSON.stringify('null')) }
+          query: {
+            parent: action.parent
+              ? btoa(JSON.stringify(action.parent))
+              : btoa(JSON.stringify('null'))
+          }
         };
         this.$router.push(to);
       }

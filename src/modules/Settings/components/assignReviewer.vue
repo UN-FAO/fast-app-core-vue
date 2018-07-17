@@ -1,14 +1,17 @@
 <template>
-<div style="color:black" class="row justify-center">
+
+<div class="row FormioContainer">
+    <q-card class="col-xl-10 col-lg-10  col-md-12 col-sm-12 col-lg-offset-1 col-md-offset-1 col-xl-offset-1" style="position:inherit !important;">
+      <q-card-title>
+          <breadcrum
+                :parent="$route.query.parent"
+                :currentPageTitle="$t('Data Reviewers')"
+              />
+      </q-card-title>
+      <q-card-main>
+
+        <div style="color:black" class="row justify-center">
    <div class="relative-position">
-
-     <div class="section-title pageTitle" style="margin:auto">
-          {{ $t("Data Reviewers") }}
-        </div>
-
-        <div style="width:100%;color:grey">
-         <hr>
-        </div>
 
  <q-data-table
     :data="users"
@@ -40,9 +43,18 @@
 
   </div>
 </div>
+      </q-card-main>
+
+    </q-card>
+
+  </div>
+
 </template>
 <script>
 import {
+  QCard,
+  QCardTitle,
+  QCardMain,
   QDataTable,
   QSelect,
   QChip,
@@ -50,11 +62,16 @@ import {
   QTooltip,
   QSpinnerGears,
   QInnerLoading
-} from "quasar";
-import {countryList, User} from "fast-fastjs";
+} from 'quasar';
+import { countryList, User } from 'fast-fastjs';
+import breadcrum from 'components/breadcrum';
 export default {
-  name: "reviewer",
+  name: 'reviewer',
   components: {
+    breadcrum,
+    QCard,
+    QCardTitle,
+    QCardMain,
     QDataTable,
     QSelect,
     QChip,
@@ -68,7 +85,7 @@ export default {
       loading: false,
       countries: null,
       userSelect: [],
-      countryList: countryList.map(c => {
+      countryList: countryList.map((c) => {
         return { label: c.name, value: c.name };
       }),
       select: null,
@@ -80,62 +97,62 @@ export default {
         columnPicker: false,
         leftStickyColumns: 0,
         rightStickyColumns: 0,
-        rowHeight: "70px",
+        rowHeight: '70px',
         responsive: true,
         pagination: {
           rowsPerPage: 50,
           options: [10, 30, 50, 100]
         },
         messages: {
-          noData: this.$t("No data available to show."),
+          noData: this.$t('No data available to show.'),
           noDataAfterFiltering: this.$t(
-            "No results. Please refine your search terms."
+            'No results. Please refine your search terms.'
           )
         },
         // (optional) Override default labels. Useful for I18n.
         labels: {
-          columns: this.$t("Columns"),
-          allCols: this.$t("All Columns"),
-          rows: this.$t("Rows"),
+          columns: this.$t('Columns'),
+          allCols: this.$t('All Columns'),
+          rows: this.$t('Rows'),
           selected: {
-            singular: this.$t("item selected."),
-            plural: this.$t("items selected.")
+            singular: this.$t('item selected.'),
+            plural: this.$t('items selected.')
           },
-          clear: this.$t("clear"),
-          search: this.$t("Search"),
-          all: this.$t("All")
+          clear: this.$t('clear'),
+          search: this.$t('Search'),
+          all: this.$t('All')
         }
       },
       columns: [
         {
-          label: this.$t("Reviewer name"),
-          field: "name",
+          label: this.$t('Reviewer name'),
+          field: 'name',
           filter: true,
           sort: true
         },
         {
-          label: this.$t("Reviewer email"),
-          field: "email",
+          label: this.$t('Reviewer email'),
+          field: 'email',
           filter: true,
           sort: true
         },
         {
-          label: this.$t("Reviewer country"),
-          field: "country",
+          label: this.$t('Reviewer country'),
+          field: 'country',
           filter: true,
           sort: true
         },
         {
-          label: this.$t("Scope"),
-          field: "isReviewer",
+          label: this.$t('Scope'),
+          field: 'isReviewer',
           filter: false,
           sort: false
         },
         {
-          label: this.$t("Action"),
-          field: "action",
+          label: this.$t('Action'),
+          field: 'action',
           filter: false,
-          width: "110px"
+          width: '110px'
         }
       ]
     };
@@ -150,12 +167,12 @@ export default {
       this.users = users.filter((obj, pos, arr) => {
         return (
           arr
-            .map(mapObj => mapObj["data"]["email"])
-            .indexOf(obj["data"]["email"]) === pos
+            .map((mapObj) => mapObj['data']['email'])
+            .indexOf(obj['data']['email']) === pos
         );
       });
 
-      this.users = this.users.map(user => {
+      this.users = this.users.map((user) => {
         let c = user.data;
         c._id = user._id;
         return c;
@@ -163,7 +180,7 @@ export default {
       this.loading = false;
     },
     getCountry(code) {
-      let country = countryList.filter(c => {
+      let country = countryList.filter((c) => {
         return c.iso2 === code;
       });
 
@@ -176,13 +193,14 @@ export default {
     handleEdit(data) {
       let user = data;
       this.$router.push({
-        name: "formio_submission_update",
+        name: 'formio_submission_update',
         params: {
-          idForm: "user",
+          idForm: 'user',
           idSubmission: user.row._id,
-          fullSubmision: { data: user.row, _id: user.row._id },
-          FAST_EDIT_MODE: "online",
-          FAST_PARENT_PAGE: "reviewers"
+          FAST_PARENT_PAGE: 'reviewers'
+        },
+        query: {
+          mode: 'online'
         }
       });
     }

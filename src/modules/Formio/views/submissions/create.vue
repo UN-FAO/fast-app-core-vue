@@ -493,7 +493,9 @@ export default {
     },
     cancel() {
       if (document.getElementsByClassName('formio-dialog').length > 0) {
-        document.getElementsByClassName("formio-dialog-close pull-right")[0].click();
+        document
+          .getElementsByClassName('formio-dialog-close pull-right')[0]
+          .click();
         return;
       }
       window.history.back();
@@ -516,8 +518,7 @@ export default {
     },
     async reviewSubmission(revision) {
       let err;
-      let submission = this.$route.params.fullSubmision;
-
+      let submission = this.submission.data;
       submission.data.deleted = revision !== 'accept';
 
       this.$swal({

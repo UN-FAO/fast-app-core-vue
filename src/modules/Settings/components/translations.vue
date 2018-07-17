@@ -1,110 +1,104 @@
 <template>
-  <div>
-    <div v-if="!hasTranslation()">
-      <div class="pull-right">
-        <q-icon name="more_vert" color="grey" style="cursor:pointer;float:left" size="30px">
-              <q-popover ref="popover" class="show-menu">
-                <q-list link class="no-border" dense separator no-border>
+   <div class="row FormioContainer">
+      <q-card class="col-xl-10 col-lg-10  col-md-12 col-sm-12 col-lg-offset-1 col-md-offset-1 col-xl-offset-1" style="position:inherit !important;">
+         <q-card-title>
+            <breadcrum
+               :parent="$route.query.parent"
+               :currentPageTitle="$t('Translations')"
+               />
 
-                  <q-item @click="$refs.popover.close(), createTranslations()">
-                    <q-item-side icon="translate"  />
-                    <q-item-main :label="$t('Find new translations')" />
-                  </q-item>
+                <div v-if="!hasTranslation()">
+                  <div class="pull-right">
+                     <q-icon name="more_vert" color="grey" style="cursor:pointer;float:left" size="30px">
+                        <q-popover ref="popover" class="show-menu">
+                           <q-list link class="no-border" dense separator no-border>
+                              <q-item @click="$refs.popover.close(), createTranslations()">
+                                 <q-item-side icon="translate"  />
+                                 <q-item-main :label="$t('Find new translations')" />
+                              </q-item>
+                              <q-item @click="$refs.popover.close(), updateValues()">
+                                 <q-item-side icon="refresh"  />
+                                 <q-item-main :label="$t('Reload Translations')" />
+                              </q-item>
+                              <q-item @click="$refs.popover.close(), addLanguage()">
+                                 <q-item-side icon="fa-plus"  />
+                                 <q-item-main :label="$t('Add Language')" />
+                              </q-item>
+                           </q-list>
+                        </q-popover>
+                     </q-icon>
+                  </div>
+               </div>
+         </q-card-title>
+         <q-card-main>
 
-                  <q-item @click="$refs.popover.close(), updateValues()">
-                    <q-item-side icon="refresh"  />
-                    <q-item-main :label="$t('Reload Translations')" />
-                  </q-item>
+            <div>
 
-                    <q-item @click="$refs.popover.close(), addLanguage()">
-                    <q-item-side icon="fa-plus"  />
-                    <q-item-main :label="$t('Add Language')" />
-                  </q-item>
+               <div class="justify-center">
+                  <div v-if="!hasTranslation()" class="relative-position">
+                     <q-inner-loading :visible="true">
+                        <q-spinner-audio size="50px" color="primary"></q-spinner-audio>
+                     </q-inner-loading>
+                  </div>
+                  <tstats :stats="translations.stats" v-if="translations && translations.stats"> </tstats>
+                  <div class="col-lg-12">
+                     <q-btn icon="fa-filter" ref="target" color="primary" outline>
+                        {{$t('Forms')}}
+                        <!-- Direct child of target -->
+                        <q-popover ref="popover" anchor="bottom middle" max-height="300px" fit>
+                           <q-input v-model="search" type="text" :stack-label="$t('NAME FILTER')" :placeholder="$t('search...')" :after="[{  icon: 'fa-search'}]" clearable inverted />
+                           <div class="row pull-right">
+                              <q-btn ref="target" color="primary" flat @click="allFilters()">
+                                 {{$t('All')}}
+                              </q-btn>
+                              <q-btn ref="target" color="primary" flat @click="clearFilters()">
+                                 {{$t('Clear')}}
+                              </q-btn>
+                              <q-btn ref="target" color="primary" flat @click="filterTable()">
+                                 {{$t('Apply')}}
+                              </q-btn>
+                           </div>
+                           <br><br>
+                           <div v-for="form in filteredForms" :key="form.data.title">
+                              <q-checkbox style="text-transform: uppercase;" v-model="selection" :val="form.data.title" :label="form.data.title" />
+                              </hr>
+                              <br><br>
+                           </div>
+                        </q-popover>
+                     </q-btn>
+                     <q-btn icon="fa-filter" ref="target" color="primary" outline>
+                        {{$t('Languages')}}
+                        <q-popover ref="popover" anchor="bottom middle" max-height="300px" fit>
+                           <q-input v-model="languageSearch" type="text" :stack-label="$t('NAME FILTER')" :placeholder="$t('search...')" :after="[{  icon: 'fa-search'}]" clearable inverted />
+                           <div class="row pull-right">
+                              <q-btn ref="target" color="primary" flat @click="allLanguageFilters()">
+                                 {{$t('All')}}
+                              </q-btn>
+                              <q-btn ref="target" color="primary" flat @click="clearLanguageFilters()">
+                                 {{$t('Clear')}}
+                              </q-btn>
+                              <q-btn ref="target" color="primary" flat @click="filterTable()">
+                                 {{$t('Apply')}}
+                              </q-btn>
+                           </div>
+                           <br><br>
+                           <div v-for="language in filteredLanguages" :key="language.code">
+                              <q-checkbox style="text-transform: uppercase;" v-model="languageSelection" :val="language.code" :label="language.label" />
+                              </hr>
+                              <br><br>
+                           </div>
+                        </q-popover>
+                     </q-btn>
+                     <q-checkbox style="text-transform: uppercase;" v-model="untranslated" :label="$t('not translated')" />
+                     <q-input v-model="searchBox" type="text" :stack-label="$t('TRANSLATION FILTER')" :placeholder="$t('Search...')" :after="[{  icon: 'fa-search'}]" clearable />
+                  </div>
+                  <hottable :translations="translations" :labels="filteredLabels"></hottable>
+               </div>
+            </div>
 
-                </q-list>
-              </q-popover>
-            </q-icon>
-      </div>
-    </div>
-    <div class="justify-center">
-
-        <div class="section-title pageTitle" style="margin:auto">
-          {{ $t("Translations") }}
-        </div>
-
-        <div style="width:100%;color:grey">
-         <hr>
-        </div>
-
-      <div v-if="!hasTranslation()" class="relative-position">
-
-      <q-inner-loading :visible="true">
-          <q-spinner-audio size="50px" color="primary"></q-spinner-audio>
-      </q-inner-loading>
-      </div>
-
-        <tstats :stats="translations.stats" v-if="translations && translations.stats"> </tstats>
-
-        <div class="col-lg-12">
-          <q-btn icon="fa-filter" ref="target" color="primary" outline>
-            {{$t('Forms')}}
-            <!-- Direct child of target -->
-            <q-popover ref="popover" anchor="bottom middle" max-height="300px" fit>
-              <q-input v-model="search" type="text" :stack-label="$t('NAME FILTER')" :placeholder="$t('search...')" :after="[{  icon: 'fa-search'}]" clearable inverted />
-              <div class="row pull-right">
-                <q-btn ref="target" color="primary" flat @click="allFilters()">
-                  {{$t('All')}}
-                </q-btn>
-                <q-btn ref="target" color="primary" flat @click="clearFilters()">
-                  {{$t('Clear')}}
-                </q-btn>
-                <q-btn ref="target" color="primary" flat @click="filterTable()">
-                  {{$t('Apply')}}
-                </q-btn>
-              </div>
-              <br><br>
-              <div v-for="form in filteredForms" :key="form.data.title">
-                <q-checkbox style="text-transform: uppercase;" v-model="selection" :val="form.data.title" :label="form.data.title" />
-                </hr>
-                <br><br>
-              </div>
-            </q-popover>
-          </q-btn>
-
-          <q-btn icon="fa-filter" ref="target" color="primary" outline>
-            {{$t('Languages')}}
-            <q-popover ref="popover" anchor="bottom middle" max-height="300px" fit>
-              <q-input v-model="languageSearch" type="text" :stack-label="$t('NAME FILTER')" :placeholder="$t('search...')" :after="[{  icon: 'fa-search'}]" clearable inverted />
-              <div class="row pull-right">
-                <q-btn ref="target" color="primary" flat @click="allLanguageFilters()">
-                  {{$t('All')}}
-                </q-btn>
-                <q-btn ref="target" color="primary" flat @click="clearLanguageFilters()">
-                  {{$t('Clear')}}
-                </q-btn>
-                <q-btn ref="target" color="primary" flat @click="filterTable()">
-                  {{$t('Apply')}}
-                </q-btn>
-              </div>
-              <br><br>
-              <div v-for="language in filteredLanguages" :key="language.code">
-                <q-checkbox style="text-transform: uppercase;" v-model="languageSelection" :val="language.code" :label="language.label" />
-                </hr>
-                <br><br>
-              </div>
-            </q-popover>
-          </q-btn>
-
-          <q-checkbox style="text-transform: uppercase;" v-model="untranslated" :label="$t('not translated')" />
-          <q-input v-model="searchBox" type="text" :stack-label="$t('TRANSLATION FILTER')" :placeholder="$t('Search...')" :after="[{  icon: 'fa-search'}]" clearable />
-
-        </div>
-
-        <hottable :translations="translations" :labels="filteredLabels"></hottable>
-
-      </div>
-    </div>
-  </div>
+   </q-card-main>
+   </q-card>
+   </div>
 </template>
 
 <style scoped>
@@ -116,6 +110,9 @@
 <script>
 import { Translation, Form, FormLabels, Localization, FAST } from 'fast-fastjs';
 import {
+  QCard,
+  QCardTitle,
+  QCardMain,
   QBtn,
   QTooltip,
   QPopover,
@@ -136,6 +133,7 @@ import Promise from 'bluebird';
 import _forEach from 'lodash/forEach';
 import _isEmpty from 'lodash/isEmpty';
 import _map from 'lodash/map';
+import breadcrum from 'components/breadcrum';
 
 export default {
   data: function() {
@@ -169,6 +167,10 @@ export default {
     this.languageSelection = _map(this.languageNameFilters, 'code');
   },
   components: {
+    breadcrum,
+    QCard,
+    QCardTitle,
+    QCardMain,
     QBtn,
     QTooltip,
     tstats,
@@ -187,7 +189,7 @@ export default {
   computed: {
     filteredForms: function() {
       if (!this.formNameFilters) {
-        return []
+        return [];
       }
       // application
       let forms = this.formNameFilters.filter((formNameFilter) => {
@@ -206,8 +208,8 @@ export default {
       return forms;
     },
     filteredLanguages: function() {
-       if (!this.formNameFilters) {
-        return []
+      if (!this.formNameFilters) {
+        return [];
       }
       return this.languageNameFilters.filter((languageNameFilter) => {
         return (
@@ -219,7 +221,7 @@ export default {
     },
     filteredLabels: function() {
       if (!this.translations.labels) {
-        return []
+        return [];
       }
       this.searchBox.toLowerCase();
       let labels = this.translations.labels.filter((translation) => {

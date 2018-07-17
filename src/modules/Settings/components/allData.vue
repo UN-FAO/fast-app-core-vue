@@ -1,18 +1,28 @@
 <template>
-  <div class="row" style="color:black">
-    <div class="section-title pageTitle" style="margin:auto">
-      {{ $t("All Data") }}
-    </div>
+<div class="row FormioContainer">
+    <q-card class="col-xl-10 col-lg-10  col-md-12 col-sm-12 col-lg-offset-1 col-md-offset-1 col-xl-offset-1" style="position:inherit !important;">
 
-    <div style="width:100%;color:grey">
-      <hr>
-    </div>
+         <div class="row" style="color:black">
 
     <div style="width:100%" class="relative-position">
-      <q-select filter separator autofocus-filter v-model="selectForm" :options="formList" stack-label="Select your form" filter-placeholder="Search for the form" style="border-bottom: 1px solid grey; width: 50%" clearable />
 
       <q-card-main>
         <q-card-title>
+           <breadcrum
+                :parent="$route.query.parent"
+                :currentPageTitle="this.$t('All Data')"
+              />
+          <q-select
+        filter
+        separator
+        autofocus-filter
+        v-model="selectedForm"
+        :options="formList"
+        stack-label="Select your form"
+        filter-placeholder="Search for the form"
+        style="border-bottom: 1px solid grey; width: 50%"
+        clearable
+      />
           <span v-if="formTitle !== ''">Form:</span> {{formTitle}}
           <q-icon v-if="formTitle !== ''" slot="right" name="more_vert" color="grey" style="cursor:pointer">
               <q-popover ref="popover">
@@ -49,10 +59,16 @@
 
     </div>
   </div>
+
+    </q-card>
+
+</div>
+
 </template>
 
 <script>
 import {
+  QCard,
   QSelect,
   QCardMain,
   QInnerLoading,
@@ -69,12 +85,13 @@ import { Form, Submission, Auth, Event } from 'fast-fastjs';
 import FormioUtils from 'formiojs/utils';
 import datatable from 'components/dataTable/dataTable';
 import Columns from 'components/dataTable/tableFormatter/Columns';
-
+import breadcrum from 'components/breadcrum';
 export default {
   async mounted() {
     this.$eventHub.on('FAST:LANGUAGE:CHANGED', async (data) => {
       await this.updateLocalSubmissions();
     });
+    this.selectedForm = this.$route.query && this.$route.query.form;
   },
   methods: {
     async createDialog() {
@@ -111,9 +128,9 @@ export default {
   asyncComputed: {
     currentForm: {
       get() {
-        if (this.selectForm && this.selectForm !== '') {
+        if (this.selectedForm && this.selectedForm !== '') {
           return Form.local().findOne({
-            'data.path': this.selectForm
+            'data.path': this.selectedForm
           });
         } else {
           return {
@@ -127,7 +144,7 @@ export default {
         return result;
       },
       watch() {
-        this.selectForm;
+        this.selectedForm;
       }
     },
     submissions: {
@@ -225,8 +242,10 @@ export default {
     }
   },
   components: {
+    breadcrum,
     datatable,
     QSelect,
+    QCard,
     QCardMain,
     QInnerLoading,
     QSpinnerAudio,
@@ -242,7 +261,7 @@ export default {
     return {
       loading: false,
       formList: [],
-      selectForm: this.$route.query && this.$route.query.form
+      selectedForm: null
     };
   },
   beforeDestroy() {

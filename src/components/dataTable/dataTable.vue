@@ -51,7 +51,7 @@
         </template>
 
         <template slot="selection">
-            <q-btn v-if="tableActions && tableActions.includes('review')" color="primary" flat @click='handleReview()'>
+            <q-btn v-if="tableActions && tableActions.includes('review')" color="primary" flat @click='handleReview({readOnly:false})'>
                 <q-icon name="remove_red_eye" />
                 <q-tooltip>{{$t('Review')}}</q-tooltip>
             </q-btn>
@@ -257,7 +257,15 @@ export default {
         name: 'formio_submission_update',
         query: {
           mode: readOnly ? 'read-only' : 'online-review',
-          parent: this.$route.query.parent
+          parent: !readOnly
+            ? btoa(
+                JSON.stringify({
+                  isInternal: true,
+                  url: 'alldata',
+                  title: this.$t('All Data')
+                })
+              )
+            : this.$route.query.parent
         },
         params: {
           idForm: this.form.data.path,

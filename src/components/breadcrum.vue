@@ -63,13 +63,21 @@ export default {
         '/forms/' +
         this.$route.params.idForm +
         '?parent=' +
-        this.$route.query.parent
+        this.$route.query.parent;
       this.$router.push(to);
     },
     breadCrumClick() {
+      let parent = JSON.parse(window.atob(this.parent));
+
+      if (parent.isInternal === true) {
+        this.$router.push({
+          name: parent.url
+        });
+        return
+      }
       this.$router.push({
         name: 'pageManager',
-        params: { pageId: JSON.parse(window.atob(this.parent)).url }
+        params: { pageId: parent.url }
       });
     }
   }
