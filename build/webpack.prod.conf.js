@@ -12,6 +12,7 @@ var path = require('path'),
   UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 var configVars = require('../src/config/env');
 var OfflinePlugin = require('offline-plugin');
+var RemoveServiceWorkerPlugin = require('webpack-remove-serviceworker-plugin');
 
 module.exports = merge(baseWebpackConfig, {
   entry: './src/main.js',
@@ -100,7 +101,8 @@ module.exports = merge(baseWebpackConfig, {
     new webpack.optimize.CommonsChunkPlugin({
       name: 'manifest',
       chunks: ['vendor']
-    })
+    }),
     // new OfflinePlugin()
+    new RemoveServiceWorkerPlugin()
   ]
 });
