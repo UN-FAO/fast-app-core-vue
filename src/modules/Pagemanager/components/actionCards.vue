@@ -102,7 +102,8 @@ export default {
   },
   computed: {
     _cards() {
-      let cards = this.page && this.page.cards ? this.page.cards : [];
+      let page = JSON.parse(this.page);
+      let cards = page && page.cards ? page.cards : [];
       cards = cards.filter((c) => {
         return c.title.toLowerCase().indexOf(this.filter.toLowerCase()) > -1;
       });

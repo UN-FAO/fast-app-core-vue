@@ -14,7 +14,7 @@
 
     <hr style="border-top: 1px solid lightgray">
 
-    <actioncards :page="page" v-bind:key="$route.path"></actioncards>
+    <actioncards :page="JSON.stringify(page)" v-bind:key="$route.path"></actioncards>
 
   </div>
 
@@ -49,6 +49,8 @@ import {
 import { PagesRepo, Auth } from 'fast-fastjs';
 import actioncards from '../components/actionCards';
 import breadcrum from 'components/breadcrum';
+import Promise from 'bluebird';
+import _cloneDeep from 'lodash/cloneDeep';
 export default {
   components: {
     breadcrum,
@@ -78,27 +80,23 @@ export default {
     page: {
       async get() {
         let result = await PagesRepo.getLocal();
-        result = this.filterPage(result.pages, this.$route.params.pageId);
-        result = [result]
-        // TODO We still have to figure out why All data is not resolving
-        let pages = await result.map(async (page) => {
-          page.cards.map(async (card) => {
-            card.shouldDisplay = await Auth.hasRoleIdIn(card.access);
-            card.actions.map(async (action) => {
-              action.shouldDisplay = await Auth.hasRoleIdIn(action.access);
-              return action;
-            });
+        result = _cloneDeep(result);
+        let page = this.filterPage(result.pages, this.$route.params.pageId);
+        page.shouldDisplay = await Auth.hasRoleIdIn(page.access);
+        await Promise.map(page.cards, async (card) => {
+          card.shouldDisplay = await Auth.hasRoleIdIn(card.access);
 
-            return card;
+          await Promise.map(card.actions, async (action) => {
+            action.shouldDisplay = await Auth.hasRoleIdIn(action.access);
+            return action;
           });
-          page.shouldDisplay = await Auth.hasRoleIdIn(page.access);
-          return page;
+          return card;
         });
 
-        return Promise.all(pages);
+        return page;
       },
       transform(result) {
-        return result[0]
+        return result;
       }
     }
   },
