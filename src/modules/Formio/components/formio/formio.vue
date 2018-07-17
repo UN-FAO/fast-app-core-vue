@@ -208,6 +208,14 @@ export default {
      * @return {[type]} [description]
      */
     createLocalDraft() {
+      // Create the new Submission from the Cloned one
+      if (this.$route.params.clonedSubmission) {
+        this.formIO.data = Object.assign(
+          {},
+          this.$route.params.clonedSubmission
+        );
+      }
+
       let formSubmission = {
         data: this.formIO.data,
         redirect: 'Update',
@@ -344,11 +352,20 @@ export default {
       });
     },
     setSubmission(onlineJsonForm) {
-      if (
+      if (this.$route.params.clonedSubmission) {
+        this.formIO.submission = {
+          data: this.$route.params.clonedSubmission
+        };
+        if (onlineJsonForm.display === 'wizard') {
+          this.formIO.data = this.$route.params.clonedSubmission;
+        }
+        this.jsonSubmission = this.$route.params.clonedSubmission;
+      } else if (
         (this.editMode === 'online' || this.editMode === 'online-review') &&
         this.submission &&
         !this.jsonSubmission
       ) {
+        // TODO clean...whats the difference between submission and jsonSubmission?
         this.formIO.submission = {
           data: _get(this.submission, 'data.data', {})
         };
@@ -443,6 +460,11 @@ export default {
 
         if (this.jsonSubmission) {
           // Set Submission if we are Updating
+          this.setSubmission(onlineJsonForm);
+        }
+
+        if (this.$route.params.clonedSubmission) {
+          // Set Submission if we are using the clone functionallity
           this.setSubmission(onlineJsonForm);
         }
         // Clone the original object to avoid changes

@@ -22,7 +22,7 @@
                   style="color: #0574a9;cursor:pointer"
                    class="appBreadcrumb"
                 >
-                  {{ ' /' }} <span @click="backToShow" v-if="isSubmission">{{isSubmission ? currentPageTitle: ''}}</span>
+                  {{ ' /' }} <span @click="backToShow" v-if="isSubmission" class="breadCrumbBackToShow">{{isSubmission ? currentPageTitle: ''}}</span>
                 </span>
                 <span style="color:#b5bbbd">
                 {{!isSubmission ? currentPageTitle : '' }} {{isSubmission ? "/" + this.$t('SUBMISSION'): ''}}
@@ -59,11 +59,10 @@ export default {
   },
   methods: {
     backToShow() {
-      let to =
-        '/forms/' +
-        this.$route.params.idForm +
-        '?parent=' +
-        this.$route.query.parent;
+      let parent = this.$route.query.parent
+        ? this.$route.query.parent
+        : btoa(JSON.stringify('null'));
+      let to = '/forms/' + this.$route.params.idForm + '?parent=' + parent;
       this.$router.push(to);
     },
     breadCrumClick() {
@@ -73,7 +72,7 @@ export default {
         this.$router.push({
           name: parent.url
         });
-        return
+        return;
       }
       this.$router.push({
         name: 'pageManager',

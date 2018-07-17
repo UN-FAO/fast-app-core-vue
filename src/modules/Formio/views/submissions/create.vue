@@ -480,11 +480,13 @@ export default {
       customRender: false,
       customRenderType: '',
       customRenderArray: [],
-      changeEvent: null
+      changeEvent: null,
+      activeSubmission: null
     };
   },
   methods: {
     onSubmissionChange(event) {
+      this.activeSubmission = event.detail.data.change.data;
       let data = event.detail.data;
       this.pages = data.formio.pages ? data.formio.pages : [];
       if (data.formio.data && data.formio.data.variables) {
@@ -498,7 +500,25 @@ export default {
           .click();
         return;
       }
+      if (document.getElementsByClassName('breadCrumbBackToShow').length > 0) {
+        document.getElementsByClassName('breadCrumbBackToShow')[0].click();
+        return;
+      }
       window.history.back();
+    },
+    async clone() {
+      let parent = this.$route.query.parent ? this.$route.query.parent : btoa(JSON.stringify('null'));
+      let clone = this.activeSubmission ? this.activeSubmission : this.currentSubmission
+      this.$router.push({
+        name: 'formio_form_submission',
+        params: {
+          idForm: this.$route.params.idForm,
+          clonedSubmission: clone
+        },
+        query: {
+          parent: parent
+        }
+      });
     },
     async softDelete() {
       await Submission.remote().softDelete({
