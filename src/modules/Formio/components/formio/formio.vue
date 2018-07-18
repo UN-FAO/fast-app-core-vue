@@ -507,9 +507,13 @@ export default {
         // Add error event listener only if we do not have it
         if (events.filter((e) => e.type === 'formio.render').length < 1) {
           this.formIO.on('render', (render) => {
-            this.$eventHub.$emit('formio.render', {
-              render: render,
-              formio: this.formIO
+            Event.emit({
+              name: 'FAST:FORMIO:RENDERED',
+              data: {
+                render: render,
+                formio: this.formIO
+              },
+              text: 'Form fully rendered'
             });
           });
         }

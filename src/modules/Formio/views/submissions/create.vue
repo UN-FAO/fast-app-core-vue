@@ -105,6 +105,7 @@
                 :autoCreate="autoCreate"
                 :editMode="this.$route.query.mode"
                 :parentPage="this.$route.params.FAST_PARENT_PAGE"
+                v-bind:class="getFormioClass"
                 v-bind:style="{ display: !customRender ? 'initial' : 'none' }" />
 
                 <div v-bind:style="{ display: customRender ? 'initial' : 'none', color: 'black' }">
@@ -277,6 +278,11 @@ export default {
     });
 
     Event.listen({
+      name: 'FAST:FORMIO:RENDERED',
+      callback: this.showWizard
+    });
+
+    Event.listen({
       name: 'FAST:FORMIO:CHANGE',
       callback: this.onSubmissionChange
     });
@@ -301,6 +307,21 @@ export default {
       callback: this.cancel
     });
 
+    Event.listen({
+      name: 'FAST:WIZARD:NEXT',
+      callback: this.singleNext
+    });
+
+    Event.listen({
+      name: 'FAST:WIZARD:PREVIOUS',
+      callback: this.singlePrevious
+    });
+
+    Event.listen({
+      name: 'FAST:WIZARD:VALIDATE',
+      callback: this.validate
+    });
+
     this.$eventHub.$on('formio.error', (error) => {
       console.log(error);
       if (
@@ -321,6 +342,11 @@ export default {
   },
   beforeDestroy() {
     Event.remove({
+      name: 'FAST:FORMIO:RENDERED',
+      callback: this.showWizard
+    });
+
+    Event.remove({
       name: 'FAST:SUBMISSION:CANCEL',
       callback: this.cancel
     });
@@ -335,6 +361,21 @@ export default {
     Event.remove({
       name: 'FAST:SUBMISSION:SOFTDELETE',
       callback: this.softDelete
+    });
+
+    Event.remove({
+      name: 'FAST:WIZARD:PREVIOUS',
+      callback: this.singlePrevious
+    });
+
+    Event.remove({
+      name: 'FAST:WIZARD:NEXT',
+      callback: this.singlePrevious
+    });
+
+    Event.remove({
+      name: 'FAST:WIZARD:VALIDATE',
+      callback: this.validate
     });
 
     this.$eventHub.$off('formio.error');
@@ -453,6 +494,15 @@ export default {
       } else {
         return {};
       }
+    },
+    getFormioClass() {
+      if (
+        this.currentForm &&
+        this.currentForm.data.properties.FAST_WIZARD_CUSTOM_NAVIGATION ===
+          'true'
+      ) {
+        return 'noNavegation';
+      }
     }
   },
   data: function() {
@@ -485,6 +535,9 @@ export default {
     };
   },
   methods: {
+    showWizard(event) {
+      this.isWizard = !!event.detail.data.formio.wizard;
+    },
     onSubmissionChange(event) {
       this.activeSubmission = event.detail.data.change.data;
       let data = event.detail.data;
@@ -507,8 +560,12 @@ export default {
       window.history.back();
     },
     async clone() {
-      let parent = this.$route.query.parent ? this.$route.query.parent : btoa(JSON.stringify('null'));
-      let clone = this.activeSubmission ? this.activeSubmission : this.currentSubmission
+      let parent = this.$route.query.parent
+        ? this.$route.query.parent
+        : btoa(JSON.stringify('null'));
+      let clone = this.activeSubmission
+        ? this.activeSubmission
+        : this.currentSubmission;
       this.$router.push({
         name: 'formio_form_submission',
         params: {
@@ -657,6 +714,10 @@ export default {
     },
     singleNext() {
       let button1 = document.querySelectorAll('.btn-wizard-nav-next')[0];
+      button1.click();
+    },
+    singlePrevious() {
+      let button1 = document.querySelectorAll('.btn-wizard-nav-previous')[0];
       button1.click();
     },
     clickNext() {

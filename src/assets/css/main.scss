@@ -31,6 +31,19 @@ button.btn.btn-default.btn-wizard-nav-cancel {
   display: none;
 }
 
+.noNavegation button.btn.btn-primary.btn-wizard-nav-next {
+  display: none;
+}
+.noNavegation button.btn.btn-primary.btn-wizard-nav-previous {
+  display: none;
+}
+
+.noNavegation button.btn.btn-primary.btn-wizard-nav-submit {
+  display: none;
+}
+
+
+
 .score-panel {
   display: none;
 }
@@ -336,37 +349,23 @@ p.form-title {
 }
 
 .formNav .q-list {
-
-padding-bottom: 0;
-
+  padding-bottom: 0;
 }
-
-
 
 .formioPagination {
+  border-top-left-radius: 0 !important;
 
-border-top-left-radius: 0 !important;
-
-border-top-right-radius: 0 !important;
-
+  border-top-right-radius: 0 !important;
 }
-
-
 
 .formioPagination:not(:last-child) {
+  border-bottom-left-radius: 0 !important;
 
-border-bottom-left-radius: 0 !important;
-
-border-bottom-right-radius: 0 !important;
-
+  border-bottom-right-radius: 0 !important;
 }
 
-
-
 .formioPagination.activePage {
-
-background-color: #0e6da5;
-
+  background-color: #0e6da5;
 }
 
 .activePage .q-item-main .q-item-label {
@@ -526,12 +525,12 @@ ul.list-inline {
 }
 
 .appBreadcrumb {
-    font-size: 1.3vh;
-    text-align: left;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    font-variant: small-caps;
-    background:inherit
+  font-size: 1.3vh;
+  text-align: left;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-variant: small-caps;
+  background: inherit;
 }
 
 @import 'custom/custom.scss';
