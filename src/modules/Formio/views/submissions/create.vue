@@ -498,6 +498,8 @@ export default {
     getFormioClass() {
       if (
         this.currentForm &&
+        this.currentForm.data &&
+        this.currentForm.data.properties &&
         this.currentForm.data.properties.FAST_WIZARD_CUSTOM_NAVIGATION ===
           'true'
       ) {

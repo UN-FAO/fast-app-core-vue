@@ -6,7 +6,7 @@ const Lenguage = class {
    */
   static listen(vm) {
     vm.$eventHub.$on('FAST:LANGUAGE:CHANGED', (lenguage) => {
-      vm.formIO.language = lenguage.code;
+      vm.formioRenderInstance.language = lenguage.code;
       vm.renderForm();
     });
   }

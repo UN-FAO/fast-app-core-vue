@@ -164,6 +164,7 @@ export default {
     this.languageNameFilters = await Translation.local().supportedLanguages();
     this.selection = _map(this.formNameFilters, 'data.title');
     this.selection.push('Application');
+    this.selection.push('Pages');
     this.languageSelection = _map(this.languageNameFilters, 'code');
   },
   components: {
@@ -205,6 +206,12 @@ export default {
         }
       };
       forms.push(app);
+      let pages = {
+        data: {
+          title: 'Pages'
+        }
+      };
+      forms.push(pages);
       return forms;
     },
     filteredLanguages: function() {

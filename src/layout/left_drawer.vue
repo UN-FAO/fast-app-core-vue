@@ -29,12 +29,6 @@
 
       <pageLinks :pages="PAGES"></pageLinks>
 
-
-    <q-side-link multiline highlight item :to="{name: 'About'}" key="about" v-if="$FAST_CONFIG.HAS_ABOUT">
-      <q-item-side icon="tablet_mac" />
-      <q-item-main :label="$t('About') +' '+ $FAST_CONFIG.APP_FANTACY_NAME" />
-    </q-side-link>
-
     <q-item-separator />
 
     <q-item @click="handleLogout" style="cursor: pointer">

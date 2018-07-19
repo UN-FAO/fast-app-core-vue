@@ -157,6 +157,7 @@ let t = [
   'You have connection now! Login and sync you data',
   'Snooze',
   'Go to Login',
+  'SUBMISSION',
   // Formio Translations
   'complete',
   'error',
@@ -189,10 +190,10 @@ let t = [
   'next',
   'previous',
   'cancel',
-  'submit',
+  'submit'
 
   // FAW translations
-
+  /*
   'The date of survey cannot be set in the future.',
   'Please select a date prior to the date of submission.',
   'Scouting and traps',
@@ -200,7 +201,7 @@ let t = [
   'Traps',
   'Fall Armyworm Monitoring and Early Warning System',
   'FAMEWS'
-  /*
+
   // MedAid Translations
   /*
   'here',

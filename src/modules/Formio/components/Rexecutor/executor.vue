@@ -85,6 +85,7 @@ export default {
       require('brace/ext/language_tools'); // language extension prerequsite...
       require('brace/mode/r');
       require('brace/snippets/r');
+      require('brace/theme/chrome');
     },
     onSubmissionChange(data) {
       let variables = data.variables;

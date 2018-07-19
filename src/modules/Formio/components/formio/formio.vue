@@ -6,13 +6,14 @@
 </template>
 <script>
 import _debounce from 'lodash/debounce';
-import _isEmpty from 'lodash/isEmpty';
 import _cloneDeep from 'lodash/cloneDeep';
 import _map from 'lodash/map';
 import _get from 'lodash/get';
-import Formio from 'formiojs';
+import Formio from 'formiojs/Formio';
+import AllComponents from 'formiojs/components';
+import Components from 'formiojs/components/Components';
+Components.setComponents(AllComponents);
 import FormioForm from 'formiojs/Form';
-import FormioWizard from 'formiojs/Wizard';
 import FormioUtils from 'formiojs/utils';
 import GPS from './src/gps';
 import Lenguage from './src/lenguage';
@@ -55,12 +56,18 @@ export default {
   },
   watch: {
     submission: function(value) {
-      this.jsonSubmission = value;
       this.renderForm();
     },
     language: function() {
       this.renderForm();
     }
+  },
+  data: () => {
+    return {
+      formioRenderInstance: null,
+      offlineModePlugin: null,
+      saved: false
+    };
   },
   mounted() {
     Formio.forms = {};
@@ -88,15 +95,6 @@ export default {
     document.removeEventListener('saveAsDraft', this.saveAsLocalDraft);
     document.removeEventListener('autoSaveDraft', this.autoSaveAsDraft);
   },
-  data: () => {
-    return {
-      formIO: null,
-      jsonSubmission: undefined,
-      offlineModePlugin: null,
-      saved: false,
-      currentForm: null
-    };
-  },
   methods: {
     /**
      * [renderForm description]
@@ -113,6 +111,174 @@ export default {
         el.classList.add('formio-form');
       });
       this.mountFormIOForm();
+    },
+    async createFormioInstance(onlineJsonForm, options) {
+      options.readOnly = !!(
+        this.editMode === 'online-review' || this.editMode === 'read-only'
+      );
+      /* eslint-disable */
+      options.buttonSettings = {
+        showCanel:
+          _get(
+            onlineJsonForm,
+            'properties.FAST_WIZARD_SHOW_CANCEL',
+            undefined
+          ) && onlineJsonForm.properties.FAST_WIZARD_SHOW_CANCEL === 'false'
+            ? false
+            : true,
+        showNext:
+          _get(
+            onlineJsonForm,
+            'properties.FAST_WIZARD_SHOW_CANCEL',
+            undefined
+          ) && onlineJsonForm.properties.FAST_WIZARD_SHOW_CANCEL === 'false'
+            ? false
+            : true,
+        showPrevious:
+          _get(
+            onlineJsonForm,
+            'properties.FAST_WIZARD_SHOW_CANCEL',
+            undefined
+          ) && onlineJsonForm.properties.FAST_WIZARD_SHOW_CANCEL === 'false'
+            ? false
+            : true,
+        /* eslint-enable */
+        clickable: true
+      };
+
+      // Create the formIOForm Instance (Renderer)
+      this.formioRenderInstance = await new FormioForm(
+        this.$refs.formIO,
+        onlineJsonForm,
+        options
+      ).render();
+
+      this.formioRenderInstance.url = this.formURL;
+      this.formioRenderInstance.form = onlineJsonForm;
+    },
+    async mountFormIOForm() {
+      // Create FormIOJS plugin instace (Manipulation)
+      let formio = new Formio(this.formURL);
+
+      formio.loadForm().then(async (onlineJsonForm) => {
+        let translations = await OfflinePlugin.getLocalTranslations();
+
+        await this.createFormioInstance(onlineJsonForm, translations);
+
+        // Autocreate record, go directly to edit (an have autosave functionality)
+        if (this.autoCreate) {
+          this.createLocalDraft();
+          return;
+        }
+
+        this.setSubmission();
+        // Clone the original object to avoid changes
+        let cloneJsonForm = _cloneDeep(onlineJsonForm);
+
+        // Load data stored locally
+        cloneJsonForm.components = this.loadExternalResources(
+          onlineJsonForm.components
+        );
+
+        // Generate some custom translations
+        cloneJsonForm.components = this.setTranslations(
+          _cloneDeep(onlineJsonForm.components)
+        );
+
+        // Define the form to display
+        this.formioRenderInstance.setForm(cloneJsonForm);
+
+        // When the submission has been added the form is mounted
+        this.$eventHub.$emit('formio.mounted', this.formioRenderInstance);
+
+        this.formioRenderInstance.language = localStorage.getItem(
+          'defaultLenguage'
+        )
+          ? localStorage.getItem('defaultLenguage')
+          : 'en';
+
+        this.formioRenderInstance.on('render', (render) => {
+          Event.emit({
+            name: 'FAST:FORMIO:RENDERED',
+            data: {
+              render: render,
+              formio: this.formioRenderInstance
+            },
+            text: 'Form fully rendered'
+          });
+        });
+
+        // Add error event listener only if we do not have it
+        this.formioRenderInstance.on('error', (error) => {
+          this.$eventHub.$emit('formio.error', {
+            error: error,
+            formio: this.formioRenderInstance
+          });
+        });
+
+        let timeoutId;
+
+        this.formioRenderInstance.on('change', (change) => {
+          Event.emit({
+            name: 'FAST:FORMIO:CHANGE',
+            data: { change: change, formio: this.formioRenderInstance },
+            text: 'Submission changed'
+          });
+          if (
+            this.localDraft &&
+            this.editMode !== 'online' &&
+            this.editMode !== 'online-review' &&
+            this.editMode !== 'read-only'
+          ) {
+            if (this.$FAST_CONFIG.OFFLINE_FIRST) {
+              this.saved = false;
+              Event.emit({
+                name: 'FAST:SUBMISSION:CHANGED',
+                data: false,
+                text: 'Draft not Saved'
+              });
+              // AutoSave functionality
+              // If a timer was already started, clear it.
+              if (timeoutId) clearTimeout(timeoutId);
+
+              // Set timer that will save comment when it fires.
+              timeoutId = setTimeout(() => {
+                this.autoSaveAsDraft();
+                this.saved = true;
+              }, 700);
+            }
+          }
+        });
+
+        // Add error event listener only if we do not have it
+        this.formioRenderInstance.on('nextPage', (nextPage) => {
+          this.$eventHub.$emit('formio.nextPage', {
+            nextPage: nextPage,
+            formio: this.formioRenderInstance
+          });
+        });
+
+        // Add error event listener only if we do not have it
+        this.formioRenderInstance.on('prevPage', (prevPage) => {
+          this.$eventHub.$emit('formio.prevPage', {
+            prevPage: prevPage,
+            formio: this.formioRenderInstance
+          });
+        });
+
+        // Ad submit event listener only if its not present before
+        this.formioRenderInstance.on('submit', (submission) => {
+          let formSubmission = {
+            data: this.formioRenderInstance.data,
+            draft: false,
+            redirect: true,
+            trigger: 'formioSubmit',
+            syncError: false
+          };
+
+          this.save(formSubmission);
+        });
+      });
     },
     /**
      * [loadExternalResources description]
@@ -161,7 +327,7 @@ export default {
      */
     saveAsLocalDraft(e) {
       let formSubmission = {
-        data: this.formIO.data,
+        data: this.formioRenderInstance.data,
         redirect: true,
         draft: true,
         syncError: false,
@@ -181,7 +347,7 @@ export default {
      */
     autoSaveAsDraft() {
       let formSubmission = {
-        data: this.formIO.data,
+        data: this.formioRenderInstance.data,
         redirect: false,
         draft: true,
         syncError: false,
@@ -190,34 +356,20 @@ export default {
       this.save(formSubmission);
     },
     /**
-     * [removeDuplicatedPagination description]
-     * @return {[type]} [description]
-     */
-    removeDuplicatedPagination() {
-      let x = document.getElementsByClassName('pagination');
-      if (x.length > 2) {
-        [].forEach.call(x, function(el, index) {
-          if (index !== x.length - 1) {
-            el.remove();
-          }
-        });
-      }
-    },
-    /**
      * [createLocalDraft description]
      * @return {[type]} [description]
      */
     createLocalDraft() {
       // Create the new Submission from the Cloned one
       if (this.$route.params.clonedSubmission) {
-        this.formIO.data = Object.assign(
+        this.formioRenderInstance.data = Object.assign(
           {},
           this.$route.params.clonedSubmission
         );
       }
 
       let formSubmission = {
-        data: this.formIO.data,
+        data: this.formioRenderInstance.data,
         redirect: 'Update',
         draft: true,
         trigger: 'createLocalDraft'
@@ -230,16 +382,16 @@ export default {
      * @return {[type]}                [description]
      */
     async save(formSubmission) {
-      if (this.jsonSubmission) {
+      if (this.submission) {
         formSubmission._id = _get(
-          this.jsonSubmission,
+          this.submission,
           'data._id',
-          this.jsonSubmission._id
+          this.submission._id
         );
         formSubmission._lid = _get(
-          this.jsonSubmission,
+          this.submission,
           'data._lid',
-          this.jsonSubmission._id
+          this.submission._id
         );
       }
       let formio = new Formio(this.formURL);
@@ -257,49 +409,12 @@ export default {
         this.$swal('Error', 'Cannot submit on read only mode', 'error');
         return;
       }
+      if (this.saved === false) {
+        this.sleep(2000)
+      }
       formio.saveSubmission(formSubmission).then((created) => {
         this.redirectIntended({ submission: formSubmission, created, formio });
       });
-    },
-    async redirectIntended({ submission, created, formio }) {
-      if (submission._id) {
-        if (submission.redirect === true) {
-          switch (this.$FAST_CONFIG.SAVE_REDIRECT) {
-            case 'dashboard':
-              router.push({
-                name: 'dashboard'
-              });
-              break;
-            case 'collected':
-              router.push({
-                name: 'formio_form_show',
-                params: {
-                  idForm: formio.formId
-                }
-              });
-              break;
-            default:
-              router.push({
-                name: 'dashboard'
-              });
-              break;
-          }
-        }
-      } else if (
-        created.data &&
-        created.data.trigger &&
-        created.data.trigger === 'importSubmission'
-      ) {
-        return;
-      } else {
-        router.push({
-          name: 'formio_submission_update',
-          params: {
-            idForm: formio.formId,
-            idSubmission: created._id
-          }
-        });
-      }
     },
     onlineSave(submission, formio) {
       this.$swal({
@@ -351,270 +466,60 @@ export default {
         }
       });
     },
-    setSubmission(onlineJsonForm) {
-      if (this.$route.params.clonedSubmission) {
-        this.formIO.submission = {
-          data: this.$route.params.clonedSubmission
-        };
-        if (onlineJsonForm.display === 'wizard') {
-          this.formIO.data = this.$route.params.clonedSubmission;
+    async redirectIntended({ submission, created, formio }) {
+      if (submission._id) {
+        if (submission.redirect === true) {
+          switch (this.$FAST_CONFIG.SAVE_REDIRECT) {
+            case 'dashboard':
+              router.push({
+                name: 'dashboard'
+              });
+              break;
+            case 'collected':
+              router.push({
+                name: 'formio_form_show',
+                params: {
+                  idForm: formio.formId
+                }
+              });
+              break;
+            default:
+              router.push({
+                name: 'dashboard'
+              });
+              break;
+          }
         }
-        this.jsonSubmission = this.$route.params.clonedSubmission;
       } else if (
-        (this.editMode === 'online' || this.editMode === 'online-review') &&
-        this.submission &&
-        !this.jsonSubmission
+        created.data &&
+        created.data.trigger &&
+        created.data.trigger === 'importSubmission'
       ) {
-        // TODO clean...whats the difference between submission and jsonSubmission?
-        this.formIO.submission = {
-          data: _get(this.submission, 'data.data', {})
-        };
-
-        // If we are creating a wizard
-        if (onlineJsonForm.display === 'wizard') {
-          this.formIO.data = _get(this.submission, 'data.data', {});
-        }
-        this.jsonSubmission = this.submission;
-      } else {
-        this.formIO.submission = {
-          data: _get(this.jsonSubmission, 'data.data', {})
-        };
-
-        // If we are creating a wizard
-        if (onlineJsonForm.display === 'wizard') {
-          this.formIO.data = _get(this.jsonSubmission, 'data.data', {});
-        }
-      }
-    },
-    /**
-     * [createFormioInstance description]
-     * @param  {[type]} onlineJsonForm [description]
-     * @param  {[type]} translations   [description]
-     * @return {[type]}                [description]
-     */
-    createFormioInstance(onlineJsonForm, options) {
-      options.readOnly = !!(
-        this.editMode === 'online-review' || this.editMode === 'read-only'
-      );
-      /* eslint-disable */
-      options.buttonSettings = {
-        showCanel:
-          onlineJsonForm.properties &&
-          onlineJsonForm.properties.FAST_WIZARD_SHOW_CANCEL &&
-          onlineJsonForm.properties.FAST_WIZARD_SHOW_CANCEL === 'false'
-            ? false
-            : true,
-        showNext:
-          onlineJsonForm.properties &&
-          onlineJsonForm.properties.FAST_WIZARD_SHOW_NEXT &&
-          onlineJsonForm.properties.FAST_WIZARD_SHOW_NEXT === 'false'
-            ? false
-            : true,
-        showPrevious:
-          onlineJsonForm.properties &&
-          onlineJsonForm.properties.FAST_WIZARD_SHOW_PREVIOUS &&
-          onlineJsonForm.properties.FAST_WIZARD_SHOW_PREVIOUS === 'false'
-            ? false
-            : true,
-        /* eslint-enable */
-        clickable: true
-      };
-
-      if (!_isEmpty(this.formIO)) {
         return;
-      }
-      // Create the formIOForm Instance (Renderer)
-      if (onlineJsonForm.display === 'wizard') {
-        this.formIO = new FormioWizard(this.$refs.formIO, options);
       } else {
-        this.formIO = new FormioForm(this.$refs.formIO, options);
+        router.push({
+          name: 'formio_submission_update',
+          params: {
+            idForm: formio.formId,
+            idSubmission: created._id
+          }
+        });
       }
-      this.formIO.url = this.formURL;
     },
-    /**
-     * [mountFormIOForm description]
-     * @return {[type]} [description]
-     */
-    async mountFormIOForm(savedSubmission) {
-      // Optional parameter (If we want to stay on
-      // the same page after submission)
-      savedSubmission = savedSubmission || null;
-
-      // Create FormIOJS plugin instace (Manipulation)
-      let formio = new Formio(this.formURL);
-
-      formio.loadForm().then(async (onlineJsonForm) => {
-        let translations = await OfflinePlugin.getLocalTranslations();
-
-        this.createFormioInstance(onlineJsonForm, translations);
-
-        // Autocreate record, go directly to edit (an have autosave functionality)
-        if (this.autoCreate) {
-          this.createLocalDraft();
-          return;
-        }
-
-        if (this.submission && this.editMode && !this.jsonSubmission) {
-          this.setSubmission(onlineJsonForm);
-        }
-
-        if (this.jsonSubmission) {
-          // Set Submission if we are Updating
-          this.setSubmission(onlineJsonForm);
-        }
-
-        if (this.$route.params.clonedSubmission) {
-          // Set Submission if we are using the clone functionallity
-          this.setSubmission(onlineJsonForm);
-        }
-        // Clone the original object to avoid changes
-        let cloneJsonForm = _cloneDeep(onlineJsonForm);
-        this.currentForm = _cloneDeep(onlineJsonForm);
-
-        // Load data stored locally
-        cloneJsonForm.components = this.loadExternalResources(
-          onlineJsonForm.components
-        );
-
-        // Generate some custom translations
-        cloneJsonForm.components = this.setTranslations(
-          _cloneDeep(onlineJsonForm.components)
-        );
-
-        // Fixing problem with data not updating on loading
-        // TODO this should be removed and ask for a fix in the library
-        let components = FormioUtils.findComponents(cloneJsonForm.components, {
-          input: true,
-          type: 'number'
-        });
-        _map(components, function(c) {
-          c.defaultValue = 'default';
-        });
-
-        // Define the form to display
-        this.formIO.setForm(cloneJsonForm);
-
-        // When the submission has been added the form is mounted
-        this.$eventHub.$emit('formio.mounted', this.formIO);
-
-        this.formIO.language = localStorage.getItem('defaultLenguage')
-          ? localStorage.getItem('defaultLenguage')
-          : 'en';
-
-        // Define all the Listeners for the different FORM.io Events
-        let events = this.formIO.eventListeners;
-
-        // Add error event listener only if we do not have it
-        if (events.filter((e) => e.type === 'formio.render').length < 1) {
-          this.formIO.on('render', (render) => {
-            Event.emit({
-              name: 'FAST:FORMIO:RENDERED',
-              data: {
-                render: render,
-                formio: this.formIO
-              },
-              text: 'Form fully rendered'
-            });
-          });
-        }
-
-        // Add error event listener only if we do not have it
-        if (events.filter((e) => e.type === 'formio.error').length < 1) {
-          this.formIO.on('error', (error) => {
-            this.$eventHub.$emit('formio.error', {
-              error: error,
-              formio: this.formIO
-            });
-          });
-        }
-        let timeoutId;
-
-        if (events.filter((e) => e.type === 'formio.change').length < 1) {
-          this.formIO.on('change', (change) => {
-            this.removeDuplicatedPagination();
-            Event.emit({
-              name: 'FAST:FORMIO:CHANGE',
-              data: { change: change, formio: this.formIO },
-              text: 'Submission changed'
-            });
-            if (
-              this.localDraft &&
-              this.editMode !== 'online' &&
-              this.editMode !== 'online-review' &&
-              this.editMode !== 'read-only'
-            ) {
-              if (this.$FAST_CONFIG.OFFLINE_FIRST) {
-                this.saved = false;
-                Event.emit({
-                  name: 'FAST:SUBMISSION:CHANGED',
-                  data: false,
-                  text: 'Draft not Saved'
-                });
-                // AutoSave functionality
-                // If a timer was already started, clear it.
-                if (timeoutId) clearTimeout(timeoutId);
-
-                // Set timer that will save comment when it fires.
-                timeoutId = setTimeout(() => {
-                  this.autoSaveAsDraft();
-                  this.saved = true;
-                }, 700);
-              }
-            }
-          });
-        }
-
-        // Add error event listener only if we do not have it
-        if (events.filter((e) => e.type === 'formio.nextPage').length < 1) {
-          this.formIO.on('nextPage', (nextPage) => {
-            this.$eventHub.$emit('formio.nextPage', {
-              nextPage: nextPage,
-              formio: this.formIO
-            });
-          });
-        }
-
-        // Add error event listener only if we do not have it
-        if (events.filter((e) => e.type === 'formio.prevPage').length < 1) {
-          this.formIO.on('prevPage', (prevPage) => {
-            this.$eventHub.$emit('formio.prevPage', {
-              prevPage: prevPage,
-              formio: this.formIO
-            });
-          });
-        }
-
-        // Ad submit event listener only if its not present before
-        if (events.filter((e) => e.type === 'formio.submit').length < 1) {
-          /**
-           * This function manages how the form is
-           * submitted for Offline behaivor
-           * @param  {[type]} 'submit'    [description]
-           * @param  {[type]} (submission [description]
-           * @return {[type]}             [description]
-           */
-          this.formIO.on('submit', (submission) => {
-            let formSubmission = {
-              data: this.formIO.data,
-              draft: false,
-              redirect: true,
-              trigger: 'formioSubmit',
-              syncError: false
-            };
-
-            this.save(formSubmission);
-          });
-        }
-      });
+    setSubmission() {
+      let submission =
+        _get(this.$route.params, 'clonedSubmission.data', undefined) ||
+        _get(this.submission, 'data.data', {});
+      this.formioRenderInstance.submission = { data: submission };
     },
     remoteSubmit(event) {
       let data = event.detail.data;
       if (data.isScript) {
-        this.formIO.data[data.field] = data.script;
+        this.formioRenderInstance.data[data.field] = data.script;
       }
 
       let formSubmission = {
-        data: this.formIO.data,
+        data: this.formioRenderInstance.data,
         draft: false,
         redirect: true,
         trigger: 'formioSubmit',
@@ -622,6 +527,14 @@ export default {
       };
 
       this.save(formSubmission);
+    },
+    sleep(milliseconds) {
+      var start = new Date().getTime();
+      for (var i = 0; i < 1e7; i++) {
+        if (new Date().getTime() - start > milliseconds) {
+          break;
+        }
+      }
     }
   }
 };
