@@ -31,7 +31,7 @@ export default {
         return result;
       },
       transform(result) {
-        return result;
+        return JSON.stringify(result)
       }
     }
   },
