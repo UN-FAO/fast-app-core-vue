@@ -7,7 +7,7 @@
 >
 </q-data-table>
 <div class="pull-right" style="color:grey">
-  *Resilience score = Technical score + Adequacy score
+ {{ this.$t('*Resilience score = Technical score + Adequacy score')}}
 </div>
 </div>
 </template>
@@ -20,7 +20,7 @@ export default {
     return {
       sub: {},
       config: {
-        title: 'Resilience scores',
+        title: this.$t('Resilience scores'),
         refresh: false,
         noHeader: false,
         columnPicker: false,
@@ -54,7 +54,7 @@ export default {
       },
       columns: [
         {
-          label: 'Module',
+          label: this.$t('Module'),
           field: 'module',
           sort: false,
           type: 'string',
@@ -62,7 +62,7 @@ export default {
           style: { 'text-align': 'center' }
         },
         {
-          label: 'Technical score',
+          label: this.$t('Technical score'),
           field: 'academic',
           sort: false,
           type: 'string',
@@ -70,7 +70,7 @@ export default {
           style: { 'text-align': 'center' }
         },
         {
-          label: 'Adequacy score',
+          label: this.$t('Adequacy score'),
           field: 'adequacy',
           sort: false,
           type: 'string',
@@ -78,7 +78,7 @@ export default {
           style: { 'text-align': 'center' }
         },
         {
-          label: 'Resilience score*',
+          label: this.$t('Resilience score*'),
           field: 'score',
           sort: true,
           type: 'number',
@@ -112,7 +112,7 @@ export default {
             : undefined;
         let jsonData = {};
         if (moduleNumber) {
-          jsonData['module'] = moduleNumber + '-' + score.abbreviation;
+          jsonData['module'] = moduleNumber + '-' + this.$t(score.abbreviation);
           jsonData['academic'] = parseFloat(submission[score.academic]) || 0;
           jsonData['adequacy'] = parseFloat(submission[score.adequacy] || 0);
           let calculatedScore =

@@ -115,7 +115,7 @@
                 >
                  <executor
                   :submission="changeEvent"
-                  openCpuUrl="https://public.opencpu.org"
+                  :openCpuUrl="$FAST_CONFIG.OPEN_CPU_URL || 'https://public.opencpu.org'"
                   :formioUrl="$FAST_CONFIG.APP_URL"
                   :token="formioToken"
                   />

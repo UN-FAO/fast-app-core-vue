@@ -4,15 +4,15 @@
   </div>
 </template>
 <script>
-import scoresByModule from "../scoresByModule";
-import radar from "./radar";
-import _map from "lodash/map";
+import scoresByModule from '../scoresByModule';
+import radar from './radar';
+import _map from 'lodash/map';
 export default {
-  name: "radarGroups",
+  name: 'radarGroups',
   components: {
     radar
   },
-  props: ["submission"],
+  props: ['submission'],
   watch: {
     submission: function(val) {}
   },
@@ -22,13 +22,18 @@ export default {
         return [{}];
       }
       let scores = scoresByModule.get();
-      let uniquePillars = _map(scores, "pillar");
+      let uniquePillars = _map(scores, 'pillar');
       uniquePillars = Array.from(new Set(uniquePillars));
       if (!uniquePillars) {
         return [{}];
       }
+
+      uniquePillars = uniquePillars.map((name) => {
+        name = this.$t(name);
+        return name;
+      });
       let results = [];
-      uniquePillars.forEach(pillar => {
+      uniquePillars.forEach((pillar) => {
         let value = 0;
         let count = 0;
         value = scores.reduce((total, currentScore) => {
@@ -66,41 +71,41 @@ export default {
         labels: uniquePillars,
         datasets: [
           {
-            label: "Respondent's Score",
+            label: this.$t("Respondent's Score"),
             data: results,
-            backgroundColor: "rgba(54, 162, 235, 0)",
-            borderColor: "rgba(0, 0, 0, 0.6)",
+            backgroundColor: 'rgba(54, 162, 235, 0)',
+            borderColor: 'rgba(0, 0, 0, 0.6)',
             borderWidth: 2,
             pointRadius: 4,
-            pointBackgroundColor: "rgba(0, 0, 0, 0.6)",
-            pointBorderColor: "rgba(0, 0, 0, 0.6)"
+            pointBackgroundColor: 'rgba(0, 0, 0, 0.6)',
+            pointBorderColor: 'rgba(0, 0, 0, 0.6)'
           },
           {
-            label: "Low Resilience",
+            label: this.$t('Low Resilience'),
             data: [7, 7, 7, 7, 7],
-            backgroundColor: "rgba(242, 31, 31, 0.4)",
-            borderColor: "rgba(242, 31, 31, 0)",
+            backgroundColor: 'rgba(242, 31, 31, 0.4)',
+            borderColor: 'rgba(242, 31, 31, 0)',
             borderWidth: 0,
             pointRadius: 0,
-            pointBackgroundColor: "rgb(255, 99, 132)"
-          },
-            {
-            label: "Mid Resilience",
-            data: [12, 12, 12, 12, 12],
-            backgroundColor: "rgba(255, 255, 51, 0.65)",
-            borderColor: "rgba(255, 255, 51, 0)",
-            borderWidth: 0,
-            pointRadius: 0,
-            pointBackgroundColor: "rgb(255, 99, 132)"
+            pointBackgroundColor: 'rgb(255, 99, 132)'
           },
           {
-            label: "High Resilience",
-            data: [20, 20, 20, 20, 20],
-            backgroundColor: "rgba(128, 255, 128, 0.2)",
-            borderColor: "rgba(128, 255, 128, 0.2)",
+            label: this.$t('Mid Resilience'),
+            data: [12, 12, 12, 12, 12],
+            backgroundColor: 'rgba(255, 255, 51, 0.65)',
+            borderColor: 'rgba(255, 255, 51, 0)',
             borderWidth: 0,
             pointRadius: 0,
-            pointBackgroundColor: "rgb(255, 99, 132)"
+            pointBackgroundColor: 'rgb(255, 99, 132)'
+          },
+          {
+            label: this.$t('High Resilience'),
+            data: [20, 20, 20, 20, 20],
+            backgroundColor: 'rgba(128, 255, 128, 0.2)',
+            borderColor: 'rgba(128, 255, 128, 0.2)',
+            borderWidth: 0,
+            pointRadius: 0,
+            pointBackgroundColor: 'rgb(255, 99, 132)'
           }
         ]
       };
@@ -109,10 +114,10 @@ export default {
       return {
         title: {
           display: false,
-          text: ""
+          text: ''
         },
         legend: {
-          position: "bottom"
+          position: 'bottom'
         },
         scale: {
           pointLabels: {

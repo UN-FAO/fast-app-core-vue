@@ -3,11 +3,11 @@
   <div class="row customReport">
     <q-card color="white"  class="col-lg-offset-1 col-md-offset-1 col-sm-offset-1 col-lg-10 col-md-10 col-sm-12 col-xs-12">
       <q-card-title>
-        Relative resilience by domain
+        {{ $t('Relative resilience by domain') }}
       </q-card-title>
         <q-card-main>
           <div style="color:black; text-align: right;" class="pull-right">
-            Relative resilience = (Technical + Adequacy)
+            {{ $t('Relative resilience = (Technical + Adequacy)') }}
             </div>
                 <div>
                     <radarGroups :submission="submission"> </radarGroups>
@@ -16,7 +16,8 @@
     </q-card>
     <q-card color="white" class="col-lg-offset-1 col-md-offset-1 col-sm-offset-1 col-lg-10 col-md-10 col-sm-12 col-xs-12">
         <q-card-title>
-        Relative resilience by Module
+          {{ $t('Relative resilience by Module') }}
+
       </q-card-title>
         <q-card-main>
                <radarModules :submission="submission"> </radarModules>
@@ -26,7 +27,8 @@
     <div class="row">
     <q-card color="white" class="col-lg-offset-1 col-md-offset-1 col-sm-offset-1 col-lg-10 col-md-10 col-sm-12 col-xs-12">
         <q-card-title>
-            Detailed Resilience report
+          {{ $t('Detailed Resilience report') }}
+
         </q-card-title>
         <q-card-separator />
         <q-card-main>

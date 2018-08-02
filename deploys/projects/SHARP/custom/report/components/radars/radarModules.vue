@@ -54,7 +54,7 @@ export default {
       scores.forEach((score, index) => {
         if (score.pillar === pillar) {
           modules.push(
-            2 + index + " - " + score.abbreviation
+            2 + index + " - " + this.$t(score.abbreviation)
           );
           let calculatedScore =
             (parseFloat(this.submission[score.academic]) || 0) +
@@ -75,7 +75,7 @@ export default {
         labels: modules,
         datasets: [
           {
-            label: "Respondent's Score",
+            label: this.$t("Respondent's Score"),
             data: results,
             backgroundColor: "rgba(54, 162, 235, 0)",
             borderColor: "rgba(0, 0, 0, 0.6)",
@@ -85,7 +85,7 @@ export default {
             pointBorderColor: "rgba(0, 0, 0, 0.6)"
           },
               {
-            label: "Low Resilience",
+            label: this.$t("Low Resilience"),
             data: min,
             backgroundColor: "rgba(242, 31, 31, 0.4)",
             borderColor: "rgba(242, 31, 31, 0)",
@@ -94,7 +94,7 @@ export default {
             pointBackgroundColor: "rgb(255, 99, 132)"
           },
             {
-            label: "Mid Resilience",
+            label: this.$t("Mid Resilience"),
             data: middle,
             backgroundColor: "rgba(255, 255, 51, 0.65)",
             borderColor: "rgba(255, 255, 51, 0)",
@@ -103,7 +103,7 @@ export default {
             pointBackgroundColor: "rgb(255, 99, 132)"
           },
           {
-            label: "High Resilience",
+            label: this.$t("High Resilience"),
             data: max,
             backgroundColor: "rgba(128, 255, 128, 0.2)",
             borderColor: "rgba(128, 255, 128, 0.2)",

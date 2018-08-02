@@ -20,7 +20,7 @@ export default {
   data() {
     return {
       config: {
-        title: "Respondent's perceived priorities",
+        title: this.$t("Respondent's perceived priorities"),
         refresh: false,
         noHeader: false,
         columnPicker: false,
@@ -54,7 +54,7 @@ export default {
       },
       columns: [
         {
-          label: 'Priority level',
+          label: this.$t('Priority level'),
           field: 'module',
           sort: false,
           type: 'string',
@@ -62,7 +62,7 @@ export default {
           style: { 'text-align': 'center' }
         },
         {
-          label: 'Module',
+          label: this.$t('Module'),
           field: 'score',
           sort: false,
           type: 'string',
@@ -98,7 +98,7 @@ export default {
 
       scores.forEach((score, index) => {
         score.importanceElements.forEach((element) => {
-          let module = index + 2 + ' - ' + score.abbreviation;
+          let module = index + 2 + ' - ' + this.$t(score.abbreviation);
           switch (submission[element]) {
             case 'notAtAll':
               levels.notAtAll.push(module);
@@ -120,7 +120,7 @@ export default {
       });
 
       table.push({
-        module: 'Very high priority',
+        module: this.$t('Very high priority'),
         score: this.formatImportanceModules(
           levels.very.filter(function(item, pos, a) {
             return a.indexOf(item) === pos;
@@ -129,7 +129,7 @@ export default {
       });
 
       table.push({
-        module: 'High priority',
+        module: this.$t('High priority'),
         score: this.formatImportanceModules(
           levels.aLot.filter(function(item, pos, a) {
             return a.indexOf(item) === pos;
@@ -138,7 +138,7 @@ export default {
       });
 
       table.push({
-        module: 'Medium priority',
+        module: this.$t('Medium priority'),
         score: this.formatImportanceModules(
           levels.average.filter(function(item, pos, a) {
             return a.indexOf(item) === pos;
@@ -147,7 +147,7 @@ export default {
       });
 
       table.push({
-        module: 'Low priority',
+        module: this.$t('Low priority'),
         score: this.formatImportanceModules(
           levels.aLittle.filter(function(item, pos, a) {
             return a.indexOf(item) === pos;
@@ -156,7 +156,7 @@ export default {
       });
 
       table.push({
-        module: 'Not a priority',
+        module: this.$t('Not a priority'),
         score: this.formatImportanceModules(
           levels.notAtAll.filter(function(item, pos, a) {
             return a.indexOf(item) === pos;

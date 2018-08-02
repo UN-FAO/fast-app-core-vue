@@ -7,7 +7,7 @@
   >
   </q-data-table>
   <div class="pull-right" style="color:grey">
-    *Based on adequacy scores
+    {{this.$t('*Based on adequacy scores')}}
   </div>
 </div>
 </template>
@@ -20,7 +20,7 @@ export default {
     return {
       sub: {},
       config: {
-        title: 'Non-applicable modules*',
+        title: this.$t('Non-applicable modules*'),
         refresh: false,
         noHeader: false,
         columnPicker: false,
@@ -54,7 +54,7 @@ export default {
       },
       columns: [
         {
-          label: 'Module',
+          label: this.$t('Module'),
           field: 'module',
           sort: false,
           type: 'string',
@@ -92,7 +92,8 @@ export default {
               elIndex > 0
                 ? (index + 2).toString() + '.' + (elIndex + 1).toString()
                 : (index + 2).toString();
-            jsonData['module'] = moduleNumber + ' - ' + score.abbreviation;
+            jsonData['module'] =
+              moduleNumber + ' - ' + this.$t(score.abbreviation);
             table.push(jsonData);
           }
         });

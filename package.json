@@ -1,6 +1,6 @@
 {
   "name": "fast-app-core-vue",
-  "version": "0.12.45",
+  "version": "0.12.47",
   "deployAppName": "SHARP+",
   "deployAppID": "59b112c7678919000775f921",
   "description": "A data collection application based on FORM.io",
@@ -27,6 +27,7 @@
     "set:pat": "sh deploys/setEnv.sh PAT PAT 5ab89c910180ad282a6d635d",
     "set:sws": "sh deploys/setEnv.sh SWS SWS 5aa95c9550daad5e7d88ef30",
     "set:ssfk": "sh deploys/setEnv.sh SSFK SSFK 5ad58b7ddc3e0104148241fe",
+    "set:fast": "sh deploys/setEnv.sh FAST FAST 5b50a6571c8da0f446286093",
     "set:dev": "sh deploys/setEnv.sh DEV DEV 59b136fb2f12080007487131"
   },
   "dependencies": {
@@ -38,11 +39,11 @@
     "choices.js": "^3.0.4",
     "dotenv-webpack": "^1.5.5",
     "fast-downloads": "0.0.10",
-    "fast-fastjs": "^0.1.16",
+    "fast-fastjs": "^0.1.17",
     "fast-submission2any": "0.0.5",
     "fastclick": "^1.0.6",
     "formio-export": "^0.3.0",
-    "formiojs": "^3.0.0-rc.22",
+    "formiojs": "^3.0.0",
     "handsontable": "^3.0.0",
     "moment": "^2.22.1",
     "quasar-extras": "0.0.8",

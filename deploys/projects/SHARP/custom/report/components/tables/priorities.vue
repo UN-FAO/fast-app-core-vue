@@ -7,7 +7,7 @@
 >
 </q-data-table>
 <div class="pull-right" style="color:grey">
-  *Compound score = (technical score + adequacy score + importance score)
+  {{this.$t('*Compound score = (technical score + adequacy score + importance score)')}}
 </div>
 </div>
 
@@ -21,7 +21,7 @@ export default {
     return {
       sub: {},
       config: {
-        title: 'SHARP+ ranking',
+        title: this.$t('SHARP+ ranking'),
         refresh: false,
         noHeader: false,
         columnPicker: false,
@@ -55,21 +55,21 @@ export default {
       },
       columns: [
         {
-          label: 'Rank',
+          label: this.$t('Rank'),
           field: 'rank',
           type: 'string',
           width: '12%',
           style: { 'text-align': 'center' }
         },
         {
-          label: 'Module',
+          label: this.$t('Module'),
           field: 'module',
           type: 'string',
           width: '60%',
           style: { 'text-align': 'center' }
         },
         {
-          label: 'Compound score*',
+          label: this.$t('Compound score*'),
           field: 'score',
           type: 'number',
           width: '30%',
@@ -106,7 +106,7 @@ export default {
             : undefined;
         let jsonData = {};
         if (moduleNumber) {
-          jsonData['module'] = score.abbreviation;
+          jsonData['module'] = this.$t(score.abbreviation);
           let calculatedScore =
             (parseFloat(submission[score.academic]) || 0) +
             (parseFloat(submission[score.adequacy]) || 0) +
