@@ -1,6 +1,6 @@
 <template>
-<q-btn ref="target" flat v-if="show">
-    <q-icon name="fa-user" color="white" style="font-size: 24px;" />
+<q-btn ref="target" flat round small>
+    <q-icon name="fa-user" style="font-size: 24px;" />
   <!-- Direct child of target -->
   <q-popover ref="popover">
     <q-list item-separator link class="userconfig">

@@ -12,5 +12,4 @@
 - Cordova, Web, PWA and Electron compatible
 
 [GitHub](https://github.com/UN-FAO/fast-docker-api)
-[Web Page](http://fastabout.surge.sh/)
 [Get Started](aboutfast.md)
