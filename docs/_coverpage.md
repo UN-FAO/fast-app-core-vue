@@ -2,14 +2,15 @@
 
 <!--  ![logo](_media/icon.svg) -->
 
-# FAST <small>7.6</small>
+# FAST <small>12.47</small>
 
-> Your Data... from Anywhere to Everywhere.
+> Data, from Anywhere to Everywhere.
 
-* You define your data and forms
-* Offline submissions
-* Cordova, Web, PWA and Electron compatible
+- You define your data and forms
+- Full Docker deployment
+- Offline submissions
+- Cordova, Web, PWA and Electron compatible
 
-[GitHub](https://github.com/QingWei-Li/docsify/)
+[GitHub](https://github.com/UN-FAO/fast-docker-api)
 [Web Page](http://fastabout.surge.sh/)
 [Get Started](aboutfast.md)

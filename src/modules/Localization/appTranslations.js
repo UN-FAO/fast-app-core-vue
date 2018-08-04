@@ -40,7 +40,7 @@ let t = [
   'New language created: ',
   'You need to select a language',
   'Select a language',
-  'Select the language',
+  'Select language',
   'NO TRANSLATIONS TO CREATE',
   'TRANSLATIONS FAILED',
   'TRANSLATIONS CREATED',

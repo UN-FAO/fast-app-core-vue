@@ -1,5 +1,5 @@
 <!-- docs/_sidebar.md -->
 
-* [Home](/)
-* [About FAST](aboutfast.md)
-* [Installation](installation.md)
+- [Home](/)
+- [What is FAST?](aboutfast.md)
+- [Installation](installation.md)

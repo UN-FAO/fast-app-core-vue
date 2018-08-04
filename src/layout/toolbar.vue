@@ -21,8 +21,7 @@
     <faologo/>
   </q-toolbar-title>
 
-    <localization style="z-index:999"/>
-
+    <userconfig style="z-index:999"/>
     <wifiDisplay/>
 
   </q-toolbar>
@@ -30,7 +29,7 @@
 </div>
 </template>
 <script>
-import Localization from 'modules/Localization/components/selector';
+import userconfig from 'modules/Auth/components/userconfig';
 import wifiDisplay from 'components/Connection/components/display';
 import faologo from 'components/faologo';
 import { QToolbar, QToolbarTitle, QAjaxBar, QBtn, QIcon } from 'quasar';
@@ -38,7 +37,7 @@ import { Auth } from 'fast-fastjs';
 export default {
   components: {
     faologo,
-    Localization,
+    userconfig,
     QToolbar,
     QToolbarTitle,
     QAjaxBar,
