@@ -4,22 +4,33 @@
   <!-- Direct child of target -->
   <q-popover ref="popover">
     <q-list item-separator link class="userconfig">
-      <q-item class="profileTitle">{{this.$t('Account')}}</q-item>
+      <q-item class="profileTitle" v-if="this.$isInsideApp(this.$route)">{{this.$t('Account')}}</q-item>
 
-      <q-item style="background:white;">
+      <q-item class="profileItem" @click="editProfile()" v-if="this.$isInsideApp(this.$route)">
         <q-item-side icon="fa-user" color="grey-6" />
         <q-item-main>
           <q-item-tile label>{{this.$t('Profile')}}</q-item-tile>
+          <q-item-tile sublabel>{{email()}}</q-item-tile>
+
         </q-item-main>
         <!-- <q-item-side right icon="info" /> -->
       </q-item>
 
-      <q-item style="background:white;" @click="changeLanguage()">
+      <q-item class="profileItem"  @click="changeLanguage()">
         <q-item-side icon="language" color="grey-6" />
         <q-item-main>
           <q-item-tile label>{{this.$t('Language')}}</q-item-tile>
           <q-item-tile sublabel>{{currentLanguage}}</q-item-tile>
         </q-item-main>
+        <!-- <q-item-side right icon="info" /> -->
+      </q-item>
+
+      <q-item-separator style="background:lightgray;" v-if="this.$isInsideApp(this.$route)" />
+
+      <q-item class="profileItem" @click="handleLogout"  v-if="this.$isInsideApp(this.$route)">
+        <q-item-side icon="ion-log-out" color="red"/>
+        <q-item-main :label="$t('Logout')" />
+      </q-item>
         <!-- <q-item-side right icon="info" /> -->
       </q-item>
 
@@ -30,13 +41,19 @@
 <style>
 .userconfig {
   padding: 0px;
-  background: #e4e7ea;
+  background: white;
 }
 .profileTitle {
   background: #e4e7ea;
   color: #73818f;
   padding: 0px 16px;
   min-height: 0px !important;
+}
+.profileItem:hover {
+  background: white;
+}
+.profileItem:hover {
+  background: rgba(189, 189, 189, 0.5);
 }
 </style>
 <script>
@@ -57,7 +74,7 @@ import {
   QCardMain,
   QItemSeparator
 } from 'quasar';
-import { Translation, Moment } from 'fast-fastjs';
+import { Translation, Moment, Auth, Form } from 'fast-fastjs';
 export default {
   name: 'userconfig',
   components: {
@@ -108,6 +125,28 @@ export default {
     }
   },
   methods: {
+    async getUserFormId() {
+      let formId = Auth.user().form;
+      let localForm = await Form.local().get(formId)
+      return localForm.path
+    },
+    async editProfile() {
+      let idForm = await this.getUserFormId();
+      this.$refs.popover.toggle();
+      this.$router.push({
+        name: 'profile',
+        params: {
+          idForm: idForm,
+          idSubmission: Auth.user()._id
+        },
+        query: {
+          parent: this.$route.query.parent
+        }
+      });
+    },
+    email() {
+      return Auth.email();
+    },
     async changeLanguage() {
       let options = await Translation.local().supportedLanguages();
 
@@ -140,6 +179,14 @@ export default {
 
         this.setLanguage(selectedLanguage);
       }
+    },
+    async handleLogout() {
+      this.$eventHub.$emit('openLeftDrawer');
+      await Auth.logOut();
+      this.$refs.popover.toggle();
+      this.$router.push({
+        path: '/login'
+      });
     },
     setLanguage(language) {
       this.$i18n.locale = language.code;

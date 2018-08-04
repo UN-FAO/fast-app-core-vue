@@ -29,6 +29,14 @@ let FormioRoutes = [
     }
   },
   {
+    path: '/profile/forms/:idForm*/submission/:idSubmission/update',
+    component: Submission,
+    name: 'profile',
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
     path: '/forms/:idForm*/submission/:idSubmission/update',
     component: Submission,
     name: 'formio_submission_update',

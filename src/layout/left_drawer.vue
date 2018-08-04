@@ -31,17 +31,6 @@
 
     <q-item-separator />
 
-    <q-item @click="handleLogout" style="cursor: pointer">
-      <q-item-side icon="ion-log-out" color="red"/>
-      <q-item-main :label="$t('Logout')" />
-    </q-item>
-
-
-    <div class="light text-italic" style="padding-left: 25px;">
-      {{email()}}
-    </div>
-    <p>
-
     <div class="fixed-bottom text-left light text-italic" style="padding-left: 65px;">
       v {{$appVersion}}
     </div>
@@ -148,9 +137,6 @@ export default {
       return roles.some((role) => {
         return Auth.hasRole(role);
       });
-    },
-    email() {
-      return Auth.email();
     }
   }
 };

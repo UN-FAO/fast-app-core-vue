@@ -23,8 +23,11 @@ export default {
     });
   },
   methods: {
-    handleLogout() {
-      Auth.logOut();
+    async handleLogout() {
+      await Auth.logOut();
+      this.$router.push({
+        path: '/login'
+      });
     },
     showPopUp() {
       let self = this;

@@ -68,11 +68,6 @@ For some projects, CSV or JSON export formats could be enough but for others, th
 Lastly is important to consider that the collected data is there to be used. Perhaps, in the beginning, will only be used by internal teams but on time others will want to access it. Having a clear and consistent method to give access to these resources is important. Not just because the data is exportable it means that it has the flexibility to be shared, as in some occasions we are not going to share the data to users but to other software (machine to machine) or between other data collection projects.
 
 
-
-## ARCHITECTURE (roadmap)
-
-![alt text](https://dl.dropboxusercontent.com/s/ur9dmyklt9hi0jc/FAST%20-%20ARCHITECTUREv2.png?dl=1 'THE FULL PICTURE')
-
 ## Environment Configuration
 
 The file `env-example` is provided as template for setting up the environment variables. Once ready, save it as `.env` to start the full stack
