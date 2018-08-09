@@ -62,6 +62,7 @@ import {
   QSearch,
   QItemTile
 } from 'quasar';
+import { Auth } from 'fast-fastjs';
 export default {
   name: 'actioncards',
   props: ['page'],
@@ -117,15 +118,27 @@ export default {
         action.parent && action.parent !== '' ? action.parent : 'null';
 
       if (action.internal) {
+        let formPath = 'user/profile';
+        let form = 'user';
+        if (Auth.hasRole('Administrator')) {
+          formPath = 'admin/profile';
+          form = 'admin';
+        }
         if (action.internalUrl === 'userProfile') {
           let path =
-            '/forms/user/profile/submission/own_unique_from/update?mode=online&form=user&parent=' +
+            '/forms/' +
+            formPath +
+            '/submission/own_unique_from/update?mode=online&form=' +
+            form +
+            '&parent=' +
             btoa(JSON.stringify(parent));
           this.$router.push(path);
           return;
         } else if (action.internalUrl === 'changePassword') {
           let path =
-            '/forms/resetpassword/submission/own_unique_from/update?mode=online&form=user&parent=' +
+            '/forms/resetpassword/submission/own_unique_from/update?mode=online&form=' +
+            form +
+            '&parent=' +
             btoa(JSON.stringify(parent));
           this.$router.push(path);
           return;
