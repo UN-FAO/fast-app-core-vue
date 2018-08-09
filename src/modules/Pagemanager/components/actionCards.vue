@@ -116,7 +116,32 @@ export default {
       let parent =
         action.parent && action.parent !== '' ? action.parent : 'null';
 
-      if (action.formPath) {
+      if (action.internal) {
+        if (action.internalUrl === 'userProfile') {
+          let path =
+            '/forms/user/profile/submission/own_unique_from/update?mode=online&form=user&parent=' +
+            btoa(JSON.stringify(parent));
+          this.$router.push(path);
+          return;
+        } else if (action.internalUrl === 'changePassword') {
+          let path =
+            '/forms/resetpassword/submission/own_unique_from/update?mode=online&form=user&parent=' +
+            btoa(JSON.stringify(parent));
+          this.$router.push(path);
+          return;
+        }
+
+        let to = {
+          name: action.internalUrl,
+          query: {
+            parent: action.parent
+              ? btoa(JSON.stringify(action.parent))
+              : btoa(JSON.stringify('null'))
+          }
+        };
+        this.$router.push(to);
+        return;
+      } else if (action.formPath) {
         let path =
           action.view === 'list'
             ? '/forms/' +
@@ -129,16 +154,6 @@ export default {
               btoa(JSON.stringify(parent));
         let to = {
           path
-        };
-        this.$router.push(to);
-      } else if (action.internal) {
-        let to = {
-          name: action.internalUrl,
-          query: {
-            parent: action.parent
-              ? btoa(JSON.stringify(action.parent))
-              : btoa(JSON.stringify('null'))
-          }
         };
         this.$router.push(to);
       } else if (action.page) {

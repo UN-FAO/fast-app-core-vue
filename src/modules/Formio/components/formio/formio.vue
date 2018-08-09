@@ -17,7 +17,7 @@ import FormioForm from 'formiojs/Form';
 import FormioUtils from 'formiojs/utils';
 import GPS from './src/gps';
 import Lenguage from './src/lenguage';
-import { Event, OfflinePlugin } from 'fast-fastjs';
+import { Event, OfflinePlugin, Hash } from 'fast-fastjs';
 import router from 'config/router';
 import ErrorFormatter from 'components/dataTable/submission/errorFormatter';
 // import SMS from './src/sms'
@@ -84,6 +84,10 @@ export default {
     document.addEventListener('autoSaveDraft', this.autoSaveAsDraft);
 
     this.save = _debounce(this.save, 400);
+    document.addEventListener('FAST:USER:REGISTRATION:ERROR', (error) => {
+      console.log(error);
+      this.renderForm();
+    });
     this.renderForm();
   },
   beforeDestroy() {
@@ -394,7 +398,19 @@ export default {
           this.submission._id
         );
       }
-      let formio = new Formio(this.formURL);
+
+      let url = this.formUrl;
+      if (this.$route.params.idSubmission === 'own_unique_from') {
+        url = this.$FAST_CONFIG.APP_URL + '/' + this.$route.query.form;
+      }
+
+      if (this.$route.params.idForm === 'resetpassword') {
+        formSubmission.data.hashedPassword = await Hash.string(
+          formSubmission.data.password
+        );
+      }
+
+      let formio = new Formio(url);
 
       if (this.editMode === 'online' || !this.$FAST_CONFIG.OFFLINE_FIRST) {
         this.onlineSave(formSubmission, formio);
@@ -410,7 +426,7 @@ export default {
         return;
       }
       if (this.saved === false) {
-        this.sleep(2000)
+        this.sleep(2000);
       }
       formio.saveSubmission(formSubmission).then((created) => {
         this.redirectIntended({ submission: formSubmission, created, formio });
@@ -437,6 +453,13 @@ export default {
               } else if (this.editMode === 'online-review') {
                 this.$router.push({
                   name: 'reviewers'
+                });
+              } else if (
+                this.$route.params.idSubmission === 'own_unique_from'
+              ) {
+                // If we are editting the profile
+                this.$router.push({
+                  path: '/page/user-profile'
                 });
               } else if (
                 this.editMode === 'online' ||

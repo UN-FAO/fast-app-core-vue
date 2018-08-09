@@ -127,22 +127,12 @@ export default {
   methods: {
     async getUserFormId() {
       let formId = Auth.user().form;
-      let localForm = await Form.local().get(formId)
-      return localForm.path
+      let localForm = await Form.local().get(formId);
+      return localForm.path;
     },
     async editProfile() {
-      let idForm = await this.getUserFormId();
       this.$refs.popover.toggle();
-      this.$router.push({
-        name: 'profile',
-        params: {
-          idForm: idForm,
-          idSubmission: Auth.user()._id
-        },
-        query: {
-          parent: this.$route.query.parent
-        }
-      });
+      this.$router.push({ path: '/page/user-profile' });
     },
     email() {
       return Auth.email();

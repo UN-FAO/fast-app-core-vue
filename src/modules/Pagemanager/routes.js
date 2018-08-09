@@ -7,7 +7,7 @@ const PageManeger = (r) =>
 
 let PageManegerRoutes = [
   {
-    path: '/page/:pageId',
+    path: '/page/:pageId*',
     component: PageManeger,
     name: 'pageManager',
     meta: { requiresAuth: true }

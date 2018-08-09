@@ -394,9 +394,11 @@ export default {
             onOpen: async () => {
               this.$swal.showLoading();
               if (this.$route.query && this.$route.query.mode) {
-                let loadedSubmission = await this.loadSubmission(
-                  this.$route.params.idSubmission
-                );
+                let submissionId =
+                  this.$route.params.idSubmission === 'own_unique_from'
+                    ? Auth.user()._id
+                    : this.$route.params.idSubmission;
+                let loadedSubmission = await this.loadSubmission(submissionId);
                 this.$swal.close();
                 resolve({
                   data: loadedSubmission
@@ -945,10 +947,10 @@ export default {
       this.loading = true;
       let err;
       let submission;
-
+      let formId = (this.$route.params.idSubmission === 'own_unique_from' && this.$route.query.form) || this.$route.params.idForm;
       [err, submission] = await to(
         Submission.remote().find({
-          form: this.$route.params.idForm,
+          form: formId,
           filter: [
             {
               element: '_id',
