@@ -84,6 +84,9 @@ export default {
     document.addEventListener('autoSaveDraft', this.autoSaveAsDraft);
 
     this.save = _debounce(this.save, 400);
+    console.log('----------------------');
+    console.log('this.formURL inside===>', this.formURL);
+    console.log('----------------------');
     document.addEventListener('FAST:USER:REGISTRATION:ERROR', (error) => {
       console.log(error);
       this.renderForm();
@@ -399,7 +402,7 @@ export default {
         );
       }
 
-      let url = this.formUrl;
+      let url = this.$FAST_CONFIG.APP_URL + '/' + this.$route.params.idForm
       if (this.$route.params.idSubmission === 'own_unique_from') {
         url = this.$FAST_CONFIG.APP_URL + '/' + this.$route.query.form;
       }
@@ -428,6 +431,7 @@ export default {
       if (this.saved === false) {
         this.sleep(2000);
       }
+
       formio.saveSubmission(formSubmission).then((created) => {
         this.redirectIntended({ submission: formSubmission, created, formio });
       });

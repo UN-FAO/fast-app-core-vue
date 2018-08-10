@@ -97,7 +97,7 @@
               <q-tab-pane name="tab-1" ref="tab1">
 
                 <formio
-                :formURL="$FAST_CONFIG.APP_URL + '/' + $route.params.idForm"
+                :formURL="$FAST_CONFIG.APP_URL + '/' + this.$route.params.idForm"
                 :submission="submission"
                 :formioToken="formioToken"
                 :localDraft="$FAST_CONFIG.LOCAL_DRAFT_ENABLED"
