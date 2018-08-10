@@ -1,6 +1,6 @@
 {
   "name": "fast-app-core-vue",
-  "version": "0.12.54",
+  "version": "0.12.55",
   "deployAppName": "SHARP+",
   "deployAppID": "59b112c7678919000775f921",
   "description": "A data collection application based on FORM.io",

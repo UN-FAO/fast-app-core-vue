@@ -428,9 +428,6 @@ export default {
         this.$swal('Error', 'Cannot submit on read only mode', 'error');
         return;
       }
-      if (this.saved === false) {
-        this.sleep(2000);
-      }
 
       formio.saveSubmission(formSubmission).then((created) => {
         this.redirectIntended({ submission: formSubmission, created, formio });
