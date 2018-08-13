@@ -135,7 +135,8 @@ export default {
       return (
         this.$route.name === 'login' ||
         this.$route.name === 'register' ||
-        this.$route.path === '/'
+        this.$route.path === '/' ||
+        this.$route.name === 'sendreset'
       );
     }
   },

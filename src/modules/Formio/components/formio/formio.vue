@@ -84,9 +84,6 @@ export default {
     document.addEventListener('autoSaveDraft', this.autoSaveAsDraft);
 
     this.save = _debounce(this.save, 400);
-    console.log('----------------------');
-    console.log('this.formURL inside===>', this.formURL);
-    console.log('----------------------');
     document.addEventListener('FAST:USER:REGISTRATION:ERROR', (error) => {
       console.log(error);
       this.renderForm();
@@ -402,20 +399,37 @@ export default {
         );
       }
 
-      let url = this.$FAST_CONFIG.APP_URL + '/' + this.$route.params.idForm
+      let url = this.$FAST_CONFIG.APP_URL + '/' + this.$route.params.idForm;
       if (this.$route.params.idSubmission === 'own_unique_from') {
         url = this.$FAST_CONFIG.APP_URL + '/' + this.$route.query.form;
       }
 
-      if (this.$route.params.idForm === 'resetpassword') {
+      // Send reset Email
+      if (
+        this.$route.name === 'sendreset' &&
+        this.$route.query.token &&
+        this.$route.query.token !== ''
+      ) {
+        let user = await Formio.currentUser();
+        formSubmission.data = Object.assign({}, user.data, formSubmission.data);
         formSubmission.data.hashedPassword = await Hash.string(
           formSubmission.data.password
         );
+        formSubmission._id = user._id;
+        url = this.$FAST_CONFIG.APP_URL + '/user';
+      }
+
+      if (this.$route.name === 'sendreset' && !this.$route.query.token) {
+        url = this.$FAST_CONFIG.APP_URL + '/sendreset';
       }
 
       let formio = new Formio(url);
 
-      if (this.editMode === 'online' || !this.$FAST_CONFIG.OFFLINE_FIRST) {
+      if (
+        this.editMode === 'online' ||
+        !this.$FAST_CONFIG.OFFLINE_FIRST ||
+        (this.$route.name === 'sendreset' && this.$route.query.token)
+      ) {
         this.onlineSave(formSubmission, formio);
         return;
       }
@@ -450,6 +464,13 @@ export default {
               if (this.parentPage) {
                 this.$router.push({
                   name: this.parentPage
+                });
+              } else if (
+                this.$route.name === 'sendreset' &&
+                this.$route.query.token
+              ) {
+                this.$router.push({
+                  name: 'login'
                 });
               } else if (this.editMode === 'online-review') {
                 this.$router.push({

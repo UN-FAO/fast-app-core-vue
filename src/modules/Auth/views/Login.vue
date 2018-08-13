@@ -31,7 +31,9 @@
                         <br>
                         <p class="text-center" v-if="$FAST_CONFIG.ENABLE_REGISTER">
                             <router-link :to="{ path: 'register' }">
-                                <h5>{{$t('New user')}}?</h5></router-link>
+                                <h5>{{$t('New user')}}?</h5></router-link>,
+                                <router-link :to="{ path: 'sendreset' }">
+                                <h5>{{$t('Forgot your password?')}}</h5></router-link>
                         </p>
                         <p class="text-center" style="color: grey !important">
                             {{$t('Version')}} {{$appVersion}}

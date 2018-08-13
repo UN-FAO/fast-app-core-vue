@@ -59,7 +59,8 @@ Vue.prototype.$isInsideApp = (route) => {
     route.name !== 'login' &&
     route.name !== 'register' &&
     route.name !== 'login_redirect' &&
-    route.name !== 'adminLogin'
+    route.name !== 'adminLogin' &&
+    route.name !== 'sendreset'
   );
 };
 
