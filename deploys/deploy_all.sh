@@ -35,7 +35,7 @@ mkdir ./deploys/all && \
 ###################################################
 # Copy the Cordova project to the deploy folder
 #
-	cp ./cordova/platforms/android/build/outputs/apk/android-debug.apk ./deploys/all/${PRODUCTNAME}_v${VERSION}.apk && \
+	cp ./cordova/platforms/android/build/outputs/apk/android-realease.apk ./deploys/all/${PRODUCTNAME}_v${VERSION}.apk && \
 ###################################################
 # Copy the Electron Mac project to the deploy folder
 #

@@ -193,7 +193,6 @@ let t = [
   'submit',
 
   // FAW translations
-  /*
   'The date of survey cannot be set in the future.',
   'Please select a date prior to the date of submission.',
   'Scouting and traps',
@@ -214,6 +213,7 @@ let t = [
    */
 
   // Sharp
+  /*
   'Relative resilience by domain',
   'Relative resilience = (Technical + Adequacy)',
   'Relative resilience by Module',
@@ -312,5 +312,6 @@ let t = [
   'Resilience score*',
   'Adequacy score',
   'Technical score'
+  */
 ];
 export default t;

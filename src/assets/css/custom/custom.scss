@@ -1,13 +1,106 @@
-.q-data-table-head thead tr th {
-  text-align: center
+@media only screen and (max-width: 760px),
+  (min-device-width: 768px) and (orientation: portrait) {
+  .q-tabs-head {
+    min-height: none !important;
+  }
+  .formio-component-datagrid {
+    overflow-x: unset;
+    margin-left: -35px;
+    width: 99vw !important;
+    transform: scale(0.92);
+  }
+  .formio-component-datagrid div.row {
+    display: block;
+  }
+
+  div.formio-component-datagrid {
+    overflow-x: unset;
+  }
+
+  .formio-component-datagrid fieldset div.row {
+    display: block;
+    margin-left: 0px;
+  }
+  .formio-component-datagrid fieldset {
+    margin-left: 0px;
+  }
+
+  .table-responsive {
+    overflow-x: unset;
+    margin-left: -35px !important;
+    width: 100vw !important;
+    transform: scale(0.88);
+  }
+  .table-responsive .choices__item.choices__item--selectable {
+    display: table;
+    font-size: x-small;
+    margin-left: -12px;
+  }
+
+  .table-responsive
+    .choices__list.choices__list--dropdown.is-active
+    .choices__item.choices__item--selectable {
+    display: table;
+    color: #505050;
+    font-size: medium !important;
+    font-weight: 350 !important;
+    margin-left: 0px;
+  }
+
+  .table-responsive input.form-control {
+    min-width: 16vw !important;
+    max-width: 16vw !important;
+    font-size: smaller;
+  }
+  .table-responsive p {
+    font-size: 9px;
+  }
+
+  .table-responsive td,
+  th {
+    width: 16vw !important;
+  }
+
+  .table-responsive .input-group {
+    min-width: 16vw !important;
+    max-width: 16vw !important;
+    font-size: smaller;
+  }
+
+  .table-responsive label.control-label {
+    font-size: smaller !important;
+    margin-left: -17vw;
+    margin-top: 40px;
+  }
+
+  .table-responsive .form-control {
+    min-width: 16vw !important;
+    max-width: 16vw !important;
+    font-size: smaller;
+  }
+
+  .table-responsive .input-group-addon {
+    padding: 0px;
+    font-size: 9px;
+  }
+
+  .formio-component-fieldset {
+    margin-top: 0px;
+  }
 }
 
-.q-data-table-title.ellipsis.col {
-    font-size: 2vw;
-    font-weight: 400;
-    text-decoration: underline;
+.table-responsive tr:first-child td {
+  text-align: center;
+}
+.table-responsive tr:first-child td p {
+  font-weight: 900;
+  color: rgba(0, 0, 0, 0.65);
 }
 
-.q-data-table table tbody tr:nth-child(odd) td, .q-data-table table tbody tr:nth-child(odd) th {
-    background: #eeeeeeb5;
+.table-responsive tr:first-child {
+  background: rgb(214, 212, 212) !important;
+}
+
+.table-responsive tr:nth-child(7) {
+  background: rgb(214, 212, 212) !important;
 }

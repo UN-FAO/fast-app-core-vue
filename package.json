@@ -1,8 +1,8 @@
 {
   "name": "fast-app-core-vue",
   "version": "0.12.58",
-  "deployAppName": "SHARP+",
-  "deployAppID": "59b112c7678919000775f921",
+  "deployAppName": "FAW",
+  "deployAppID": "5a65a0b902b5450001fbc4cd",
   "description": "A data collection application based on FORM.io",
   "author": "Ignacio Cabrera <ignacio.cabrera@fao.org>",
   "scripts": {
