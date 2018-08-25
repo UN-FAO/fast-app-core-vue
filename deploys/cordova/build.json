@@ -1,0 +1,18 @@
+{
+  "android": {
+    "debug": {
+      "keystore": "../keystore_fao_famews",
+      "storePassword": "F1@tP@n15",
+      "alias": "fao_app_famews",
+      "password": "F1@tP@n15",
+      "keystoreType": ""
+    },
+    "release": {
+      "keystore": "./keystore_fao_famews",
+      "storePassword": "F1@tP@n15",
+      "alias": "fao_app_famews",
+      "password": "F1@tP@n15",
+      "keystoreType": ""
+    }
+  }
+}

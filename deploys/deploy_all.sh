@@ -25,6 +25,18 @@ DEPLOY_APP_NAME=$(cat package.json \
 ###################################################
 
 echo ${PRODUCTNAME}
+# Build the certificate from scratch
+#keytool -genkey -noprompt \
+# -alias fao_app_famews \
+# -keyalg RSA \
+# -dname "CN=famews.fao.org, OU=CIO, O=FAO, L=FAO, S=FAO, C=FAO" \
+# -keystore keystore_fao_famews \
+# -validity 10950
+# -storepass F1@tP@n15 \
+# -keypass F1@tP@n15
+
+#User certificate from Google
+#keytool -importcert -noprompt -keypass F1@tP@n15 -storepass F1@tP@n15 -file deployment_cert.der -keystore keystore_fao -alias "fao_app"
 quasar build
 npm run es5
 sh ./deploys/cordova/deploy_all.sh && \
@@ -35,7 +47,7 @@ mkdir ./deploys/all && \
 ###################################################
 # Copy the Cordova project to the deploy folder
 #
-	cp ./cordova/platforms/android/build/outputs/apk/android-realease.apk ./deploys/all/${PRODUCTNAME}_v${VERSION}.apk && \
+	cp ./cordova/platforms/android/build/outputs/apk/android-release.apk ./deploys/all/${PRODUCTNAME}_v${VERSION}.apk && \
 ###################################################
 # Copy the Electron Mac project to the deploy folder
 #

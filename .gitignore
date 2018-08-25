@@ -12,8 +12,8 @@ thumbs.db
 !.gitkeep
 /.idea/
 *.iml
-cordova/
-electron/
+cordova/*
+electron/*
 deploys/all/*
 cypress/screenshots/*
 deploys/all
