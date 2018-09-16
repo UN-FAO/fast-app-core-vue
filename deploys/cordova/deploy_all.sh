@@ -6,6 +6,7 @@ cp ./deploys/cordova/src/config.xml ./cordova/config.xml
 cd cordova && \
 	# cordova plugin add cordova-plugin-battery-status && \
   # cordova plugin add cordova-plugin-splashscreen && \
+  cordova plugin add cordova-plugin-android-permissions && \
   cordova plugin add cordova-plugin-whitelist && \
  	cordova plugin add cordova-plugin-geolocation --variable GEOLOCATION_USAGE_DESCRIPTION="Geolocate your submissions" && \
  	# cordova plugin add cordova-plugin-contacts --variable CONTACTS_USAGE_DESCRIPTION="Connect to your friends" && \

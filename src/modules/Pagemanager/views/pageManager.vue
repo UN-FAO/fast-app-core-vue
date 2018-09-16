@@ -81,6 +81,7 @@ export default {
       async get() {
         let result = await PagesRepo.getLocal();
         result = _cloneDeep(result);
+        console.log(result)
         let page = this.filterPage(result.pages, this.$route.params.pageId);
         page.shouldDisplay = await Auth.hasRoleIdIn(page.access);
         await Promise.map(page.cards, async (card) => {

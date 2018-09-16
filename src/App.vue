@@ -43,11 +43,13 @@ import { QLayout, Toast, Platform } from 'quasar';
 import layoutStore from 'layout/layout-store';
 import FastClick from 'fastclick';
 import { Event, Connection, FAST } from 'fast-fastjs';
+import phonePermissions from 'components/phonePermissions';
 
 export default {
   name: 'app',
   async mounted() {
     await FAST.loadRemainingConfig({ interval: true });
+    phonePermissions.get();
     Event.listen({
       name: 'FAST:APPLICATION:LOADED',
       callback: this.handleLoadedApp

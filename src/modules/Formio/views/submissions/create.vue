@@ -26,6 +26,7 @@
               <q-tooltip>{{$t('Show pages')}}</q-tooltip>
             </q-icon>
               <breadcrum
+                v-bind:class="$getDirection()"
                 :parent="$route.query.parent"
                 :currentPageTitle="formTitle"
                 :isSubmission="true"

@@ -6,6 +6,7 @@
             <q-card-title>
 
               <breadcrum
+                v-bind:class="$getDirection()"
                 :parent="$route.query.parent"
                 :currentPageTitle="formTitle"
               />

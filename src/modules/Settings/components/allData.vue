@@ -155,7 +155,7 @@ export default {
         this.loading = true;
         let queryParams = {
           form: this.currentForm.data && this.currentForm.data.path,
-          limit: 1000,
+          limit: 99999,
           select: Columns.getTableView(this.currentForm.data).map(
             (o) => 'data.' + o.path
           ),

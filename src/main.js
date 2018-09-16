@@ -64,6 +64,16 @@ Vue.prototype.$isInsideApp = (route) => {
   );
 };
 
+Vue.prototype.$getDirection = () => {
+  let direction = document.getElementsByClassName(
+        'layout background-app'
+      )[0].dir;
+      if (direction === 'ltr') {
+        return 'pull-left';
+      }
+      return 'pull-right';
+};
+
 if (__THEME === 'mat') {
   require('quasar-extras/roboto-font');
 }
