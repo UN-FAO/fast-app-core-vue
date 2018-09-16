@@ -135,7 +135,7 @@
           </q-card-main>
         </q-card>
 
-        <q-fixed-position corner="top-right" :offset="[18, 18]" v-if="this.$route.query.mode === 'online-review'">
+        <q-fixed-position :corner="getButtonPosition()" :offset="[18, 18]" v-if="this.$route.query.mode === 'online-review'">
 
           <q-fab color="red" icon="add" direction="down" v-if="this.$route.query.mode === 'online-review'">
 
@@ -540,6 +540,13 @@ export default {
     };
   },
   methods: {
+    getButtonPosition() {
+      let position = 'top-right';
+      if (this.$getDirection() === 'pull-right') {
+        position = 'top-left';
+      }
+      return position;
+    },
     showWizard(event) {
       this.isWizard = !!event.detail.data.formio.wizard;
     },
@@ -948,7 +955,10 @@ export default {
       this.loading = true;
       let err;
       let submission;
-      let formId = (this.$route.params.idSubmission === 'own_unique_from' && this.$route.query.form) || this.$route.params.idForm;
+      let formId =
+        (this.$route.params.idSubmission === 'own_unique_from' &&
+          this.$route.query.form) ||
+        this.$route.params.idForm;
       [err, submission] = await to(
         Submission.remote().find({
           form: formId,

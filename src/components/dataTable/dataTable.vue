@@ -97,7 +97,7 @@ import Columns from './tableFormatter/Columns';
 import { QTooltip, QBtn, QDataTable, QChip, QIcon } from 'quasar';
 import { Import, Submission, Auth } from 'fast-fastjs';
 import ErrorFormatter from 'components/dataTable/submission/errorFormatter';
-
+import { Base64 } from 'js-base64';
 export default {
   components: {
     QIcon,
@@ -258,7 +258,7 @@ export default {
         query: {
           mode: readOnly ? 'read-only' : 'online-review',
           parent: !readOnly
-            ? btoa(
+            ? Base64.encode(
                 JSON.stringify({
                   isInternal: true,
                   url: 'alldata',

@@ -30,6 +30,7 @@
     </div>
 </template>
 <script>
+import { Base64 } from 'js-base64';
 export default {
   name: 'breadcrum',
   props: {
@@ -51,8 +52,8 @@ export default {
   computed: {
     breadCrumTitle() {
       let title =
-        this.parent && JSON.parse(atob(this.parent)).title !== undefined
-          ? '/ ' + JSON.parse(window.atob(this.parent)).title
+        this.parent && JSON.parse(Base64.decode(this.parent)).title !== undefined
+          ? '/ ' + JSON.parse(Base64.decode(this.parent)).title
           : '';
       return title;
     }
@@ -66,7 +67,7 @@ export default {
       this.$router.push(to);
     },
     breadCrumClick() {
-      let parent = JSON.parse(window.atob(this.parent));
+      let parent = JSON.parse(window.decode(this.parent));
 
       if (parent.isInternal === true) {
         this.$router.push({

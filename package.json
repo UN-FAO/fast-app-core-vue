@@ -45,6 +45,7 @@
     "formio-export": "^0.3.0",
     "formiojs": "^3.5.2",
     "handsontable": "^3.0.0",
+    "js-base64": "^2.4.9",
     "moment": "^2.22.1",
     "numbro": "^2.1.0",
     "quasar-extras": "0.0.8",
