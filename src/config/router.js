@@ -2,6 +2,7 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import setRoutes from 'config/setRoutes';
 import { Auth } from 'fast-fastjs';
+import { Loading, QSpinnerGears } from 'quasar';
 /**
  * Import routes from modules
  */
@@ -63,6 +64,14 @@ const router = new VueRouter({
  */
 
 router.beforeEach((to, from, next) => {
+  Loading.show({
+    delay: 200,
+    spinner: QSpinnerGears,
+    message: 'Loading...',
+    messageColor: 'white',
+    spinnerSize: 100,
+    spinnerColor: 'white'
+  });
   // If the route requires Auth
   if (to.meta.requiresAuth && Auth.user() === false) {
     next(false);
@@ -73,6 +82,10 @@ router.beforeEach((to, from, next) => {
     window.scrollTo(0, 0);
     next();
   }
+});
+
+router.afterEach(() => {
+  Loading.hide();
 });
 
 export default router;
