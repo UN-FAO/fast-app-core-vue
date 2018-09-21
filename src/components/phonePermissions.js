@@ -12,7 +12,7 @@ let phonePermissions = (() => {
         permissions[permisson],
         function(status) {
           if (status.hasPermission) {
-            console.log(permisson + ' is ready');
+            // console.log(permisson + ' is ready');
           } else {
             console.warn(permisson + ' is not allowed, requesting access');
             permissions.requestPermission(
@@ -32,7 +32,6 @@ let phonePermissions = (() => {
   }
 
   function get() {
-    console.log('Getting phone permissions');
     check('CAMARA');
     check('ACCESS_COARSE_LOCATION');
   }

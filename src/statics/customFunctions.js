@@ -116,3 +116,33 @@ var FAST_SUBMISSION_SOFTDELETE = function() {
   });
   window.dispatchEvent(cloneEvent);
 };
+
+var FAST_WIZARD_NEXT = function() {
+  var cloneEvent = new CustomEvent('FAST:WIZARD:NEXT', {
+    detail: {
+      data: {},
+      text: 'WIZARD NEXT'
+    }
+  });
+  window.dispatchEvent(cloneEvent);
+};
+
+var FAST_WIZARD_PREVIOUS = function() {
+  var cloneEvent = new CustomEvent('FAST:WIZARD:PREVIOUS', {
+    detail: {
+      data: {},
+      text: 'WIZARD PREVIOUS'
+    }
+  });
+  window.dispatchEvent(cloneEvent);
+};
+
+var FAST_WIZARD_VALIDATE = function() {
+  var cloneEvent = new CustomEvent('FAST:WIZARD:VALIDATE', {
+    detail: {
+      data: {},
+      text: 'WIZARD VALIDATE'
+    }
+  });
+  window.dispatchEvent(cloneEvent);
+};

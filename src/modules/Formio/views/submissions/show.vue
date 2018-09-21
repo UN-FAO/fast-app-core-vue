@@ -173,10 +173,15 @@ export default {
       let submissions = await Submission.merged().showView({
         form: this.$route.params.idForm,
         limit: 1000,
-        filter: {
-          'data.formio.formId': this.$route.params.idForm,
-          'data.user_email': Auth.email()
-        },
+        filter: [
+          { element: 'owner', query: '=', value: Auth.user()._id },
+          {
+            element: 'owner',
+            query: '=',
+            value: Auth.email(),
+            type: 'local'
+          }
+        ],
         select: Columns.getTableView(this.currentForm.data).map(
           (o) => 'data.' + o.path
         ),

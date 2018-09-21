@@ -34,7 +34,7 @@ echo ${PRODUCTNAME}
 # -validity 10950
 # -storepass F1@tP@n15 \
 # -keypass F1@tP@n15
-
+sh./deploys/getOfflineConfig.sh
 #User certificate from Google
 #keytool -importcert -noprompt -keypass F1@tP@n15 -storepass F1@tP@n15 -file deployment_cert.der -keystore keystore_fao -alias "fao_app"
 quasar build

@@ -95,9 +95,10 @@ import exportMenu from './exportMenu';
 import Export from './dataExport/Export';
 import Columns from './tableFormatter/Columns';
 import { QTooltip, QBtn, QDataTable, QChip, QIcon } from 'quasar';
-import { Import, Submission, Auth } from 'fast-fastjs';
+import { Import, Submission, Auth, OfflinePlugin } from 'fast-fastjs';
 import ErrorFormatter from 'components/dataTable/submission/errorFormatter';
 import { Base64 } from 'js-base64';
+import Formio from 'formiojs/Formio';
 export default {
   components: {
     QIcon,
@@ -394,15 +395,36 @@ export default {
       let formId =
         _get(this.form, 'data.properties["fast-create-view"]') ||
         this.form.data.path;
+      let url = this.$FAST_CONFIG.APP_URL + '/' + formId;
 
-      this.$router.push({
-        name: 'formio_form_submission',
-        params: {
-          idForm: formId
-        },
-        query: {
-          parent: this.$route.query.parent
-        }
+      let formSubmission = {
+        data: {},
+        redirect: 'Update',
+        draft: true,
+        trigger: 'createLocalDraft'
+      };
+      let formio = new Formio(url);
+
+      Formio.deregisterPlugin('offline');
+      // Register the plugin for offline mode
+      Formio.registerPlugin(
+        OfflinePlugin.getPlugin({
+          formio: formio
+        }),
+        'offline'
+      );
+
+      formio.saveSubmission(formSubmission).then((created) => {
+        this.$router.push({
+          name: 'formio_submission_update',
+          params: {
+            idForm: formio.formId,
+            idSubmission: created._id
+          },
+          query: {
+            parent: this.$route.query.parent
+          }
+        });
       });
     },
     goToEditView() {

@@ -5,19 +5,18 @@
     </div>
 </template>
 <script>
-import _debounce from 'lodash/debounce';
-import _cloneDeep from 'lodash/cloneDeep';
+
 import _map from 'lodash/map';
 import _get from 'lodash/get';
 import Formio from 'formiojs/Formio';
 import AllComponents from 'formiojs/components';
 import Components from 'formiojs/components/Components';
 Components.setComponents(AllComponents);
-import FormioForm from 'formiojs/Form';
+
 import FormioUtils from 'formiojs/utils';
-import GPS from './src/gps';
+
 import Lenguage from './src/lenguage';
-import { Event, OfflinePlugin, Hash } from 'fast-fastjs';
+import { Event, Hash } from 'fast-fastjs';
 import router from 'config/router';
 import ErrorFormatter from 'components/dataTable/submission/errorFormatter';
 // import SMS from './src/sms'
@@ -68,27 +67,6 @@ export default {
       offlineModePlugin: null,
       saved: false
     };
-  },
-  mounted() {
-    Formio.forms = {};
-    Formio.setToken(this.formioToken);
-    Lenguage.listen(this);
-    GPS.listen(this);
-    // SMS.listen(this)
-    Event.listen({
-      name: 'FAST:SUBMISSION:SUBMIT',
-      callback: this.remoteSubmit
-    });
-
-    document.addEventListener('saveAsDraft', this.saveAsLocalDraft);
-    document.addEventListener('autoSaveDraft', this.autoSaveAsDraft);
-
-    this.save = _debounce(this.save, 400);
-    document.addEventListener('FAST:USER:REGISTRATION:ERROR', (error) => {
-      console.log(error);
-      this.renderForm();
-    });
-    this.renderForm();
   },
   beforeDestroy() {
     Lenguage.off(this);
@@ -149,69 +127,8 @@ export default {
         /* eslint-enable */
         clickable: true
       };
-
-      // Create the formIOForm Instance (Renderer)
-      this.formioRenderInstance = await new FormioForm(
-        this.$refs.formIO,
-        onlineJsonForm,
-        options
-      ).render();
-
-      this.formioRenderInstance.url = this.formURL;
-      this.formioRenderInstance.form = onlineJsonForm;
     },
     async mountFormIOForm() {
-      // Create FormIOJS plugin instace (Manipulation)
-      let formio = new Formio(this.formURL);
-
-      formio.loadForm().then(async (onlineJsonForm) => {
-        let translations = await OfflinePlugin.getLocalTranslations();
-
-        await this.createFormioInstance(onlineJsonForm, translations);
-
-        // Autocreate record, go directly to edit (an have autosave functionality)
-        if (this.autoCreate) {
-          this.createLocalDraft();
-          return;
-        }
-
-        this.setSubmission();
-        // Clone the original object to avoid changes
-        let cloneJsonForm = _cloneDeep(onlineJsonForm);
-
-        // Load data stored locally
-        cloneJsonForm.components = this.loadExternalResources(
-          onlineJsonForm.components
-        );
-
-        // Generate some custom translations
-        cloneJsonForm.components = this.setTranslations(
-          _cloneDeep(onlineJsonForm.components)
-        );
-
-        // Define the form to display
-        this.formioRenderInstance.setForm(cloneJsonForm);
-
-        // When the submission has been added the form is mounted
-        this.$eventHub.$emit('formio.mounted', this.formioRenderInstance);
-
-        this.formioRenderInstance.language = localStorage.getItem(
-          'defaultLenguage'
-        )
-          ? localStorage.getItem('defaultLenguage')
-          : 'en';
-
-        this.formioRenderInstance.on('render', (render) => {
-          Event.emit({
-            name: 'FAST:FORMIO:RENDERED',
-            data: {
-              render: render,
-              formio: this.formioRenderInstance
-            },
-            text: 'Form fully rendered'
-          });
-        });
-
         // Add error event listener only if we do not have it
         this.formioRenderInstance.on('error', (error) => {
           this.$eventHub.$emit('formio.error', {
@@ -220,39 +137,6 @@ export default {
           });
         });
 
-        let timeoutId;
-
-        this.formioRenderInstance.on('change', (change) => {
-          Event.emit({
-            name: 'FAST:FORMIO:CHANGE',
-            data: { change: change, formio: this.formioRenderInstance },
-            text: 'Submission changed'
-          });
-          if (
-            this.localDraft &&
-            this.editMode !== 'online' &&
-            this.editMode !== 'online-review' &&
-            this.editMode !== 'read-only'
-          ) {
-            if (this.$FAST_CONFIG.OFFLINE_FIRST) {
-              this.saved = false;
-              Event.emit({
-                name: 'FAST:SUBMISSION:CHANGED',
-                data: false,
-                text: 'Draft not Saved'
-              });
-              // AutoSave functionality
-              // If a timer was already started, clear it.
-              if (timeoutId) clearTimeout(timeoutId);
-
-              // Set timer that will save comment when it fires.
-              timeoutId = setTimeout(() => {
-                this.autoSaveAsDraft();
-                this.saved = true;
-              }, 700);
-            }
-          }
-        });
 
         // Add error event listener only if we do not have it
         this.formioRenderInstance.on('nextPage', (nextPage) => {
@@ -282,15 +166,6 @@ export default {
 
           this.save(formSubmission);
         });
-      });
-    },
-    /**
-     * [loadExternalResources description]
-     * @param  {[type]} Components [description]
-     * @return {[type]}            [description]
-     */
-    loadExternalResources(Components) {
-      // return OfflinePlugin.externalResources(Components)
     },
     /**
      * [setTranslations description]
@@ -308,78 +183,7 @@ export default {
       });
       return Components;
     },
-    /**
-     * [registerOfflinePlugin description]
-     * @return {[type]} [description]
-     */
-    registerOfflinePlugin() {
-      // De register if there was a previous registration
-      Formio.deregisterPlugin('offline');
-      // Register the plugin for offline mode
-      Formio.registerPlugin(
-        OfflinePlugin.getPlugin({
-          formio: new Formio(this.formURL),
-          hashField: this.hashField
-        }),
-        'offline'
-      );
-    },
-    /**
-     * [saveAsDraft description]
-     * @param  {[type]} e [description]
-     * @return {[type]}   [description]
-     */
-    saveAsLocalDraft(e) {
-      let formSubmission = {
-        data: this.formioRenderInstance.data,
-        redirect: true,
-        draft: true,
-        syncError: false,
-        trigger: 'saveAsLocalDraft'
-      };
-      this.save(formSubmission);
-      this.$swal(
-        'Draft Saved!',
-        'Your submission has been saved! You can continue editing later',
-        'success'
-      );
-    },
-    /**
-     * [autoSaveAsDraft description]
-     * @param  {[type]} e [description]
-     * @return {[type]}   [description]
-     */
-    autoSaveAsDraft() {
-      let formSubmission = {
-        data: this.formioRenderInstance.data,
-        redirect: false,
-        draft: true,
-        syncError: false,
-        trigger: 'autoSaveAsDraft'
-      };
-      this.save(formSubmission);
-    },
-    /**
-     * [createLocalDraft description]
-     * @return {[type]} [description]
-     */
-    createLocalDraft() {
-      // Create the new Submission from the Cloned one
-      if (this.$route.params.clonedSubmission) {
-        this.formioRenderInstance.data = Object.assign(
-          {},
-          this.$route.params.clonedSubmission
-        );
-      }
 
-      let formSubmission = {
-        data: this.formioRenderInstance.data,
-        redirect: 'Update',
-        draft: true,
-        trigger: 'createLocalDraft'
-      };
-      this.save(formSubmission);
-    },
     /**
      * [save description]
      * @param  {[type]} formSubmission [description]
@@ -572,14 +376,6 @@ export default {
       };
 
       this.save(formSubmission);
-    },
-    sleep(milliseconds) {
-      var start = new Date().getTime();
-      for (var i = 0; i < 1e7; i++) {
-        if (new Date().getTime() - start > milliseconds) {
-          break;
-        }
-      }
     }
   }
 };

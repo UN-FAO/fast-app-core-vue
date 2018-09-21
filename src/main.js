@@ -40,14 +40,20 @@ Vue.use(VueAsyncProperties);
 import { Moment, FAST, Event } from 'fast-fastjs';
 Moment.setLocales();
 
-import { CONFIG_URL, APP_CONFIG_ID } from 'config/env';
+import { CONFIG_URL, APP_CONFIG_ID, OFFLINE_START } from 'config/env';
 import TRANSLATIONS from 'modules/Localization/appTranslations';
 
 let appConf = {
   type: 'remote',
   appConfigId: APP_CONFIG_ID,
   appConfigUrl: CONFIG_URL,
-  i18n: TRANSLATIONS
+  i18n: TRANSLATIONS,
+  offlineStart: OFFLINE_START,
+  offlineFiles: {
+    Configuration: require('src/config/offline/Configuration.json'),
+    Roles: require('src/config/offline/Roles.json'),
+    lastUpdated: require('src/config/offline/lastUpdate.json')
+  }
 };
 
 Vue.config.productionTip = false;

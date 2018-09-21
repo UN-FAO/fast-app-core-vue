@@ -24,6 +24,15 @@
       <q-item-side icon="cloud_download" left/>
       <q-item-main :label="$t('Sync Application')" />
     </q-item>
+
+
+     <q-item v-if="shouldDisplay" style="cursor:pointer"  @click="sendData()" >
+        <q-tooltip anchor="center right" self="center left" :offset="[10, 0]">
+          <strong>{{ $t("Send Offline Data") }}</strong>
+        </q-tooltip>
+      <q-item-side color='green' icon="swap_vertical_circle" left/>
+      <q-item-main :label="$t('Send Offline Data')" />
+    </q-item>
      <q-item-separator  />
 
 
@@ -37,7 +46,7 @@
   </q-scroll-area>
 </template>
 <script>
-import { Auth, FAST, PagesRepo } from 'fast-fastjs';
+import { Auth, FAST, PagesRepo, Event, Sync, Submission } from 'fast-fastjs';
 import {
   QScrollArea,
   QSideLink,
@@ -93,7 +102,28 @@ export default {
       }
     }
   },
+  data() {
+    return {
+      shouldDisplay: false
+    };
+  },
+  mounted: async function() {
+    Event.listen({
+      name: 'FAST:SUBMISSION:UNSYNCED',
+      callback: this.toggleSync
+    });
+  },
+  beforeDestroy() {
+    Event.remove({
+      name: 'FAST:SUBMISSION:UNSYNCED',
+      callback: this.toggleSync
+    });
+  },
   methods: {
+    toggleSync(e) {
+      // e.detail.data
+      this.shouldDisplay = false;
+    },
     closeDrawer() {
       this.$refs.leftDrawer.close();
     },
@@ -123,6 +153,43 @@ export default {
           }).then(async () => {
             window.location.reload(true);
           });
+        }
+      });
+    },
+    async sendData() {
+      this.$eventHub.$emit('openLeftDrawer');
+      this.$swal({
+        title: this.$t('Sending Data...'),
+        text: this.$t(
+          'We are uploading your data. This can take a couple minutes...'
+        ),
+        showCancelButton: false,
+        onOpen: async () => {
+          this.$swal.showLoading();
+          let unsyncSubmissions = await Submission.local().getUnsync();
+          if (unsyncSubmissions.length > 0) {
+            await Sync.now();
+            this.$swal.close();
+            this.$swal({
+              title: this.$t('Uploaded'),
+              text: this.$t('Your data was uploaded'),
+              type: 'success',
+              showCancelButton: false,
+              confirmButtonColor: '#3085d6',
+              cancelButtonClass: 'modalCancel',
+              confirmButtonText: this.$t('Ok')
+            });
+          } else {
+            this.$swal({
+              title: this.$t('Nothing to upload'),
+              text: this.$t('Your data was already uploaded'),
+              type: 'success',
+              showCancelButton: false,
+              confirmButtonColor: '#3085d6',
+              cancelButtonClass: 'modalCancel',
+              confirmButtonText: this.$t('Ok')
+            });
+          }
         }
       });
     },

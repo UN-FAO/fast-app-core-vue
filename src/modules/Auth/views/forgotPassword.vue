@@ -17,14 +17,14 @@
                         </p>
                         <br>
 
-                        <div v-if="this.hasToken()">
-                          <!-- TODO we have to insert the current user information -->
-                          <!-- Then we modify the formsubmission inside de formio.vue component -->
-                          <formio :formURL="$FAST_CONFIG.APP_URL + '/resetpassword'"/>
-                        </div>
-                        <div v-else>
-                          <formio :formURL="$FAST_CONFIG.APP_URL + '/sendreset'" />
-                        </div>
+                         <formio
+                            :form="form"
+                            :options="options"
+                            :language="language"
+                            v-on:change="onSubmissionChange"
+                            v-on:submit="onFormSubmit"
+                            v-if="form && options"
+                          />
 
                         <br>
                         <p class="text-center">
@@ -39,12 +39,24 @@
 </template>
 
 <script>
-import formio from 'modules/Formio/components/formio/formio';
+import { Form as vForm } from 'vue-formio';
+import { OfflinePlugin, Form, Hash } from 'fast-fastjs';
+import Formio from 'formiojs/Formio';
+import ErrorFormatter from 'components/dataTable/submission/errorFormatter';
 export default {
   components: {
-    formio
+    formio: vForm
+  },
+  data: function() {
+    return {
+      language: localStorage.getItem('defaultLenguage')
+        ? localStorage.getItem('defaultLenguage')
+        : 'en',
+      activeSubmission: null
+    };
   },
   mounted() {
+    this.$eventHub.$on('FAST:LANGUAGE:CHANGED', this.changeLanguage);
     if (this.hasToken()) {
       localStorage.removeItem('formioAppUser');
       localStorage.removeItem('formioUser');
@@ -52,14 +64,116 @@ export default {
       // window.history.pushState({}, document.title, "/#/sendreset");
     }
   },
-  data() {
-    return {
-      form: null
-    };
+  beforeDestroy() {
+    this.$eventHub.$off('FAST:LANGUAGE:CHANGED', this.changeLanguage);
+  },
+  asyncData: {
+    form: {
+      get() {
+        if (this.hasToken()) {
+          return Form.local().findOne({
+            'data.path': 'resetpassword'
+          });
+        } else {
+          return Form.local().findOne({
+            'data.path': 'sendreset'
+          });
+        }
+      },
+      transform(result) {
+        return result.data;
+      }
+    },
+    options: {
+      async get() {
+        let i18n = await OfflinePlugin.getLocalTranslations();
+        return { i18n };
+      },
+      transform(result) {
+        return result;
+      }
+    }
   },
   methods: {
     hasToken() {
       return !!(this.$route.query.token && this.$route.query.token !== '');
+    },
+    onSubmissionChange(event) {
+      if (event.data) {
+        this.activeSubmission = event.data;
+      }
+    },
+    async onFormSubmit(event) {
+      let url;
+      let formSubmission = {
+        data: this.activeSubmission,
+        draft: false,
+        redirect: true,
+        trigger: 'formioSubmit',
+        syncError: false
+      };
+
+      // If we are configuring the Password Reset
+      // Send reset Email
+      if (
+        this.$route.name === 'sendreset' &&
+        this.$route.query.token &&
+        this.$route.query.token !== ''
+      ) {
+        let user = await Formio.currentUser();
+        formSubmission.data = Object.assign({}, user.data, formSubmission.data);
+        formSubmission.data.hashedPassword = await Hash.string(
+          formSubmission.data.password
+        );
+        formSubmission._id = user._id;
+        url = this.$FAST_CONFIG.APP_URL + '/user';
+      }
+
+      if (this.$route.name === 'sendreset' && !this.$route.query.token) {
+        url = this.$FAST_CONFIG.APP_URL + '/sendreset';
+      }
+
+      let formio = new Formio(url);
+
+      this.onlineSave(formSubmission, formio);
+    },
+    onlineSave(submission, formio) {
+      this.$swal({
+        title: 'Saving...',
+        text: this.$t(
+          'The information is being saved. This can take a couple seconds...'
+        ),
+        showCancelButton: false,
+        onOpen: async () => {
+          Formio.deregisterPlugin('offline');
+          this.$swal.showLoading();
+          formio
+            .saveSubmission(submission)
+            .then((updated) => {
+              this.$swal.close();
+              if (this.$route.name === 'sendreset') {
+                this.$router.push({
+                  name: 'login'
+                });
+              }
+            })
+            .catch((e) => {
+              console.log(e);
+              let errorString = ErrorFormatter.format({ errors: e, vm: this });
+              this.$swal({
+                title: e.name,
+                type: 'info',
+                html: errorString,
+                showCloseButton: true,
+                showCancelButton: false,
+                confirmButtonText: 'OK'
+              });
+            });
+        }
+      });
+    },
+    changeLanguage(language) {
+      this.language = language.code;
     }
   }
 };

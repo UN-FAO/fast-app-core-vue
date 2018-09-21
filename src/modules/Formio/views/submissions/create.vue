@@ -97,17 +97,17 @@
 
               <q-tab-pane name="tab-1" ref="tab1">
 
-                <formio
-                :formURL="$FAST_CONFIG.APP_URL + '/' + this.$route.params.idForm"
-                :submission="submission"
-                :formioToken="formioToken"
-                :localDraft="$FAST_CONFIG.LOCAL_DRAFT_ENABLED"
-                :readOnly="false"
-                :autoCreate="autoCreate"
-                :editMode="this.$route.query.mode"
-                :parentPage="this.$route.params.FAST_PARENT_PAGE"
-                v-bind:class="getFormioClass"
-                v-bind:style="{ display: !customRender ? 'initial' : 'none' }" />
+                <formiovue
+                  :form="form"
+                  :submission="submission"
+                  :options="options"
+                  :language="language"
+                  v-on:change="onSubmissionChange"
+                  v-on:submit="onFormSubmit"
+                  v-on:error="onFormError"
+                  v-if="form && submission && options"
+                />
+
 
                 <div v-bind:style="{ display: customRender ? 'initial' : 'none', color: 'black' }">
 
@@ -123,9 +123,9 @@
                 </div>
                   <datatable
                     :data="customRenderArray"
-                    :form="currentForm"
+                    :form="form"
                     fastMode="editGrid"
-                    v-if="currentForm && currentForm.data.title !== '' && customRenderType === 'datagrid'"
+                    v-if="form && form.title !== '' && customRenderType === 'datagrid'"
                   />
                 </div>
               </q-tab-pane>
@@ -215,17 +215,27 @@ import {
 import to from 'await-to-js';
 import _get from 'lodash/get';
 import FormioUtils from 'formiojs/utils';
-import { Form, Auth, Submission, Event, ParallelSurvey } from 'fast-fastjs';
-import formio from 'modules/Formio/components/formio/formio';
+import {
+  Form,
+  Auth,
+  Submission,
+  Event,
+  ParallelSurvey,
+  OfflinePlugin
+} from 'fast-fastjs';
+// import formio from 'modules/Formio/components/formio/formio';
 import breadcrum from 'components/breadcrum';
 import datatable from 'components/dataTable/dataTable';
 import { Promise } from 'bluebird';
 import executor from '../../components/Rexecutor/executor';
+import { Form as vForm } from 'vue-formio';
+import Formio from 'formiojs/Formio';
+import ErrorFormatter from 'components/dataTable/submission/errorFormatter';
 export default {
   components: {
+    formiovue: vForm,
     breadcrum,
     datatable,
-    formio,
     QCard,
     QCardTitle,
     QCardSeparator,
@@ -256,8 +266,10 @@ export default {
     executor
   },
   async mounted() {
+    this.$eventHub.$on('FAST:LANGUAGE:CHANGED', this.changeLanguage);
+
     this.$eventHub.on('formio.mounted', (formio) => {
-      this.pages = formio.pages ? formio.pages : [];
+      // this.pages = formio.pages ? formio.pages : [];
     });
 
     this.$eventHub.on('formio.nextPage', (data) => {
@@ -281,11 +293,6 @@ export default {
     Event.listen({
       name: 'FAST:FORMIO:RENDERED',
       callback: this.showWizard
-    });
-
-    Event.listen({
-      name: 'FAST:FORMIO:CHANGE',
-      callback: this.onSubmissionChange
     });
 
     Event.listen({
@@ -322,26 +329,9 @@ export default {
       name: 'FAST:WIZARD:VALIDATE',
       callback: this.validate
     });
-
-    this.$eventHub.$on('formio.error', (error) => {
-      console.log(error);
-      if (
-        error.error.message === "Cannot read property 'notice' of null" ||
-        error.error.message ===
-          "Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node."
-      ) {
-      } else {
-        this.$swal({
-          type: 'error',
-          title: this.$t('Error'),
-          html: this.$t('You have errors in the submission')
-        }).then(() => {
-          window.scrollTo(0, 0);
-        });
-      }
-    });
   },
   beforeDestroy() {
+    this.$eventHub.$off('FAST:LANGUAGE:CHANGED', this.changeLanguage);
     Event.remove({
       name: 'FAST:FORMIO:RENDERED',
       callback: this.showWizard
@@ -379,7 +369,6 @@ export default {
       callback: this.validate
     });
 
-    this.$eventHub.$off('formio.error');
     this.$eventHub.$off('VALIDATION_ERRORS');
   },
   asyncData: {
@@ -394,6 +383,7 @@ export default {
             showCancelButton: false,
             onOpen: async () => {
               this.$swal.showLoading();
+              let resultSubmission;
               if (this.$route.query && this.$route.query.mode) {
                 let submissionId =
                   this.$route.params.idSubmission === 'own_unique_from'
@@ -401,26 +391,24 @@ export default {
                     : this.$route.params.idSubmission;
                 let loadedSubmission = await this.loadSubmission(submissionId);
                 this.$swal.close();
-                resolve({
-                  data: loadedSubmission
-                });
-              }
-              if (this.$route.params.idSubmission) {
+                resultSubmission = loadedSubmission.data;
+              } else if (this.$route.params.idSubmission) {
                 this.$swal.close();
                 let s = await Submission.local().get(
                   this.$route.params.idSubmission
                 );
-                resolve(s);
+                resultSubmission = s.data.data;
               } else {
                 this.$swal.close();
-                resolve(undefined);
+                resultSubmission = undefined;
               }
+              resolve(resultSubmission);
             }
           });
         });
       },
       transform(result) {
-        return result;
+        return { data: result };
       }
     },
     participants: {
@@ -434,19 +422,26 @@ export default {
         return result;
       }
     },
-    currentForm: {
+    form: {
       get() {
-        if (this.$route.params.idForm && !Form.message) {
+        if (this.$route.params.idForm) {
           return Form.local().findOne({
             'data.path': this.$route.params.idForm
           });
-        } else {
-          return {
-            data: {
-              title: ''
-            }
-          };
         }
+      },
+      transform(result) {
+        return result.data;
+      }
+    },
+    options: {
+      async get() {
+        let i18n = await OfflinePlugin.getLocalTranslations();
+        let readOnly = !!(
+          ['online-review', 'read-only'].indexOf(this.editMode) >= 0
+        );
+
+        return { i18n, readOnly };
       },
       transform(result) {
         return result;
@@ -455,10 +450,8 @@ export default {
   },
   computed: {
     formTitle() {
-      return this.currentForm &&
-        this.currentForm.data &&
-        this.currentForm.data.title
-        ? this.$t(this.currentForm.data.title)
+      return this.form && this.form && this.form.title
+        ? this.$t(this.form.title)
         : '';
     },
     participantName() {
@@ -500,11 +493,10 @@ export default {
     },
     getFormioClass() {
       if (
-        this.currentForm &&
-        this.currentForm.data &&
-        this.currentForm.data.properties &&
-        this.currentForm.data.properties.FAST_WIZARD_CUSTOM_NAVIGATION ===
-          'true'
+        this.form &&
+        this.form &&
+        this.form.properties &&
+        this.form.properties.FAST_WIZARD_CUSTOM_NAVIGATION === 'true'
       ) {
         return 'noNavegation';
       }
@@ -512,7 +504,7 @@ export default {
   },
   data: function() {
     return {
-      form: null,
+      formUrl: this.$FAST_CONFIG.APP_URL + '/' + this.$route.params.idForm,
       people: [
         {
           name: 'P1'
@@ -529,17 +521,36 @@ export default {
       displayUp: false,
       displayDown: true,
       parallelSub: [],
-      autoCreate:
-        !this.$route.params.idSubmission && this.$FAST_CONFIG.OFFLINE_FIRST,
       tab: '1',
       customRender: false,
       customRenderType: '',
       customRenderArray: [],
       changeEvent: null,
-      activeSubmission: null
+      activeSubmission: null,
+      FormioInstance: new Formio(this.formUrl),
+      RenderedFormInstace: null,
+      timeoutId: null,
+      editMode: this.$route.query.mode,
+      language: localStorage.getItem('defaultLenguage')
+        ? localStorage.getItem('defaultLenguage')
+        : 'en',
     };
   },
   methods: {
+    changeLanguage(language) {
+      this.language = language.code;
+    },
+    registerOfflinePlugin() {
+      // De register if there was a previous registration
+      Formio.deregisterPlugin('offline');
+      // Register the plugin for offline mode
+      Formio.registerPlugin(
+        OfflinePlugin.getPlugin({
+          formio: new Formio(this.formUrl)
+        }),
+        'offline'
+      );
+    },
     getButtonPosition() {
       let position = 'top-right';
       if (this.$getDirection() === 'pull-right') {
@@ -551,12 +562,53 @@ export default {
       this.isWizard = !!event.detail.data.formio.wizard;
     },
     onSubmissionChange(event) {
-      this.activeSubmission = event.detail.data.change.data;
-      let data = event.detail.data;
-      this.pages = data.formio.pages ? data.formio.pages : [];
-      if (data.formio.data && data.formio.data.variables) {
-        this.changeEvent = JSON.stringify(data.formio.data);
+      if (event.changed) {
+        // TODO This is one step behind of the User actions Needs to be fixed
+        this.pages = event.changed.instance.root.pages;
       }
+      if (event.data) {
+        this.activeSubmission = event.data;
+        this.changeEvent = JSON.stringify(event.data);
+      }
+      if (this.shouldAutoSave()) {
+        this.autoSaveTimer();
+      }
+    },
+    onFormSubmit(event) {
+      let formSubmission = {
+        data: this.activeSubmission,
+        draft: false,
+        redirect: true,
+        trigger: 'formioSubmit',
+        syncError: false
+      };
+      this.save(formSubmission).then((created) => {
+        /*
+        this.$swal(
+          'Draft Saved!',
+          'Your submission has been saved! You can continue editing later',
+          'success'
+        );
+        */
+        this.redirectIntended({ submission: formSubmission, created });
+      });
+    },
+    onFormError(event) {
+      this.$swal({
+        type: 'error',
+        title: this.$t('Error'),
+        html:
+          this.$t('You have errors in the submission') +
+          '. <br><strong>' +
+          this.$t(event[0].component.label) +
+          '</strong>: <br>' +
+          this.$t(event[0].message)
+      }).then(() => {
+        let id = event[0].component.id;
+        // let element = document.querySelector("[name='data[" + key + "]']")
+        document.getElementById(id).scrollIntoView();
+        // window.scroll(0, -100);
+      });
     },
     cancel() {
       if (document.getElementsByClassName('formio-dialog').length > 0) {
@@ -641,15 +693,149 @@ export default {
         }
       });
     },
+    async save(formSubmission) {
+      let id = this.$route.params.idSubmission;
+      if (!id) {
+        return;
+      }
+      if (id.includes('_local')) {
+        formSubmission._lid = id;
+      } else {
+        formSubmission._id = id;
+      }
+
+      // Normal URL
+
+      let url = this.$FAST_CONFIG.APP_URL + '/' + this.$route.params.idForm;
+      if (this.$route.params.idSubmission === 'own_unique_from') {
+        url = this.$FAST_CONFIG.APP_URL + '/' + this.$route.query.form;
+      }
+
+      let formio = new Formio(url);
+
+      if (this.editMode === 'online' || !this.$FAST_CONFIG.OFFLINE_FIRST) {
+        this.onlineSave(formSubmission, formio);
+        return;
+      }
+
+      this.registerOfflinePlugin();
+      return this.FormioInstance.saveSubmission(formSubmission);
+    },
     saveAsDraft() {
-      // Create the event
-      var saveAsDraft = new CustomEvent('saveAsDraft', {
-        detail: {
-          data: {},
-          text: 'Save as Draft Requested'
+      let formSubmission = {
+        data: this.activeSubmission,
+        redirect: true,
+        draft: true,
+        syncError: false,
+        trigger: 'saveAsLocalDraft'
+      };
+
+      this.save(formSubmission).then((created) => {
+        this.$swal(
+          'Draft Saved!',
+          'Your submission has been saved! You can continue editing later',
+          'success'
+        );
+        this.redirectIntended({ submission: formSubmission, created });
+      });
+    },
+    autoSaveAsDraft() {
+      let formSubmission = {
+        data: this.activeSubmission,
+        redirect: false,
+        draft: true,
+        syncError: false,
+        trigger: 'autoSaveAsDraft'
+      };
+      return this.save(formSubmission);
+    },
+    onlineSave(submission, formio) {
+      this.$swal({
+        title: 'Saving...',
+        text: this.$t(
+          'The information is being saved. This can take a couple seconds...'
+        ),
+        showCancelButton: false,
+        onOpen: async () => {
+          Formio.deregisterPlugin('offline');
+          this.$swal.showLoading();
+          formio
+            .saveSubmission(submission)
+            .then((updated) => {
+              this.$swal.close();
+              if (this.parentPage) {
+                this.$router.push({
+                  name: this.parentPage
+                });
+              } else if (
+                this.$route.name === 'sendreset' &&
+                this.$route.query.token
+              ) {
+                this.$router.push({
+                  name: 'login'
+                });
+              } else if (this.editMode === 'online-review') {
+                this.$router.push({
+                  name: 'reviewers'
+                });
+              } else if (
+                this.$route.params.idSubmission === 'own_unique_from'
+              ) {
+                // If we are editting the profile
+                this.$router.push({
+                  path: '/page/user-profile'
+                });
+              } else if (
+                this.editMode === 'online' ||
+                this.editMode === 'read-only' ||
+                !this.$FAST_CONFIG.OFFLINE_FIRST
+              ) {
+                this.$router.push({
+                  name: 'formio_form_show',
+                  params: { idForm: formio.formId },
+                  query: { parent: this.$route.query.parent }
+                });
+              }
+            })
+            .catch((e) => {
+              console.log(e);
+              let errorString = ErrorFormatter.format({ errors: e, vm: this });
+              this.$swal({
+                title: e.name,
+                type: 'info',
+                html: errorString,
+                showCloseButton: true,
+                showCancelButton: false,
+                confirmButtonText: 'OK'
+              });
+              this.renderForm();
+            });
         }
       });
-      document.dispatchEvent(saveAsDraft);
+    },
+    async redirectIntended({ submission, created }) {
+      if (submission.redirect === true) {
+        switch (this.$FAST_CONFIG.SAVE_REDIRECT) {
+          case 'dashboard':
+            this.$router.push({
+              name: 'dashboard'
+            });
+            break;
+          case 'collected':
+            this.$router.push({
+              name: 'formio_form_show',
+              params: {
+                idForm: this.FormioInstance.formId
+              }
+            });
+            break;
+          default:
+            this.$router.push({
+              name: 'dashboard'
+            });
+            break;
+        }
+      }
     },
     goToPage(index) {
       if (
@@ -660,7 +846,7 @@ export default {
         let dataGridName = this._pages[index].properties['FAST_CUSTOM_DG'];
         this.customRenderType = 'datagrid';
         let component = FormioUtils.getComponent(
-          this.currentForm.data.components,
+          this.form.components,
           dataGridName
         );
 
@@ -694,7 +880,7 @@ export default {
         let scriptName = this._pages[index].properties['FAST_CUSTOM_SCRIPT'];
         this.customRenderType = 'script';
         let component = FormioUtils.getComponent(
-          this.currentForm.data.components,
+          this.form.components,
           scriptName
         );
         console.log(component);
@@ -743,12 +929,6 @@ export default {
           let button1 = document.querySelectorAll('.btn-wizard-nav-next')[0];
           button1.click();
         }, 300);
-      }
-    },
-    submitForm() {
-      let submit = document.querySelectorAll('.btn-wizard-nav-submit')[0];
-      if (submit) {
-        submit.click();
       }
     },
     togglePages() {
@@ -995,6 +1175,24 @@ export default {
 
       this.loading = false;
       return submission;
+    },
+    shouldAutoSave() {
+      let draftEnabled = this.$FAST_CONFIG.LOCAL_DRAFT_ENABLED;
+      let inDraftModes =
+        ['online', 'online-review', 'read-only'].indexOf(this.editMode) < 0;
+      return !!(draftEnabled && inDraftModes);
+    },
+    autoSaveTimer() {
+      this.saved = false;
+      // AutoSave functionality
+      // If a timer was already started, clear it.
+      if (this.timeoutId) clearTimeout(this.timeoutId);
+
+      // Set timer that will save comment when it fires.
+      this.timeoutId = setTimeout(async () => {
+        await this.autoSaveAsDraft();
+        this.saved = true;
+      }, 700);
     }
   }
 };
