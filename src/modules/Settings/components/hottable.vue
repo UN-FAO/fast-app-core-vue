@@ -6,7 +6,6 @@
 
 <script>
 import HotTable from 'vue-handsontable-official';
-import { Localization } from 'fast-fastjs';
 import { Toast } from 'quasar';
 import _indexOf from 'lodash/indexOf';
 import _forEach from 'lodash/forEach';

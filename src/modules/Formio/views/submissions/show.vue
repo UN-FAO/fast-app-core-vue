@@ -187,6 +187,7 @@ export default {
         ),
         vm: this
       });
+
       this.submissions = submissions.results;
     }
   }

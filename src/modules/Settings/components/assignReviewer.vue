@@ -196,11 +196,11 @@ export default {
         name: 'formio_submission_update',
         params: {
           idForm: 'user',
-          idSubmission: user.row._id,
-          FAST_PARENT_PAGE: 'reviewers'
+          idSubmission: user.row._id
         },
         query: {
-          mode: 'online'
+          mode: 'online',
+          FAST_PARENT_PAGE: 'reviewers'
         }
       });
     }

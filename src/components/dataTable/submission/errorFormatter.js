@@ -8,29 +8,31 @@ let ErrorFormatter = (() => {
       vm.$t('Error') +
       '</th></thead><tbody>';
 
-    errors.details.forEach((detail) => {
-      let components = vm.currentForm.data
-        ? vm.currentForm.data.components
-        : vm.currentForm.components;
-      let component = FormioUtils.getComponent(components, detail.path[0]);
-      let label = component ? vm.$t(component.label) : '';
-      errorString = errorString + '<tr>';
-      errorString =
-        errorString +
-        '<td data-label=' +
-        vm.$t('Field label') +
-        '>' +
-        label +
-        '</td>';
-      errorString =
-        errorString +
-        '<td data-label=' +
-        vm.$t('Error') +
-        '>' +
-        detail.message +
-        '</td>';
-      errorString = errorString + '</tr>';
-    });
+    if (errors && errors.details) {
+      errors.details.forEach((detail) => {
+        let components = vm.currentForm.data
+          ? vm.currentForm.data.components
+          : vm.currentForm.components;
+        let component = FormioUtils.getComponent(components, detail.path[0]);
+        let label = component ? vm.$t(component.label) : '';
+        errorString = errorString + '<tr>';
+        errorString =
+          errorString +
+          '<td data-label=' +
+          vm.$t('Field label') +
+          '>' +
+          label +
+          '</td>';
+        errorString =
+          errorString +
+          '<td data-label=' +
+          vm.$t('Error') +
+          '>' +
+          detail.message +
+          '</td>';
+        errorString = errorString + '</tr>';
+      });
+    }
     errorString = errorString + '</tbody></table></div>';
 
     return errorString;

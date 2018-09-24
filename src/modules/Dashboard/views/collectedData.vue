@@ -15,7 +15,8 @@
 
 <script>
 import actioncards from '../../Pagemanager/components/actionCards';
-import { Form } from 'fast-fastjs';
+import { Form, OfflinePlugin } from 'fast-fastjs';
+import Formio from 'formiojs/Formio';
 export default {
   components: {
     actioncards
@@ -23,15 +24,15 @@ export default {
   asyncData: {
     newForms: {
       async get() {
-        let action = this.$route.name === 'CollectedData' ? 'list' : 'create'
+        let action = this.$route.name === 'CollectedData' ? 'list' : 'create';
         let result = await Form.local().cardFormattedForms(action);
         if (result.cards.length === 1) {
-          this.redirectTo(result.cards[0].actions[0], 'submission');
+          this.redirectTo(result.cards[0].actions[0]);
         }
         return result;
       },
       transform(result) {
-        return JSON.stringify(result)
+        return JSON.stringify(result);
       }
     }
   },
@@ -42,18 +43,56 @@ export default {
           action.view === 'list'
             ? 'formio_form_show'
             : 'formio_form_submission';
-        let to = {
-          name: name,
-          params: { idForm: action.formPath }
-        };
-        this.$router.push(to);
+        if (name === 'formio_form_submission') {
+          this.goToCreateView(action.formPath);
+        } else {
+          let to = {
+            name: name,
+            params: { idForm: action.formPath }
+          };
+          this.$router.push(to);
+        }
       }
+    },
+    goToCreateView(formID) {
+      let url = this.$FAST_CONFIG.APP_URL + '/' + formID;
+
+      let formSubmission = {
+        data: {},
+        redirect: 'Update',
+        draft: true,
+        trigger: 'createLocalDraft'
+      };
+      let formio = new Formio(url);
+
+      Formio.deregisterPlugin('offline');
+      // Register the plugin for offline mode
+      Formio.registerPlugin(
+        OfflinePlugin.getPlugin({
+          formio: formio
+        }),
+        'offline'
+      );
+
+      formio.saveSubmission(formSubmission).then((created) => {
+        this.$router.push({
+          name: 'formio_submission_update',
+          params: {
+            idForm: formio.formId,
+            idSubmission: created._id
+          },
+          query: {
+            parent: this.$route.query.parent
+          }
+        });
+      });
     }
   },
-  data () {
+  data() {
     return {
-      pageName: this.$route.name === 'CollectedData' ? 'Collected Data' : 'New Survey'
-    }
+      pageName:
+        this.$route.name === 'CollectedData' ? 'Collected Data' : 'New Survey'
+    };
   }
 };
 </script>

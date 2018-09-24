@@ -41,7 +41,7 @@ import { Moment, FAST, Event } from 'fast-fastjs';
 Moment.setLocales();
 
 import { CONFIG_URL, APP_CONFIG_ID, OFFLINE_START } from 'config/env';
-import TRANSLATIONS from 'modules/Localization/appTranslations';
+import TRANSLATIONS from 'config/Localization/appTranslations';
 
 let appConf = {
   type: 'remote',
@@ -52,7 +52,10 @@ let appConf = {
   offlineFiles: {
     Configuration: require('src/config/offline/Configuration.json'),
     Roles: require('src/config/offline/Roles.json'),
-    lastUpdated: require('src/config/offline/lastUpdate.json')
+    lastUpdated: require('src/config/offline/lastUpdate.json'),
+    Translations: require('src/config/offline/Translations.json'),
+    Pages: require('src/config/offline/Pages.json'),
+    Forms: require('src/config/offline/Forms.json')
   }
 };
 
@@ -88,7 +91,6 @@ if (__THEME === 'mat') {
  */
 Quasar.start(async () => {
   let config = await FAST.start({ Vue: Vue, interval: true, appConf });
-
   // Set the translations into the Plugin
   const i18n = new VueI18n({
     locale: localStorage.getItem('defaultLenguage') || 'en', // set locale

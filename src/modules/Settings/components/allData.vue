@@ -121,6 +121,9 @@ export default {
           }
           return filtered;
         }, []);
+        if (forms.length === 1) {
+          this.selectedForm = forms[0].value
+        }
         return forms;
       }
     }
@@ -145,7 +148,8 @@ export default {
       },
       watch() {
         this.selectedForm;
-      }
+      },
+      debounce: null
     },
     submissions: {
       async get() {
@@ -182,7 +186,8 @@ export default {
       },
       watch() {
         this.currentForm;
-      }
+      },
+      debounce: null
     }
   },
   computed: {

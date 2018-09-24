@@ -27,11 +27,14 @@ if [ "$OFFLINE_START" == "true" ]; then
     # GET APP URL
     APP_URL=$(node -pe 'JSON.parse(process.argv[1]).data.APP_URL' "$(cat ./src/config/offline/Configuration.json)")
     # GET APP ROLES
-    ROLES=$(node -pe 'JSON.stringify({...JSON.parse(process.argv[1]).roles, updated: Math.round((new Date()).getTime() / 1000)})' "$(curl -s $APP_URL/access)")
+    ROLES=$(node -pe 'JSON.stringify({...JSON.parse(process.argv[1]).roles, fastUpdated: Math.round((new Date()).getTime() / 1000)})' "$(curl -s $APP_URL/access)")
     echo "$ROLES" >> ./src/config/offline/Roles.json
     # GET APP TRANSLATIONS
     curl $APP_URL/translations/submission?limit=99999 -o ./src/config/offline/Translations.json
-
+    # GET APP PAGES
+    curl $APP_URL/fast-app-pages/submission?limit=99999 -o ./src/config/offline/Pages.json
+    # GET APP FORMS
+    curl $APP_URL/form?limit=99999 -o ./src/config/offline/Forms.json
     UPDATED=$(node -pe 'JSON.stringify({date: Math.round((new Date()).getTime() / 1000)})')
     echo "$UPDATED" >> ./src/config/offline/lastUpdate.json
 fi

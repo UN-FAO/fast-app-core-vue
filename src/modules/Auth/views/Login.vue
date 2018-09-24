@@ -7,31 +7,20 @@
                         {{$t($FAST_CONFIG.APP_FANTACY_NAME)}}
                         <div class="form-subtitle"> {{$t($FAST_CONFIG.APP_PHRASE)}}</div>
                     </p>
-                    <div class="form-login">
-                        <div class="form-group">
-                            <div class="segment-title">{{isAdminLogin ? $t('Admin Login'): $t('User Login')}}</div>
-                            <q-field>
-                                <q-input v-model="credentials.username" :stack-label="$t('User')" :placeholder="$t('User')" name="user" />
-                            </q-field>
-                        </div>
-                        <div class="form-group">
+                    <div class="form-login" @keyup.enter="handleLogin" >
+                         <div class="segment-title">{{isAdminLogin ? $t('Admin Login'): $t('User Login')}}</div>
+                      <formio
+                        :form="form"
+                        :options="options"
+                        :language="language"
+                        v-on:submit="handleLogin"
+                        v-if="form && options"
+                        :key="error"
+                      />
 
-                            <q-field>
-                                <q-input v-model="credentials.password" name="password" type="password" :stack-label="$t('Password')" :placeholder="$t('Password')" @keyup.enter="handleLogin" />
-                            </q-field>
-                        </div>
-                        <div class="text-center">
-                            <q-btn color="green" @click="handleLogin" :disable="LoadingLogIn">
-
-                                <div>{{$t('Login')}}
-                                    <q-spinner-mat v-if="LoadingLogIn"></q-spinner-mat>
-                                </div>
-                            </q-btn>
-                        </div>
-                        <br>
                         <p class="text-center" v-if="$FAST_CONFIG.ENABLE_REGISTER">
                             <router-link :to="{ path: 'register' }">
-                                <h5>{{$t('New user')}}?</h5></router-link>,
+                                <h5>{{$t('New user')}}?</h5></router-link>
                                 <router-link :to="{ path: 'sendreset' }">
                                 <h5>{{$t('Forgot your password?')}}</h5></router-link>
                         </p>
@@ -52,12 +41,20 @@
     </div>
 
 </template>
-
+<style >
+.form-login label.control-label {
+  font-size: medium !important;
+  font-weight: 350 !important;
+  color: white;
+}
+</style>
 <script>
-import { Auth } from 'fast-fastjs';
+import { Form as vForm } from 'vue-formio';
+import { Auth, OfflinePlugin, Form } from 'fast-fastjs';
 import { Loading, QField, QInput, QBtn, QIcon, QSpinnerMat } from 'quasar';
 export default {
   components: {
+    formio: vForm,
     QField,
     QInput,
     QBtn,
@@ -71,14 +68,40 @@ export default {
         password: ''
       },
       isAdminLogin: false,
-      LoadingLogIn: false
+      LoadingLogIn: false,
+      language: localStorage.getItem('defaultLenguage')
+        ? localStorage.getItem('defaultLenguage')
+        : 'en',
+      error: null
     };
   },
-  /**
-   * Available methods for the
-   * Login view
-   * @type {Object}
-   */
+  asyncData: {
+    form: {
+      get() {
+        return Form.local().findOne({
+          'data.path': 'user/login'
+        });
+      },
+      transform(result) {
+        return result.data;
+      }
+    },
+    options: {
+      async get() {
+        let i18n = await OfflinePlugin.getLocalTranslations();
+        return { i18n };
+      },
+      transform(result) {
+        return result;
+      }
+    }
+  },
+  mounted() {
+    this.$eventHub.$on('FAST:LANGUAGE:CHANGED', this.changeLanguage);
+  },
+  beforeDestroy() {
+    this.$eventHub.$off('FAST:LANGUAGE:CHANGED', this.changeLanguage);
+  },
   methods: {
     /**
      * Response to the login method
@@ -87,8 +110,8 @@ export default {
      */
     handleLogin(event, done) {
       this.LoadingLogIn = true;
-      this.credentials.password = this.credentials.password.trim();
-      this.credentials.username = this.credentials.username.trim();
+      this.credentials.password = event.data.password.trim();
+      this.credentials.username = event.data.email.trim();
       // Try to authenticate the User
       Loading.show('Loging in...');
       Auth.attempt(
@@ -106,6 +129,7 @@ export default {
           console.log('Could not login', error);
           Loading.hide();
           this.LoadingLogIn = false;
+          this.error = Math.random();
           this.$swal(
             'Wrong Credentials!',
             'Wrong username or password...try again',
@@ -115,6 +139,9 @@ export default {
     },
     adminLogin() {
       this.isAdminLogin = !this.isAdminLogin;
+    },
+    changeLanguage(language) {
+      this.language = language.code;
     }
   }
 };

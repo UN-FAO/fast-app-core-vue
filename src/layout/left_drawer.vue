@@ -137,7 +137,7 @@ export default {
         showCancelButton: false,
         onOpen: async () => {
           this.$swal.showLoading();
-          await FAST.sync({ interval: false, appConf: this.$appConf });
+          await FAST.sync({ appConf: this.$appConf });
           this.$swal.close();
           this.$swal({
             title: this.$t('Updated'),

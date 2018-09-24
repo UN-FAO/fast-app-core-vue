@@ -226,7 +226,6 @@ import {
 // import formio from 'modules/Formio/components/formio/formio';
 import breadcrum from 'components/breadcrum';
 import datatable from 'components/dataTable/dataTable';
-import { Promise } from 'bluebird';
 import executor from '../../components/Rexecutor/executor';
 import { Form as vForm } from 'vue-formio';
 import Formio from 'formiojs/Formio';
@@ -265,7 +264,7 @@ export default {
     QInput,
     executor
   },
-  async mounted() {
+  async created() {
     this.$eventHub.$on('FAST:LANGUAGE:CHANGED', this.changeLanguage);
 
     this.$eventHub.on('formio.mounted', (formio) => {
@@ -531,9 +530,10 @@ export default {
       RenderedFormInstace: null,
       timeoutId: null,
       editMode: this.$route.query.mode,
+      parentPage: this.$route.query.FAST_PARENT_PAGE,
       language: localStorage.getItem('defaultLenguage')
         ? localStorage.getItem('defaultLenguage')
-        : 'en',
+        : 'en'
     };
   },
   methods: {
@@ -582,15 +582,8 @@ export default {
         trigger: 'formioSubmit',
         syncError: false
       };
-      this.save(formSubmission).then((created) => {
-        /*
-        this.$swal(
-          'Draft Saved!',
-          'Your submission has been saved! You can continue editing later',
-          'success'
-        );
-        */
-        this.redirectIntended({ submission: formSubmission, created });
+      this.save(formSubmission).then(async (created) => {
+        await this.redirectIntended({ submission: formSubmission, created });
       });
     },
     onFormError(event) {
@@ -659,9 +652,9 @@ export default {
     },
     async reviewSubmission(revision) {
       let err;
-      let submission = this.submission.data;
+      let submission = this.submission;
       submission.data.deleted = revision !== 'accept';
-
+      submission._id = this.$route.params.idSubmission;
       this.$swal({
         title: 'Saving...',
         text: this.$t(
@@ -705,17 +698,18 @@ export default {
       }
 
       // Normal URL
-
       let url = this.$FAST_CONFIG.APP_URL + '/' + this.$route.params.idForm;
+
+      // Profile Editing
       if (this.$route.params.idSubmission === 'own_unique_from') {
         url = this.$FAST_CONFIG.APP_URL + '/' + this.$route.query.form;
+        formSubmission._id = Auth.user()._id;
       }
 
       let formio = new Formio(url);
 
-      if (this.editMode === 'online' || !this.$FAST_CONFIG.OFFLINE_FIRST) {
-        this.onlineSave(formSubmission, formio);
-        return;
+      if (this.editMode === 'online') {
+        return this.onlineSave(formSubmission, formio);
       }
 
       this.registerOfflinePlugin();
@@ -730,13 +724,13 @@ export default {
         trigger: 'saveAsLocalDraft'
       };
 
-      this.save(formSubmission).then((created) => {
+      this.save(formSubmission).then(async (created) => {
         this.$swal(
           'Draft Saved!',
           'Your submission has been saved! You can continue editing later',
           'success'
         );
-        this.redirectIntended({ submission: formSubmission, created });
+        await this.redirectIntended({ submission: formSubmission, created });
       });
     },
     autoSaveAsDraft() {
@@ -749,77 +743,87 @@ export default {
       };
       return this.save(formSubmission);
     },
-    onlineSave(submission, formio) {
-      this.$swal({
-        title: 'Saving...',
-        text: this.$t(
-          'The information is being saved. This can take a couple seconds...'
-        ),
-        showCancelButton: false,
-        onOpen: async () => {
-          Formio.deregisterPlugin('offline');
-          this.$swal.showLoading();
-          formio
-            .saveSubmission(submission)
-            .then((updated) => {
-              this.$swal.close();
-              if (this.parentPage) {
-                this.$router.push({
-                  name: this.parentPage
+    async onlineSave(submission, formio) {
+      return new Promise((resolve, reject) => {
+        this.$swal({
+          title: 'Saving...',
+          text: this.$t(
+            'The information is being saved. This can take a couple seconds...'
+          ),
+          showCancelButton: false,
+          onOpen: async () => {
+            Formio.deregisterPlugin('offline');
+            this.$swal.showLoading();
+            formio
+              .saveSubmission(submission)
+              .then((updated) => {
+                this.$swal.close();
+                resolve(updated);
+              })
+              .catch((e) => {
+                console.log(e);
+                let errorString = ErrorFormatter.format({
+                  errors: e,
+                  vm: this
                 });
-              } else if (
-                this.$route.name === 'sendreset' &&
-                this.$route.query.token
-              ) {
-                this.$router.push({
-                  name: 'login'
+
+                this.$swal({
+                  title: e.name || e,
+                  type: 'info',
+                  html: errorString,
+                  showCloseButton: true,
+                  showCancelButton: false,
+                  confirmButtonText: 'OK'
                 });
-              } else if (this.editMode === 'online-review') {
-                this.$router.push({
-                  name: 'reviewers'
-                });
-              } else if (
-                this.$route.params.idSubmission === 'own_unique_from'
-              ) {
-                // If we are editting the profile
-                this.$router.push({
-                  path: '/page/user-profile'
-                });
-              } else if (
-                this.editMode === 'online' ||
-                this.editMode === 'read-only' ||
-                !this.$FAST_CONFIG.OFFLINE_FIRST
-              ) {
-                this.$router.push({
-                  name: 'formio_form_show',
-                  params: { idForm: formio.formId },
-                  query: { parent: this.$route.query.parent }
-                });
-              }
-            })
-            .catch((e) => {
-              console.log(e);
-              let errorString = ErrorFormatter.format({ errors: e, vm: this });
-              this.$swal({
-                title: e.name,
-                type: 'info',
-                html: errorString,
-                showCloseButton: true,
-                showCancelButton: false,
-                confirmButtonText: 'OK'
+                reject(e);
               });
-              this.renderForm();
-            });
-        }
+          }
+        });
       });
     },
     async redirectIntended({ submission, created }) {
+      if (this.$route.params.idSubmission === 'own_unique_from') {
+        if (this.$route.params.idForm === 'resetpassword') {
+          await Auth.logOut();
+          this.$router.push({
+            path: '/login'
+          });
+          return;
+        }
+        // If we are editting the profile
+        this.$router.push({
+          path: '/page/user-profile'
+        });
+        return;
+      } else if (this.parentPage) {
+        this.$router.push({
+          name: this.parentPage
+        });
+        return;
+      } else if (this.editMode === 'online-review') {
+        this.$router.push({
+          name: 'reviewers'
+        });
+        return;
+      } else if (
+        this.editMode === 'online' ||
+        this.editMode === 'read-only' ||
+        !this.$FAST_CONFIG.OFFLINE_FIRST
+      ) {
+        this.$router.push({
+          name: 'formio_form_show',
+          params: { idForm: this.$route.params.idForm },
+          query: { parent: this.$route.query.parent }
+        });
+        return;
+      }
       if (submission.redirect === true) {
         switch (this.$FAST_CONFIG.SAVE_REDIRECT) {
           case 'dashboard':
             this.$router.push({
               name: 'dashboard'
             });
+            return;
             break;
           case 'collected':
             this.$router.push({
@@ -828,11 +832,13 @@ export default {
                 idForm: this.FormioInstance.formId
               }
             });
+            return;
             break;
           default:
             this.$router.push({
               name: 'dashboard'
             });
+            return;
             break;
         }
       }

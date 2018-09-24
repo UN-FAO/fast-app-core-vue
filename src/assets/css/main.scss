@@ -54,8 +54,11 @@ button.btn.btn-default.btn-wizard-nav-cancel {
   position: sticky;
   width: max-content !important;
   min-width: -webkit-fill-available;
-  margin-left: -42px;
   color: black;
+}
+
+[dir="rtl"] .choices__list.choices__list--dropdown {
+  margin-left: -42px !important;
 }
 
 ul.list-inline {
@@ -521,7 +524,6 @@ ul.list-inline {
   font-variant: small-caps;
   background: inherit;
 }
-
 
 [dir="rtl"] .input-group-addon:not(:last-child){
   border-right: 1px solid rgba(0,0,0,.15);
