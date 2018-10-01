@@ -266,7 +266,7 @@
 </template>
 
 <script>
-import {QBtn} from 'quasar'
+import { QBtn } from 'quasar';
 export default {
   components: {
     QBtn

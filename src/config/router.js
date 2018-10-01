@@ -12,6 +12,9 @@ import PageManegerRoutes from 'modules/Pagemanager/routes';
 import FormioRoutes from 'modules/Formio/routes';
 import SettingsRoutes from 'modules/Settings/routes';
 
+// dev Routes for testing
+import DevRoutes from 'modules/Dev/routes';
+
 Vue.use(VueRouter);
 /*
  |--------------------------------------------------------------------------
@@ -31,7 +34,8 @@ let routes = setRoutes([
   DashboardRoutes,
   PageManegerRoutes,
   FormioRoutes,
-  SettingsRoutes
+  SettingsRoutes,
+  DevRoutes
 ]);
 
 // Default 404
