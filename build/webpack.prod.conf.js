@@ -25,7 +25,6 @@ module.exports = merge(baseWebpackConfig, {
   },
   devtool: config.build.productionSourceMap ? '#source-map' : false,
   plugins: [
-    /*
     new UglifyJSPlugin({
       uglifyOptions: {
         output: {
@@ -35,7 +34,6 @@ module.exports = merge(baseWebpackConfig, {
         warnings: false
       }
     }),
-  */
     new webpack.NoEmitOnErrorsPlugin(),
     /*
     new CompressionPlugin({
