@@ -570,6 +570,11 @@ export default {
         syncError: false
       };
       this.save(formSubmission).then(async (created) => {
+        this.$swal(
+          'Saved!',
+          'Your submission has been saved!',
+          'success'
+        );
         await this.redirectIntended({ submission: formSubmission, created });
       });
     },
