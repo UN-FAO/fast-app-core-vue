@@ -3,8 +3,13 @@
 </template>
 <script>
 import Converter from 'fast-component2excel';
-import form from '../form.json';
+import Axios from 'axios';
 
-Converter.convertJsonToFile(form, null);
+const url = 'https://ixjjftxezpoomka.form.io/a';
+Axios.get(url).then(response => {
+  const json = response.data;
+  Converter.convertJsonToFile(json, null);
+});
+
 </script>
 
