@@ -38,8 +38,6 @@
 
       <pageLinks :pages="PAGES"></pageLinks>
 
-    <q-item-separator />
-
     <div class="fixed-bottom text-left light text-italic" style="padding-left: 65px;">
       v {{$appVersion}}
     </div>
@@ -64,6 +62,7 @@ import {
 } from 'quasar';
 import pageLinks from './components/pageLinks';
 import _sortBy from 'lodash/sortBy';
+import Promise from 'bluebird';
 export default {
   components: {
     QScrollArea,

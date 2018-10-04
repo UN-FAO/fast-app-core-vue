@@ -56,5 +56,14 @@ node ./node_modules/json/lib/json.js -I -f package.json -e "this.deployAppID='${
   rm -rf ./deploys/cordova/src/config.xml
 	cp ./deploys/projects/${1}/config.xml ./deploys/cordova/src/config.xml
 
+#############################################################
+# Copy the projects Translations into their dev locations
+#
+  rm -rf ./src/config/Localization/customTranslations.js
+	cp -R ./deploys/projects/${1}/custom/customTranslations.js ./src/config/Localization/customTranslations.js
+
+# Get the offline JSON config for the project
+sh ./deploys/getOfflineConfig.sh
+
 echo "${GREEN} Project ${YELLOW}$1 ${GREEN}Ready to use!"
 echo "${NC} You can start developing with: quasar dev"

@@ -1,198 +1,182 @@
 <template>
-   <div class="row FormioContainer">
-      <q-card class="col-xl-10 col-lg-10  col-md-12 col-sm-12 col-lg-offset-1 col-md-offset-1 col-xl-offset-1" style="position:inherit !important;">
-         <q-card-title>
-            <breadcrum
-              :parent="$route.query.parent"
-              :currentPageTitle="$t('Translations')"
-            />
+<div class="row FormioContainer">
+  <q-card class="col-xl-10 col-lg-10  col-md-12 col-sm-12 col-lg-offset-1 col-md-offset-1 col-xl-offset-1" style="position:inherit !important;">
+    <q-card-title>
+      <breadcrum :parent="$route.query.parent" :currentPageTitle="$t('Translations')" />
 
-                <div v-if="!hasTranslation()">
-                  <div class="pull-right">
-                     <q-icon name="more_vert" color="grey" style="cursor:pointer;float:left" size="30px">
-                        <q-popover ref="popover" class="show-menu">
-                           <q-list link class="no-border" dense separator no-border>
-                              <q-item @click="$refs.popover.close(), createTranslations()">
-                                 <q-item-side icon="translate"  />
-                                 <q-item-main :label="$t('Find new translations')" />
-                              </q-item>
-                              <q-item @click="$refs.popover.close(), updateValues()">
-                                 <q-item-side icon="refresh"  />
-                                 <q-item-main :label="$t('Reload Translations')" />
-                              </q-item>
-                              <q-item @click="$refs.popover.close(), addLanguage()">
-                                 <q-item-side icon="fa-plus"  />
-                                 <q-item-main :label="$t('Add Language')" />
-                              </q-item>
-                           </q-list>
-                        </q-popover>
-                     </q-icon>
+      <div v-if="!hasTranslation()">
+        <div class="pull-right">
+          <q-icon name="more_vert" color="grey" style="cursor:pointer;float:left" size="30px">
+            <q-popover ref="popover" class="show-menu">
+              <q-list link class="no-border" dense separator no-border>
+                <q-item @click="$refs.popover.close(), createTranslations()">
+                  <q-item-side icon="translate" />
+                  <q-item-main :label="$t('Find new translations')" />
+                </q-item>
+                <q-item @click="$refs.popover.close(), updateValues()">
+                  <q-item-side icon="refresh" />
+                  <q-item-main :label="$t('Reload Translations')" />
+                </q-item>
+                <q-item @click="$refs.popover.close(), addLanguage()">
+                  <q-item-side icon="fa-plus" />
+                  <q-item-main :label="$t('Add Language')" />
+                </q-item>
+              </q-list>
+            </q-popover>
+          </q-icon>
+        </div>
+      </div>
+    </q-card-title>
+    <q-card-main>
+
+      <div>
+
+        <div class="justify-center">
+          <div class="row">
+            <div class="col-sm-12">
+              <q-card>
+                <q-card-title>
+                  <span style="color:grey">{{$t('Supported Languages')}} </span>: {{numberOfLanguages}}
+                </q-card-title>
+                <q-list separator>
+                  <q-collapsible icon="fa-language" :label="$t('Translation Status')">
+                    <div v-if="translationStatus && translationStatus.en && supportedLanguages">
+                      <div class="col-xs-6 col-sm-4 col-md-3" v-for="(number, code) in translationStatus" :key="code" v-if="code !== 'label'">
+                        <q-field :label="getLanguageName(code)" helper=" " :labelWidth="parseInt(11)">
+                          <q-knob v-model="translationStatus[code]" color="primary" line-width="3px" :min="min" :max="max" readonly>
+                            {{number}}
+                            <q-icon class="on-right" name="fa-percent" />
+                          </q-knob>
+
+                        </q-field>
+
+                      </div>
+                    </div>
+
+                  </q-collapsible>
+                </q-list>
+              </q-card>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-12 col-xs-12 col-lg-5">
+              <q-btn icon="fa-filter" ref="target" color="primary" outline>
+                {{$t('Languages')}}
+                <q-popover ref="popover" anchor="bottom middle" max-height="300px" fit>
+                  <q-input v-model="languageSearch" type="text" :stack-label="$t('NAME FILTER')" :placeholder="$t('search...')" :after="[{  icon: 'fa-search'}]" clearable inverted />
+                  <div class="row pull-right">
+                    <q-btn ref="target" color="primary" flat @click="allLanguageFilters()">
+                      {{$t('All')}}
+                    </q-btn>
+                    <q-btn ref="target" color="primary" flat @click="clearLanguageFilters()">
+                      {{$t('Clear')}}
+                    </q-btn>
                   </div>
-               </div>
-         </q-card-title>
-         <q-card-main>
-
-            <div>
-
-              <div class="justify-center">
-                 <div class="row">
-                   <div class="col-sm-12">
-                    <q-card>
-                      <q-card-title>
-                        <span style="color:grey">{{$t('Supported Languages')}} </span>:  {{numberOfLanguages}}
-                      </q-card-title>
-                      <q-list separator>
-                        <q-collapsible  icon="fa-language" :label="$t('Translation Status')">
-                            <div v-if="translationStatus && translationStatus.en && supportedLanguages" >
-                            <div class="col-xs-6 col-sm-4 col-md-3"  v-for="(number, code) in translationStatus"
-                              :key="code" v-if="code !== 'label'">
-                            <q-field
-                              :label="getLanguageName(code)"
-                              helper=" "
-                              :labelWidth="parseInt(11)"
-                            >
-                          <q-knob
-                              v-model="translationStatus[code]"
-                              color="primary"
-                              line-width="3px"
-                              :min="min"
-                              :max="max"
-                              readonly
-                            >
-                              {{number}} <q-icon class="on-right" name="fa-percent" />
-                            </q-knob>
-
-                           </q-field>
-
-                  </div>
-                </div>
-
-
-                        </q-collapsible>
-                      </q-list>
-                    </q-card>
-                </div>
-              </div>
-
-              <div class="row">
-                <div class="col-sm-12 col-xs-12 col-lg-5">
-                  <q-btn icon="fa-filter" ref="target" color="primary" outline>
-                        {{$t('Languages')}}
-                        <q-popover ref="popover" anchor="bottom middle" max-height="300px" fit>
-                           <q-input v-model="languageSearch" type="text" :stack-label="$t('NAME FILTER')" :placeholder="$t('search...')" :after="[{  icon: 'fa-search'}]" clearable inverted />
-                           <div class="row pull-right">
-                              <q-btn ref="target" color="primary" flat @click="allLanguageFilters()">
-                                 {{$t('All')}}
-                              </q-btn>
-                              <q-btn ref="target" color="primary" flat @click="clearLanguageFilters()">
-                                 {{$t('Clear')}}
-                              </q-btn>
+                  <br><br>
+                  <div v-for="language in filteredLanguages" :key="language.code">
+                    <q-checkbox style="text-transform: uppercase;" v-model="languageSelection" :val="language.code" :label="language.label" />
+                    </hr>
+                    <br><br>
                            </div>
-                           <br><br>
-                           <div v-for="language in filteredLanguages" :key="language.code">
-                              <q-checkbox style="text-transform: uppercase;" v-model="languageSelection" :val="language.code" :label="language.label" />
-                              </hr>
-                              <br><br>
-                           </div>
-                        </q-popover>
-                     </q-btn>
-                  <q-checkbox style="text-transform: uppercase;" v-model="untranslated" :label="$t('not translated')" />
-                  <q-input v-model="searchBox" type="text" :stack-label="$t('TRANSLATION FILTER')" :placeholder="$t('Search...')" :after="[{  icon: 'fa-search'}]" clearable />
-                  <q-scroll-area style="height: 500px;">
-                  <q-list highlight  sparse separator no-boder>
-                    <q-item v-for="label in translationsArray" v-if="shouldDisplayLabel(label)" :key="label" @click="selectLabel(label)">
-                      <q-item-side icon="fa-language"  color="primary"/>
-                      <q-item-main>
-                        <q-item-tile label>{{label}}</q-item-tile>
+                </q-popover>
+              </q-btn>
+              <q-checkbox style="text-transform: uppercase;"  v-model="untranslated" :label="$t('not translated')" />
+              <q-input v-model.lazy="searchBox" class="searchTranslation" type="text" :stack-label="$t('TRANSLATION FILTER')" :placeholder="$t('Search...')" :after="[{  icon: 'fa-search'}]" clearable />
+              <q-scroll-area style="height: 500px;" no-boder>
+                <q-list highlight sparse no-border>
+                  <q-item v-for="label in translationsArray" v-if="shouldDisplayLabel(label)" :key="label" @click="selectLabel(label)" style="cursor:pointer">
+                    <q-item-side icon="fa-language" color="primary" />
+                    <q-item-main>
+                      <q-item-tile label>{{label}}</q-item-tile>
                         <q-item-tile sublabel>Used <strong>{{translations[label].location.length}}</strong> time(s) in the app </q-item-tile>
 
-                      </q-item-main>
-                      <q-item-side right>
-                        <q-item-tile stamp>status</q-item-tile>
-                        <q-item-tile stamp>{{getCurrentTranslations(label)}} / {{numberOfLanguages}}</q-item-tile>
-                        <q-item-tile icon="fa-circle" color="green" v-if="getCurrentTranslations(label) === numberOfLanguages" />
-                        <q-item-tile icon="fa-circle" color="yellow" v-else-if="getCurrentTranslations(label) >= numberOfLanguages/2" />
-                        <q-item-tile icon="fa-circle" color="red" v-else />
-                      </q-item-side>
-                    </q-item>
-                  </q-list>
-                  </q-scroll-area>
-                </div>
-                <div class="col-lg-7 justify-center" v-if="translations && selectedLabel">
-                    <q-card>
-                      <q-card-title>
-                        <div class="pull-right">
-                            <q-icon @click="closeTranslation" name="fa-window-close" color="grey" style="cursor:pointer;float:left" size="30px"/>
-                          </div>
-                        <span style="color:grey">Translating: </span> {{selectedLabel}}
-                        <br>
-                        <div class="pull-right">
-                          <span v-if="saved && saved === true">
+                    </q-item-main>
+                    <q-item-side right>
+                      <q-item-tile stamp>status</q-item-tile>
+                      <q-item-tile stamp>{{getCurrentTranslations(label)}} / {{numberOfLanguages}}</q-item-tile>
+                      <q-item-tile icon="fa-circle" color="green" v-if="getCurrentTranslations(label) === numberOfLanguages" />
+                      <q-item-tile icon="fa-circle" color="yellow" v-else-if="getCurrentTranslations(label) >= numberOfLanguages/2" />
+                      <q-item-tile icon="fa-circle" color="red" v-else />
+                    </q-item-side>
+                  </q-item>
+                </q-list>
+              </q-scroll-area>
+            </div>
+            <div class="col-lg-7 justify-center" v-if="translations && selectedLabel">
+              <q-card>
+                <q-card-title>
+                  <div class="pull-right">
+                    <q-icon @click="closeTranslation" name="fa-window-close" color="grey" style="cursor:pointer;float:left" size="30px" />
+                  </div>
+                  <span style="color:grey">Translating: </span> {{selectedLabel}}
+                  <br>
+                  <div class="pull-right">
+                    <span v-if="saved && saved === true">
                             <q-icon name="fa-check-circle-o" color="green" style="cursor:pointer;float:left" size="30px"/>
                               <span style="color:grey; text-transform:none">{{$t('saved').toLowerCase()}}</span>
-                          </span>
-                          <span v-else-if="saved === false">
+                    </span>
+                    <span v-else-if="saved === false">
                             <q-icon name="fa-minus-circle" color="orange" style="cursor:pointer;float:left" size="30px"/>
                             <span style="color:orange; text-transform:none">{{$t('saving...').toLowerCase()}}</span>
-                          </span>
-                        </div>
-                      </q-card-title>
-                      <q-list separator>
-                        <q-collapsible group="translation" opened icon="fa-language" label="Translations">
-                          <div>
+                    </span>
+                  </div>
+                </q-card-title>
+                <q-list separator>
+                  <q-collapsible group="translation" opened icon="fa-language" label="Translations">
+                    <div>
 
-                            <q-input
-                              inverted
-                              v-model="currentTranslations[l.code]"
-                              :float-label="l.label"
-                              v-for="l in supportedLanguages"
-                              v-if="languageSelection.includes(l.code)"
-                              :key="l.code"
-                              type="textarea"
-                              :color="getTextAreaColor(currentTranslations[l.code])"
-                              clearable
-                              @blur="forceUpdate(selectedLabel)"
-                              @change="onTranslationChanged"
-                            />
-                          </div>
-                        </q-collapsible>
+                      <q-input
+                        inverted
+                        v-model="currentTranslations[l.code]"
+                        :float-label="l.label"
+                        v-for="l in supportedLanguages"
+                        v-if="languageSelection.includes(l.code)"
+                        :key="l.code" type="textarea"
+                        :color="getTextAreaColor(currentTranslations[l.code])"
+                        clearable
+                        @blur="forceUpdate(selectedLabel)"
+                        @change="onTranslationChanged"
+                      />
+                    </div>
+                  </q-collapsible>
 
-                        <q-collapsible group="translation" icon="fa-info" :label="'Information: used ' + translations[selectedLabel].location.length + ' time(s)' ">
-                          <div>
-                            Information:{{translations[selectedLabel].location}}
-                          </div>
-                        </q-collapsible>
+                  <q-collapsible group="translation" icon="fa-info" :label="'Information: used ' + translations[selectedLabel].location.length + ' time(s)' ">
+                    <div>
+                      Information:{{translations[selectedLabel].location.length}}
+                    </div>
+                  </q-collapsible>
 
-                        <q-collapsible group="translation" icon="fa-location-arrow" label="Context">
-                          <div>
-                            You can find this label in: {{translations[selectedLabel].location[0].form}}
-                             <div style="overflow: scroll;overflow-x: hidden;height: 400px;" v-if="false">
-                                  <vueformio :form="translations[selectedLabel].location[0].form" :options="{readOnly:true}" />
-                            </div>
-                          </div>
-                        </q-collapsible>
-                      </q-list>
-                    </q-card>
+                  <q-collapsible group="translation" icon="fa-location-arrow" label="Context">
+                    <div>
+                      You can find this label in: {{translations[selectedLabel].location[0].form}}
+                      <div style="overflow: scroll;overflow-x: hidden;height: 400px;" v-if="false">
+                        <vueformio :form="translations[selectedLabel].location[0].form" :options="{readOnly:true}" />
+                      </div>
+                    </div>
+                  </q-collapsible>
+                </q-list>
+              </q-card>
 
-
-                      <br>
+              <br>
                 </div>
-                <div v-else>
-                    Select one label to translate
-                </div>
-              </div>
+              <div v-else>
+                Select one label to translate
               </div>
             </div>
+          </div>
+        </div>
 
-   </q-card-main>
-   </q-card>
-   </div>
+    </q-card-main>
+  </q-card>
+</div>
 </template>
 
 <style scoped>
 .q-checkbox {
   color: black;
 }
+
 </style>
 
 <script>
@@ -288,7 +272,6 @@ export default {
     this.languageNameFilters = this.supportedLanguages;
     // Pre select all the languages
     this.languageSelection = _map(this.languageNameFilters, 'code');
-
     this.groupedTranslations = (await Translation.local().find())[0].data;
     this.translations = await FormLabels.get(this.selection);
     Object.keys(this.translations).forEach((label) => {
@@ -492,14 +475,12 @@ export default {
             )
               .then(async (result) => {
                 this.$swal.close();
-                this.updateValues();
                 Toast.create.positive({
                   html: this.$t('TRANSLATIONS CREATED')
                 });
               })
               .catch(async (e) => {
                 this.$swal.close();
-                this.updateValues();
                 console.log(e);
                 Toast.create.negative({
                   html: this.$t('TRANSLATIONS FAILED')
@@ -551,18 +532,20 @@ export default {
     async syncApp() {
       return new Promise((resolve, reject) => {
         this.$swal({
-        title: this.$t('Updating...'),
-        text: this.$t(
-          'Wait until the App is Updated. This can take a couple minutes...'
-        ),
-        showCancelButton: false,
-        onOpen: async () => {
-          this.$swal.showLoading();
-          await FAST.sync({ appConf: this.$appConf });
-          this.$swal.close();
-          resolve()
-        }
-      });
+          title: this.$t('Updating...'),
+          text: this.$t(
+            'Wait until the App is Updated. This can take a couple minutes...'
+          ),
+          showCancelButton: false,
+          onOpen: async () => {
+            this.$swal.showLoading();
+            await FAST.sync({
+              appConf: this.$appConf
+            });
+            this.$swal.close();
+            resolve();
+          }
+        });
       });
     }
   }

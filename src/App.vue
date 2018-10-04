@@ -42,7 +42,7 @@ import connectionAlert from 'components/Connection/components/alert';
 import { QLayout, Toast, Platform } from 'quasar';
 import layoutStore from 'layout/layout-store';
 import FastClick from 'fastclick';
-import { Event, Connection } from 'fast-fastjs';
+import { Connection } from 'fast-fastjs';
 import phonePermissions from 'components/phonePermissions';
 
 export default {
@@ -50,10 +50,7 @@ export default {
   async mounted() {
     // await FAST.loadRemainingConfig({ interval: true });
     phonePermissions.get();
-    Event.listen({
-      name: 'FAST:APPLICATION:LOADED',
-      callback: this.handleLoadedApp
-    });
+
     window.addEventListener(
       'load',
       function() {

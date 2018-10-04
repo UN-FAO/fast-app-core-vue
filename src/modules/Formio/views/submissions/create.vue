@@ -11,7 +11,7 @@
           <q-card-main>
             <q-list separator style="border: none !important">
 
-              <q-item class="formioPagination" multiline style="text-align: left; min-height: 60px; border-radius: 5px;" link v-for="(page, index) in _pages" :key="page.title" @click="goToPage(index)" :ref="'page-'+ index" v-bind:class="currentPage === index ? 'activePage' : ''">
+              <q-item class="formioPagination" multiline style="text-align: left; min-height: 60px; border-radius: 5px;" link v-for="(page, index) in pages" :key="page.title" @click="goToPage(index)" :ref="'page-'+ index" v-bind:class="currentPage === index ? 'activePage' : ''">
                 <q-item-main style=" margin-top: auto;  margin-bottom: auto;" :label="$t(getLabelForPage(page))" label-lines="3" />
               </q-item>
             </q-list>
@@ -22,9 +22,10 @@
           <q-card-main style="min-height:100vh">
             <q-card-title>
 
-            <q-icon  flat  color="grey" @click="togglePages" name="menu" v-if="_isWizard && !$FAST_CONFIG.TAB_MENU && !showPages">
+            <q-icon class="pull-left" style="margin-right:30px" flat  color="grey" @click="togglePages" name="menu" v-if="_isWizard && !$FAST_CONFIG.TAB_MENU && !showPages">
               <q-tooltip>{{$t('Show pages')}}</q-tooltip>
             </q-icon>
+
               <breadcrum
                 v-bind:class="$getDirection()"
                 :parent="$route.query.parent"
@@ -105,15 +106,18 @@
                   v-on:change="onSubmissionChange"
                   v-on:submit="onFormSubmit"
                   v-on:error="onFormError"
+                  v-on:prevPage="onPrevPage"
+                  v-on:nextPage="onNextPage"
                   v-if="form && submission && options"
                 />
 
-
+              <!--
                 <div v-bind:style="{ display: customRender ? 'initial' : 'none', color: 'black' }">
 
                 <div
                   v-bind:style="{ display: customRenderType === 'script' ? 'initial' : 'none' }"
                 >
+
                  <executor
                   :submission="changeEvent"
                   :openCpuUrl="$FAST_CONFIG.OPEN_CPU_URL || 'https://public.opencpu.org'"
@@ -128,6 +132,7 @@
                     v-if="form && form.title !== '' && customRenderType === 'datagrid'"
                   />
                 </div>
+                -->
               </q-tab-pane>
 
             </q-tabs>
@@ -171,7 +176,7 @@
       <q-tab
         icon="fa-file"
         slot="title"
-        v-for="(page, index) in _pages"
+        v-for="(page, index) in pages"
         :key="page.title" @click="goToPage(index)"
         :ref="'page-'+ index + 1"
         :name="(index + 1).toString()"
@@ -225,16 +230,17 @@ import {
 } from 'fast-fastjs';
 // import formio from 'modules/Formio/components/formio/formio';
 import breadcrum from 'components/breadcrum';
-import datatable from 'components/dataTable/dataTable';
-import executor from '../../components/Rexecutor/executor';
+// import datatable from 'components/dataTable/dataTable';
+// import executor from '../../components/Rexecutor/executor';
 import { Form as vForm } from 'vue-formio';
 import Formio from 'formiojs/Formio';
 import ErrorFormatter from 'components/dataTable/submission/errorFormatter';
+import Promise from 'bluebird';
 export default {
   components: {
     formiovue: vForm,
     breadcrum,
-    datatable,
+    // datatable,
     QCard,
     QCardTitle,
     QCardSeparator,
@@ -261,15 +267,11 @@ export default {
     QSpinnerAudio,
     QPopover,
     QItemSide,
-    QInput,
-    executor
+    QInput
+    // executor
   },
   async created() {
     this.$eventHub.$on('FAST:LANGUAGE:CHANGED', this.changeLanguage);
-
-    this.$eventHub.on('formio.mounted', (formio) => {
-      // this.pages = formio.pages ? formio.pages : [];
-    });
 
     this.$eventHub.on('formio.nextPage', (data) => {
       this.currentPage = data.nextPage.page;
@@ -283,20 +285,6 @@ export default {
       this.tab = (data.prevPage.page + 1).toString();
       this.currentQuestion = -1;
       window.scrollTo(0, 0);
-    });
-
-    this.$eventHub.on('formio.render', (data) => {
-      this.isWizard = !!data.formio.wizard;
-    });
-
-    Event.listen({
-      name: 'FAST:FORMIO:RENDERED',
-      callback: this.showWizard
-    });
-
-    Event.listen({
-      name: 'FAST:SUBMISSION:CHANGED',
-      callback: this.draftStatusChanged
     });
 
     Event.listen({
@@ -322,11 +310,6 @@ export default {
     Event.listen({
       name: 'FAST:WIZARD:PREVIOUS',
       callback: this.singlePrevious
-    });
-
-    Event.listen({
-      name: 'FAST:WIZARD:VALIDATE',
-      callback: this.validate
     });
   },
   beforeDestroy() {
@@ -362,12 +345,6 @@ export default {
       name: 'FAST:WIZARD:NEXT',
       callback: this.singlePrevious
     });
-
-    Event.remove({
-      name: 'FAST:WIZARD:VALIDATE',
-      callback: this.validate
-    });
-
     this.$eventHub.$off('VALIDATION_ERRORS');
   },
   asyncData: {
@@ -467,9 +444,6 @@ export default {
         return '';
       }
     },
-    _pages() {
-      return this.pages;
-    },
     _isWizard() {
       return this.isWizard;
     },
@@ -537,6 +511,18 @@ export default {
     };
   },
   methods: {
+    onNextPage(event) {
+      this.currentPage = event.page;
+      this.tab = (event.page + 1).toString();
+      this.currentQuestion = -1;
+      window.scrollTo(0, 0);
+    },
+    onPrevPage(event) {
+      this.currentPage = event.page;
+      this.tab = (event.page + 1).toString();
+      this.currentQuestion = -1;
+      window.scrollTo(0, 0);
+    },
     changeLanguage(language) {
       this.language = language.code;
     },
@@ -565,6 +551,7 @@ export default {
       if (event.changed) {
         // TODO This is one step behind of the User actions Needs to be fixed
         this.pages = event.changed.instance.root.pages;
+        this.isWizard = event.changed.instance.root.wizard;
       }
       if (event.data) {
         this.activeSubmission = event.data;
@@ -583,6 +570,11 @@ export default {
         syncError: false
       };
       this.save(formSubmission).then(async (created) => {
+        this.$swal(
+          'Saved!',
+          'Your submission has been saved!',
+          'success'
+        );
         await this.redirectIntended({ submission: formSubmission, created });
       });
     },
@@ -816,8 +808,7 @@ export default {
           query: { parent: this.$route.query.parent }
         });
         return;
-      }
-      if (submission.redirect === true) {
+      } else if (submission.redirect === true) {
         switch (this.$FAST_CONFIG.SAVE_REDIRECT) {
           case 'dashboard':
             this.$router.push({
@@ -829,7 +820,7 @@ export default {
             this.$router.push({
               name: 'formio_form_show',
               params: {
-                idForm: this.FormioInstance.formId
+                idForm: this.$route.params.idForm
               }
             });
             return;
@@ -845,11 +836,11 @@ export default {
     },
     goToPage(index) {
       if (
-        this._pages[index] &&
-        this._pages[index].properties &&
-        this._pages[index].properties['FAST_CUSTOM_DG']
+        this.pages[index] &&
+        this.pages[index].properties &&
+        this.pages[index].properties['FAST_CUSTOM_DG']
       ) {
-        let dataGridName = this._pages[index].properties['FAST_CUSTOM_DG'];
+        let dataGridName = this.pages[index].properties['FAST_CUSTOM_DG'];
         this.customRenderType = 'datagrid';
         let component = FormioUtils.getComponent(
           this.form.components,
@@ -879,17 +870,18 @@ export default {
       }
 
       if (
-        this._pages[index] &&
-        this._pages[index].properties &&
-        this._pages[index].properties['FAST_CUSTOM_SCRIPT']
+        this.pages[index] &&
+        this.pages[index].properties &&
+        this.pages[index].properties['FAST_CUSTOM_SCRIPT']
       ) {
-        let scriptName = this._pages[index].properties['FAST_CUSTOM_SCRIPT'];
+        /*
+        let scriptName = this.pages[index].properties['FAST_CUSTOM_SCRIPT'];
         this.customRenderType = 'script';
         let component = FormioUtils.getComponent(
           this.form.components,
           scriptName
         );
-        console.log(component);
+      */
         this.customRender = true;
         this.currentPage = index;
         this.tab = (index + 1).toString();
@@ -1137,7 +1129,7 @@ export default {
         }
       });
     },
-    async loadSubmission(_id, includeLocal) {
+    async loadSubmission(_id) {
       this.loading = true;
       let err;
       let submission;
@@ -1145,22 +1137,8 @@ export default {
         (this.$route.params.idSubmission === 'own_unique_from' &&
           this.$route.query.form) ||
         this.$route.params.idForm;
-      [err, submission] = await to(
-        Submission.remote().find({
-          form: formId,
-          filter: [
-            {
-              element: '_id',
-              query: '=',
-              value: _id
-            }
-          ],
-          limit: 1
-        })
-      );
-      submission = submission && submission[0] ? submission[0] : null;
 
-      if (includeLocal && err) {
+      if (_id.indexOf('_local') >= 0) {
         [err, submission] = await to(
           Submission.local().find({
             filter: {
@@ -1168,7 +1146,27 @@ export default {
             }
           })
         );
+        submission =
+          submission && submission[0] && submission[0].data
+            ? submission[0].data
+            : null;
+      } else {
+        [err, submission] = await to(
+          Submission.remote().find({
+            form: formId,
+            filter: [
+              {
+                element: '_id',
+                query: '=',
+                value: _id
+              }
+            ],
+            limit: 1
+          })
+        );
+        submission = submission && submission[0] ? submission[0] : null;
       }
+
       if (err) {
         this.$swal.close();
         this.$swal(
