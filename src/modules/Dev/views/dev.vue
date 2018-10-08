@@ -5,17 +5,18 @@
 import Converter from 'fast-component2excel';
 import Axios from 'axios';
 
-
-
 export default {
   async created() {
-    await this.download()
+    console.log('created');
+    const json = await this.download();
+    await Converter.convertJsonToFile(json);
   },
   methods: {
     async download() {
+      console.log('download');
       const url = 'https://ixjjftxezpoomka.form.io/a';
-      let json = await Axios.get(url).data;
-      await Converter.convertJsonToFile(json);
+      let json = await Axios.get(url);
+      return json.data;
     }
   }
 }
