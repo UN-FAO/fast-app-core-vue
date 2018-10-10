@@ -40,9 +40,10 @@
 
 <script>
 import { Form as vForm } from 'vue-formio';
-import { OfflinePlugin, Form, Hash } from 'fast-fastjs';
+import { Translation, Form, Hash } from 'fast-fastjs';
 import Formio from 'formiojs/Formio';
 import ErrorFormatter from 'components/dataTable/submission/errorFormatter';
+import to from 'await-to-js';
 export default {
   components: {
     formio: vForm
@@ -71,13 +72,13 @@ export default {
     form: {
       get() {
         if (this.hasToken()) {
-          return Form.local().findOne({
-            'data.path': 'resetpassword'
-          });
+          return Form.local()
+            .where('data.path', '=', 'resetpassword')
+            .first();
         } else {
-          return Form.local().findOne({
-            'data.path': 'sendreset'
-          });
+          return Form.local()
+            .where('data.path', '=', 'sendreset')
+            .first();
         }
       },
       transform(result) {
@@ -86,7 +87,7 @@ export default {
     },
     options: {
       async get() {
-        let i18n = await OfflinePlugin.getLocalTranslations();
+        let i18n = (await Translation.local().first()).data;
         return { i18n };
       },
       transform(result) {
@@ -126,49 +127,62 @@ export default {
           formSubmission.data.password
         );
         formSubmission._id = user._id;
-        url = this.$FAST_CONFIG.APP_URL + '/user';
+        url = 'user';
       }
 
       if (this.$route.name === 'sendreset' && !this.$route.query.token) {
-        url = this.$FAST_CONFIG.APP_URL + '/sendreset';
+        url = 'sendreset';
       }
 
-      let formio = new Formio(url);
-
-      this.onlineSave(formSubmission, formio);
+      this.onlineSave(formSubmission, url);
     },
-    onlineSave(submission, formio) {
+    onlineSave(submission, path) {
       this.$swal({
-        title: 'Saving...',
+        title: 'Processing...',
         text: this.$t(
-          'The information is being saved. This can take a couple seconds...'
+          'We are sending the password recovery instructions to your email. This can take a couple seconds...'
         ),
         showCancelButton: false,
         onOpen: async () => {
-          Formio.deregisterPlugin('offline');
           this.$swal.showLoading();
-          formio
-            .saveSubmission(submission)
-            .then((updated) => {
-              this.$swal.close();
-              if (this.$route.name === 'sendreset') {
-                this.$router.push({
-                  name: 'login'
-                });
-              }
-            })
-            .catch((e) => {
-              console.log(e);
-              let errorString = ErrorFormatter.format({ errors: e, vm: this });
-              this.$swal({
-                title: e.name,
-                type: 'info',
-                html: errorString,
-                showCloseButton: true,
-                showCancelButton: false,
-                confirmButtonText: 'OK'
-              });
+          let error;
+
+          if (path === 'user') {
+            [error] = await to(
+              Form.getModel({ path })
+                .remote()
+                .update(submission)
+            );
+          } else {
+            [error] = await to(
+              Form.getModel({ path })
+                .remote()
+                .insert(submission)
+            );
+          }
+
+          if (error) {
+            console.log(error);
+            let errorString = ErrorFormatter.format({
+              errors: error,
+              vm: this
             });
+            this.$swal({
+              title: error.name,
+              type: 'info',
+              html: errorString,
+              showCloseButton: true,
+              showCancelButton: false,
+              confirmButtonText: 'OK'
+            });
+          }
+
+          this.$swal.close();
+          if (this.$route.name === 'sendreset') {
+            this.$router.push({
+              name: 'login'
+            });
+          }
         }
       });
     },

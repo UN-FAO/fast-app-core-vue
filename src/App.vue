@@ -61,14 +61,6 @@ export default {
       false
     );
 
-    let emailValidationMessage = (email) => {
-      this.$swal(
-        'Email already taken',
-        "The email '" + email + "' is already taken. Try a different one.",
-        'error'
-      );
-    };
-
     if (Platform.is.cordova) {
       window.plugins.launchmyapp.getLastIntent(
         function(url) {
@@ -81,14 +73,6 @@ export default {
         }
       );
     }
-
-    document.addEventListener('FAST:USER:REGISTRATION:ERROR', (error) => {
-      emailValidationMessage(error.detail.data.submission.email);
-    });
-
-    this.$eventHub.on('FAST:USER:REGISTRATION:ERROR', (error) => {
-      emailValidationMessage(error.email);
-    });
 
     this.$eventHub.on('FAST:LANGUAGE:CHANGED', (lenguage) => {
       this.toggleRtl(lenguage);

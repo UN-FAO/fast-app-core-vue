@@ -44,7 +44,7 @@
   </q-scroll-area>
 </template>
 <script>
-import { Auth, FAST, PagesRepo, Event, Sync, Submission } from 'fast-fastjs';
+import { Auth, FAST, Pages, Event, Sync, Submission } from 'fast-fastjs';
 import {
   QScrollArea,
   QSideLink,
@@ -83,7 +83,7 @@ export default {
   asyncData: {
     PAGES: {
       async get() {
-        let result = await PagesRepo.getLocal();
+        let result = await Pages.local().first();
         let pages = await result.pages.map(async (page) => {
           page.cards.map(async (card) => {
             card.shouldDisplay = await Auth.hasRoleIdIn(card.access);

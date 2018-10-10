@@ -181,7 +181,7 @@
 
 <script>
 import { Form as vForm } from 'vue-formio';
-import { Translation, Form, FormLabels, Localization, FAST } from 'fast-fastjs';
+import { Translation, Form, FAST } from 'fast-fastjs';
 import {
   QScrollArea,
   QCollapsible,
@@ -267,13 +267,13 @@ export default {
   },
   async created() {
     await this.syncApp();
-    this.formNameFilters = await Form.local().find();
-    this.supportedLanguages = await Translation.local().supportedLanguages();
+    this.formNameFilters = await Form.local().get();
+    this.supportedLanguages = await Translation.supportedLanguages();
     this.languageNameFilters = this.supportedLanguages;
     // Pre select all the languages
     this.languageSelection = _map(this.languageNameFilters, 'code');
-    this.groupedTranslations = (await Translation.local().find())[0].data;
-    this.translations = await FormLabels.get(this.selection);
+    this.groupedTranslations = (await Translation.local().first()).data;
+    this.translations = await Form.FormLabels(this.selection);
     Object.keys(this.translations).forEach((label) => {
       if (this.getCurrentTranslations(label) === -1) {
         this.untranslatedArray.push(label);
@@ -400,7 +400,7 @@ export default {
     },
     async saveTranslation(saveObject) {
       this.saved = false;
-      await Localization.setTranslations(saveObject);
+      await Translation.setTranslations(saveObject);
       this.saved = true;
     },
     shouldDisplayLabel(label) {
@@ -459,7 +459,7 @@ export default {
               this.untranslatedArray,
               async (translation, index) => {
                 if (typeof translation !== 'undefined' && translation !== '') {
-                  await Localization.createTranslation(translation);
+                  await Translation.createTranslation(translation);
                   this.progress = Math.floor(index / totalTranslations);
                   console.log(
                     'Total',
@@ -496,7 +496,7 @@ export default {
       }
     },
     async addLanguage() {
-      let options = Translation.local().getIsoLanguages();
+      let options = Translation.getIsoLanguages();
       let customOptions = {};
       _forEach(options, (option) => {
         customOptions[option.code] = option.label;

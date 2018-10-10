@@ -226,7 +226,7 @@ import {
   Submission,
   Event,
   ParallelSurvey,
-  OfflinePlugin
+  Translation
 } from 'fast-fastjs';
 // import formio from 'modules/Formio/components/formio/formio';
 import breadcrum from 'components/breadcrum';
@@ -370,10 +370,10 @@ export default {
                 resultSubmission = loadedSubmission.data;
               } else if (this.$route.params.idSubmission) {
                 this.$swal.close();
-                let s = await Submission.local().get(
-                  this.$route.params.idSubmission
-                );
-                resultSubmission = s.data.data;
+                let s = await Submission.local()
+                  .where('_id', '=', this.$route.params.idSubmission)
+                  .first();
+                resultSubmission = s.data;
               } else {
                 this.$swal.close();
                 resultSubmission = undefined;
@@ -389,7 +389,7 @@ export default {
     },
     participants: {
       get() {
-        return Submission.local().getParallelParticipants(
+        return Submission.getParallelParticipants(
           this.$route.params.idForm,
           this.$route.params.idSubmission
         );
@@ -401,9 +401,9 @@ export default {
     form: {
       get() {
         if (this.$route.params.idForm) {
-          return Form.local().findOne({
-            'data.path': this.$route.params.idForm
-          });
+          return Form.local()
+            .where('data.path', '=', this.$route.params.idForm)
+            .first();
         }
       },
       transform(result) {
@@ -412,11 +412,10 @@ export default {
     },
     options: {
       async get() {
-        let i18n = await OfflinePlugin.getLocalTranslations();
+        let i18n = (await Translation.local().first()).data;
         let readOnly = !!(
           ['online-review', 'read-only'].indexOf(this.editMode) >= 0
         );
-
         return { i18n, readOnly };
       },
       transform(result) {
@@ -526,17 +525,6 @@ export default {
     changeLanguage(language) {
       this.language = language.code;
     },
-    registerOfflinePlugin() {
-      // De register if there was a previous registration
-      Formio.deregisterPlugin('offline');
-      // Register the plugin for offline mode
-      Formio.registerPlugin(
-        OfflinePlugin.getPlugin({
-          formio: new Formio(this.formUrl)
-        }),
-        'offline'
-      );
-    },
     getButtonPosition() {
       let position = 'top-right';
       if (this.$getDirection() === 'pull-right') {
@@ -561,22 +549,18 @@ export default {
         this.autoSaveTimer();
       }
     },
-    onFormSubmit(event) {
+    async onFormSubmit(event) {
       let formSubmission = {
         data: this.activeSubmission,
         draft: false,
         redirect: true,
         trigger: 'formioSubmit',
-        syncError: false
+        syncError: false,
+        _id: this.$route.params.idSubmission
       };
-      this.save(formSubmission).then(async (created) => {
-        this.$swal(
-          'Saved!',
-          'Your submission has been saved!',
-          'success'
-        );
-        await this.redirectIntended({ submission: formSubmission, created });
-      });
+      let created = await this.save(formSubmission);
+      this.$swal('Saved!', 'Your submission has been saved!', 'success');
+      await this.redirectIntended({ submission: formSubmission, created });
     },
     onFormError(event) {
       this.$swal({
@@ -645,6 +629,7 @@ export default {
     async reviewSubmission(revision) {
       let err;
       let submission = this.submission;
+
       submission.data.deleted = revision !== 'accept';
       submission._id = this.$route.params.idSubmission;
       this.$swal({
@@ -656,7 +641,9 @@ export default {
         onOpen: async () => {
           this.$swal.showLoading();
           [err] = await to(
-            Submission.remote().update(submission, this.$route.params.idForm)
+            Form.getModel({ path: this.$route.params.idForm })
+              .remote()
+              .update(submission)
           );
 
           if (err) {
@@ -683,47 +670,39 @@ export default {
       if (!id) {
         return;
       }
-      if (id.includes('_local')) {
-        formSubmission._lid = id;
-      } else {
-        formSubmission._id = id;
-      }
-
       // Normal URL
-      let url = this.$FAST_CONFIG.APP_URL + '/' + this.$route.params.idForm;
+      let path = this.$route.params.idForm;
 
       // Profile Editing
-      if (this.$route.params.idSubmission === 'own_unique_from') {
-        url = this.$FAST_CONFIG.APP_URL + '/' + this.$route.query.form;
+      if (id === 'own_unique_from') {
+        path = this.$route.query.form;
         formSubmission._id = Auth.user()._id;
       }
 
-      let formio = new Formio(url);
-
       if (this.editMode === 'online') {
-        return this.onlineSave(formSubmission, formio);
+        return this.onlineSave(formSubmission, path);
       }
 
-      this.registerOfflinePlugin();
-      return this.FormioInstance.saveSubmission(formSubmission);
+      return Submission.local().update(formSubmission);
     },
-    saveAsDraft() {
+    async saveAsDraft() {
       let formSubmission = {
         data: this.activeSubmission,
         redirect: true,
         draft: true,
         syncError: false,
-        trigger: 'saveAsLocalDraft'
+        trigger: 'saveAsLocalDraft',
+        _id: this.$route.params.idSubmission
       };
 
-      this.save(formSubmission).then(async (created) => {
-        this.$swal(
-          'Draft Saved!',
-          'Your submission has been saved! You can continue editing later',
-          'success'
-        );
-        await this.redirectIntended({ submission: formSubmission, created });
-      });
+      let created = await this.save(formSubmission);
+      this.$swal(
+        'Draft Saved!',
+        'Your submission has been saved! You can continue editing later',
+        'success'
+      );
+
+      await this.redirectIntended({ submission: formSubmission, created });
     },
     autoSaveAsDraft() {
       let formSubmission = {
@@ -731,44 +710,47 @@ export default {
         redirect: false,
         draft: true,
         syncError: false,
-        trigger: 'autoSaveAsDraft'
+        trigger: 'autoSaveAsDraft',
+        _id: this.$route.params.idSubmission
       };
       return this.save(formSubmission);
     },
-    async onlineSave(submission, formio) {
+    async onlineSave(submission, path) {
       return new Promise((resolve, reject) => {
         this.$swal({
-          title: 'Saving...',
+          title: this.$t('Saving...'),
           text: this.$t(
             'The information is being saved. This can take a couple seconds...'
           ),
           showCancelButton: false,
           onOpen: async () => {
-            Formio.deregisterPlugin('offline');
             this.$swal.showLoading();
-            formio
-              .saveSubmission(submission)
-              .then((updated) => {
-                this.$swal.close();
-                resolve(updated);
-              })
-              .catch((e) => {
-                console.log(e);
-                let errorString = ErrorFormatter.format({
-                  errors: e,
-                  vm: this
-                });
+            let [error, updated] = await to(
+              Form.getModel({ path })
+                .remote()
+                .update(submission)
+            );
 
-                this.$swal({
-                  title: e.name || e,
-                  type: 'info',
-                  html: errorString,
-                  showCloseButton: true,
-                  showCancelButton: false,
-                  confirmButtonText: 'OK'
-                });
-                reject(e);
+            if (error) {
+              console.log(error);
+              let errorString = ErrorFormatter.format({
+                errors: error,
+                vm: this
               });
+
+              this.$swal({
+                title: error.name || error,
+                type: 'info',
+                html: errorString,
+                showCloseButton: true,
+                showCancelButton: false,
+                confirmButtonText: 'OK'
+              });
+              reject(error);
+            }
+
+            this.$swal.close();
+            resolve(updated);
           }
         });
       });
@@ -1140,31 +1122,17 @@ export default {
 
       if (_id.indexOf('_local') >= 0) {
         [err, submission] = await to(
-          Submission.local().find({
-            filter: {
-              _id
-            }
-          })
+          Submission.local()
+            .where('_id', '=', _id)
+            .first()
         );
-        submission =
-          submission && submission[0] && submission[0].data
-            ? submission[0].data
-            : null;
       } else {
         [err, submission] = await to(
-          Submission.remote().find({
-            form: formId,
-            filter: [
-              {
-                element: '_id',
-                query: '=',
-                value: _id
-              }
-            ],
-            limit: 1
-          })
+          Form.getModel({ path: formId })
+            .remote()
+            .where('_id', '=', _id)
+            .first()
         );
-        submission = submission && submission[0] ? submission[0] : null;
       }
 
       if (err) {

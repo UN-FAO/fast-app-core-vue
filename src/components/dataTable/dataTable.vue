@@ -95,7 +95,7 @@ import exportMenu from './exportMenu';
 import Export from './dataExport/Export';
 import Columns from './tableFormatter/Columns';
 import { QTooltip, QBtn, QDataTable, QChip, QIcon } from 'quasar';
-import { Import, Submission, Auth, OfflinePlugin } from 'fast-fastjs';
+import { Import, Submission, Auth, OfflinePlugin, Form } from 'fast-fastjs';
 import ErrorFormatter from 'components/dataTable/submission/errorFormatter';
 import { Base64 } from 'js-base64';
 import Formio from 'formiojs/Formio';
@@ -333,20 +333,12 @@ export default {
         cancelButtonText: this.$t('Cancel')
       }).then(async () => {
         Promise.each(rows, async (submission) => {
-          if (
-            submission._id &&
-            submission._id.indexOf('local') < 0 &&
-            !submission._lid
-          ) {
-            await Submission.remote().remove(
-              null,
-              submission._id,
-              this.form.data.path
-            );
+          if (submission._id && !submission._id.includes('_local')) {
+            await Form.getModel({ path: this.form.data.path })
+              .remote()
+              .remove(submission._id);
           } else {
-            await Submission.local().findAndRemove({
-              _id: submission._id
-            });
+            await Submission.local().remove(submission._id);
           }
         })
           .then(async () => {
