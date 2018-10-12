@@ -15,8 +15,9 @@
 
 <script>
 import actioncards from '../../Pagemanager/components/actionCards';
-import { Form, OfflinePlugin } from 'fast-fastjs';
-import Formio from 'formiojs/Formio';
+import { Form, Auth, Submission } from 'fast-fastjs';
+import moment from 'moment';
+
 export default {
   components: {
     actioncards
@@ -25,7 +26,7 @@ export default {
     newForms: {
       async get() {
         let action = this.$route.name === 'CollectedData' ? 'list' : 'create';
-        let result = await Form.local().cardFormattedForms(action);
+        let result = await Form.cardFormattedForms(action);
 
         if (result.cards.length === 1) {
           this.redirectTo(result.cards[0].actions[0]);
@@ -39,54 +40,51 @@ export default {
   },
   methods: {
     redirectTo(action) {
-      if (action.formPath) {
+      if (action.path) {
         let name =
           action.view === 'list'
             ? 'formio_form_show'
             : 'formio_form_submission';
         if (name === 'formio_form_submission') {
-          this.goToCreateView(action.formPath);
+          this.goToCreateView(action.path);
         } else {
           let to = {
             name: name,
-            params: { idForm: action.formPath }
+            params: { idForm: action.path }
           };
           this.$router.push(to);
         }
       }
     },
-    goToCreateView(formID) {
-      let url = this.$FAST_CONFIG.APP_URL + '/' + formID;
-
+    // TODO Function is duplicated on the SHOW view, we must
+    // refactor this
+    async goToCreateView(formPath) {
+      let date = moment().unix();
       let formSubmission = {
         data: {},
-        redirect: 'Update',
         draft: true,
-        trigger: 'createLocalDraft'
+        sync: false,
+        trigger: 'createLocalDraft',
+        user_email: Auth.email(),
+        path: formPath,
+        baseUrl: this.$FAST_CONFIG.APP_URL,
+        created: date,
+        modified: date
       };
-      let formio = new Formio(url);
 
-      Formio.deregisterPlugin('offline');
-      // Register the plugin for offline mode
-      Formio.registerPlugin(
-        OfflinePlugin.getPlugin({
-          formio: formio
-        }),
-        'offline'
-      );
+      let submission = await Submission.local().insert(formSubmission);
 
-      formio.saveSubmission(formSubmission).then((created) => {
-        this.$router.push({
-          name: 'formio_submission_update',
-          params: {
-            idForm: formio.formId,
-            idSubmission: created._id
-          },
-          query: {
-            parent: this.$route.query.parent
-          }
-        });
-      });
+      let route = {
+        name: 'formio_submission_update',
+        params: {
+          idForm: formPath,
+          idSubmission: submission._id
+        },
+        query: {
+          parent: this.$route.query.parent
+        }
+      };
+      this.$router.push(route);
     }
   },
   data() {

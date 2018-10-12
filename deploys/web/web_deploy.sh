@@ -1,4 +1,5 @@
 #!/bin/sh
+sh ./deploys/getOfflineConfig.sh
 rm -rf ./dist
 quasar build
 npm run es5

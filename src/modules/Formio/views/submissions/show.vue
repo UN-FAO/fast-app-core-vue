@@ -10,7 +10,7 @@
                 :parent="$route.query.parent"
                 :currentPageTitle="formTitle"
               />
-           <q-icon slot="right" name="fa-plus-circle" @click="emitEvent('FAST:GO:CREATE')" color="primary" style="cursor:pointer; padding-right: 20px">
+           <q-icon slot="right" name="fa-plus-circle" @click="goToCreateView()" color="primary" style="cursor:pointer; padding-right: 20px">
 
             </q-icon>
 
@@ -72,14 +72,14 @@ import {
 } from 'quasar';
 import datatable from 'components/dataTable/dataTable';
 import breadcrum from 'components/breadcrum';
-import { Form, Auth, Event, Submission } from 'fast-fastjs';
+import { Form, Event, Submission, Auth } from 'fast-fastjs';
 import Columns from 'components/dataTable/tableFormatter/Columns';
-
+import moment from 'moment';
 export default {
   async mounted() {
-    this.currentForm = await Form.local().findOne({
-      'data.path': this.$route.params.idForm
-    });
+    this.currentForm = await Form.local()
+      .where('data.path', '=', this.$route.params.idForm)
+      .first();
 
     await this.refreshData();
 
@@ -142,6 +142,34 @@ export default {
     };
   },
   methods: {
+    async goToCreateView() {
+      let date = moment().unix();
+      let formSubmission = {
+        data: {},
+        draft: true,
+        sync: false,
+        trigger: 'createLocalDraft',
+        user_email: Auth.email(),
+        path: this.$route.params.idForm,
+        baseUrl: this.$FAST_CONFIG.APP_URL,
+        created: date,
+        modified: date
+      };
+
+      let submission = await Submission.local().insert(formSubmission);
+
+      let route = {
+        name: 'formio_submission_update',
+        params: {
+          idForm: this.$route.params.idForm,
+          idSubmission: submission._id
+        },
+        query: {
+          parent: this.$route.query.parent
+        }
+      };
+      this.$router.push(route);
+    },
     breadCrumClick() {
       this.$router.push({
         name: 'pageManager',
@@ -170,25 +198,16 @@ export default {
       Toast.create.positive({ html: 'Your data was uploaded!' });
     },
     async refreshData() {
-      let submissions = await Submission.merged().showView({
-        form: this.$route.params.idForm,
-        limit: 1000,
-        filter: [
-          { element: 'owner', query: '=', value: Auth.user()._id },
-          {
-            element: 'owner',
-            query: '=',
-            value: Auth.email(),
-            type: 'local'
-          }
-        ],
-        select: Columns.getTableView(this.currentForm.data).map(
-          (o) => 'data.' + o.path
-        ),
+      let cols = Columns.getTableView(this.currentForm.data).map(
+        (o) => `data.${o.path} as ${o.path}`
+      );
+      let submissions = await Submission.showView({
+        path: this.$route.params.idForm,
+        columns: cols,
         vm: this
       });
 
-      this.submissions = submissions.results;
+      this.submissions = submissions;
     }
   }
 };

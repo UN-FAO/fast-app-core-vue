@@ -50,7 +50,7 @@
 </style>
 <script>
 import { Form as vForm } from 'vue-formio';
-import { Auth, OfflinePlugin, Form } from 'fast-fastjs';
+import { Auth, Translation, Form } from 'fast-fastjs';
 import { Loading, QField, QInput, QBtn, QIcon, QSpinnerMat } from 'quasar';
 export default {
   components: {
@@ -78,9 +78,9 @@ export default {
   asyncData: {
     form: {
       get() {
-        return Form.local().findOne({
-          'data.path': 'user/login'
-        });
+        return Form.local()
+          .where('data.path', '=', 'user/login')
+          .first();
       },
       transform(result) {
         return result.data;
@@ -88,7 +88,7 @@ export default {
     },
     options: {
       async get() {
-        let i18n = await OfflinePlugin.getLocalTranslations();
+        let i18n = await Translation.getFormTranslations();
         return { i18n };
       },
       transform(result) {

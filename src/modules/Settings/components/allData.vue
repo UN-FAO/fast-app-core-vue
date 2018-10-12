@@ -81,7 +81,7 @@ import {
   QList,
   QItem
 } from 'quasar';
-import { Form, Submission, Auth, Event } from 'fast-fastjs';
+import { Form, Submission, Event, Auth } from 'fast-fastjs';
 import FormioUtils from 'formiojs/utils';
 import datatable from 'components/dataTable/dataTable';
 import Columns from 'components/dataTable/tableFormatter/Columns';
@@ -105,7 +105,7 @@ export default {
   asyncData: {
     formList: {
       get() {
-        return Form.local().find();
+        return Form.local().get();
       },
       transform(result) {
         let forms = result.reduce((filtered, form) => {
@@ -122,7 +122,7 @@ export default {
           return filtered;
         }, []);
         if (forms.length === 1) {
-          this.selectedForm = forms[0].value
+          this.selectedForm = forms[0].value;
         }
         return forms;
       }
@@ -132,9 +132,9 @@ export default {
     currentForm: {
       get() {
         if (this.selectedForm && this.selectedForm !== '') {
-          return Form.local().findOne({
-            'data.path': this.selectedForm
-          });
+          return Form.local()
+            .where('data.path', '=', this.selectedForm)
+            .first();
         } else {
           return {
             data: {
@@ -157,32 +157,33 @@ export default {
           return null;
         }
         this.loading = true;
-        let queryParams = {
-          form: this.currentForm.data && this.currentForm.data.path,
-          limit: 99999,
-          select: Columns.getTableView(this.currentForm.data).map(
-            (o) => 'data.' + o.path
-          ),
-          vm: this
-        };
 
-        queryParams.filter =
-          Auth.hasRole('Reviewer') && !Auth.hasRole('Administrator')
-            ? [
-                {
-                  element: 'data.country',
-                  query: 'in',
-                  value: Auth.user().data.countries
-                }
-              ]
-            : null;
+        let cols = Columns.getTableView(this.currentForm.data).map(
+          (o) => `data.${o.path} as ${o.path}`
+        );
+        cols = [...cols, 'data.country as country'];
+        let subs = await Submission.showView({
+          path: this.currentForm.data.path,
+          columns: cols,
+          vm: this,
+          allData: true,
+          limit: 99999
+        });
 
-        let submissions = await Submission.remote().showView(queryParams);
+        if (!Auth.hasRole('Administrator')) {
+          subs = subs.filter((s) => {
+            let user = Auth.user().data;
+            if (user && user.countries) {
+              return user.countries.includes(s.country);
+            }
+          });
+        }
+
         this.loading = false;
-        return submissions;
+        return subs;
       },
       transform(submissions) {
-        return submissions && submissions.results ? submissions.results : [];
+        return submissions;
       },
       watch() {
         this.currentForm;

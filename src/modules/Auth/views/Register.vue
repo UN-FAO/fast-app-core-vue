@@ -22,8 +22,8 @@
                             :language="language"
                             v-on:submit="submit"
                             v-if="form && options"
+                            :key="key"
                           />
-                        <formio :formURL="$FAST_CONFIG.APP_URL + '/userregister'" hashField="password" />
                         <br>
                         <p class="text-center">
                             <router-link :to="{ path: 'login' }">
@@ -38,8 +38,8 @@
 
 <script>
 import { Form as vForm } from 'vue-formio';
-import { OfflinePlugin, Form } from 'fast-fastjs';
-import Formio from 'formiojs/Formio';
+import { Form, User, Hash, Translation } from 'fast-fastjs';
+import to from 'await-to-js';
 export default {
   components: {
     formio: vForm
@@ -49,15 +49,15 @@ export default {
       language: localStorage.getItem('defaultLenguage')
         ? localStorage.getItem('defaultLenguage')
         : 'en',
-      formUrl: this.$FAST_CONFIG.APP_URL + '/userregister'
+      key: Math.random()
     };
   },
   asyncData: {
     form: {
       get() {
-        return Form.local().findOne({
-          'data.path': 'userregister'
-        });
+        return Form.local()
+          .where('data.path', '=', 'userregister')
+          .first();
       },
       transform(result) {
         return result.data;
@@ -65,7 +65,8 @@ export default {
     },
     options: {
       async get() {
-        let i18n = await OfflinePlugin.getLocalTranslations();
+        let i18n = (await Translation.local().first()).data;
+
         return { i18n };
       },
       transform(result) {
@@ -74,36 +75,33 @@ export default {
     }
   },
   methods: {
-    submit(event) {
-      let formSubmission = {
-        data: event.data
-      };
-      let formio = new Formio(this.formUrl);
-      this.registerOfflinePlugin();
-      formio
-        .saveSubmission(formSubmission)
-        .then((result) => {
-          this.$router.push({ path: 'login' });
+    async submit(event) {
+      event.data.hashedPassword = await Hash.string(event.data.password);
+
+      let [error, user] = await to(
+        User.storeLocally({
+          data: event.data,
+          sync: false,
+          path: 'userregister'
         })
-        .catch((error) => {
-          console.log(error);
-          this.$forceUpdate();
-        });
+      );
+
+      if (error) {
+        console.log(error);
+        this.$swal(
+          this.$t('Email already taken'),
+          this.$t('That email is already taken. Try a different one'),
+          'error'
+        );
+        this.key = Math.random();
+      }
+
+      if (user) {
+        this.$router.push({ path: 'login' });
+      }
     },
     changeLanguage(language) {
       this.language = language.code;
-    },
-    registerOfflinePlugin() {
-      // De register if there was a previous registration
-      Formio.deregisterPlugin('offline');
-      // Register the plugin for offline mode
-      Formio.registerPlugin(
-        OfflinePlugin.getPlugin({
-          formio: new Formio(this.formUrl),
-          hashField: true
-        }),
-        'offline'
-      );
     }
   }
 };

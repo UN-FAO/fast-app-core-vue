@@ -104,7 +104,7 @@ export default {
     };
   },
   async beforeMount() {
-    this.languages = await Translation.local().supportedLanguages();
+    this.languages = await Translation.supportedLanguages();
   },
   computed: {
     isInsideApp() {
@@ -138,7 +138,7 @@ export default {
       return Auth.email();
     },
     async changeLanguage() {
-      let options = await Translation.local().supportedLanguages();
+      let options = await Translation.supportedLanguages();
 
       let customOptions = {};
 
