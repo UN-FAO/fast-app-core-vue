@@ -36,7 +36,9 @@
             <div class="col-sm-12">
               <q-card>
                 <q-card-title>
-                  <span style="color:grey">{{$t('Supported Languages')}} </span>: {{numberOfLanguages}}
+                  <span style="color:grey">
+                    {{$t('Supported Languages')}}
+                  </span>: {{numberOfLanguages}} ({{numberOfTranslations}} {{$t('labels')}})
                 </q-card-title>
                 <q-list separator>
                   <q-collapsible icon="fa-language" :label="$t('Translation Status')">
@@ -85,7 +87,13 @@
               <q-input v-model.lazy="searchBox" class="searchTranslation" type="text" :stack-label="$t('TRANSLATION FILTER')" :placeholder="$t('Search...')" :after="[{  icon: 'fa-search'}]" clearable />
               <q-scroll-area style="height: 500px;" no-boder>
                 <q-list highlight sparse no-border>
-                  <q-item v-for="label in translationsArray" v-if="shouldDisplayLabel(label)" :key="label" @click="selectLabel(label)" style="cursor:pointer">
+                  <q-item
+                    v-for="label in translationsArray"
+                    v-if="shouldDisplayLabel(label)"
+                    :key="label"
+                    @click="selectLabel(label)"
+                    style="cursor:pointer"
+                  >
                     <q-item-side icon="fa-language" color="primary" />
                     <q-item-main>
                       <q-item-tile label>{{label}}</q-item-tile>
@@ -176,7 +184,6 @@
 .q-checkbox {
   color: black;
 }
-
 </style>
 
 <script>
@@ -273,7 +280,10 @@ export default {
     // Pre select all the languages
     this.languageSelection = _map(this.languageNameFilters, 'code');
     this.groupedTranslations = (await Translation.local().first()).data;
-    this.translations = await Form.FormLabels(this.selection);
+    this.translations = await Form.FormLabels(
+      this.selection,
+      this.$appConf.i18n
+    );
     Object.keys(this.translations).forEach((label) => {
       if (this.getCurrentTranslations(label) === -1) {
         this.untranslatedArray.push(label);
@@ -296,6 +306,13 @@ export default {
     },
     numberOfLanguages() {
       return _get(this.supportedLanguages, 'length', 0);
+    },
+    numberOfTranslations() {
+      try {
+        return _get(Object.keys(this.translations), 'length', 0);
+      } catch (e) {
+        return 0;
+      }
     },
     translationStatus() {
       let translations = this.translations;

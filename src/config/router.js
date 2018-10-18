@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import setRoutes from 'config/setRoutes';
-import { Auth } from 'fast-fastjs';
 import { Loading, QSpinnerAudio } from 'quasar';
 /**
  * Import routes from modules
@@ -51,6 +50,18 @@ const router = new VueRouter({
   }
 });
 
+
+const authCheck = () => {
+    try {
+      let user = JSON.parse(localStorage.getItem('authUser'));
+
+      return user === null ? false : user;
+    } catch (e) {
+      localStorage.removeItem('authUser');
+      return false;
+    }
+  };
+
 /*
  |--------------------------------------------------------------------------
  | Secure Routes
@@ -73,10 +84,10 @@ router.beforeEach((to, from, next) => {
     spinnerColor: 'white'
   });
   // If the route requires Auth
-  if (to.meta.requiresAuth && Auth.user() === false) {
+  if (to.meta.requiresAuth && authCheck() === false) {
     next(false);
     router.push({ name: 'login' });
-  } else if (Auth.user() && !to.meta.requiresAuth) {
+  } else if (authCheck() && !to.meta.requiresAuth) {
     router.push({ name: 'dashboard' });
   } else {
     window.scrollTo(0, 0);

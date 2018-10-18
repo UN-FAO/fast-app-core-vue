@@ -1,4 +1,23 @@
 import 'babel-polyfill';
+import { FAST_CONFIG_URL, FAST_CONFIG_ID, OFFLINE_START, FLUENT_FORMIO_BASEURL } from 'config/env';
+import TRANSLATIONS from 'config/Localization/appTranslations';
+
+let appConf = {
+  type: 'remote',
+  appConfigId: FAST_CONFIG_ID,
+  appConfigUrl: FAST_CONFIG_URL,
+  i18n: TRANSLATIONS,
+  offlineStart: OFFLINE_START,
+  fluentFormioBaseUrl: FLUENT_FORMIO_BASEURL,
+  offlineFiles: {
+    Configuration: require('src/config/offline/Configuration.json'),
+    Roles: require('src/config/offline/Roles.json'),
+    lastUpdated: require('src/config/offline/lastUpdate.json'),
+    Translations: require('src/config/offline/Translations.json'),
+    Pages: require('src/config/offline/Pages.json'),
+    Forms: require('src/config/offline/Forms.json')
+  }
+};
 // require('offline-plugin/runtime').install();
 // === DEFAULT / CUSTOM STYLE ===
 // WARNING! always comment out ONE of the two require() calls below.
@@ -37,27 +56,8 @@ import 'quasar-extras/fontawesome';
 import VueAsyncProperties from 'vue-async-properties';
 Vue.use(VueAsyncProperties);
 
-import { Moment, FAST, Event } from 'fast-fastjs';
+import { Moment, FAST } from 'fast-fastjs';
 Moment.setLocales();
-
-import { CONFIG_URL, APP_CONFIG_ID, OFFLINE_START } from 'config/env';
-import TRANSLATIONS from 'config/Localization/appTranslations';
-
-let appConf = {
-  type: 'remote',
-  appConfigId: APP_CONFIG_ID,
-  appConfigUrl: CONFIG_URL,
-  i18n: TRANSLATIONS,
-  offlineStart: OFFLINE_START,
-  offlineFiles: {
-    Configuration: require('src/config/offline/Configuration.json'),
-    Roles: require('src/config/offline/Roles.json'),
-    lastUpdated: require('src/config/offline/lastUpdate.json'),
-    Translations: require('src/config/offline/Translations.json'),
-    Pages: require('src/config/offline/Pages.json'),
-    Forms: require('src/config/offline/Forms.json')
-  }
-};
 
 Vue.config.productionTip = false;
 Vue.prototype.$appConf = appConf;

@@ -20,7 +20,14 @@
         <span slot="subtitle" class="pull-left text-grey" style="padding-top:10px;">
           {{$t(card.subtitle)}}
           <br>
-        <q-btn color="primary" style="margin-top:10px" @click="applyAction(action)" v-if="action.target && (action.shouldDisplay|| typeof(action.shouldDisplay) === 'undefined')"  v-for="action in card.actions" v-bind:key="action.text">
+        <q-btn
+          color="primary"
+          style="margin-top:10px; margin-left: 15px!important;"
+          @click="applyAction(action)"
+          v-if="action.target && (action.shouldDisplay|| typeof(action.shouldDisplay) === 'undefined')"
+          v-for="action in card.actions"
+          v-bind:key="action.text"
+        >
           {{$t(action.text)}}
         </q-btn>
         </span>
