@@ -40,6 +40,7 @@
 import { Form as vForm } from 'vue-formio';
 import { Form, User, Hash, Translation } from 'fast-fastjs';
 import to from 'await-to-js';
+import _debounce from 'lodash/debounce'
 export default {
   components: {
     formio: vForm
@@ -73,6 +74,9 @@ export default {
         return result;
       }
     }
+  },
+  created() {
+    this.submit = _debounce(this.submit, 1000)
   },
   methods: {
     async submit(event) {

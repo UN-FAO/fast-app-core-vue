@@ -163,7 +163,7 @@ export default {
   methods: {
     async getUsers() {
       this.loading = true;
-      let users = await User.remote().find({ limit: 5000 });
+      let users = await User.remote().limit(5000).get();
       this.users = users.filter((obj, pos, arr) => {
         return (
           arr

@@ -46,7 +46,7 @@ import {
   QItemSeparator
 } from 'quasar';
 
-import { PagesRepo, Auth } from 'fast-fastjs';
+import { Pages, Auth } from 'fast-fastjs';
 import actioncards from '../components/actionCards';
 import breadcrum from 'components/breadcrum';
 import Promise from 'bluebird';
@@ -79,7 +79,7 @@ export default {
   asyncData: {
     page: {
       async get() {
-        let result = await PagesRepo.getLocal();
+        let result = await Pages.local().first();
         result = _cloneDeep(result);
         let page = this.filterPage(result.pages, this.$route.params.pageId);
         page.shouldDisplay = await Auth.hasRoleIdIn(page.access);

@@ -111,7 +111,7 @@ export default {
     handleLogin(event, done) {
       this.LoadingLogIn = true;
       this.credentials.password = event.data.password.trim();
-      this.credentials.username = event.data.email.trim();
+      this.credentials.username = event.data.username.trim();
       // Try to authenticate the User
       Loading.show('Loging in...');
       Auth.attempt(

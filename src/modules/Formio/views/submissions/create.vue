@@ -226,7 +226,8 @@ import {
   Submission,
   Event,
   ParallelSurvey,
-  Translation
+  Translation,
+  OfflinePlugin
 } from 'fast-fastjs';
 // import formio from 'modules/Formio/components/formio/formio';
 import breadcrum from 'components/breadcrum';
@@ -271,6 +272,8 @@ export default {
     // executor
   },
   async created() {
+    Formio.registerPlugin(OfflinePlugin.get(), 'fast');
+    Formio.setBaseUrl(this.$FAST_CONFIG.APP_URL);
     this.$eventHub.$on('FAST:LANGUAGE:CHANGED', this.changeLanguage);
 
     this.$eventHub.on('formio.nextPage', (data) => {
@@ -313,6 +316,7 @@ export default {
     });
   },
   beforeDestroy() {
+    Formio.deregisterPlugin('fast');
     this.$eventHub.$off('FAST:LANGUAGE:CHANGED', this.changeLanguage);
     Event.remove({
       name: 'FAST:FORMIO:RENDERED',

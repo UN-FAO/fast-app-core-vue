@@ -9,6 +9,7 @@
  | want to use dontenv in the project
  |
  */
-exports.APP_CONFIG_ID = process.env.APP_CONFIG_ID;
-exports.CONFIG_URL = process.env.CONFIG_URL;
+exports.FAST_CONFIG_ID = process.env.FAST_CONFIG_ID;
+exports.FAST_CONFIG_URL = process.env.FAST_CONFIG_URL;
 exports.OFFLINE_START = process.env.OFFLINE_START;
+exports.FLUENT_FORMIO_BASEURL = process.env.FLUENT_FORMIO_BASEURL;
