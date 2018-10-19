@@ -33,13 +33,7 @@ rm -rf ./src/config/offline/*
 if [ "$OFFLINE_START" == "true" ]; then
 
     # GET APP CONFIGURATION
-<<<<<<< HEAD
-
-    CONFIG_URL=$CONFIG_URL$APP_CONFIG_ID
-
-=======
     CONFIG_URL=$FAST_CONFIG_URL/configuration/submission/$FAST_CONFIG_ID
->>>>>>> dev
     curl $CONFIG_URL -o ./src/config/offline/Configuration.json
 
 
