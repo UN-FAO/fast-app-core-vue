@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget android-versionCode="35" id="org.fao.rpw" version="0.12.89" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>Red Palm Weevil</name>
+<widget android-versionCode="35" id="org.fao.sharp" version="0.6.4" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>SSFK</name>
     <description>
-       Development app for the RPW project
+    Trinidad and Tobago SSFK POC
     </description>
     <author email="ignacio.cabrera@fao.org" href="http://www.fao.org">
         FAO-UN  - CIO - IT DESIGN AND TECHNOLOGY

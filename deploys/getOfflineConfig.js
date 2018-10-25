@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const request = require('request');
+const progress = require('request-progress');
 
 function getEnv(env) {
   const lines = fs.readFileSync('.env').toString().trim().replace(/\r?\r/g, "").split(/\r|=|\n/);
@@ -16,19 +17,23 @@ function getEnv(env) {
 
 function doRequest(url) {
   return new Promise(function (resolve, reject) {
-    request(url, function (error, res, body) {
-      if (!error && res.statusCode === 200) {
-        resolve(body);
-      } else {
-        reject(error);
-      }
-    });
+    progress(
+      request(url, function (error, res, body) {
+        if (!error && res.statusCode === 200) {
+          resolve(body);
+        } else {
+          reject(error);
+        }
+      })
+    ).on('progress', state => {
+      console.log(state);
+    }).on('end', () => {});
   });
 }
 
 const OFFLINE_START = getEnv('OFFLINE_START');
-const APP_CONFIG_ID = getEnv('APP_CONFIG_ID');
-const CONFIG_URL = getEnv('CONFIG_URL');
+const FAST_CONFIG_ID = getEnv('FAST_CONFIG_ID');
+const FAST_CONFIG_URL = getEnv('FAST_CONFIG_URL');
 
 const dir = './src/config/offline';
 
@@ -45,7 +50,7 @@ async function main() {
   });
   
   if (OFFLINE_START === 'true') {
-    const url = CONFIG_URL + APP_CONFIG_ID;
+    const url = FAST_CONFIG_URL + 'configuration/submission/' + FAST_CONFIG_ID;
 
     let res;
   
