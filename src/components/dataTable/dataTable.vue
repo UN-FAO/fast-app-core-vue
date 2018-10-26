@@ -17,9 +17,12 @@
             >
                 {{scope.data ? scope.data : '-'}}
             </q-btn>
+            <span v-bind:key="col.field" v-if="col.field !== 'HumanUpdated'">
+              {{$t(scope.data)}}
+            </span>
             <span v-bind:key="col.field" v-else>
-            {{scope.data}}
-      </span>
+              {{scope.data}}
+            </span>
         </template>
 
         <template slot="col-status" scope="scope">
@@ -338,7 +341,7 @@ export default {
               .remote()
               .remove(submission._id);
           } else {
-            await Submission.local().remove(submission._id);
+            await Submission().local().remove(submission._id);
           }
         })
           .then(async () => {

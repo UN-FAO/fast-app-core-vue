@@ -57,6 +57,7 @@ import VueAsyncProperties from 'vue-async-properties';
 Vue.use(VueAsyncProperties);
 
 import { Moment, FAST } from 'fast-fastjs';
+import 'moment/min/locales';
 Moment.setLocales();
 
 Vue.config.productionTip = false;

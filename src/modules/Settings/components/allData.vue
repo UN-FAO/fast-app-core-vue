@@ -80,15 +80,14 @@ import {
   QIcon,
   QList,
   QItem
-} from 'quasar';
-import { Form, Submission, Event, Auth } from 'fast-fastjs';
-import FormioUtils from 'formiojs/utils';
-import datatable from 'components/dataTable/dataTable';
-import Columns from 'components/dataTable/tableFormatter/Columns';
-import breadcrum from 'components/breadcrum';
+} from "quasar";
+import { Form, Submission, Event, Auth } from "fast-fastjs";
+import FormioUtils from "formiojs/utils";
+import datatable from "components/dataTable/dataTable";
+import breadcrum from "components/breadcrum";
 export default {
   async mounted() {
-    this.$eventHub.on('FAST:LANGUAGE:CHANGED', async (data) => {
+    this.$eventHub.on("FAST:LANGUAGE:CHANGED", async data => {
       await this.updateLocalSubmissions();
     });
     this.selectedForm = this.$route.query && this.$route.query.form;
@@ -96,9 +95,9 @@ export default {
   methods: {
     async createDialog() {
       Event.emit({
-        name: 'FAST:EXPORT:OPENMENU',
+        name: "FAST:EXPORT:OPENMENU",
         data: undefined,
-        text: 'Triggering Open Export Menu'
+        text: "Triggering Open Export Menu"
       });
     }
   },
@@ -112,7 +111,7 @@ export default {
           if (
             form.data &&
             form.data.tags &&
-            form.data.tags.indexOf('visible') > -1
+            form.data.tags.indexOf("visible") > -1
           ) {
             filtered.push({
               label: form.data.title,
@@ -131,14 +130,14 @@ export default {
   asyncComputed: {
     currentForm: {
       get() {
-        if (this.selectedForm && this.selectedForm !== '') {
+        if (this.selectedForm && this.selectedForm !== "") {
           return Form.local()
-            .where('data.path', '=', this.selectedForm)
+            .where("data.path", "=", this.selectedForm)
             .first();
         } else {
           return {
             data: {
-              title: ''
+              title: ""
             }
           };
         }
@@ -153,25 +152,16 @@ export default {
     },
     submissions: {
       async get() {
-        if (this.currentForm.data && this.currentForm.data.title === '') {
+        if (this.currentForm.data && this.currentForm.data.title === "") {
           return null;
         }
         this.loading = true;
 
-        let cols = Columns.getTableView(this.currentForm.data).map(
-          (o) => `data.${o.path} as ${o.path}`
-        );
-        cols = [...cols, 'data.country as country'];
-        let subs = await Submission.showView({
-          path: this.currentForm.data.path,
-          columns: cols,
-          vm: this,
-          allData: true,
-          limit: 99999
-        });
+        let path = this.currentForm.data.path;
+        let submissions = await Submission({ path }).showView('remote');
 
-        if (!Auth.hasRole('Administrator')) {
-          subs = subs.filter((s) => {
+        if (!Auth.hasRole("Administrator")) {
+          submissions = submissions.filter(s => {
             let user = Auth.user().data;
             if (user && user.countries) {
               return user.countries.includes(s.country);
@@ -180,7 +170,7 @@ export default {
         }
 
         this.loading = false;
-        return subs;
+        return submissions;
       },
       transform(submissions) {
         return submissions;
@@ -193,24 +183,24 @@ export default {
   },
   computed: {
     formTitle() {
-      let title = '';
+      let title = "";
       if (this.currentForm) {
-        title = this.currentForm.data ? this.currentForm.data.title : '';
+        title = this.currentForm.data ? this.currentForm.data.title : "";
       }
       return this.$t(title);
     },
     columns() {
-      if (!this.currentForm || this.currentForm.data.title === '') {
+      if (!this.currentForm || this.currentForm.data.title === "") {
         return [
           {
-            label: 'Longitude',
-            field: 'longitude',
+            label: "Longitude",
+            field: "longitude",
             filter: true,
             sort: true
           },
           {
-            label: 'Another',
-            field: 'another',
+            label: "Another",
+            field: "another",
             filter: true,
             sort: true
           }
@@ -225,8 +215,8 @@ export default {
       );
       this.visibleColumns = this.visibleColumns.slice(0, 7);
       let columns = [];
-      this.visibleColumns = this.visibleColumns.filter((c) => {
-        return !!(c.label !== '');
+      this.visibleColumns = this.visibleColumns.filter(c => {
+        return !!(c.label !== "");
       });
       this.visibleColumns.forEach((column, index) => {
         // let self = this;
@@ -239,8 +229,8 @@ export default {
         columns.push(visibleColum);
       });
       columns.push({
-        label: 'Review',
-        field: 'review',
+        label: "Review",
+        field: "review",
         filter: false,
         sort: false
       });
@@ -271,9 +261,9 @@ export default {
     };
   },
   beforeDestroy() {
-    this.$eventHub.off('FAST-DATA_SYNCED');
-    this.$eventHub.off('FAST-DATA_IMPORTED');
-    this.$eventHub.off('FAST:LANGUAGE:CHANGED');
+    this.$eventHub.off("FAST-DATA_SYNCED");
+    this.$eventHub.off("FAST-DATA_IMPORTED");
+    this.$eventHub.off("FAST:LANGUAGE:CHANGED");
   }
 };
 </script>

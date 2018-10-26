@@ -72,7 +72,7 @@ export default {
         modified: date
       };
 
-      let submission = await Submission.local().insert(formSubmission);
+      let submission = await Submission().local().insert(formSubmission);
 
       let route = {
         name: 'formio_submission_update',

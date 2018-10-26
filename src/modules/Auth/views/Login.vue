@@ -49,9 +49,9 @@
 }
 </style>
 <script>
-import { Form as vForm } from 'vue-formio';
-import { Auth, Translation, Form } from 'fast-fastjs';
-import { Loading, QField, QInput, QBtn, QIcon, QSpinnerMat } from 'quasar';
+import { Form as vForm } from "vue-formio";
+import { Auth, Translation, Form } from "fast-fastjs";
+import { Loading, QField, QInput, QBtn, QIcon, QSpinnerMat } from "quasar";
 export default {
   components: {
     formio: vForm,
@@ -64,14 +64,14 @@ export default {
   data() {
     return {
       credentials: {
-        username: '',
-        password: ''
+        username: "",
+        password: ""
       },
       isAdminLogin: false,
       LoadingLogIn: false,
-      language: localStorage.getItem('defaultLenguage')
-        ? localStorage.getItem('defaultLenguage')
-        : 'en',
+      language: localStorage.getItem("defaultLenguage")
+        ? localStorage.getItem("defaultLenguage")
+        : "en",
       error: null
     };
   },
@@ -79,7 +79,7 @@ export default {
     form: {
       get() {
         return Form.local()
-          .where('data.path', '=', 'user/login')
+          .where("data.path", "=", "user/login")
           .first();
       },
       transform(result) {
@@ -97,10 +97,10 @@ export default {
     }
   },
   mounted() {
-    this.$eventHub.$on('FAST:LANGUAGE:CHANGED', this.changeLanguage);
+    this.$eventHub.$on("FAST:LANGUAGE:CHANGED", this.changeLanguage);
   },
   beforeDestroy() {
-    this.$eventHub.$off('FAST:LANGUAGE:CHANGED', this.changeLanguage);
+    this.$eventHub.$off("FAST:LANGUAGE:CHANGED", this.changeLanguage);
   },
   methods: {
     /**
@@ -111,29 +111,32 @@ export default {
     handleLogin(event, done) {
       this.LoadingLogIn = true;
       this.credentials.password = event.data.password.trim();
-      this.credentials.username = event.data.username.trim();
+      this.credentials.username = event.data.username
+        ? event.data.username.trim()
+        : event.data.email.trim();
+      this.credentials.email = this.credentials.username;
       // Try to authenticate the User
-      Loading.show('Loging in...');
+      Loading.show("Loging in...");
       Auth.attempt(
         this.credentials,
         this.$FAST_CONFIG.APP_URL,
-        this.isAdminLogin ? 'admin' : undefined
+        this.isAdminLogin ? "admin" : undefined
       )
-        .then((User) => {
+        .then(User => {
           Loading.hide();
           this.$router.push({
-            name: 'dashboard'
+            name: "dashboard"
           });
         })
-        .catch((error) => {
-          console.log('Could not login', error);
+        .catch(error => {
+          console.log("Could not login", error);
           Loading.hide();
           this.LoadingLogIn = false;
           this.error = Math.random();
           this.$swal(
-            'Wrong Credentials!',
-            'Wrong username or password...try again',
-            'error'
+            "Wrong Credentials!",
+            "Wrong username or password...try again",
+            "error"
           );
         });
     },

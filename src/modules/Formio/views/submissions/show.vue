@@ -53,7 +53,7 @@
 </template>
 
 <script>
-import loading from 'components/loading';
+import loading from "components/loading";
 import {
   QCard,
   QCardMain,
@@ -69,52 +69,51 @@ import {
   QField,
   QOptionGroup,
   QBtn
-} from 'quasar';
-import datatable from 'components/dataTable/dataTable';
-import breadcrum from 'components/breadcrum';
-import { Form, Event, Submission, Auth } from 'fast-fastjs';
-import Columns from 'components/dataTable/tableFormatter/Columns';
-import moment from 'moment';
+} from "quasar";
+import datatable from "components/dataTable/dataTable";
+import breadcrum from "components/breadcrum";
+import { Form, Event, Submission, Auth } from "fast-fastjs";
+import moment from "moment";
 export default {
   async mounted() {
     this.currentForm = await Form.local()
-      .where('data.path', '=', this.$route.params.idForm)
+      .where("data.path", "=", this.$route.params.idForm)
       .first();
 
     await this.refreshData();
 
     Event.listen({
-      name: 'FAST:SUBMISSION:SYNCED',
+      name: "FAST:SUBMISSION:SYNCED",
       callback: this.handleDataSynced
     });
     Event.listen({
-      name: 'FAST:DATA:IMPORTED',
+      name: "FAST:DATA:IMPORTED",
       callback: this.handleDataImported
     });
 
-    this.$eventHub.on('FAST:LANGUAGE:CHANGED', async (data) => {
+    this.$eventHub.on("FAST:LANGUAGE:CHANGED", async data => {
       await this.refreshData();
     });
   },
   beforeDestroy() {
     Event.remove({
-      name: 'FAST:SUBMISSION:SYNCED',
+      name: "FAST:SUBMISSION:SYNCED",
       callback: this.handleDataSynced
     });
   },
   computed: {
     formTitle() {
-      let title = '';
+      let title = "";
       if (this.currentForm) {
-        title = this.currentForm.data ? this.currentForm.data.title : '';
+        title = this.currentForm.data ? this.currentForm.data.title : "";
       }
       return this.$t(title);
     },
     breadcrum() {
-      return 'Home';
+      return "Home";
     },
     noSubmissions() {
-      return typeof this.submissions === 'undefined';
+      return typeof this.submissions === "undefined";
     }
   },
   components: {
@@ -148,7 +147,7 @@ export default {
         data: {},
         draft: true,
         sync: false,
-        trigger: 'createLocalDraft',
+        trigger: "createLocalDraft",
         user_email: Auth.email(),
         path: this.$route.params.idForm,
         baseUrl: this.$FAST_CONFIG.APP_URL,
@@ -156,10 +155,12 @@ export default {
         modified: date
       };
 
-      let submission = await Submission.local().insert(formSubmission);
+      let submission = await Submission()
+        .local()
+        .insert(formSubmission);
 
       let route = {
-        name: 'formio_submission_update',
+        name: "formio_submission_update",
         params: {
           idForm: this.$route.params.idForm,
           idSubmission: submission._id
@@ -172,7 +173,7 @@ export default {
     },
     breadCrumClick() {
       this.$router.push({
-        name: 'pageManager',
+        name: "pageManager",
         params: {
           pageId: JSON.parse(window.atob(this.$route.query.parent)).url
         }
@@ -183,30 +184,23 @@ export default {
     },
     async createDialog() {
       Event.emit({
-        name: 'FAST:EXPORT:OPENMENU',
+        name: "FAST:EXPORT:OPENMENU",
         data: undefined,
-        text: 'Triggering Open Export Menu'
+        text: "Triggering Open Export Menu"
       });
     },
     async handleDataImported() {
       await this.refreshData();
       Loading.hide();
-      this.$swal('Imported!', 'Your submission were imported', 'success');
+      this.$swal("Imported!", "Your submission were imported", "success");
     },
     async handleDataSynced() {
       await this.refreshData();
-      Toast.create.positive({ html: 'Your data was uploaded!' });
+      Toast.create.positive({ html: "Your data was uploaded!" });
     },
     async refreshData() {
-      let cols = Columns.getTableView(this.currentForm.data).map(
-        (o) => `data.${o.path} as ${o.path}`
-      );
-      let submissions = await Submission.showView({
-        path: this.$route.params.idForm,
-        columns: cols,
-        vm: this
-      });
-
+      let path = this.$route.params.idForm;
+      let submissions = await Submission({ path }).showView();
       this.submissions = submissions;
     }
   }

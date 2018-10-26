@@ -165,7 +165,7 @@ export default {
         showCancelButton: false,
         onOpen: async () => {
           this.$swal.showLoading();
-          let unsyncSubmissions = await Submission.local().getUnsync();
+          let unsyncSubmissions = await Submission().local().getUnsync();
           if (unsyncSubmissions.length > 0) {
             await Sync.now();
             this.$swal.close();
