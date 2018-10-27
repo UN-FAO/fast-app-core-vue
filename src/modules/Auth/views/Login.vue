@@ -22,9 +22,6 @@
               <router-link :to="{ path: 'sendreset' }">
                 <h5>{{$t('Forgot your password?')}}</h5>
               </router-link>
-              <a
-                href="fastappfaw://forms/scoutingtraps/submission?plantvillagescounting=ewoJX2lkOiAiZ2l2ZW5JZEZyb21GQVdfbG9jYWwiLAoJZGF0YTogewoJCXNhbXBsZTFQbGFudHNDaGVja2VkOiAxMCwKCQlzYW1wbGUxRkFXOiAyCgkJc2FtcGxlMUFBVzogMgoJCXNhbXBsZTFCb3JlcjogMgoJCXNhbXBsZTJQbGFudHNDaGVja2VkOiAxMAoJCXNhbXBsZTJGQVc6IDIKCQlzYW1wbGUyQUFXOiAyCgkJc2FtcGxlMkJvcmVyOiAyCgkJc2FtcGxlM1BsYW50c0NoZWNrZWQ6IDEwCgkJc2FtcGxlM0ZBVzogMgoJCXNhbXBsZTNBQVc6IDIKCQlzYW1wbGUzQm9yZXI6IDIKCQlzYW1wbGU0UGxhbnRzQ2hlY2tlZDogMTAKCQlzYW1wbGU0RkFXOiAyCgkJc2FtcGxlNEFBVzogMgoJCXNhbXBsZTRCb3JlcjogMgoJCXNhbXBsZTVQbGFudHNDaGVja2VkOiAxMAoJCXNhbXBsZTVGQVc6IDIKCQlzYW1wbGU1QUFXOiAyCgkJc2FtcGxlNUJvcmVyOiAyCgkJcGVzdFN0YWdlRkFXOiBbJ2VnZ3MnLCAnbGFydmFlJywgJ3B1cGFlJywgJ2FkdWx0cyddCgkJcGVzdFN0YWdlQUFXOiBbJ2VnZ3MnLCAnbGFydmFlJywgJ3B1cGFlJywgJ2FkdWx0cyddCgkJcGVzdFN0YWdlQm9yZXI6IFsnZWdncycsICdsYXJ2YWUnLCAncHVwYWUnLCAnYWR1bHRzJ10KCX0sCglleHRyYTogewoJCXNvbWVFeHRyYUluZm9ybWF0aW9uOiAibXlFeHRyYUluZm9ybWF0aW9uIgoJfQp9"
-              >Open my app</a>
             </p>
             <p class="text-center" style="color: grey !important">
               {{$t('Version')}} {{$appVersion}}
