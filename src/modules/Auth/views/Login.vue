@@ -1,45 +1,54 @@
 <template>
-    <div class="container">
-        <div class="row">
-            <div class="col-xl-6 col-lg-6 col-md-9 col-sm-12 col-xs-12" style="margin:auto">
-                <div class="wrap">
-                    <p class="form-title">
-                        {{$t($FAST_CONFIG.APP_FANTACY_NAME)}}
-                        <div class="form-subtitle"> {{$t($FAST_CONFIG.APP_PHRASE)}}</div>
-                    </p>
-                    <div class="form-login" @keyup.enter="handleLogin" >
-                         <div class="segment-title">{{isAdminLogin ? $t('Admin Login'): $t('User Login')}}</div>
-                      <formio
-                        :form="form"
-                        :options="options"
-                        :language="language"
-                        v-on:submit="handleLogin"
-                        v-if="form && options"
-                        :key="error"
-                      />
-
-                        <p class="text-center" v-if="$FAST_CONFIG.ENABLE_REGISTER">
-                            <router-link :to="{ path: 'register' }">
-                                <h5>{{$t('New user')}}?</h5></router-link>
-                                <router-link :to="{ path: 'sendreset' }">
-                                <h5>{{$t('Forgot your password?')}}</h5></router-link>
-                        </p>
-                        <p class="text-center" style="color: grey !important">
-                            {{$t('Version')}} {{$appVersion}}
-                            <q-icon name="fa-cog" color="white" @click="adminLogin" style="cursor:pointer;" v-if="!isAdminLogin" />
-                            <q-icon style="cursor:pointer;" name="fa-arrow-circle-left" color="white" @click="adminLogin" v-if="isAdminLogin" />
-                        </p>
-                    </div>
-
-                    <div class="sponsors">
-
-                    </div>
-
-                </div>
-            </div>
+  <div class="container">
+    <div class="row">
+      <div class="col-xl-6 col-lg-6 col-md-9 col-sm-12 col-xs-12" style="margin:auto">
+        <div class="wrap">
+          <p class="form-title">{{$t($FAST_CONFIG.APP_FANTACY_NAME)}}</p>
+          <div class="form-subtitle">{{$t($FAST_CONFIG.APP_PHRASE)}}</div>
+          <div class="form-login" @keyup.enter="handleLogin">
+            <div class="segment-title">{{isAdminLogin ? $t('Admin Login'): $t('User Login')}}</div>
+            <formio
+              :form="form"
+              :options="options"
+              :language="language"
+              v-on:submit="handleLogin"
+              v-if="form && options"
+              :key="error"
+            />
+            <p class="text-center" v-if="$FAST_CONFIG.ENABLE_REGISTER">
+              <router-link :to="{ path: 'register' }">
+                <h5>{{$t('New user')}}?</h5>
+              </router-link>
+              <router-link :to="{ path: 'sendreset' }">
+                <h5>{{$t('Forgot your password?')}}</h5>
+              </router-link>
+              <a
+                href="fastappfaw://forms/scoutingtraps/submission?plantvillagescounting=ewoJX2lkOiAiZ2l2ZW5JZEZyb21GQVdfbG9jYWwiLAoJZGF0YTogewoJCXNhbXBsZTFQbGFudHNDaGVja2VkOiAxMCwKCQlzYW1wbGUxRkFXOiAyCgkJc2FtcGxlMUFBVzogMgoJCXNhbXBsZTFCb3JlcjogMgoJCXNhbXBsZTJQbGFudHNDaGVja2VkOiAxMAoJCXNhbXBsZTJGQVc6IDIKCQlzYW1wbGUyQUFXOiAyCgkJc2FtcGxlMkJvcmVyOiAyCgkJc2FtcGxlM1BsYW50c0NoZWNrZWQ6IDEwCgkJc2FtcGxlM0ZBVzogMgoJCXNhbXBsZTNBQVc6IDIKCQlzYW1wbGUzQm9yZXI6IDIKCQlzYW1wbGU0UGxhbnRzQ2hlY2tlZDogMTAKCQlzYW1wbGU0RkFXOiAyCgkJc2FtcGxlNEFBVzogMgoJCXNhbXBsZTRCb3JlcjogMgoJCXNhbXBsZTVQbGFudHNDaGVja2VkOiAxMAoJCXNhbXBsZTVGQVc6IDIKCQlzYW1wbGU1QUFXOiAyCgkJc2FtcGxlNUJvcmVyOiAyCgkJcGVzdFN0YWdlRkFXOiBbJ2VnZ3MnLCAnbGFydmFlJywgJ3B1cGFlJywgJ2FkdWx0cyddCgkJcGVzdFN0YWdlQUFXOiBbJ2VnZ3MnLCAnbGFydmFlJywgJ3B1cGFlJywgJ2FkdWx0cyddCgkJcGVzdFN0YWdlQm9yZXI6IFsnZWdncycsICdsYXJ2YWUnLCAncHVwYWUnLCAnYWR1bHRzJ10KCX0sCglleHRyYTogewoJCXNvbWVFeHRyYUluZm9ybWF0aW9uOiAibXlFeHRyYUluZm9ybWF0aW9uIgoJfQp9"
+              >Open my app</a>
+            </p>
+            <p class="text-center" style="color: grey !important">
+              {{$t('Version')}} {{$appVersion}}
+              <q-icon
+                name="fa-cog"
+                color="white"
+                @click="adminLogin"
+                style="cursor:pointer;"
+                v-if="!isAdminLogin"
+              />
+              <q-icon
+                style="cursor:pointer;"
+                name="fa-arrow-circle-left"
+                color="white"
+                @click="adminLogin"
+                v-if="isAdminLogin"
+              />
+            </p>
+          </div>
+          <div class="sponsors"></div>
         </div>
+      </div>
     </div>
-
+  </div>
 </template>
 <style >
 .form-login label.control-label {
@@ -52,6 +61,8 @@
 import { Form as vForm } from "vue-formio";
 import { Auth, Translation, Form } from "fast-fastjs";
 import { Loading, QField, QInput, QBtn, QIcon, QSpinnerMat } from "quasar";
+import createSubmission from "components/createSubmission";
+
 export default {
   components: {
     formio: vForm,
@@ -122,11 +133,26 @@ export default {
         this.$FAST_CONFIG.APP_URL,
         this.isAdminLogin ? "admin" : undefined
       )
-        .then(User => {
+        .then(async User => {
           Loading.hide();
-          this.$router.push({
-            name: "dashboard"
-          });
+          let route = { name: "dashboard" };
+          let plantVillageInfo = localStorage.getItem("plantVillageScounting");
+          if (plantVillageInfo) {
+            plantVillageInfo = JSON.parse(plantVillageInfo);
+            plantVillageInfo = JSON.parse(atob(plantVillageInfo.scountingData));
+            route = await createSubmission.withData({
+              email: Auth.email(),
+              appUrl: this.$FAST_CONFIG.APP_URL,
+              path: "scoutingtraps",
+              parent: this.$route.query.parent,
+              data: plantVillageInfo.data ? plantVillageInfo.data : null,
+              _id: plantVillageInfo._id ? plantVillageInfo._id : null
+            });
+
+            localStorage.removeItem("plantVillageScounting");
+          }
+
+          this.$router.push(route);
         })
         .catch(error => {
           console.log("Could not login", error);

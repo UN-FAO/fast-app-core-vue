@@ -1,6 +1,6 @@
 {
   "name": "fast-app-core-vue",
-  "version": "0.12.103",
+  "version": "0.12.106",
   "deployAppName": "FAW",
   "deployAppID": "5a65a0b902b5450001fbc4cd",
   "description": "A data collection application based on FORM.io",
@@ -12,7 +12,6 @@
     "rebuild": "rm -rf node_modules; npm install;",
     "lint": "eslint --ext .js,.vue src",
     "cypress": "./node_modules/.bin/cypress open",
-    "es5": "file=$(find ./dist/js -name '0.*') && echo $file",
     "deploy:web": "sh deploys/web/web_deploy.sh",
     "deploy:docs": "sh deploys/docs/deploy.sh",
     "deploy:android": "sh deploys/cordova/deploy_android.sh",

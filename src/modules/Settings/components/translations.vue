@@ -67,7 +67,7 @@ export default {
     };
   },
   async created() {
-    // await this.syncApp();
+    await this.syncApp();
     this.formNameFilters = await Form.local().get();
     this.supportedLanguages = await Translation.supportedLanguages();
 

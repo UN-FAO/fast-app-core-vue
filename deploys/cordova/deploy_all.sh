@@ -18,7 +18,7 @@ cd cordova && \
  	# cordova plugin add cordova-plugin-file-transfer && \
  	# cordova plugin add cordova-plugin-indexeddb-async && \
   # cordova plugin add cordova-plugin-wkwebview && \
-  cordova plugin add cordova-plugin-customurlscheme --variable URL_SCHEME=fastapp && \
+  cordova plugin add cordova-plugin-customurlscheme --variable URL_SCHEME=fastappfaw && \
 	cordova platform add android && \
 	rm -rf ./platforms/android/platform_www/cordova.js
 	cp ../deploys/cordova/src/cordova.js ./platforms/android/platform_www/cordova.js

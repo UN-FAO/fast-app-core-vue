@@ -25,6 +25,7 @@ DEPLOY_APP_NAME=$(cat package.json \
 ###################################################
 
 echo ${PRODUCTNAME}
+echo ${PACKAGE_VERSION}
 # Build the certificate from scratch
 #keytool -genkey -noprompt \
 # -alias fao_app_famews \
@@ -41,9 +42,8 @@ echo ${PRODUCTNAME}
 #User certificate from Google
 #keytool -importcert -noprompt -keypass F1@tP@n15 -storepass F1@tP@n15 -file deployment_cert.der -keystore keystore_fao -alias "fao_app"
 npm run build
-npm run es5
 sh ./deploys/cordova/deploy_all.sh && \
-sh ./deploys/electron/deploy_all.sh && \
+#sh ./deploys/electron/deploy_all.sh && \
 sh ./deploys/web/deploy_all.sh && \
 rm -rf ./deploys/all && \
 mkdir ./deploys/all && \
@@ -54,11 +54,11 @@ mkdir ./deploys/all && \
 ###################################################
 # Copy the Electron Mac project to the deploy folder
 #
-	cp -R ./electron/dist/${PRODUCTNAME}-darwin-x64/${PRODUCTNAME}.app ./deploys/all/${PRODUCTNAME}_v${VERSION}.app && \
+#	cp -R ./electron/dist/${PRODUCTNAME}-darwin-x64/${PRODUCTNAME}.app ./deploys/all/${PRODUCTNAME}_v${VERSION}.app && \
 ###################################################
 # Copy the Electron Win32 project to the deploy folder
 #
-	cp -R ./electron/dist/${PRODUCTNAME}-win32-x64 ./deploys/all/${PRODUCTNAME}-win_v${VERSION} && \
+#	cp -R ./electron/dist/${PRODUCTNAME}-win32-x64 ./deploys/all/${PRODUCTNAME}-win_v${VERSION} && \
 ###################################################
 # Copy the Web projecto to the deploy folder
 #

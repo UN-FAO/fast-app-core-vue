@@ -2,87 +2,135 @@
   <div>
     <div class="row FormioContainer">
       <div class="formPageContainer">
-        <q-card style="background-color: white; max-height: fit-content;" class="formNav" v-if="_isWizard && showPages && !$FAST_CONFIG.TAB_MENU">
+        <q-card
+          style="background-color: white; max-height: fit-content;"
+          class="formNav"
+          v-if="_isWizard && showPages && !$FAST_CONFIG.TAB_MENU"
+        >
           <q-card-title>
-            <q-icon  slot="right" flat  color="grey" @click="togglePages" name="menu" v-if="_isWizard && !$FAST_CONFIG.TAB_MENU && showPages">
+            <q-icon
+              slot="right"
+              flat
+              color="grey"
+              @click="togglePages"
+              name="menu"
+              v-if="_isWizard && !$FAST_CONFIG.TAB_MENU && showPages"
+            >
               <q-tooltip>{{$t('Show pages')}}</q-tooltip>
             </q-icon>
           </q-card-title>
           <q-card-main>
             <q-list separator style="border: none !important">
-
-              <q-item class="formioPagination" multiline style="text-align: left; min-height: 60px; border-radius: 5px;" link v-for="(page, index) in pages" :key="page.title" @click="goToPage(index)" :ref="'page-'+ index" v-bind:class="currentPage === index ? 'activePage' : ''">
-                <q-item-main style=" margin-top: auto;  margin-bottom: auto;" :label="$t(getLabelForPage(page))" label-lines="3" />
+              <q-item
+                class="formioPagination"
+                multiline
+                style="text-align: left; min-height: 60px; border-radius: 5px;"
+                link=""
+                v-for="(page, index) in pages"
+                :key="page.title"
+                @click="goToPage(index)"
+                :ref="'page-'+ index"
+                v-bind:class="currentPage === index ? 'activePage' : ''"
+              >
+                <q-item-main
+                  style=" margin-top: auto;  margin-bottom: auto;"
+                  :label="$t(getLabelForPage(page))"
+                  label-lines="3"
+                />
               </q-item>
             </q-list>
           </q-card-main>
         </q-card>
-
         <q-card v-bind:class="getFormClass">
           <q-card-main style="min-height:100vh">
             <q-card-title>
-
-            <q-icon class="pull-left" style="margin-right:30px" flat  color="grey" @click="togglePages" name="menu" v-if="_isWizard && !$FAST_CONFIG.TAB_MENU && !showPages">
-              <q-tooltip>{{$t('Show pages')}}</q-tooltip>
-            </q-icon>
-
+              <q-icon
+                class="pull-left"
+                style="margin-right:30px"
+                flat
+                color="grey"
+                @click="togglePages"
+                name="menu"
+                v-if="_isWizard && !$FAST_CONFIG.TAB_MENU && !showPages"
+              >
+                <q-tooltip>{{$t('Show pages')}}</q-tooltip>
+              </q-icon>
               <breadcrum
                 v-bind:class="$getDirection()"
                 :parent="$route.query.parent"
                 :currentPageTitle="formTitle"
                 :isSubmission="true"
               />
-            <q-icon
-              slot="right"
-              flat
-              color="primary"
-              @click="saveAsDraft()"
-              name="fa-floppy-o"
-              v-if="this.$route.query.mode !== 'online' &&
+              <q-icon
+                slot="right"
+                flat
+                color="primary"
+                @click="saveAsDraft()"
+                name="fa-floppy-o"
+                v-if="this.$route.query.mode !== 'online' &&
                this.$route.query.mode !== 'online-review' &&
-               this.$route.query.mode !== 'read-only' && this.$FAST_CONFIG.OFFLINE_FIRST">
-              <q-tooltip>{{$t('Save as draft')}}</q-tooltip>
-            </q-icon>
-
-            <q-icon slot="right" name="more_vert" color="grey" style="cursor:pointer; margin-left:20px" v-if="this.$FAST_CONFIG.OFFLINE_FIRST">
-              <q-popover ref="popover" class="show-menu">
-                <q-list link class="no-border" dense separator no-border>
-
-                  <q-item @click="$refs.popover.close(), openRightDrawer()"  v-if="$FAST_CONFIG.HAS_SCORES">
-                    <q-item-side icon="assessment"  />
-                    <q-item-main :label="$t('Show scores')" />
-                  </q-item>
-
-                  <q-item @click="$refs.popover.close(), showReport()"  v-if="$FAST_CONFIG.HAS_REPORT">
-                    <q-item-side icon="assignment"  />
-                    <q-item-main :label="$t('Report')" />
-                  </q-item>
-
-                  <q-item @click="$refs.popover.close(), addSurvey()" v-if="this.$route.query.mode !== 'online' && $FAST_CONFIG.PARALLEL_SURVEYS && this.$route.query.mode !== 'online-review'" >
-                    <q-item-side icon="person_add"  />
-                    <q-item-main :label="$t('Add participant')" />
-                  </q-item>
-
-                  <q-item @click="$refs.popover.close(), groupConfig()" v-if="this.$route.query.mode !== 'online' && $FAST_CONFIG.PARALLEL_SURVEYS && this.$route.query.mode !== 'online-review'" >
-                    <q-item-side icon="fa-users"  />
-                    <q-item-main :label="$t('Change Group')" />
-                  </q-item>
-
-                </q-list>
-              </q-popover>
-            </q-icon>
-
+               this.$route.query.mode !== 'read-only' && this.$FAST_CONFIG.OFFLINE_FIRST"
+              >
+                <q-tooltip>{{$t('Save as draft')}}</q-tooltip>
+              </q-icon>
+              <q-icon
+                slot="right"
+                name="more_vert"
+                color="grey"
+                style="cursor:pointer; margin-left:20px"
+                v-if="this.$FAST_CONFIG.OFFLINE_FIRST"
+              >
+                <q-popover ref="popover" class="show-menu">
+                  <q-list link="" class="no-border" dense separator no-border>
+                    <q-item
+                      @click="$refs.popover.close(), openRightDrawer()"
+                      v-if="$FAST_CONFIG.HAS_SCORES"
+                    >
+                      <q-item-side icon="assessment"/>
+                      <q-item-main :label="$t('Show scores')"/>
+                    </q-item>
+                    <q-item
+                      @click="$refs.popover.close(), showReport()"
+                      v-if="$FAST_CONFIG.HAS_REPORT"
+                    >
+                      <q-item-side icon="assignment"/>
+                      <q-item-main :label="$t('Report')"/>
+                    </q-item>
+                    <q-item
+                      @click="$refs.popover.close(), addSurvey()"
+                      v-if="this.$route.query.mode !== 'online' && $FAST_CONFIG.PARALLEL_SURVEYS && this.$route.query.mode !== 'online-review'"
+                    >
+                      <q-item-side icon="person_add"/>
+                      <q-item-main :label="$t('Add participant')"/>
+                    </q-item>
+                    <q-item
+                      @click="$refs.popover.close(), groupConfig()"
+                      v-if="this.$route.query.mode !== 'online' && $FAST_CONFIG.PARALLEL_SURVEYS && this.$route.query.mode !== 'online-review'"
+                    >
+                      <q-item-side icon="fa-users"/>
+                      <q-item-main :label="$t('Change Group')"/>
+                    </q-item>
+                  </q-list>
+                </q-popover>
+              </q-icon>
             </q-card-title>
             <!--
               <q-btn @click="singleNext()" class="pull-right primary" color="primary">Next Page</q-btn>
                 <q-btn @click="clickNext()" class="pull-right primary" color="primary">Full review</q-btn>
                 <q-btn @click="submitForm()" class="pull-right primary" color="danger">Submit</q-btn>
-              -->
+            -->
             <!--<q-icon name="thumb_up" />-->
-            <q-tabs inverted id="contentForm" >
+            <q-tabs inverted id="contentForm">
               <!-- Tabs - notice slot="title" -->
-
-              <q-tab v-bind:class="!$FAST_CONFIG.PARALLEL_SURVEYS ? 'hidden' : ''" default slot="title" name="tab-1" icon="person" :label="participantName" :color="saved ? 'primary' : 'red'" />
+              <q-tab
+                v-bind:class="!$FAST_CONFIG.PARALLEL_SURVEYS ? 'hidden' : ''"
+                default
+                slot="title"
+                name="tab-1"
+                icon="person"
+                :label="participantName"
+                :color="saved ? 'primary' : 'red'"
+              />
               <!-- Targets -->
               <q-tab
                 slot="title"
@@ -95,9 +143,7 @@
                 :color="saved ? 'primary' : 'red'"
                 @click="goToSurvey(participant.submissionId)"
               />
-
               <q-tab-pane name="tab-1" ref="tab1">
-
                 <formiovue
                   :form="form"
                   :submission="submission"
@@ -110,8 +156,7 @@
                   v-on:nextPage="onNextPage"
                   v-if="form && submission && options"
                 />
-
-              <!--
+                <!--
                 <div v-bind:style="{ display: customRender ? 'initial' : 'none', color: 'black' }">
 
                 <div
@@ -134,26 +179,28 @@
                 </div>
                 -->
               </q-tab-pane>
-
             </q-tabs>
-
           </q-card-main>
         </q-card>
-
-        <q-fixed-position :corner="getButtonPosition()" :offset="[18, 18]" v-if="this.$route.query.mode === 'online-review'">
-
-          <q-fab color="red" icon="add" direction="down" v-if="this.$route.query.mode === 'online-review'">
-
+        <q-fixed-position
+          :corner="getButtonPosition()"
+          :offset="[18, 18]"
+          v-if="this.$route.query.mode === 'online-review'"
+        >
+          <q-fab
+            color="red"
+            icon="add"
+            direction="down"
+            v-if="this.$route.query.mode === 'online-review'"
+          >
             <q-fab-action color="green" @click="reviewSubmission('accept')" icon="fa-check">
               <q-tooltip>{{$t('Accept')}}</q-tooltip>
             </q-fab-action>
-
             <q-fab-action color="red" @click="reviewSubmission('reject')" icon="fa-ban">
               <q-tooltip>{{$t('Delete')}}</q-tooltip>
             </q-fab-action>
           </q-fab>
         </q-fixed-position>
-
         <!--
               <q-fixed-position v-if="displayDown" style="margin: 18px;position: sticky;z-index: 100;width: 100%;min-height: 63px;" corner="bottom-right" :offset="[18, 18]">
               <q-btn round color="primary" @click="nextQuestion" class="pull-right">
@@ -166,23 +213,29 @@
               <q-icon name="fa-arrow-circle-up" />
               </q-btn>
               </q-fixed-position>
-          -->
+        -->
       </div>
     </div>
-    <q-tabs slot="footer" style="position: fixed;
+    <q-tabs
+      slot="footer"
+      style="position: fixed;
     bottom: 0;
     width: 100%;
-    z-index: 99;" v-model="tab" v-if="$FAST_CONFIG.TAB_MENU">
+    z-index: 99;"
+      v-model="tab"
+      v-if="$FAST_CONFIG.TAB_MENU"
+    >
       <q-tab
         icon="fa-file"
         slot="title"
         v-for="(page, index) in pages"
-        :key="page.title" @click="goToPage(index)"
+        :key="page.title"
+        @click="goToPage(index)"
         :ref="'page-'+ index + 1"
         :name="(index + 1).toString()"
         v-bind:class="currentPage === index ? 'activePage' : ''"
-        :label="$t(getLabelForPage(page))">
-      </q-tab>
+        :label="$t(getLabelForPage(page))"
+      ></q-tab>
     </q-tabs>
   </div>
 </template>
@@ -389,6 +442,10 @@ export default {
         });
       },
       transform(result) {
+        if (this.$route.query.scouting) {
+          const scoutingInfo = JSON.parse(atob(this.$route.query.scouting));
+          result = { ...result, ...scoutingInfo };
+        }
         return { data: result };
       }
     },

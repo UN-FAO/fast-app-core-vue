@@ -1,58 +1,60 @@
 <template>
-<div>
-  <q-layout ref="layout"
-    :view="layoutStore.view"
-    :left-breakpoint="ltr ? layoutStore.leftBreakpoint : layoutStore.rightBreakpoint"
-    :right-breakpoint="ltr ? layoutStore.rightBreakpoint: layoutStore.leftBreakpoint "
-    :reveal="layoutStore.reveal"
-    class='background-app'
-    :dir="ltr ? 'ltr' : 'rtl' "
-    v-if="!isLogin"
+  <div>
+    <q-layout
+      ref="layout"
+      :view="layoutStore.view"
+      :left-breakpoint="ltr ? layoutStore.leftBreakpoint : layoutStore.rightBreakpoint"
+      :right-breakpoint="ltr ? layoutStore.rightBreakpoint: layoutStore.leftBreakpoint "
+      :reveal="layoutStore.reveal"
+      class="background-app"
+      :dir="ltr ? 'ltr' : 'rtl' "
+      v-if="!isLogin"
     >
-    <toolbar slot="header"></toolbar>
-    <template >
-      <leftdrawer :slot="ltr ? 'left' : 'right'"></leftdrawer>
-      <rightdrawer :slot="!ltr ? 'left' : 'right'"></rightdrawer>
-  </template>
-  <connection-alert></connection-alert>
-    <router-view :key="$route.path" class="background-app"/>
-  </q-layout>
-
-  <q-layout ref="layout"
-    :view="layoutStore.view"
-    :left-breakpoint="layoutStore.leftBreakpoint"
-    :right-breakpoint="layoutStore.rightBreakpoint"
-    :reveal="layoutStore.reveal"
-    :dir="ltr ? 'ltr' : 'rtl' "
-    v-else
+      <toolbar slot="header"></toolbar>
+      <template>
+        <leftdrawer :slot="ltr ? 'left' : 'right'"></leftdrawer>
+        <rightdrawer :slot="!ltr ? 'left' : 'right'"></rightdrawer>
+      </template>
+      <connection-alert></connection-alert>
+      <router-view :key="$route.path" class="background-app"/>
+    </q-layout>
+    <q-layout
+      ref="layout"
+      :view="layoutStore.view"
+      :left-breakpoint="layoutStore.leftBreakpoint"
+      :right-breakpoint="layoutStore.rightBreakpoint"
+      :reveal="layoutStore.reveal"
+      :dir="ltr ? 'ltr' : 'rtl' "
+      v-else
     >
-    <toolbar slot="header"></toolbar>
-    <router-view :key="$route.path"/>
-  </q-layout>
-</div>
+      <toolbar slot="header"></toolbar>
+      <router-view :key="$route.path"/>
+    </q-layout>
+  </div>
 </template>
 
 <script>
 /* eslint no-use-before-define: 0 */
 // import 'bootstrap-rtl-ondemand/dist/css/bootstrap-rtl.min.css'
-import toolbar from 'layout/toolbar';
-import leftdrawer from 'layout/left_drawer';
-import rightdrawer from 'layout/right_drawer';
-import connectionAlert from 'components/Connection/components/alert';
-import { QLayout, Toast, Platform } from 'quasar';
-import layoutStore from 'layout/layout-store';
-import FastClick from 'fastclick';
-import { Connection } from 'fast-fastjs';
-import phonePermissions from 'components/phonePermissions';
+import toolbar from "layout/toolbar";
+import leftdrawer from "layout/left_drawer";
+import rightdrawer from "layout/right_drawer";
+import connectionAlert from "components/Connection/components/alert";
+import { QLayout, Toast, Platform } from "quasar";
+import layoutStore from "layout/layout-store";
+import FastClick from "fastclick";
+import { Connection, Auth } from "fast-fastjs";
+import phonePermissions from "components/phonePermissions";
+import createSubmission from "components/createSubmission";
 
 export default {
-  name: 'app',
+  name: "app",
   async mounted() {
     // await FAST.loadRemainingConfig({ interval: true });
     phonePermissions.get();
 
     window.addEventListener(
-      'load',
+      "load",
       function() {
         if (document) {
           FastClick(document.body);
@@ -63,26 +65,26 @@ export default {
 
     if (Platform.is.cordova) {
       window.plugins.launchmyapp.getLastIntent(
-        function(url) {
-          if (url.indexOf('fastapp://' > -1)) {
-            alert('received url: ' + url);
+        url => {
+          if (url.includes("fastappfaw://")) {
+            this.parsePlantVillaleScounting(url);
           }
         },
-        function(error) {
+        error => {
           return console.log(error);
         }
       );
     }
 
-    this.$eventHub.on('FAST:LANGUAGE:CHANGED', (lenguage) => {
+    this.$eventHub.on("FAST:LANGUAGE:CHANGED", lenguage => {
       this.toggleRtl(lenguage);
     });
 
-    this.$eventHub.on('connectionStatusChanged', (status) => {
-      this.$store.dispatch('changeIsOnlineStatus', status);
+    this.$eventHub.on("connectionStatusChanged", status => {
+      this.$store.dispatch("changeIsOnlineStatus", status);
     });
 
-    this.$eventHub.$on('openLeftDrawer', () => {
+    this.$eventHub.$on("openLeftDrawer", () => {
       if (this.ltr) {
         this.$refs.layout.toggleLeft();
         return;
@@ -90,7 +92,7 @@ export default {
       this.$refs.layout.toggleRight();
     });
 
-    this.$eventHub.$on('openRightDrawer', () => {
+    this.$eventHub.$on("openRightDrawer", () => {
       if (this.ltr) {
         this.$refs.layout.toggleRight();
         return;
@@ -101,25 +103,55 @@ export default {
   },
   methods: {
     toggleRtl: function(lenguage) {
-      this.ltr = lenguage.direction === 'ltr';
+      this.ltr = lenguage.direction === "ltr";
+    },
+    async parsePlantVillaleScounting(url) {
+      if (url === "") {
+        return;
+      }
+      url = url.replace("fastappfaw://", "");
+      const redirectPath = url.slice(0, url.indexOf("?"));
+      const shouldCreate = !redirectPath.includes("_local");
+      const scountingData = url.slice(url.indexOf("=") + 1, url.length);
+      localStorage.setItem(
+        "plantVillageScounting",
+        JSON.stringify({
+          redirectPath,
+          shouldCreate,
+          scountingData
+        })
+      );
+      if (Auth.check()) {
+        const plantVillageInfo = JSON.parse(atob(scountingData));
+        const route = await createSubmission.withData({
+          email: Auth.email(),
+          appUrl: this.$FAST_CONFIG.APP_URL,
+          path: "scoutingtraps",
+          parent: this.$route.query.parent,
+          data: plantVillageInfo.data ? plantVillageInfo.data : null,
+          _id: plantVillageInfo._id ? plantVillageInfo._id : null
+        });
+        localStorage.removeItem("plantVillageScounting");
+        this.$router.push(route);
+      }
     }
   },
   data() {
     return {
       ltr:
-        (localStorage.getItem('defaultLenguage') &&
-          localStorage.getItem('defaultLenguage') !== 'ar') ||
-        !localStorage.getItem('defaultLenguage'),
+        (localStorage.getItem("defaultLenguage") &&
+          localStorage.getItem("defaultLenguage") !== "ar") ||
+        !localStorage.getItem("defaultLenguage"),
       layoutStore
     };
   },
   computed: {
     isLogin() {
       return (
-        this.$route.name === 'login' ||
-        this.$route.name === 'register' ||
-        this.$route.path === '/' ||
-        this.$route.name === 'sendreset'
+        this.$route.name === "login" ||
+        this.$route.name === "register" ||
+        this.$route.path === "/" ||
+        this.$route.name === "sendreset"
       );
     }
   },
@@ -135,7 +167,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import url('../node_modules/bootstrap/dist/css/bootstrap.min.css');
-@import url('../node_modules/formiojs/dist/formio.full.min.css');
-@import url('./assets/css/main.scss');
+@import url("../node_modules/bootstrap/dist/css/bootstrap.min.css");
+@import url("../node_modules/formiojs/dist/formio.full.min.css");
+@import url("./assets/css/main.scss");
 </style>

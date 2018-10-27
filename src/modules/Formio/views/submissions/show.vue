@@ -1,54 +1,49 @@
 <template>
   <div class="row">
-        <div class="col-lg-12 col-md-12  col-sm-12 col-xs-12 responsiveTableContainer">
-          <q-card>
-
-            <q-card-title>
-
-              <breadcrum
-                v-bind:class="$getDirection()"
-                :parent="$route.query.parent"
-                :currentPageTitle="formTitle"
-              />
-           <q-icon slot="right" name="fa-plus-circle" @click="goToCreateView()" color="primary" style="cursor:pointer; padding-right: 20px">
-
-            </q-icon>
-
-              <q-icon slot="right" name="more_vert" color="grey" style="cursor:pointer">
-              <q-popover ref="popover">
-                <q-list link class="no-border" dense separator no-border>
-
-                  <q-item @click="$refs.popover.close(), createDialog()">
-                    <q-item-side icon="fa-download"  />
-                    <q-item-main :label="$t('Export')" />
-                  </q-item>
-
-                  <q-item @click="$refs.popover.close()">
-                    <q-item-side icon="fa-upload"  />
-                    <q-item-main :label="$t('Import')" />
-                  </q-item>
-
-                </q-list>
-              </q-popover>
-            </q-icon>
-            </q-card-title>
-              <q-card-main style="padding: 0px; min-height: 150px" class="relative-position"  >
-
-                <datatable
-                  :data="submissions"
-                  :form="currentForm"
-                  :menuActions="['create', 'export', 'import']"
-                  :tableActions="$FAST_CONFIG.HAS_REPORT ? ['read-only','edit', 'delete', 'report'] : ['edit', 'delete', 'read-only']"
-                  fastMode="show"
-                  v-on:refresh="refreshData"
-                  v-if="!noSubmissions"
-                />
-                <loading :visible="noSubmissions"></loading>
-            </q-card-main>
-          </q-card>
-
-         </div>
-
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 responsiveTableContainer">
+      <q-card>
+        <q-card-title>
+          <breadcrum
+            v-bind:class="$getDirection()"
+            :parent="$route.query.parent"
+            :currentPageTitle="formTitle"
+          />
+          <q-icon
+            slot="right"
+            name="fa-plus-circle"
+            @click="goToCreateView()"
+            color="primary"
+            style="cursor:pointer; padding-right: 20px"
+          ></q-icon>
+          <q-icon slot="right" name="more_vert" color="grey" style="cursor:pointer">
+            <q-popover ref="popover">
+              <q-list link="" class="no-border" dense separator no-border>
+                <q-item @click="$refs.popover.close(), createDialog()">
+                  <q-item-side icon="fa-download"/>
+                  <q-item-main :label="$t('Export')"/>
+                </q-item>
+                <q-item @click="$refs.popover.close()">
+                  <q-item-side icon="fa-upload"/>
+                  <q-item-main :label="$t('Import')"/>
+                </q-item>
+              </q-list>
+            </q-popover>
+          </q-icon>
+        </q-card-title>
+        <q-card-main style="padding: 0px; min-height: 150px" class="relative-position">
+          <datatable
+            :data="submissions"
+            :form="currentForm"
+            :menuActions="['create', 'export', 'import']"
+            :tableActions="$FAST_CONFIG.HAS_REPORT ? ['read-only','edit', 'delete', 'report'] : ['edit', 'delete', 'read-only']"
+            fastMode="show"
+            v-on:refresh="refreshData"
+            v-if="!noSubmissions"
+          />
+          <loading :visible="noSubmissions"></loading>
+        </q-card-main>
+      </q-card>
+    </div>
   </div>
 </template>
 
@@ -73,7 +68,8 @@ import {
 import datatable from "components/dataTable/dataTable";
 import breadcrum from "components/breadcrum";
 import { Form, Event, Submission, Auth } from "fast-fastjs";
-import moment from "moment";
+import createSubmission from "components/createSubmission";
+
 export default {
   async mounted() {
     this.currentForm = await Form.local()
@@ -142,33 +138,14 @@ export default {
   },
   methods: {
     async goToCreateView() {
-      let date = moment().unix();
-      let formSubmission = {
-        data: {},
-        draft: true,
-        sync: false,
-        trigger: "createLocalDraft",
-        user_email: Auth.email(),
+      const route = await createSubmission.withData({
+        email: Auth.email(),
+        appUrl: this.$FAST_CONFIG.APP_URL,
         path: this.$route.params.idForm,
-        baseUrl: this.$FAST_CONFIG.APP_URL,
-        created: date,
-        modified: date
-      };
+        parent: this.$route.query.parent,
+        data: {}
+      });
 
-      let submission = await Submission()
-        .local()
-        .insert(formSubmission);
-
-      let route = {
-        name: "formio_submission_update",
-        params: {
-          idForm: this.$route.params.idForm,
-          idSubmission: submission._id
-        },
-        query: {
-          parent: this.$route.query.parent
-        }
-      };
       this.$router.push(route);
     },
     breadCrumClick() {
