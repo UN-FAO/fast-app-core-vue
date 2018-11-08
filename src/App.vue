@@ -111,13 +111,11 @@ export default {
       }
       url = url.replace("fastappfaw://", "");
       const redirectPath = url.slice(0, url.indexOf("?"));
-      const shouldCreate = !redirectPath.includes("_local");
       const scountingData = url.slice(url.indexOf("=") + 1, url.length);
       localStorage.setItem(
         "plantVillageScounting",
         JSON.stringify({
           redirectPath,
-          shouldCreate,
           scountingData
         })
       );

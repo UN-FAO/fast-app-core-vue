@@ -8,10 +8,13 @@
 import {Auth} from 'fast-fastjs';
 import appdashboard from '../components/appDashboard';
 import collectiondashboard from '../components/collectionDashboard';
+
 export default {
   components: {
     appdashboard,
     collectiondashboard
+  },
+  async created() {
   },
   methods: {
     isAdmin() {

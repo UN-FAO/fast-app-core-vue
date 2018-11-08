@@ -13,7 +13,7 @@
           <q-stepper contractable ref="stepper">
             <!-- Step: -->
             <q-step default title="Language Selection" subtitle="Select the language">
-              <language-selector :languages="translationStatus" v-on:selected="handleSelected"/>
+              <language-selector :languages="translationStatus" v-on:selected="handleSelected" v-if="translationStatus"/>
             </q-step>
             <!-- Step: -->
             <q-step title="Translations" subtitle="Translate the labels">

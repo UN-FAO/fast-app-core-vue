@@ -98,7 +98,7 @@ import exportMenu from './exportMenu';
 import Export from './dataExport/Export';
 import Columns from './tableFormatter/Columns';
 import { QTooltip, QBtn, QDataTable, QChip, QIcon } from 'quasar';
-import { Import, Submission, Auth, OfflinePlugin, Form } from 'fast-fastjs';
+import { Import, Submission, OfflinePlugin, Form } from 'fast-fastjs';
 import ErrorFormatter from 'components/dataTable/submission/errorFormatter';
 import { Base64 } from 'js-base64';
 import Formio from 'formiojs/Formio';
@@ -217,33 +217,29 @@ export default {
       this.clickedRow = row;
     },
     async getFullSubmissions(submissions, options) {
-      let query = {
-        limit: 50000,
-        form: this.form.data.path,
-        filter: {
-          'data.formio.formId': this.form.data.path,
-          'data.user_email': Auth.email()
-        },
-        dataExport: true
-      };
-
+      const path = this.form.data.path;
+      /*
       if (options && options.includes('ownerEmail')) {
         query.populate = ['owner'];
       }
-      let sub = await Submission.merged().showView(query);
-
+      */
+      
       // Get all Ids in the selection
-      let ids = submissions.reduce((acc, s) => {
+      const ids = submissions.reduce((acc, s) => {
         if (s._id) {
           acc.push(s._id);
         }
         return acc;
       }, []);
 
-      // Filter the ids
-      sub = sub.filter((s) => {
-        return ids.includes(s._id);
-      });
+
+      let sub = []
+      if (this.selectedRows.length !== 0) {
+        sub = await Submission({ path }).merged().where('_id', 'in', ids).limit(5000).get();
+      } else {
+        sub = await Submission({ path }).merged().limit(5000).get();
+      }
+      
       return sub;
     },
     async handleReview({ readOnly }) {

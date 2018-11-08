@@ -1,13 +1,11 @@
 import 'babel-polyfill';
-import { FAST_CONFIG_URL, FAST_CONFIG_ID, OFFLINE_START, FLUENT_FORMIO_BASEURL } from 'config/env';
+import { FAST_CONFIG_URL, FLUENT_FORMIO_BASEURL } from 'config/env';
 import TRANSLATIONS from 'config/Localization/appTranslations';
 
 let appConf = {
   type: 'remote',
-  appConfigId: FAST_CONFIG_ID,
   appConfigUrl: FAST_CONFIG_URL,
   i18n: TRANSLATIONS,
-  offlineStart: OFFLINE_START,
   fluentFormioBaseUrl: FLUENT_FORMIO_BASEURL,
   offlineFiles: {
     Configuration: require('src/config/offline/Configuration.json'),

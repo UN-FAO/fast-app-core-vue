@@ -72,7 +72,7 @@ let Export = class {
   }
 
   static async getTranslations() {
-    let localTranslations = await Translation.local().find();
+    let localTranslations = await Translation.local().get();
     localTranslations =
       localTranslations[0] && localTranslations[0].data
         ? localTranslations[0].data

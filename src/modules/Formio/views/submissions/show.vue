@@ -22,10 +22,12 @@
                   <q-item-side icon="fa-download"/>
                   <q-item-main :label="$t('Export')"/>
                 </q-item>
+                <!--
                 <q-item @click="$refs.popover.close()">
                   <q-item-side icon="fa-upload"/>
                   <q-item-main :label="$t('Import')"/>
                 </q-item>
+                -->
               </q-list>
             </q-popover>
           </q-icon>
@@ -162,7 +164,7 @@ export default {
     async createDialog() {
       Event.emit({
         name: "FAST:EXPORT:OPENMENU",
-        data: undefined,
+        data: {},
         text: "Triggering Open Export Menu"
       });
     },
@@ -177,7 +179,7 @@ export default {
     },
     async refreshData() {
       let path = this.$route.params.idForm;
-      let submissions = await Submission({ path }).showView();
+      let submissions = await Submission({ path }).showView({limit: 5000, owner: Auth.email()});
       this.submissions = submissions;
     }
   }

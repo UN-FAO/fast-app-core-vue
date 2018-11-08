@@ -63,7 +63,8 @@ import {
   QSpinnerGears,
   QInnerLoading
 } from 'quasar';
-import { countryList, User } from 'fast-fastjs';
+import { User } from 'fast-fastjs';
+import countryList from 'config/Localization/countries.json';
 import breadcrum from 'components/breadcrum';
 export default {
   name: 'reviewer',
@@ -86,7 +87,7 @@ export default {
       countries: null,
       userSelect: [],
       countryList: countryList.map((c) => {
-        return { label: c.name, value: c.name };
+        return { label: c.data.name, value: c.data.name };
       }),
       select: null,
       reviewers: [],
