@@ -40,7 +40,7 @@ import toolbar from "layout/toolbar";
 import leftdrawer from "layout/left_drawer";
 import rightdrawer from "layout/right_drawer";
 import connectionAlert from "components/Connection/components/alert";
-import { QLayout, Toast, Platform } from "quasar";
+import { QLayout, Toast } from "quasar";
 import layoutStore from "layout/layout-store";
 import FastClick from "fastclick";
 import { Connection, Auth } from "fast-fastjs";
@@ -63,7 +63,13 @@ export default {
       false
     );
 
-    if (Platform.is.cordova) {
+    window.handleOpenURL = (url) => {
+      if (url.includes("fastappfaw://")) {
+        this.parsePlantVillaleScounting(url);
+      }
+    };
+    // ---- This is only for the FAW app ---//
+    if (window && window.plugins && window.plugins.launchmyapp) {
       window.plugins.launchmyapp.getLastIntent(
         url => {
           if (url.includes("fastappfaw://")) {
@@ -75,7 +81,7 @@ export default {
         }
       );
     }
-
+    // ---- This is only for the FAW app ---//
     this.$eventHub.on("FAST:LANGUAGE:CHANGED", lenguage => {
       this.toggleRtl(lenguage);
     });
@@ -109,15 +115,15 @@ export default {
       if (url === "") {
         return;
       }
+      console.log('----------------------');
+      console.log('url===>', url);
+      console.log('----------------------');
+      
       url = url.replace("fastappfaw://", "");
-      const redirectPath = url.slice(0, url.indexOf("?"));
-      const scountingData = url.slice(url.indexOf("=") + 1, url.length);
+      let scountingData = url.slice(url.indexOf("=") + 1, url.length);
       localStorage.setItem(
         "plantVillageScounting",
-        JSON.stringify({
-          redirectPath,
-          scountingData
-        })
+        scountingData
       );
       if (Auth.check()) {
         const plantVillageInfo = JSON.parse(atob(scountingData));

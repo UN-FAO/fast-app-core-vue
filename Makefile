@@ -1,2 +1,2 @@
 pull:
-sh ./deploys/getOfflineConfig.sh
+	sh ./deploys/getOfflineConfig.sh

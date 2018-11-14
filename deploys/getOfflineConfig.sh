@@ -14,14 +14,11 @@ function get_env()
 
 
 get_env FAST_CONFIG_URL
-get_env FAST_CONFIG_ID
-get_env OFFLINE_START
 
 rm -rf ./src/config/offline/*
 
-if [ "$OFFLINE_START" == "true" ]; then
     # GET APP CONFIGURATION
-    CONFIG_URL=$FAST_CONFIG_URL/configuration/submission/$FAST_CONFIG_ID
+    CONFIG_URL=$FAST_CONFIG_URL
     curl $CONFIG_URL -o ./src/config/offline/Configuration.json
 
     # GET APP URL
@@ -37,4 +34,3 @@ if [ "$OFFLINE_START" == "true" ]; then
     curl $APP_URL/form?limit=99999 -o ./src/config/offline/Forms.json
     UPDATED=$(node -pe 'JSON.stringify({date: Math.round((new Date()).getTime() / 1000)})')
     echo "$UPDATED" >> ./src/config/offline/lastUpdate.json
-fi

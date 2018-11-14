@@ -158,7 +158,7 @@ export default {
         this.loading = true;
 
         let path = this.currentForm.data.path;
-        let submissions = await Submission({ path }).showView({ from: 'remote' });
+        let submissions = await Submission({ path }).showView({ from: 'remote', limit: 50000 });
 
         if (!Auth.hasRole("Administrator")) {
           submissions = submissions.filter(s => {

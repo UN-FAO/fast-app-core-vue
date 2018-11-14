@@ -72,7 +72,6 @@ export default {
     this.supportedLanguages = await Translation.supportedLanguages();
 
     this.translations = await Form.FormLabels(
-      this.selection,
       this.$appConf.i18n
     );
 

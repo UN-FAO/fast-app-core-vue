@@ -27,9 +27,6 @@
               {{$t('Version')}} {{$appVersion}}
              
             </p>
-            <p>
-             <a href="fastappfaw://forms/scoutingtraps/submission?scounting=IHsKZGF0YTogewpkYXRhQ29sbGVjdGVkOiB7CnNjb3V0aW5nOiB0cnVlCn0sCnNhbXBsZTFQbGFudHNDaGVja2VkOiAxMCwKc2FtcGxlMUZBVzogMiwKc2FtcGxlMUFBVzogMiwKc2FtcGxlMUJvcmVyOiAyLApzYW1wbGUyUGxhbnRzQ2hlY2tlZDogMTAsCnNhbXBsZTJGQVc6IDIsCnNhbXBsZTJBQVc6IDIsCnNhbXBsZTJCb3JlcjogMiwKc2FtcGxlM1BsYW50c0NoZWNrZWQ6IDEwLApzYW1wbGUzRkFXOiAyLApzYW1wbGUzQUFXOiAyLApzYW1wbGUzQm9yZXI6IDIsCnNhbXBsZTRQbGFudHNDaGVja2VkOiAxMCwKc2FtcGxlNEZBVzogMiwKc2FtcGxlNEFBVzogMiwKc2FtcGxlNEJvcmVyOiAyLApzYW1wbGU1UGxhbnRzQ2hlY2tlZDogMTAsCnNhbXBsZTVGQVc6IDIsCnNhbXBsZTVBQVc6IDIsCnNhbXBsZTVCb3JlcjogMiwKcGVzdFN0YWdlRkFXOiBbJ2VnZ3MnLCAnbGFydmFlJywgJ3B1cGFlJywgJ2FkdWx0cyddLApwZXN0U3RhZ2VBQVc6IFsnZWdncycsICdsYXJ2YWUnLCAncHVwYWUnLCAnYWR1bHRzJ10sCnBlc3RTdGFnZUJvcmVyOiBbJ2VnZ3MnLCAnbGFydmFlJywgJ3B1cGFlJywgJ2FkdWx0cyddLAp9LApleHRyYTogewpzb21lRXh0cmFJbmZvcm1hdGlvbjogIm15RXh0cmFJbmZvcm1hdGlvbiIKfX0=">Open my app</a>
-            </p>
           </div>
           <div class="sponsors"></div>
         </div>
@@ -125,18 +122,25 @@ export default {
           let route = { name: "dashboard" };
           let plantVillageInfo = localStorage.getItem("plantVillageScounting");
           if (plantVillageInfo) {
-            plantVillageInfo = JSON.parse(plantVillageInfo);
-            plantVillageInfo = JSON.parse(atob(plantVillageInfo.scountingData));
-            route = await createSubmission.withData({
-              email: Auth.email(),
-              appUrl: this.$FAST_CONFIG.APP_URL,
-              path: "scoutingtraps",
-              parent: this.$route.query.parent,
-              data: plantVillageInfo.data ? plantVillageInfo.data : null,
-              _id: plantVillageInfo._id ? plantVillageInfo._id : null
-            });
+            try {
+               plantVillageInfo = JSON.parse(atob(plantVillageInfo));
+                route = await createSubmission.withData({
+                  email: Auth.email(),
+                  appUrl: this.$FAST_CONFIG.APP_URL,
+                  path: "scoutingtraps",
+                  parent: this.$route.query.parent,
+                  data: plantVillageInfo.data ? plantVillageInfo.data : null,
+                  _id: plantVillageInfo._id ? plantVillageInfo._id : null
+                });
 
-            localStorage.removeItem("plantVillageScounting");
+                localStorage.removeItem("plantVillageScounting");
+            } catch (error) {
+              this.$swal(
+                "Submission Format Error",
+                "The data that you are trying to import is not formatted properly",
+                "error"
+              );
+            }
           }
 
           this.$router.push(route);
