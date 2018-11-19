@@ -154,9 +154,9 @@
                   v-on:error="onFormError"
                   v-on:prevPage="onPrevPage"
                   v-on:nextPage="onNextPage"
-                  v-if="form && submission && options"
+                  v-if="form && submission && options && !customRender"
                 />
-                <!--
+                
                 <div v-bind:style="{ display: customRender ? 'initial' : 'none', color: 'black' }">
 
                 <div
@@ -170,14 +170,16 @@
                   :token="formioToken"
                   />
                 </div>
+                <!--
                   <datatable
                     :data="customRenderArray"
                     :form="form"
                     fastMode="editGrid"
                     v-if="form && form.title !== '' && customRenderType === 'datagrid'"
                   />
+                  -->
                 </div>
-                -->
+                
               </q-tab-pane>
             </q-tabs>
           </q-card-main>
@@ -285,7 +287,7 @@ import {
 // import formio from 'modules/Formio/components/formio/formio';
 import breadcrum from "components/breadcrum";
 // import datatable from 'components/dataTable/dataTable';
-// import executor from '../../components/Rexecutor/executor';
+import executor from '../../components/Rexecutor/executor';
 import { Form as vForm } from "vue-formio";
 import Formio from "formiojs/Formio";
 import ErrorFormatter from "components/dataTable/submission/errorFormatter";
@@ -321,8 +323,8 @@ export default {
     QSpinnerAudio,
     QPopover,
     QItemSide,
-    QInput
-    // executor
+    QInput,
+    executor
   },
   async created() {
     Formio.registerPlugin(OfflinePlugin.get(), "fast");
@@ -572,12 +574,55 @@ export default {
   },
   methods: {
     onNextPage(event) {
+      const index = event.page;
+      if (
+        this.pages[index] &&
+        this.pages[index].properties &&
+        this.pages[index].properties["FAST_CUSTOM_SCRIPT"]
+      ) {
+        /*
+        let scriptName = this.pages[index].properties['FAST_CUSTOM_SCRIPT'];
+        let component = FormioUtils.getComponent(
+          this.form.components,
+          scriptName
+        );
+      */
+        this.customRenderType = 'script';
+        this.customRender = true;
+        this.currentPage = index;
+        this.tab = (index + 1).toString();
+        this.currentQuestion = -1;
+        window.scrollTo(0, 0);
+        return;
+      }
+
       this.currentPage = event.page;
       this.tab = (event.page + 1).toString();
       this.currentQuestion = -1;
       window.scrollTo(0, 0);
     },
     onPrevPage(event) {
+      const index = event.page;
+      if (
+        this.pages[index] &&
+        this.pages[index].properties &&
+        this.pages[index].properties["FAST_CUSTOM_SCRIPT"]
+      ) {
+        /*
+        let scriptName = this.pages[index].properties['FAST_CUSTOM_SCRIPT'];
+        let component = FormioUtils.getComponent(
+          this.form.components,
+          scriptName
+        );
+      */
+        this.customRenderType = 'script';
+        this.customRender = true;
+        this.currentPage = index;
+        this.tab = (index + 1).toString();
+        this.currentQuestion = -1;
+        window.scrollTo(0, 0);
+        return;
+      }
       this.currentPage = event.page;
       this.tab = (event.page + 1).toString();
       this.currentQuestion = -1;
@@ -923,12 +968,12 @@ export default {
       ) {
         /*
         let scriptName = this.pages[index].properties['FAST_CUSTOM_SCRIPT'];
-        this.customRenderType = 'script';
         let component = FormioUtils.getComponent(
           this.form.components,
           scriptName
         );
       */
+        this.customRenderType = 'script';
         this.customRender = true;
         this.currentPage = index;
         this.tab = (index + 1).toString();
@@ -943,7 +988,9 @@ export default {
         let page = document.querySelectorAll(
           "ul.pagination li:nth-of-type(" + pageNumber + ")"
         )[0];
-        page.click();
+        if (page) {
+          page.click();
+        }
         this.currentPage = index;
         this.tab = (index + 1).toString();
         this.currentQuestion = -1;
