@@ -12,28 +12,25 @@ export default {
     report
   },
   async mounted() {
+    const path = this.$route.params.idForm;
     if (this.$route.params.idSubmission.indexOf("_local") >= 0) {
-      let resuls = await Submission()
+      const result = await Submission({ path })
         .local()
-        .get(this.$route.params.idSubmission);
-      resuls = resuls.data.data;
-      this.submission = resuls;
+        .where('_id', '=', this.$route.params.idSubmission)
+        .first();
+
+      if (result && result.data) {
+        this.submission = result.data;
+      }
     } else {
-      const path = this.$route.params.idForm;
       let online = await Submission({ path })
         .remote()
-        .find({
-          filter: [
-            {
-              element: "_id",
-              query: "=",
-              value: this.$route.params.idSubmission
-            }
-          ],
-          limit: 1
-        });
-      online = online.length > 0 ? online[0] : [];
-      this.submission = online.data;
+        .where('_id', '=', this.$route.params.idSubmission)
+        .first()
+
+      if (online && online.data) {
+        this.submission = online.data;
+      }
     }
   },
   data() {

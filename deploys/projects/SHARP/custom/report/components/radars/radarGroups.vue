@@ -28,10 +28,6 @@ export default {
         return [{}];
       }
 
-      uniquePillars = uniquePillars.map((name) => {
-        name = this.$t(name);
-        return name;
-      });
       let results = [];
       uniquePillars.forEach((pillar) => {
         let value = 0;
@@ -65,6 +61,11 @@ export default {
             ? parseFloat(Math.round(final * 100) / 100).toFixed(2)
             : 20;
         results.push(final);
+      });
+
+      uniquePillars = uniquePillars.map((name) => {
+        name = this.$t(name);
+        return name;
       });
       // this.submission
       return {

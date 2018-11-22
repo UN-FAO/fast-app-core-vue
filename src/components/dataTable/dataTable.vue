@@ -1,7 +1,7 @@
 <template>
 <div class="tableContainer" v-if="show">
     <q-data-table
-      :data="data"
+      :data="filteredData"
       :config="config"
       :columns="columns"
       @selection="handleSelectionChange"
@@ -235,9 +235,9 @@ export default {
 
       let sub = []
       if (this.selectedRows.length !== 0) {
-        sub = await Submission({ path }).merged().where('_id', 'in', ids).limit(5000).get();
+        sub = await Submission({ path }).merged().where('_id', 'in', ids).limit(500000).get();
       } else {
-        sub = await Submission({ path }).merged().limit(5000).get();
+        sub = await Submission({ path }).merged().limit(500000).get();
       }
       
       return sub;
@@ -475,6 +475,9 @@ export default {
     }
   },
   computed: {
+    filteredData() {
+      return this.data;
+    },
     columns() {
       return Columns.get({
         form: this.form.data,

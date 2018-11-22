@@ -3,10 +3,10 @@
   <br>
  <p class="caption"><strong style="font-weight: 400;font-size: 1.8vh;">Select domain: </strong>
 
-    <q-radio v-model="option" val="Agronomic" label="Agronomic" style="color:black" />
-  <q-radio v-model="option" val="Economic" label="Economic" style="color:black"/>
-  <q-radio v-model="option" val="Environment" label="Environment" style="color:black" />
-  <q-radio v-model="option" val="Social" label="Social" style="color:black" />
+    <q-radio v-model="option" val="Agronomic" :label="$t('Agronomic')" style="color:black" />
+  <q-radio v-model="option" val="Economic" :label="$t('Economic')" style="color:black"/>
+  <q-radio v-model="option" val="Environment" :label="$t('Environment')" style="color:black" />
+  <q-radio v-model="option" val="Social" :label="$t('Social')" style="color:black" />
  </p>
 
 

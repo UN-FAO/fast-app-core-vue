@@ -10,7 +10,7 @@
           <q-item multiline icon="favorite" v-for="component in panel.components" :label="$t(component.label)" :key="component.key">
             <q-item-side icon="school" />
             <q-item-main :label="$t(component.label)" label-lines="3" />
-            <q-item-side right :stamp="component.value === 0 ? '0' : component.value " />
+            <q-item-side right :stamp="component && component.value ? component.value.toString() : '' " />
           </q-item>
 
         </q-collapsible>
@@ -21,6 +21,7 @@
 </template>
 <script>
 import _forEach from 'lodash/forEach';
+import _get from 'lodash/get';
 import FormioUtils from 'formiojs/utils';
 import { Event } from 'fast-fastjs';
 import {
@@ -75,12 +76,14 @@ export default {
   },
   methods: {
     onSubmissionChange(event) {
-      let data = event.detail.data;
+      let data = _get(event, 'detail.data.event.data', undefined);
+      const pages = _get(event, 'detail.data.event.changed.instance.root.pages', undefined);
+      const isWizard = _get(event, 'detail.data.event.changed.instance.root.wizard', undefined);
       let scorePanels = [];
       // This should only be called if this is a Wizard
       // Search all of the Score components in different pages
-      if (data.formio && data.formio.pages) {
-        _forEach(data.formio.pages, (page) => {
+      if (isWizard && pages) {
+        _forEach(pages, (page) => {
           let panels = FormioUtils.findComponents(page.components, {
             type: 'panel'
           });
@@ -90,16 +93,16 @@ export default {
               if (panel.key.indexOf('score') !== -1) {
                 _forEach(panel.components, (component, cindex) => {
                   // Search the current value of the Score and add it
-                  component.value = data.formio.data[component.key];
+                  component.value = data[component.key];
                 });
                 scorePanels.push(panel);
               }
             });
           }
         });
-      } else if (data.formio && data.formio.components) {
+      } else if (pages && pages.components) {
         let panels = FormioUtils.findComponents(
-          data.formio.component.components,
+          pages.components,
           {
             type: 'panel'
           }
@@ -110,14 +113,17 @@ export default {
             if (panel.key.indexOf('score') !== -1) {
               _forEach(panel.components, (component, cindex) => {
                 // Search the current value of the Score and add it
-                component.value = data.formio.data[component.key];
+                component.value = data[component.key];
               });
               scorePanels.push(panel);
             }
           });
         }
       }
-      this.scorePanels = scorePanels;
+
+      if (pages) {
+        this.scorePanels = scorePanels;
+      }
     }
   }
 };

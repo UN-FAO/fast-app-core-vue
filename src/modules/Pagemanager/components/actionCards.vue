@@ -44,6 +44,7 @@
 </style>
 <script>
 import _chunk from 'lodash/chunk';
+import createSubmission from "components/createSubmission";
 import {
   QCard,
   QCardMedia,
@@ -120,10 +121,9 @@ export default {
     }
   },
   methods: {
-    applyAction(action) {
+    async applyAction(action) {
       let parent =
         action.parent && action.parent !== '' ? action.parent : 'null';
-
       if (action.internal) {
         let formPath = 'user/profile';
         let form = 'user';
@@ -161,22 +161,24 @@ export default {
         };
         this.$router.push(to);
         return;
-      } else if (action.formPath) {
-        let path =
-          action.view === 'list'
-            ? '/forms/' +
-              action.formPath +
-              '?parent=' +
-              btoa(JSON.stringify(parent))
-            : '/forms/' +
-              action.formPath +
-              '/submission?parent=' +
-              btoa(JSON.stringify(parent));
-        let to = {
-          path
-        };
-        this.$router.push(to);
-      } else if (action.page) {
+      }
+      if (action.formPath || action.path) {
+        const form = action.formPath || action.path;
+        if (action.view === 'list') {
+          this.$router.push(`/forms/${form}?parent=${btoa(JSON.stringify(parent))}`);
+          return
+        } else {
+            const route = await createSubmission.withData({
+            email: Auth.email(),
+            appUrl: this.$FAST_CONFIG.APP_URL,
+            path: form,
+            parent: parent,
+            data: {}
+          });
+          this.$router.push(route);
+        }
+      }
+      if (action.page) {
         let to = {
           name: 'pageManager',
           params: { pageId: action.page.url },
@@ -187,6 +189,7 @@ export default {
           }
         };
         this.$router.push(to);
+        return
       }
     }
   }

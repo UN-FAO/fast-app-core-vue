@@ -642,10 +642,11 @@ export default {
       this.isWizard = !!event.detail.data.formio.wizard;
     },
     onSubmissionChange(event) {
+      Event.emit({name: 'FAST:FORMIO:CHANGE', data: { event }, text: 'Change on submission'})
       if (event.changed) {
         // TODO This is one step behind of the User actions Needs to be fixed
-        this.pages = event.changed.instance.root.pages;
-        this.isWizard = event.changed.instance.root.wizard;
+        this.pages = _get(event, 'changed.instance.root.pages', undefined);
+        this.isWizard = _get(event, 'changed.instance.root.wizard', undefined);
       }
       if (event.data) {
         this.activeSubmission = event.data;

@@ -96,7 +96,7 @@ export default {
     async createDialog() {
       Event.emit({
         name: "FAST:EXPORT:OPENMENU",
-        data: undefined,
+        data: {},
         text: "Triggering Open Export Menu"
       });
     }
@@ -104,7 +104,7 @@ export default {
   asyncData: {
     formList: {
       get() {
-        return Form.local().get();
+        return Form.local().limit(500).get();
       },
       transform(result) {
         let forms = result.reduce((filtered, form) => {
