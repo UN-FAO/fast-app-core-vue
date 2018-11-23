@@ -53,17 +53,6 @@ button.btn.btn-default.btn-wizard-nav-cancel {
   background-color: whitesmoke;
 }
 
-.choices__list.choices__list--dropdown {
-  position: sticky;
-  width: max-content !important;
-  min-width: -webkit-fill-available;
-  color: black;
-}
-
-[dir="rtl"] .choices__list.choices__list--dropdown {
-  margin-left: -42px !important;
-}
-
 ul.list-inline {
   position: sticky;
   bottom: -63px;
@@ -589,3 +578,5 @@ ul.list-inline {
 @import "loading.scss";
 @import "fastIcons/fastIcons.scss";
 @import "leftDrawer.scss";
+@import "formio/index.scss";
+@import "responsive/index.scss";

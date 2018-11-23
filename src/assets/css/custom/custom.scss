@@ -3,12 +3,6 @@
   .q-tabs-head {
     min-height: none !important;
   }
-  .formio-component-datagrid {
-    overflow-x: unset;
-    margin-left: -35px;
-    width: 99vw !important;
-    transform: scale(0.92);
-  }
   .formio-component-datagrid div.row {
     display: block;
   }
@@ -25,12 +19,6 @@
     margin-left: 0px;
   }
 
-  .table-responsive {
-    overflow-x: unset;
-    margin-left: -50px !important;
-    width: 100vw !important;
-    transform: scale(0.88);
-  }
   .table-responsive .choices__item.choices__item--selectable {
     display: table;
     font-size: x-small;
