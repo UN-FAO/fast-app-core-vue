@@ -1,0 +1,31 @@
+/* selectboxes / radio component */
+[dir=rtl] .formio-component.formio-component-selectboxes > .form-group,
+[dir=rtl] .formio-component.formio-component-radio > .form-group {
+  text-align: right;
+}
+
+[dir=rtl] .formio-component.formio-component-selectboxes .form-group label,
+[dir=rtl] .formio-component.formio-component-radio .form-group label {
+  padding-left: unset;
+  padding-right: 20px;
+}
+
+[dir=rtl] .formio-component.formio-component-selectboxes .checkbox input[type=checkbox],
+[dir=rtl] .formio-component.formio-component-radio .checkbox input[type=checkbox],
+[dir=rtl] .formio-component.formio-component-selectboxes .checkbox-inline input[type=checkbox],
+[dir=rtl] .formio-component.formio-component-radio .checkbox-inline input[type=checkbox],
+[dir=rtl] .formio-component.formio-component-selectboxes .radio input[type=radio],
+[dir=rtl] .formio-component.formio-component-radio .radio input[type=radio],
+[dir=rtl] .formio-component.formio-component-selectboxes .radio-inline input[type=radio],
+[dir=rtl] .formio-component.formio-component-radio .radio-inline input[type=radio] {
+  margin-left: unset;
+  margin-right: -20px;
+}
+/* end selectboxes / radio component */
+
+
+/* datagrid component */
+[dir=rtl] .formio-component.formio-component-datagrid > table > thead th {
+  text-align: right;
+}
+/* end datagrid component */
