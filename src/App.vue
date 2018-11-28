@@ -172,6 +172,6 @@ export default {
 
 <style lang="scss">
 @import url("../node_modules/bootstrap/dist/css/bootstrap.min.css");
-@import url("../node_modules/formiojs/dist/formio.full.min.css");
+@import url("../node_modules/formiojs/dist/formio.form.min.css");
 @import url("./assets/css/main.scss");
 </style>

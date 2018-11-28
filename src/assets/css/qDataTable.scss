@@ -9,6 +9,11 @@
   height: 56px;
 }
 
+.q-data-table table tr > th,
+.q-data-table table tr > td {
+  vertical-align: middle;
+}
+
 .q-data-table {
   color: rgba(0, 0, 0, 0.87);
   font-size: 13.4px;

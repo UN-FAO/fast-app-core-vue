@@ -1,0 +1,20 @@
+.has-error.alert-danger .checkbox,
+.has-error.alert-danger .checkbox-inline,
+.has-error.alert-danger .control-label,
+.has-error.alert-danger .help-block,
+.has-error.alert-danger .radio,
+.has-error.alert-danger .radio-inline,
+.has-error.alert-danger.checkbox label,
+.has-error.alert-danger.checkbox-inline label,
+.has-error.alert-danger.radio label,
+has-error.alert-danger.radio-inline label {
+  color: #a94442 !important;
+}
+
+.has-error.alert-danger .help-block {
+  font-size: 85%;
+}
+
+[dir="rtl"] .has-error .form-control + .input-group-addon:not(:first-child) {
+  border-left-color: #a94442;
+}
