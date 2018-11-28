@@ -14,7 +14,8 @@
   and (max-device-width: 480px)
   and (-webkit-min-device-pixel-ratio: 2)
   and (orientation: portrait) {
-    .formPageContainer > .q-card {
+    .formPageContainer > .q-card,
+    .responsiveTableContainer > .q-card {
       margin: 0;
     }
 }
