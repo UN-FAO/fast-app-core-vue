@@ -63,7 +63,8 @@
     "vue-router": "^2.7.0",
     "vue-sweetalert": "^0.1.18",
     "vuex": "^2.3.1",
-    "webpack-remove-serviceworker-plugin": "^1.0.0"
+    "webpack-remove-serviceworker-plugin": "^1.0.0",
+    "xlsx-populate": "^1.17.0"
   },
   "devDependencies": {
     "autoprefixer": "^6.4.0",
