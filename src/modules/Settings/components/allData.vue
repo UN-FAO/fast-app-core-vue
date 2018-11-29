@@ -158,6 +158,9 @@ export default {
         this.loading = true;
 
         let path = this.currentForm.data.path;
+        console.log(await Submission({ path }).remote().paginate(15));
+        console.log(await Submission({ path }).remote().paginate(15, 2));
+        console.log(await Submission({ path }).remote().paginate(15, 3));
         let submissions = await Submission({ path }).showView({ from: 'remote', limit: 50000 });
 
         if (!Auth.hasRole("Administrator")) {
