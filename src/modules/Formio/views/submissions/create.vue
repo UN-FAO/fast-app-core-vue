@@ -221,9 +221,9 @@
     <q-tabs
       slot="footer"
       style="position: fixed;
-    bottom: 0;
-    width: 100%;
-    z-index: 99;"
+        bottom: 0;
+        width: 100%;
+        z-index: 99;"
       v-model="tab"
       v-if="$FAST_CONFIG.TAB_MENU"
     >
@@ -641,11 +641,15 @@ export default {
     showWizard(event) {
       this.isWizard = !!event.detail.data.formio.wizard;
     },
-    onSubmissionChange(event) {
-      Event.emit({name: 'FAST:FORMIO:CHANGE', data: { event }, text: 'Change on submission'})
+    async onSubmissionChange(event) {
+      // Event.emit({name: 'FAST:FORMIO:CHANGE', data: { event }, text: 'Change on submission'});
+      console.log('event', event);
       if (event.changed) {
         // TODO This is one step behind of the User actions Needs to be fixed
+        console.log('pages before assignment', this.pages);
+        console.log('event root pages', event.changed.instance.root.pages);
         this.pages = _get(event, 'changed.instance.root.pages', undefined);
+        console.log('pages after assignment', this.pages);
         this.isWizard = _get(event, 'changed.instance.root.wizard', undefined);
       }
       if (event.data) {
