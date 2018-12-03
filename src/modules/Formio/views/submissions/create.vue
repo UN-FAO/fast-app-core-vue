@@ -220,9 +220,9 @@
     <q-tabs
       slot="footer"
       style="position: fixed;
-    bottom: 0;
-    width: 100%;
-    z-index: 99;"
+        bottom: 0;
+        width: 100%;
+        z-index: 99;"
       v-model="tab"
       v-if="$FAST_CONFIG.TAB_MENU"
     >
@@ -650,6 +650,7 @@ export default {
       }
       return position;
     },
+<<<<<<< HEAD
     async onSubmissionChange() {
       Event.emit({
         name: "FAST:FORMIO:CHANGE",
@@ -659,6 +660,25 @@ export default {
       if (this.$refs.formio && this.$refs.formio.formio && this.$refs.formio.formio.data) {
         this.activeSubmission = this.$refs.formio.formio.data;
         this.changeEvent = JSON.stringify(this.$refs.formio.formio.data);
+=======
+    showWizard(event) {
+      this.isWizard = !!event.detail.data.formio.wizard;
+    },
+    async onSubmissionChange(event) {
+      // Event.emit({name: 'FAST:FORMIO:CHANGE', data: { event }, text: 'Change on submission'});
+      console.log('event', event);
+      if (event.changed) {
+        // TODO This is one step behind of the User actions Needs to be fixed
+        console.log('pages before assignment', this.pages);
+        console.log('event root pages', event.changed.instance.root.pages);
+        this.pages = _get(event, 'changed.instance.root.pages', undefined);
+        console.log('pages after assignment', this.pages);
+        this.isWizard = _get(event, 'changed.instance.root.wizard', undefined);
+      }
+      if (event.data) {
+        this.activeSubmission = event.data;
+        this.changeEvent = JSON.stringify(event.data);
+>>>>>>> a30b7ead8e2631da2e118001dabe3fb2144c6172
       }
       if (this.shouldAutoSave()) {
         this.autoSaveTimer();
