@@ -49,6 +49,7 @@
     "formio-export": "^0.3.0",
     "formiojs": "^3.8.0",
     "js-base64": "^2.4.9",
+    "lodash.isequal": "^4.5.0",
     "moment": "^2.22.1",
     "quasar-extras": "0.0.8",
     "quasar-framework": "^0.14.9",

@@ -7,7 +7,7 @@ const MIME_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.s
 const buildWorkbook = (workbook, translations, languages) => {
   const sheet = workbook.sheet(0);
   let colCount = 2;
-  let rowCount = 2;
+  let rowCount = 3;
 
   sheet.name('Translations');
 
@@ -15,7 +15,8 @@ const buildWorkbook = (workbook, translations, languages) => {
   const labels = translations.label;
 
   for (const language of languages) {
-    const cell = sheet.cell(1, colCount);
+    sheet.cell(1, colCount).value(language.code);
+    const cell = sheet.cell(2, colCount);
     cell.value(language.label);
     locations[language.code] = cell.columnNumber();
     colCount = colCount + 1;

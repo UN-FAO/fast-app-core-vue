@@ -80,7 +80,9 @@ export default {
       });
 
       if (file) {
+        this.$swal.showLoading();
         await ExcelImport(file);
+        this.$swal.close();
       }
     }
   },

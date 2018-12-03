@@ -55,6 +55,7 @@ import {
 import pageLinks from './components/pageLinks';
 import _sortBy from 'lodash/sortBy';
 import Promise from 'bluebird';
+// import { clean } from 'semver';
 export default {
   components: {
     QScrollArea,
@@ -76,14 +77,18 @@ export default {
     PAGES: {
       async get() {
         let result = await Pages.local().first();
+        console.log(result.pages);
         let pages = await result.pages.map(async (page) => {
-          page.cards.map(async (card) => {
-            card.shouldDisplay = await Auth.hasRoleIdIn(card.access);
-            card.actions.map(async (action) => {
-              action.shouldDisplay = await Auth.hasRoleIdIn(action.access);
+          if (page.hasOwnProperty('cards')) {
+            page.cards.map(async (card) => {
+              card.shouldDisplay = await Auth.hasRoleIdIn(card.access);
+              card.actions.map(async (action) => {
+                action.shouldDisplay = await Auth.hasRoleIdIn(action.access);
+              });
             });
-          });
-          page.shouldDisplay = await Auth.hasRoleIdIn(page.access);
+          
+            page.shouldDisplay = await Auth.hasRoleIdIn(page.access);
+          }
           return page;
         });
         return Promise.all(pages);
