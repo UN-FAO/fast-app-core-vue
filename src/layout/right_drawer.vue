@@ -76,9 +76,9 @@ export default {
   },
   methods: {
     onSubmissionChange(event) {
-      let data = _get(event, 'detail.data.event.data', undefined);
-      const pages = _get(event, 'detail.data.event.changed.instance.root.pages', undefined);
-      const isWizard = _get(event, 'detail.data.event.changed.instance.root.wizard', undefined);
+      let data = _get(event, 'detail.data.formio.formio.data', undefined);
+      const pages = _get(event, 'detail.data.formio.formio.pages', undefined);
+      const isWizard = _get(event, 'detail.data.formio.formio.pages', undefined);
       let scorePanels = [];
       // This should only be called if this is a Wizard
       // Search all of the Score components in different pages

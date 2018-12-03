@@ -26,7 +26,6 @@ export default {
       async get() {
         let action = this.$route.name === "CollectedData" ? "list" : "create";
         let result = await Form.cardFormattedForms(action);
-
         if (result.cards.length === 1) {
           this.redirectTo(result.cards[0].actions[0]);
         }

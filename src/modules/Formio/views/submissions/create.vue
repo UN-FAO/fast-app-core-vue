@@ -5,7 +5,7 @@
         <q-card
           style="background-color: white; max-height: fit-content;"
           class="formNav"
-          v-if="_isWizard && showPages && !$FAST_CONFIG.TAB_MENU"
+          v-if="isWizard && showPages && !$FAST_CONFIG.TAB_MENU"
         >
           <q-card-title>
             <q-icon
@@ -14,7 +14,7 @@
               color="grey"
               @click="togglePages"
               name="menu"
-              v-if="_isWizard && !$FAST_CONFIG.TAB_MENU && showPages"
+              v-if="isWizard && !$FAST_CONFIG.TAB_MENU && showPages"
             >
               <q-tooltip>{{$t('Show pages')}}</q-tooltip>
             </q-icon>
@@ -25,7 +25,7 @@
                 class="formioPagination"
                 multiline
                 style="text-align: left; min-height: 60px; border-radius: 5px;"
-                link=""
+                link
                 v-for="(page, index) in pages"
                 :key="page.title"
                 @click="goToPage(index)"
@@ -51,7 +51,7 @@
                 color="grey"
                 @click="togglePages"
                 name="menu"
-                v-if="_isWizard && !$FAST_CONFIG.TAB_MENU && !showPages"
+                v-if="isWizard && !$FAST_CONFIG.TAB_MENU && !showPages"
               >
                 <q-tooltip>{{$t('Show pages')}}</q-tooltip>
               </q-icon>
@@ -81,7 +81,7 @@
                 v-if="this.$FAST_CONFIG.OFFLINE_FIRST"
               >
                 <q-popover ref="popover" class="show-menu">
-                  <q-list link="" class="no-border" dense separator no-border>
+                  <q-list link class="no-border" dense separator no-border>
                     <q-item
                       @click="$refs.popover.close(), openRightDrawer()"
                       v-if="$FAST_CONFIG.HAS_SCORES"
@@ -154,23 +154,23 @@
                   v-on:error="onFormError"
                   v-on:prevPage="onPrevPage"
                   v-on:nextPage="onNextPage"
+                  v-on:render="onFormRender"
                   v-if="form && submission && options && !customRender"
+                  ref="formio"
                 />
-                
+
                 <div v-bind:style="{ display: customRender ? 'initial' : 'none', color: 'black' }">
-
-                <div
-                  v-bind:style="{ display: customRenderType === 'script' ? 'initial' : 'none' }"
-                >
-
-                 <executor
-                  :submission="changeEvent"
-                  :openCpuUrl="$FAST_CONFIG.OPEN_CPU_URL || 'https://public.opencpu.org'"
-                  :formioUrl="$FAST_CONFIG.APP_URL"
-                  :token="formioToken"
-                  />
-                </div>
-                <!--
+                  <div
+                    v-bind:style="{ display: customRenderType === 'script' ? 'initial' : 'none' }"
+                  >
+                    <executor
+                      :submission="changeEvent"
+                      :openCpuUrl="$FAST_CONFIG.OPEN_CPU_URL || 'https://public.opencpu.org'"
+                      :formioUrl="$FAST_CONFIG.APP_URL"
+                      :token="formioToken"
+                    />
+                  </div>
+                  <!--
                   <datatable
                     :data="customRenderArray"
                     :form="form"
@@ -179,7 +179,6 @@
                   />
                   -->
                 </div>
-                
               </q-tab-pane>
             </q-tabs>
           </q-card-main>
@@ -287,7 +286,7 @@ import {
 // import formio from 'modules/Formio/components/formio/formio';
 import breadcrum from "components/breadcrum";
 // import datatable from 'components/dataTable/dataTable';
-import executor from '../../components/Rexecutor/executor';
+import executor from "../../components/Rexecutor/executor";
 import { Form as vForm } from "vue-formio";
 import Formio from "formiojs/Formio";
 import ErrorFormatter from "components/dataTable/submission/errorFormatter";
@@ -373,10 +372,6 @@ export default {
   beforeDestroy() {
     Formio.deregisterPlugin("fast");
     this.$eventHub.$off("FAST:LANGUAGE:CHANGED", this.changeLanguage);
-    Event.remove({
-      name: "FAST:FORMIO:RENDERED",
-      callback: this.showWizard
-    });
 
     Event.remove({
       name: "FAST:SUBMISSION:CANCEL",
@@ -487,6 +482,9 @@ export default {
     }
   },
   computed: {
+    vueFormio() {
+      return this.$refs.formio.formio;
+    },
     formTitle() {
       return this.form && this.form && this.form.title
         ? this.$t(this.form.title)
@@ -506,12 +504,9 @@ export default {
         return "";
       }
     },
-    _isWizard() {
-      return this.isWizard;
-    },
     getFormClass() {
       let className = "";
-      if (this.showPages && this._isWizard && !this.$FAST_CONFIG.TAB_MENU) {
+      if (this.showPages && this.isWizard && !this.$FAST_CONFIG.TAB_MENU) {
         className = "formNavActive";
       }
       if (!this.saved) {
@@ -548,8 +543,8 @@ export default {
       formioToken: Auth.user().x_jwt_token,
       saved: true,
       errors: {},
-      isWizard: false,
       pages: [],
+      isWizard: false,
       currentPage: 0,
       showPages: this.$FAST_CONFIG.NAVIGATION_OPENED,
       currentQuestion: -1,
@@ -573,6 +568,23 @@ export default {
     };
   },
   methods: {
+    onFormRender(event) {
+      this.isWizard =
+        this.$refs.formio &&
+        this.$refs.formio.formio &&
+        !!this.$refs.formio.formio.pages;
+
+      this.pages =
+        this.$refs.formio &&
+        this.$refs.formio.formio &&
+        this.$refs.formio.formio.pages;
+
+      Event.emit({
+        name: "FAST:FORMIO:CHANGE",
+        data: { 'formio': this.$refs.formio },
+        text: "Change on submission"
+      });
+    },
     onNextPage(event) {
       const index = event.page;
       if (
@@ -587,7 +599,7 @@ export default {
           scriptName
         );
       */
-        this.customRenderType = 'script';
+        this.customRenderType = "script";
         this.customRender = true;
         this.currentPage = index;
         this.tab = (index + 1).toString();
@@ -615,7 +627,7 @@ export default {
           scriptName
         );
       */
-        this.customRenderType = 'script';
+        this.customRenderType = "script";
         this.customRender = true;
         this.currentPage = index;
         this.tab = (index + 1).toString();
@@ -638,19 +650,15 @@ export default {
       }
       return position;
     },
-    showWizard(event) {
-      this.isWizard = !!event.detail.data.formio.wizard;
-    },
-    onSubmissionChange(event) {
-      Event.emit({name: 'FAST:FORMIO:CHANGE', data: { event }, text: 'Change on submission'})
-      if (event.changed) {
-        // TODO This is one step behind of the User actions Needs to be fixed
-        this.pages = _get(event, 'changed.instance.root.pages', undefined);
-        this.isWizard = _get(event, 'changed.instance.root.wizard', undefined);
-      }
-      if (event.data) {
-        this.activeSubmission = event.data;
-        this.changeEvent = JSON.stringify(event.data);
+    async onSubmissionChange() {
+      Event.emit({
+        name: "FAST:FORMIO:CHANGE",
+        data: { 'formio': this.$refs.formio },
+        text: "Change on submission"
+      });
+      if (this.$refs.formio && this.$refs.formio.formio && this.$refs.formio.formio.data) {
+        this.activeSubmission = this.$refs.formio.formio.data;
+        this.changeEvent = JSON.stringify(this.$refs.formio.formio.data);
       }
       if (this.shouldAutoSave()) {
         this.autoSaveTimer();
@@ -974,7 +982,7 @@ export default {
           scriptName
         );
       */
-        this.customRenderType = 'script';
+        this.customRenderType = "script";
         this.customRender = true;
         this.currentPage = index;
         this.tab = (index + 1).toString();

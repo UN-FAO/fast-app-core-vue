@@ -1,276 +1,495 @@
 let custom = [
   {
-    text: 'The date of survey cannot be set in the future.',
+    text: 'Relative resilience by domain',
     template: '',
     location: [{ type: 'customAppTranslation', picture: '' }]
   },
   {
-    text: 'Please select a date prior to the date of submission.',
+    text: 'Relative resilience = (Technical + Adequacy)',
     template: '',
     location: [{ type: 'customAppTranslation', picture: '' }]
   },
   {
-    text: 'Scouting and traps',
+    text: 'Relative resilience by Module',
     template: '',
     location: [{ type: 'customAppTranslation', picture: '' }]
   },
   {
-    text: 'Scouting',
+    text: 'Detailed Resilience report',
     template: '',
     location: [{ type: 'customAppTranslation', picture: '' }]
   },
   {
-    text: 'Traps',
+    text: "Respondent's Score",
     template: '',
     location: [{ type: 'customAppTranslation', picture: '' }]
   },
   {
-    text: 'Fall Armyworm Monitoring and Early Warning System',
+    text: 'Low Resilience',
     template: '',
     location: [{ type: 'customAppTranslation', picture: '' }]
   },
   {
-    text: 'ABOUT FAMEWS',
+    text: 'Mid Resilience',
     template: '',
     location: [{ type: 'customAppTranslation', picture: '' }]
   },
   {
-    text: 'ABOUT FAW',
+    text: 'High Resilience',
     template: '',
     location: [{ type: 'customAppTranslation', picture: '' }]
   },
   {
-    text: 'YOU SHOULD NOT PANIC',
+    text: 'Agronomic',
     template: '',
     location: [{ type: 'customAppTranslation', picture: '' }]
   },
   {
-    text: 'AT THE SIGN OF FAW IN YOUR FIELD',
+    text: 'Economic',
     template: '',
     location: [{ type: 'customAppTranslation', picture: '' }]
   },
   {
-    text: 'IMMEDIATE ACTION TO TAKE',
+    text: 'Environment',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Social',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Goverment',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Household',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Agricultural activities',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Agricultural Production Activities',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Non-farm Income Generating Activities (IGAS)',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Non-farm IGA',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Land access',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Crop production',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Intercropping',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Weed Species and Management',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Weeds',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Pest Management Practices',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Pest',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Land Management Practices',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Land practices',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Leguminous Plants and Trees',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Legumes',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Fertilisation Practices',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Fertilization',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Animal Production Practices',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Animal production',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Animal Breeding Practices',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Animal breeding',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Animal Nutrition Practices',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Animal health',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Utilization of New And Adapted Varieties and Breeds',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Varieties & breeds',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Farm Inputs',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Water Access',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Water Conservation Practices And Techniques',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Water conservation',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Water Quality',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Water quality',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Soil Quality and Land Degradation',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Soil quality',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Trees',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Landscape Characteristics',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Landscape',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Energy Sources',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Energy Conservation Practices',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Energy conservation',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Disturbances',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Climate Change',
     template: '',
     location: [{ type: 'customAppTranslation', picture: '' }]
   },
   {
     text:
-      'Check your fields as soon as seedlings appear and continue at least two times per week until tasselling',
+      'Access To Information On Weather And Climate Change Adaptation Practices',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Information access',
     template: '',
     location: [{ type: 'customAppTranslation', picture: '' }]
   },
   {
     text:
-      'Use your fingers to squash any whitish or greyish egg masses (about the size of your thumb) and young larvae (worms) on top and bottom of the leaves',
+      'Information And Comunication Technologies (ICTS) (Sensitive Question)',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'ICTs',
     template: '',
     location: [{ type: 'customAppTranslation', picture: '' }]
   },
   {
     text:
-      'Sprinkling ash, sand or dirt into whorls has been done by some farmers, others use soap or local botanical solutions',
+      'Goverment Policies and Programmes On Climate Change And Sustainable Agriculture',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Policies & programmes',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Access to Markets',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Market access',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Income Sources, Expenditures And Savings',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Income',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Major Productive Assets',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Productive assets',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Access to Financial Services',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Financial services',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Insurance',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Community Cooperation',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Community cooperation',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Group Membership',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Group membership',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Meals',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Decision-Making (Household)',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Household decisions',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Decision-Making (Farm Management)',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Farm decisions',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: "Respondent's perceived priorities",
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Priority level',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Module',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Not a priority',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Low priority',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Medium priority',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'High priority',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Very high priority',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: '*Based on adequacy scores',
+    template: '',
+    location: [{ type: 'customAppTranslation', picture: '' }]
+  },
+  {
+    text: 'Non-applicable modules*',
     template: '',
     location: [{ type: 'customAppTranslation', picture: '' }]
   },
   {
     text:
-      'Some botanical insecticides (e.g. Neem) and pathogens (virus, bacteria, fungi) known to be effective',
+      '*Compound score = (technical score + adequacy score + importance score)',
     template: '',
     location: [{ type: 'customAppTranslation', picture: '' }]
   },
   {
-    text:
-      'Application directly into the whorls of plants that show FAW damage can be very effective',
+    text: 'SHARP+ ranking',
     template: '',
     location: [{ type: 'customAppTranslation', picture: '' }]
   },
   {
-    text:
-      'Pheromone traps can be used to help detect the presence, buildup and movement of FAW in your area',
+    text: 'Compound score*',
     template: '',
     location: [{ type: 'customAppTranslation', picture: '' }]
   },
   {
-    text: 'CAUTION',
+    text: 'Rank',
     template: '',
     location: [{ type: 'customAppTranslation', picture: '' }]
   },
   {
-    text:
-      'Spraying insecticides early in the crop cycle will kill off the natural enemies and may not be economical',
+    text: '*Resilience score = Technical score + Adequacy score',
     template: '',
     location: [{ type: 'customAppTranslation', picture: '' }]
   },
   {
-    text:
-      'Older pesticides may be hazardous to human health and may be banned in other countries',
+    text: 'Resilience scores',
     template: '',
     location: [{ type: 'customAppTranslation', picture: '' }]
   },
   {
-    text:
-      'Effectiveness of insecticides against FAW depends on the application technique, dose and formulation',
+    text: 'Resilience score*',
     template: '',
     location: [{ type: 'customAppTranslation', picture: '' }]
   },
   {
-    text:
-      'Once FAW is down in the whorl, the insecticides must reach them there',
+    text: 'Adequacy score',
     template: '',
     location: [{ type: 'customAppTranslation', picture: '' }]
   },
   {
-    text:
-      'Spraying with backpack sprayers without delivering insecticides directly into the whorl is often ineffective',
-    template: '',
-    location: [{ type: 'customAppTranslation', picture: '' }]
-  },
-  {
-    text:
-      'Spraying insecticides several times can dramatically increase the costs of production, making the maize economically unviable',
-    template: '',
-    location: [{ type: 'customAppTranslation', picture: '' }]
-  },
-  {
-    text: 'FAW FACTS',
-    template: '',
-    location: [{ type: 'customAppTranslation', picture: '' }]
-  },
-  {
-    text: 'A native of the Americas, FAW is now in Africa to stay',
-    template: '',
-    location: [{ type: 'customAppTranslation', picture: '' }]
-  },
-  {
-    text: 'A pest of more than 80 plant species',
-    template: '',
-    location: [{ type: 'customAppTranslation', picture: '' }]
-  },
-  {
-    text: 'FAW lives about 35–61 days',
-    template: '',
-    location: [{ type: 'customAppTranslation', picture: '' }]
-  },
-  {
-    text:
-      'Adult females lay eggs directly on maize leaves and hatch in 3–5 days',
-    template: '',
-    location: [{ type: 'customAppTranslation', picture: '' }]
-  },
-  {
-    text:
-      'The larvae (worm or caterpillar) develop in 14–28 days, moving from the leaf to the whorl and sometimes to the maize ear',
-    template: '',
-    location: [{ type: 'customAppTranslation', picture: '' }]
-  },
-  {
-    text:
-      'After development, larvae drop to the ground to pupate in the soil for 7–14 days',
-    template: '',
-    location: [{ type: 'customAppTranslation', picture: '' }]
-  },
-  {
-    text:
-      'The moth appears and lives as an adult for 11–14 days, and can fly up to 100 km per night',
-    template: '',
-    location: [{ type: 'customAppTranslation', picture: '' }]
-  },
-  {
-    text: 'FAW can breed continuously, causing several generations per year',
-    template: '',
-    location: [{ type: 'customAppTranslation', picture: '' }]
-  },
-  {
-    text:
-      'In the Americas natural biological control (predators, parasitoids and pathogens) kill up to 50% of FAW in unsprayed maize fields',
-    template: '',
-    location: [{ type: 'customAppTranslation', picture: '' }]
-  },
-  {
-    text:
-      'Planting date is very important – late planted maize gets attacked much more than early-planted maize',
-    template: '',
-    location: [{ type: 'customAppTranslation', picture: '' }]
-  },
-  {
-    text:
-      'Increasing plant diversity (such as intercropping) can reduce FAW oviposition and increase natural enemy populations',
-    template: '',
-    location: [{ type: 'customAppTranslation', picture: '' }]
-  },
-  {
-    text:
-      'The app is to be used every time fields are checked (scouting) and pheromone traps are counted for Fall Armyworm (FAW), Africa Armyworm (AAW) and Stem Borer',
-    template: '',
-    location: [{ type: 'customAppTranslation', picture: '' }]
-  },
-  {
-    text:
-      'The primary target user is the farmer, supplemented by community focal persons, extension agents and plant protection officers when the farmer does not have a smart phone',
-    template: '',
-    location: [{ type: 'customAppTranslation', picture: '' }]
-  },
-  {
-    text:
-      'Relying solely on extension agents or plant protection officers may not give the desired coverage as they are unlikely to be able to visit all farms on a regular and timely basis',
-    template: '',
-    location: [{ type: 'customAppTranslation', picture: '' }]
-  },
-  {
-    text:
-      'The app has three sections: General information, Field scouting and Pheromone traps',
-    template: '',
-    location: [{ type: 'customAppTranslation', picture: '' }]
-  },
-  {
-    text:
-      'Some information is required (indicated by a red asterisk) that must be entered before continuing',
-    template: '',
-    location: [{ type: 'customAppTranslation', picture: '' }]
-  },
-  {
-    text: 'The app is multilingual – initially English and French',
-    template: '',
-    location: [{ type: 'customAppTranslation', picture: '' }]
-  },
-  {
-    text:
-      'The app should be used in conjunction with the FAO Guidance Notes on Scouting and Trapping',
-    template: '',
-    location: [{ type: 'customAppTranslation', picture: '' }]
-  },
-  {
-    text:
-      'Data can be transmitted immediately or stored and sent once a connection becomes available',
-    template: '',
-    location: [{ type: 'customAppTranslation', picture: '' }]
-  },
-  {
-    text: 'The app allows users to monitor FAW, AAW and Stem Borer',
-    template: '',
-    location: [{ type: 'customAppTranslation', picture: '' }]
-  },
-  {
-    text:
-      'Data from the app provides farmers, communities and countries with early warning and advice on changes in FAW population levels and distribution in order to protect their crops',
-    template: '',
-    location: [{ type: 'customAppTranslation', picture: '' }]
-  },
-  {
-    text:
-      'The app is very intuitive and easy to use – it should take about 10 minutes to learn',
-    template: '',
-    location: [{ type: 'customAppTranslation', picture: '' }]
-  },
-  {
-    text:
-      'FAMEWS was inspired by AWorldBridge (aworldbridge.com) students and developed by FAO IT-Solutions based on their ideas and inputs from affected countries and other partners',
-    template: '',
-    location: [{ type: 'customAppTranslation', picture: '' }]
-  },
-  {
-    text:
-      'Maize plants have a capacity to compensate for lower-level FAW infestation. Not all FAW damage causes significant maize yield reduction.',
+    text: 'Technical score',
     template: '',
     location: [{ type: 'customAppTranslation', picture: '' }]
   }

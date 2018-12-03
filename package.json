@@ -1,8 +1,8 @@
 {
   "name": "fast-app-core-vue",
-  "version": "0.12.127",
-  "deployAppName": "FAW",
-  "deployAppID": "5a65a0b902b5450001fbc4cd",
+  "version": "0.12.132",
+  "deployAppName": "SHARP+",
+  "deployAppID": "59b112c7678919000775f921",
   "description": "A data collection application based on FORM.io",
   "author": "Ignacio Cabrera <ignacio.cabrera@fao.org>",
   "scripts": {
@@ -40,7 +40,7 @@
     "chart.js": "^2.7.2",
     "dotenv-webpack": "^1.5.5",
     "fast-downloads": "0.0.10",
-    "fast-fastjs": "^0.5.10",
+    "fast-fastjs": "^0.6.4",
     "fast-submission2any": "0.0.6",
     "fastclick": "^1.0.6",
     "formio-export": "^0.3.0",
@@ -85,7 +85,6 @@
     "compression-webpack-plugin": "^1.0.1",
     "connect-history-api-fallback": "^1.1.0",
     "css-loader": "^0.28.0",
-    "cypress": "^1.0.3",
     "es6-promise": "^4.1.1",
     "eslint": "^4.4.1",
     "eslint-config-standard": "^10.2.1",
