@@ -18,3 +18,4 @@ deploys/all/*
 cypress/screenshots/*
 deploys/all
 .env
+src/config/offline/*

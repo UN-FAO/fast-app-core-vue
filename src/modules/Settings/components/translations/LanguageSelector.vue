@@ -12,6 +12,16 @@
       :after="[{  icon: 'fa-search'}]"
       clearable
     />
+    <div class="row">
+      <div class="col-md-12">
+        <span class="pull-right">
+          <div class="button-group">
+            <q-btn color="primary" @click="importFromExcel()">{{ $t('Import') }}</q-btn>
+            <q-btn color="secondary" @click="exportToExcel()">{{ $t('Export') }}</q-btn>
+          </div>
+        </span>
+      </div>
+    </div>
     <q-list separator no-border link="">
       <language-item
         :language="language"
@@ -23,16 +33,27 @@
   </div>
 </template>
 
+<style>
+.button-group {
+  margin: 0 auto;
+}
+</style>
+
+
 <script>
 import LanguageItem from "./LanguageItem";
 import { Utilities } from "fast-fastjs";
-import { QInput, QList } from "quasar";
+import { QInput, QList, QBtn, QBtnGroup } from "quasar";
+import ExcelExport from './ExportTranslationToExcel';
+import ExcelImport from './ImportTranslationFromExcel';
 export default {
   name: "LanguageSelector",
   components: {
     LanguageItem,
     QInput,
-    QList
+    QList,
+    QBtn,
+    QBtnGroup
   },
   data() {
     return {
@@ -42,6 +63,27 @@ export default {
   props: {
     languages: {
       required: true
+    }
+  },
+  methods: {
+    async exportToExcel() {
+      await ExcelExport();
+    },
+    async importFromExcel() {
+      const file = await this.$swal({
+        title: this.$t('Select your Excel file'),
+        input: 'file',
+        inputAttributes: {
+          accept: '.xlsx',
+          'aria-label': this.$t('Upload your Excel File')
+        }
+      });
+
+      if (file) {
+        this.$swal.showLoading();
+        await ExcelImport(file);
+        this.$swal.close();
+      }
     }
   },
   watch: {

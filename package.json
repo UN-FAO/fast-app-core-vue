@@ -1,6 +1,6 @@
 {
   "name": "fast-app-core-vue",
-  "version": "0.12.132",
+  "version": "0.12.133",
   "deployAppName": "SHARP+",
   "deployAppID": "59b112c7678919000775f921",
   "description": "A data collection application based on FORM.io",
@@ -49,6 +49,7 @@
     "formio-export": "^0.3.0",
     "formiojs": "^3.8.0",
     "js-base64": "^2.4.9",
+    "lodash.isequal": "^4.5.0",
     "moment": "^2.22.1",
     "quasar-extras": "0.0.8",
     "quasar-framework": "^0.14.9",
@@ -63,7 +64,8 @@
     "vue-router": "^2.7.0",
     "vue-sweetalert": "^0.1.18",
     "vuex": "^2.3.1",
-    "webpack-remove-serviceworker-plugin": "^1.0.0"
+    "webpack-remove-serviceworker-plugin": "^1.0.0",
+    "xlsx-populate": "^1.17.0"
   },
   "devDependencies": {
     "autoprefixer": "^6.4.0",
