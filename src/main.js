@@ -16,6 +16,7 @@ let appConf = {
     Forms: require('src/config/offline/Forms.json')
   }
 };
+
 // require('offline-plugin/runtime').install();
 // === DEFAULT / CUSTOM STYLE ===
 // WARNING! always comment out ONE of the two require() calls below.

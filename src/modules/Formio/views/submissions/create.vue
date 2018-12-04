@@ -419,6 +419,7 @@ export default {
                   this.$route.params.idSubmission === "own_unique_from"
                     ? Auth.user()._id
                     : this.$route.params.idSubmission;
+                console.log('id', submissionId);
                 let loadedSubmission = await this.loadSubmission(submissionId);
                 this.$swal.close();
                 resultSubmission = loadedSubmission.data;
@@ -1099,11 +1100,15 @@ export default {
       this.$swal.queue(wizard.steps).then(async result => {
         this.$swal.resetDefaults();
 
+        console.log(this.currentSubmission);
+
         let surveyData = await ParallelSurvey.createNewSurvey({
           submission: this.currentSubmission,
           vm: this,
           info: result
         });
+
+        console.log(surveyData);
 
         let created = await ParallelSurvey.storeNewSurvey({
           vm: this,
