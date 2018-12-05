@@ -146,7 +146,7 @@
               <q-tab-pane name="tab-1" ref="tab1">
                 <formiovue
                   :form="form"
-                  :submission="submission"
+                  :submission="currentSubmission"
                   :options="options"
                   :language="language"
                   v-on:change="onSubmissionChange"
@@ -155,7 +155,7 @@
                   v-on:prevPage="onPrevPage"
                   v-on:nextPage="onNextPage"
                   v-on:render="onFormRender"
-                  v-if="form && submission && options && !customRender"
+                  v-if="form && currentSubmission && options && !customRender"
                   ref="formio"
                 />
 
@@ -419,17 +419,16 @@ export default {
                   this.$route.params.idSubmission === "own_unique_from"
                     ? Auth.user()._id
                     : this.$route.params.idSubmission;
-                console.log('id', submissionId);
                 let loadedSubmission = await this.loadSubmission(submissionId);
                 this.$swal.close();
-                resultSubmission = loadedSubmission.data;
+                resultSubmission = loadedSubmission;
               } else if (this.$route.params.idSubmission) {
                 this.$swal.close();
                 let s = await Submission()
                   .local()
                   .where("_id", "=", this.$route.params.idSubmission)
                   .first();
-                resultSubmission = s.data;
+                resultSubmission = s;
               } else {
                 this.$swal.close();
                 resultSubmission = undefined;
@@ -442,9 +441,10 @@ export default {
       transform(result) {
         if (this.$route.query.scouting) {
           const scoutingInfo = JSON.parse(atob(this.$route.query.scouting));
-          result = { ...result, ...scoutingInfo };
+          const data = { ...result.data, ...scoutingInfo };
+          result.data = data;
         }
-        return { data: result };
+        return result;
       }
     },
     participants: {
@@ -1100,15 +1100,15 @@ export default {
       this.$swal.queue(wizard.steps).then(async result => {
         this.$swal.resetDefaults();
 
-        console.log(this.currentSubmission);
+        console.log('currentSubmission', this.submission);
 
         let surveyData = await ParallelSurvey.createNewSurvey({
-          submission: this.currentSubmission,
+          submission: this.submission,
           vm: this,
           info: result
         });
 
-        console.log(surveyData);
+        console.log('surveyData', surveyData);
 
         let created = await ParallelSurvey.storeNewSurvey({
           vm: this,
