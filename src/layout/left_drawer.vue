@@ -78,6 +78,7 @@ export default {
       async get() {
         let result = await Pages.local().first();
         console.log(result.pages);
+        console.log(Auth.user());
         let pages = await result.pages.map(async (page) => {
           if (page.hasOwnProperty('cards')) {
             page.cards.map(async (card) => {

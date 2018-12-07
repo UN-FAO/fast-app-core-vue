@@ -41,13 +41,45 @@
             fastMode="show"
             v-on:refresh="refreshData"
             v-if="!noSubmissions"
-          />
+          >
+            <template slot="col-custom-content" scope="scope" v-if="formTitle === 'Scripts'">
+              <q-btn color="primary" @click="executeScript(scope.row._id)">
+                {{$t('Execute')}}
+              </q-btn>
+            </template>
+            
+          </datatable>
           <loading :visible="noSubmissions"></loading>
         </q-card-main>
       </q-card>
     </div>
+
+    <sweet-modal ref="resultModal" title="Results">
+      <q-input :min-rows="5" v-model="scriptResult.stdout" disable type="textarea" float-label="Std Output"/>
+      <q-input :min-rows="5" v-model="scriptResult.valout" disable type="textarea" float-label="Value Output"/>
+      <q-input
+        :min-rows="5"
+        v-model="scriptResult.consoleout"
+        disable
+        type="textarea"
+        float-label="Console Output"
+      />
+
+      <q-btn color="primary" slot="button" @click="saveOutput">{{ $t('Save Output') }}</q-btn>
+    </sweet-modal>
   </div>
 </template>
+
+<style>
+.sweet-modal {
+  max-height: 90% !important;
+}
+
+.sweet-modal > .sweet-title {
+  margin-top: 20px;
+}
+</style>
+
 
 <script>
 import loading from "components/loading";
@@ -65,12 +97,16 @@ import {
   QItemSide,
   QField,
   QOptionGroup,
+  QInput,
   QBtn
 } from "quasar";
+import { Fluent } from 'fast-fluent';
+import { SweetModal } from 'sweet-modal-vue';
 import datatable from "components/dataTable/dataTable";
 import breadcrum from "components/breadcrum";
 import { Form, Event, Submission, Auth } from "fast-fastjs";
 import createSubmission from "components/createSubmission";
+import RExecutor from '../../components/Rexecutor/Rexecutor';
 
 export default {
   async mounted() {
@@ -130,15 +166,81 @@ export default {
     QItemSide,
     QBtn,
     QField,
-    QOptionGroup
+    QOptionGroup,
+    QInput,
+    SweetModal
   },
   data() {
     return {
       currentForm: {},
-      submissions: undefined
+      submissions: undefined,
+      scriptResult: {
+        valout: '',
+        stdout: '',
+        consoleout: ''
+      }
     };
   },
   methods: {
+    async executeScript(submissionId) {
+      this.$swal.showLoading();
+
+      const Script = Fluent.model({
+        properties: {
+          name: 'Script',
+          config: {
+            remote: {
+              path: 'script'
+            }
+          }
+        }
+      });
+
+      const submission = await Script().remote().where('_id', '=', submissionId).first();
+      this.scriptResult.script = submission;
+
+      const fullScript = RExecutor.getFullScript({
+        token: Auth.user().x_jwt_token,
+        submission,
+        formioUrl: this.$FAST_CONFIG.APP_URL,
+      });
+
+      const { stdout, valout, consoleout } = await RExecutor.executeScript({
+        fullScript,
+        openCpuUrl: this.$FAST_CONFIG.OPEN_CPU_URL
+      });
+
+      this.scriptResult.dateExecuted = new Date().toISOString();
+      this.scriptResult.stdout = stdout;
+      this.scriptResult.valout = valout;
+      this.scriptResult.consoleout = consoleout;
+
+      this.$swal.close();
+      this.$refs.resultModal.open();
+    },
+    async saveOutput() {
+      this.$refs.resultModal.close();
+      this.$swal.showLoading();
+
+      const ScriptLog = Fluent.model({
+        properties: {
+          name: 'ScriptLog',
+          config: {
+            remote: {
+              path: 'scriptlog'
+            }
+          }
+        }
+      })();
+
+      try {
+        await ScriptLog.remote().insert({ data: { ...this.scriptResult } });
+      } catch (e) {
+        console.log(e);
+      }
+
+      this.$swal.close();
+    },
     async goToCreateView() {
       const route = await createSubmission.withData({
         email: Auth.email(),
@@ -179,7 +281,7 @@ export default {
     },
     async refreshData() {
       let path = this.$route.params.idForm;
-      let submissions = await Submission({ path }).showView({limit: 50000, owner: Auth.email()});
+      let submissions = await Submission({ path }).showView({limit: 50000});
       this.submissions = submissions;
     }
   }
