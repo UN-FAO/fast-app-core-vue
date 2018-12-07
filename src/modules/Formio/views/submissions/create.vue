@@ -146,7 +146,7 @@
               <q-tab-pane name="tab-1" ref="tab1">
                 <formiovue
                   :form="form"
-                  :submission="currentSubmission"
+                  :submission="submission"
                   :options="options"
                   :language="language"
                   v-on:change="onSubmissionChange"
@@ -155,7 +155,7 @@
                   v-on:prevPage="onPrevPage"
                   v-on:nextPage="onNextPage"
                   v-on:render="onFormRender"
-                  v-if="form && currentSubmission && options && !customRender"
+                  v-if="form && submission && options && !customRender"
                   ref="formio"
                 />
 
@@ -291,6 +291,7 @@ import { Form as vForm } from "vue-formio";
 import Formio from "formiojs/Formio";
 import ErrorFormatter from "components/dataTable/submission/errorFormatter";
 import Promise from "bluebird";
+import createSubmission from "components/createSubmission";
 export default {
   components: {
     formiovue: vForm,
@@ -325,24 +326,36 @@ export default {
     QInput,
     executor
   },
+  data: function() {
+    return {
+      formioToken: Auth.user().x_jwt_token,
+      saved: true,
+      pages: [],
+      isWizard: false,
+      currentPage: 0,
+      showPages: this.$FAST_CONFIG.NAVIGATION_OPENED,
+      currentQuestion: -1,
+      displayUp: false,
+      displayDown: true,
+      parallelSub: [],
+      tab: "1",
+      customRender: false,
+      customRenderType: "",
+      customRenderArray: [],
+      changeEvent: null,
+      activeSubmission: null,
+      timeoutId: null,
+      editMode: this.$route.query.mode,
+      parentPage: this.$route.query.FAST_PARENT_PAGE,
+      language: localStorage.getItem("defaultLenguage")
+        ? localStorage.getItem("defaultLenguage")
+        : "en"
+    };
+  },
   async created() {
     Formio.registerPlugin(OfflinePlugin.get(), "fast");
     Formio.setBaseUrl(this.$FAST_CONFIG.APP_URL);
     this.$eventHub.$on("FAST:LANGUAGE:CHANGED", this.changeLanguage);
-
-    this.$eventHub.on("formio.nextPage", data => {
-      this.currentPage = data.nextPage.page;
-      this.tab = (data.nextPage.page + 1).toString();
-      this.currentQuestion = -1;
-      window.scrollTo(0, 0);
-    });
-
-    this.$eventHub.on("formio.prevPage", data => {
-      this.currentPage = data.prevPage.page;
-      this.tab = (data.prevPage.page + 1).toString();
-      this.currentQuestion = -1;
-      window.scrollTo(0, 0);
-    });
 
     Event.listen({
       name: "FAST:SUBMISSION:CLONE",
@@ -358,16 +371,6 @@ export default {
       name: "FAST:SUBMISSION:CANCEL",
       callback: this.cancel
     });
-
-    Event.listen({
-      name: "FAST:WIZARD:NEXT",
-      callback: this.singleNext
-    });
-
-    Event.listen({
-      name: "FAST:WIZARD:PREVIOUS",
-      callback: this.singlePrevious
-    });
   },
   beforeDestroy() {
     Formio.deregisterPlugin("fast");
@@ -377,10 +380,7 @@ export default {
       name: "FAST:SUBMISSION:CANCEL",
       callback: this.cancel
     });
-    Event.remove({
-      name: "FAST:SUBMISSION:CHANGED",
-      callback: this.draftStatusChanged
-    });
+
     Event.remove({
       name: "FAST:SUBMISSION:CLONE",
       callback: this.clone
@@ -390,15 +390,6 @@ export default {
       callback: this.softDelete
     });
 
-    Event.remove({
-      name: "FAST:WIZARD:PREVIOUS",
-      callback: this.singlePrevious
-    });
-
-    Event.remove({
-      name: "FAST:WIZARD:NEXT",
-      callback: this.singlePrevious
-    });
     this.$eventHub.$off("VALIDATION_ERRORS");
   },
   asyncData: {
@@ -414,6 +405,7 @@ export default {
             onOpen: async () => {
               this.$swal.showLoading();
               let resultSubmission;
+              // If we are editing the user profile
               if (this.$route.query && this.$route.query.mode) {
                 let submissionId =
                   this.$route.params.idSubmission === "own_unique_from"
@@ -422,6 +414,7 @@ export default {
                 let loadedSubmission = await this.loadSubmission(submissionId);
                 this.$swal.close();
                 resultSubmission = loadedSubmission;
+                // If we are in editMode
               } else if (this.$route.params.idSubmission) {
                 this.$swal.close();
                 let s = await Submission()
@@ -450,7 +443,8 @@ export default {
     participants: {
       get() {
         return Submission().getParallelParticipants(
-          this.$route.params.idSubmission
+          this.$route.params.idSubmission,
+          this.$route.params.idForm
         );
       },
       transform(result) {
@@ -494,13 +488,15 @@ export default {
     participantName() {
       let parallelSurvey = null;
       let submission = this.currentSubmission;
-      if (submission && submission.data && submission.data.parallelSurvey) {
+
+      if (submission && submission.parallelSurvey) {
         try {
-          parallelSurvey = JSON.parse(submission.data.parallelSurvey);
+          parallelSurvey = JSON.parse(submission.parallelSurvey);
+          return parallelSurvey.participantName;
         } catch (e) {
-          parallelSurvey = submission.data.parallelSurvey;
+          parallelSurvey = submission.parallelSurvey;
+          return parallelSurvey.participantName;
         }
-        return parallelSurvey.participantName;
       } else {
         return "";
       }
@@ -533,41 +529,6 @@ export default {
       }
     }
   },
-  data: function() {
-    return {
-      formUrl: this.$FAST_CONFIG.APP_URL + "/" + this.$route.params.idForm,
-      people: [
-        {
-          name: "P1"
-        }
-      ],
-      formioToken: Auth.user().x_jwt_token,
-      saved: true,
-      errors: {},
-      pages: [],
-      isWizard: false,
-      currentPage: 0,
-      showPages: this.$FAST_CONFIG.NAVIGATION_OPENED,
-      currentQuestion: -1,
-      displayUp: false,
-      displayDown: true,
-      parallelSub: [],
-      tab: "1",
-      customRender: false,
-      customRenderType: "",
-      customRenderArray: [],
-      changeEvent: null,
-      activeSubmission: null,
-      FormioInstance: new Formio(this.formUrl),
-      RenderedFormInstace: null,
-      timeoutId: null,
-      editMode: this.$route.query.mode,
-      parentPage: this.$route.query.FAST_PARENT_PAGE,
-      language: localStorage.getItem("defaultLenguage")
-        ? localStorage.getItem("defaultLenguage")
-        : "en"
-    };
-  },
   methods: {
     onFormRender(event) {
       this.isWizard =
@@ -580,9 +541,11 @@ export default {
         this.$refs.formio.formio &&
         this.$refs.formio.formio.pages;
 
+      this.activeSubmission = this.$refs.formio.formio.data;
+
       Event.emit({
         name: "FAST:FORMIO:CHANGE",
-        data: { 'formio': this.$refs.formio },
+        data: { formio: this.$refs.formio },
         text: "Change on submission"
       });
     },
@@ -654,10 +617,14 @@ export default {
     async onSubmissionChange() {
       Event.emit({
         name: "FAST:FORMIO:CHANGE",
-        data: { 'formio': this.$refs.formio },
+        data: { formio: this.$refs.formio },
         text: "Change on submission"
       });
-      if (this.$refs.formio && this.$refs.formio.formio && this.$refs.formio.formio.data) {
+      if (
+        this.$refs.formio &&
+        this.$refs.formio.formio &&
+        this.$refs.formio.formio.data
+      ) {
         this.activeSubmission = this.$refs.formio.formio.data;
         this.changeEvent = JSON.stringify(this.$refs.formio.formio.data);
       }
@@ -1012,77 +979,11 @@ export default {
         this.$swal("Complete the required fields");
       }
     },
-    singleNext() {
-      let button1 = document.querySelectorAll(".btn-wizard-nav-next")[0];
-      button1.click();
-    },
-    singlePrevious() {
-      let button1 = document.querySelectorAll(".btn-wizard-nav-previous")[0];
-      button1.click();
-    },
-    clickNext() {
-      this.goToPage(0);
-      for (var i = 1; i <= 30; ++i) {
-        setDelay(i);
-      }
-
-      function setDelay(i) {
-        setTimeout(function() {
-          let button1 = document.querySelectorAll(".btn-wizard-nav-next")[0];
-          button1.click();
-        }, 300);
-      }
-    },
     togglePages() {
       this.showPages = !this.showPages;
     },
-    reloadPage() {
-      this.$swal({
-        title: "Are you sure?",
-        text: "You will lost all unsaved Data",
-        type: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, reload it!"
-      }).then(async () => {
-        window.location.reload(true);
-      });
-    },
-    nextQuestion() {
-      let elements = document.getElementsByClassName("form-group");
-      this.currentQuestion =
-        this.currentQuestion + 1 >= elements.length
-          ? elements.length
-          : this.currentQuestion + 1;
-      this.displayDown = !(this.currentQuestion + 1 >= elements.length);
-      elements[this.currentQuestion].scrollIntoView(true);
-      this.displayUp = true;
-    },
-    prevQuestion() {
-      let elements = document.getElementsByClassName("form-group");
-      this.currentQuestion =
-        this.currentQuestion - 1 <= 0 ? 0 : this.currentQuestion - 1;
-      elements[this.currentQuestion].scrollIntoView(true);
-      this.displayUp = !(this.currentQuestion <= 0);
-      this.displayDown = true;
-    },
     openRightDrawer() {
       this.$eventHub.$emit("openRightDrawer");
-    },
-    draftStatusChanged(e) {
-      if (e.detail.data.isSubmit) {
-        this.$swal(
-          this.$t("Sent!"),
-          this.$t("Your submission has been sent!"),
-          "success"
-        );
-      }
-      if (e.detail.data === false) {
-        this.saved = false;
-      } else {
-        this.saved = true;
-      }
     },
     async addSurvey() {
       let wizard = await ParallelSurvey.createWizard({
@@ -1100,34 +1001,35 @@ export default {
       this.$swal.queue(wizard.steps).then(async result => {
         this.$swal.resetDefaults();
 
-        console.log('currentSubmission', this.submission);
-
         let surveyData = await ParallelSurvey.createNewSurvey({
           submission: this.submission,
           vm: this,
           info: result
         });
 
-        console.log('surveyData', surveyData);
-
-        let created = await ParallelSurvey.storeNewSurvey({
-          vm: this,
-          survey: surveyData
+        let created = await createSubmission.withData({
+          email: Auth.email(),
+          appUrl: this.$FAST_CONFIG.APP_URL,
+          path: this.$route.params.idForm,
+          data: surveyData
         });
+
+        created = await ParallelSurvey.assignSelfId(created)
+
+        console.log('created', created)
+
         this.$router.push({
           name: "formio_submission_update",
           params: {
             idForm: this.$route.params.idForm,
-            idSubmission: created._id
+            idSubmission: created.params.idSubmission
           }
         });
       });
     },
     async groupConfig() {
       let groupId = _get(
-        Submission()
-          .local()
-          .getParallelSurvey(this.currentSubmission),
+        Submission().getParallelSurvey(this.currentSubmission),
         "groupId",
         undefined
       );

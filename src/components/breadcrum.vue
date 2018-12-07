@@ -1,38 +1,38 @@
 <template>
-      <div class="appBreadcrumb">
-       <span
-                style="color: #0574a9;cursor:pointer"
-                @click="$router.push({name: 'dashboard', exact: true})"
-                class="appBreadcrumb"
-              >
-              {{
-                $t('Home')
-              }}
-              </span>
-
-                <span
-                style="color: #0574a9;cursor:pointer"
-                @click="breadCrumClick"
-                 class="appBreadcrumb"
-                >
-                {{ breadCrumTitle }}
-                </span>
-
-                <span
-                  style="color: #0574a9;cursor:pointer"
-                   class="appBreadcrumb"
-                >
-                  {{ ' /' }} <span @click="backToShow" v-if="isSubmission" class="breadCrumbBackToShow">{{isSubmission ? currentPageTitle: ''}}</span>
-                </span>
-                <span style="color:#b5bbbd">
-                {{!isSubmission ? currentPageTitle : '' }} {{isSubmission ? "/" + this.$t('SUBMISSION'): ''}}
-                </span>
-    </div>
+  <div class="appBreadcrumb">
+    <span
+      style="color: #0574a9;cursor:pointer"
+      @click="$router.push({name: 'dashboard', exact: true})"
+      class="appBreadcrumb"
+    >
+      {{
+      $t('Home')
+      }}
+    </span>
+    
+    <span
+      style="color: #0574a9;cursor:pointer"
+      @click="breadCrumClick"
+      class="appBreadcrumb"
+    >{{ breadCrumTitle }}</span>
+    
+    <span style="color: #0574a9;cursor:pointer" class="appBreadcrumb">
+      {{ ' /' }}
+      <span
+        @click="backToShow"
+        v-if="isSubmission"
+        class="breadCrumbBackToShow"
+      >{{isSubmission ? currentPageTitle: ''}}</span>
+    </span>
+    <span
+      style="color:#b5bbbd"
+    >{{!isSubmission ? currentPageTitle : '' }} {{isSubmission ? "/" + this.$t('SUBMISSION'): ''}}</span>
+  </div>
 </template>
 <script>
-import { Base64 } from 'js-base64';
+import { Base64 } from "js-base64";
 export default {
-  name: 'breadcrum',
+  name: "breadcrum",
   props: {
     parent: {
       required: true
@@ -51,19 +51,25 @@ export default {
   },
   computed: {
     breadCrumTitle() {
-      let title =
-        this.parent && JSON.parse(Base64.decode(this.parent)).title !== undefined
-          ? '/ ' + JSON.parse(Base64.decode(this.parent)).title
-          : '';
-      return title;
+      try {
+        let title =
+          this.parent &&
+          JSON.parse(Base64.decode(this.parent)).title !== undefined
+            ? "/ " + JSON.parse(Base64.decode(this.parent)).title
+            : "";
+        return title;
+      } catch (e) {
+        // console.log(e);
+        return "";
+      }
     }
   },
   methods: {
     backToShow() {
       let parent = this.$route.query.parent
         ? this.$route.query.parent
-        : btoa(JSON.stringify('null'));
-      let to = '/forms/' + this.$route.params.idForm + '?parent=' + parent;
+        : btoa(JSON.stringify("null"));
+      let to = "/forms/" + this.$route.params.idForm + "?parent=" + parent;
       this.$router.push(to);
     },
     breadCrumClick() {
@@ -76,7 +82,7 @@ export default {
         return;
       }
       this.$router.push({
-        name: 'pageManager',
+        name: "pageManager",
         params: { pageId: parent.url }
       });
     }
