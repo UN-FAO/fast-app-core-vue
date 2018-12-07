@@ -469,7 +469,7 @@ export default {
         let readOnly = !!(
           ["online-review", "read-only"].indexOf(this.editMode) >= 0
         );
-        return { i18n, readOnly };
+        return { i18n, readOnly, noAlerts: true };
       },
       transform(result) {
         return result;
