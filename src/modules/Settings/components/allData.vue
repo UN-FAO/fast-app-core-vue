@@ -24,23 +24,29 @@
         clearable
       />
           <span v-if="formTitle !== ''">Form:</span> {{formTitle}}
+             <!--
           <q-icon v-if="formTitle !== ''" slot="right" name="more_vert" color="grey" style="cursor:pointer">
               <q-popover ref="popover">
                 <q-list link class="no-border" dense separator no-border>
 
+                 
                   <q-item @click="$refs.popover.close(), createDialog()">
                     <q-item-side icon="fa-download"  />
                     <q-item-main :label="$t('Export')" />
                   </q-item>
+                 
 
                   <q-item @click="$refs.popover.close()">
                     <q-item-side icon="fa-upload"  />
                     <q-item-main :label="$t('Import')" />
                   </q-item>
 
+                 
+
                 </q-list>
               </q-popover>
             </q-icon>
+              -->
         </q-card-title>
 
         <datatable

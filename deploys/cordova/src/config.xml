@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget android-versionCode="35" id="org.fao.sharp" version="0.12.125" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>SHARP+</name>
+<widget android-versionCode="35" id="org.fao.sharp" version="0.6.4" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>SSFK</name>
     <description>
-  Self-evaluation and Holistic Assessment of climate resilence of Farmers and Pastoralists
+    Trinidad and Tobago SSFK POC
     </description>
     <author email="ignacio.cabrera@fao.org" href="http://www.fao.org">
         FAO-UN  - CIO - IT DESIGN AND TECHNOLOGY
@@ -12,7 +12,6 @@
     </platform>
     <preference name="AndroidExtraFilesystems" value="files,files-external,documents,sdcard,cache,cache-external,assets,root" />
     <preference name="AndroidPersistentFileLocation" value="Compatibility" />
-    <preference name="AndroidLaunchMode" value="singleInstance" />
     <content src="index.html" />
     <plugin name="cordova-plugin-whitelist" spec="1" />
     <access origin="*" />
