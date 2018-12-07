@@ -1,8 +1,8 @@
 {
   "name": "fast-app-core-vue",
-  "version": "0.12.135",
-  "deployAppName": "SSFK",
-  "deployAppID": "5ad58b7ddc3e0104148241fe",
+  "version": "0.12.136",
+  "deployAppName": "FAW",
+  "deployAppID": "5a65a0b902b5450001fbc4cd",
   "description": "A data collection application based on FORM.io",
   "author": "Ignacio Cabrera <ignacio.cabrera@fao.org>",
   "scripts": {
@@ -41,7 +41,7 @@
     "dotenv": "^6.1.0",
     "dotenv-webpack": "^1.5.5",
     "fast-downloads": "0.0.10",
-    "fast-fastjs": "^0.6.4",
+    "fast-fastjs": "^0.6.9",
     "fast-fluent": "^0.1.18",
     "fast-submission2any": "0.0.6",
     "fastclick": "^1.0.6",
