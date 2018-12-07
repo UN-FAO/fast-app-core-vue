@@ -41,7 +41,7 @@
     "dotenv": "^6.1.0",
     "dotenv-webpack": "^1.5.5",
     "fast-downloads": "0.0.10",
-    "fast-fastjs": "^0.6.4",
+    "fast-fastjs": "^0.6.8",
     "fast-fluent": "^0.1.18",
     "fast-submission2any": "0.0.6",
     "fastclick": "^1.0.6",
