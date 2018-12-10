@@ -82,8 +82,8 @@ export default {
       );
     }
     // ---- This is only for the FAW app ---//
-    this.$eventHub.on("FAST:LANGUAGE:CHANGED", lenguage => {
-      this.toggleRtl(lenguage);
+    this.$eventHub.on("FAST:LANGUAGE:CHANGED", language => {
+      this.toggleRtl(language);
     });
 
     this.$eventHub.on("connectionStatusChanged", status => {

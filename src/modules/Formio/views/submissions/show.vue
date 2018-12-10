@@ -179,7 +179,7 @@ export default {
     },
     async refreshData() {
       let path = this.$route.params.idForm;
-      let submissions = await Submission({ path }).showView({limit: 50000, owner: Auth.email()});
+      let submissions = await Submission({ path }).showView({limit: 50000, owner: Auth.user()._id});
       this.submissions = submissions;
     }
   }
