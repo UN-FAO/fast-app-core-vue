@@ -17,7 +17,7 @@
           ></q-icon>
           <q-icon slot="right" name="more_vert" color="grey" style="cursor:pointer">
             <q-popover ref="popover">
-              <q-list link="" class="no-border" dense separator no-border>
+              <q-list link class="no-border" dense separator no-border>
                 <q-item @click="$refs.popover.close(), createDialog()">
                   <q-item-side icon="fa-download"/>
                   <q-item-main :label="$t('Export')"/>
@@ -36,18 +36,20 @@
           <datatable
             :data="submissions"
             :form="currentForm"
+            :hasCustomColumn="formTitle === 'Scripts'"
             :menuActions="['create', 'export', 'import']"
             :tableActions="$FAST_CONFIG.HAS_REPORT ? ['read-only','edit', 'delete', 'report'] : ['edit', 'delete', 'read-only']"
             fastMode="show"
             v-on:refresh="refreshData"
             v-if="!noSubmissions"
           >
-            <template slot="col-custom-content" scope="scope" v-if="formTitle === 'Scripts'">
-              <q-btn color="primary" @click="executeScript(scope.row._id)">
-                {{$t('Execute')}}
-              </q-btn>
+            <template slot="col-custom-content" scope="scope">
+              <q-btn
+                v-if="formTitle === 'Scripts'"
+                color="primary"
+                @click="executeScript(scope.row._id)"
+              >{{$t('Execute')}}</q-btn>
             </template>
-            
           </datatable>
           <loading :visible="noSubmissions"></loading>
         </q-card-main>
@@ -55,8 +57,20 @@
     </div>
 
     <sweet-modal ref="resultModal" title="Results">
-      <q-input :min-rows="5" v-model="scriptResult.stdout" disable type="textarea" float-label="Std Output"/>
-      <q-input :min-rows="5" v-model="scriptResult.valout" disable type="textarea" float-label="Value Output"/>
+      <q-input
+        :min-rows="5"
+        v-model="scriptResult.stdout"
+        disable
+        type="textarea"
+        float-label="Std Output"
+      />
+      <q-input
+        :min-rows="5"
+        v-model="scriptResult.valout"
+        disable
+        type="textarea"
+        float-label="Value Output"
+      />
       <q-input
         :min-rows="5"
         v-model="scriptResult.consoleout"
@@ -100,13 +114,13 @@ import {
   QInput,
   QBtn
 } from "quasar";
-import { Fluent } from 'fast-fluent';
-import { SweetModal } from 'sweet-modal-vue';
+import { Fluent } from "fast-fluent";
+import { SweetModal } from "sweet-modal-vue";
 import datatable from "components/dataTable/dataTable";
 import breadcrum from "components/breadcrum";
 import { Form, Event, Submission, Auth } from "fast-fastjs";
 import createSubmission from "components/createSubmission";
-import RExecutor from '../../components/Rexecutor/Rexecutor';
+import RExecutor from "../../components/Rexecutor/Rexecutor";
 
 export default {
   async mounted() {
@@ -128,6 +142,8 @@ export default {
     this.$eventHub.on("FAST:LANGUAGE:CHANGED", async data => {
       await this.refreshData();
     });
+
+    console.log(this.formTitle === "Scripts");
   },
   beforeDestroy() {
     Event.remove({
@@ -175,9 +191,9 @@ export default {
       currentForm: {},
       submissions: undefined,
       scriptResult: {
-        valout: '',
-        stdout: '',
-        consoleout: ''
+        valout: "",
+        stdout: "",
+        consoleout: ""
       }
     };
   },
@@ -187,22 +203,25 @@ export default {
 
       const Script = Fluent.model({
         properties: {
-          name: 'Script',
+          name: "Script",
           config: {
             remote: {
-              path: 'script'
+              path: "script"
             }
           }
         }
       });
 
-      const submission = await Script().remote().where('_id', '=', submissionId).first();
+      const submission = await Script()
+        .remote()
+        .where("_id", "=", submissionId)
+        .first();
       this.scriptResult.script = submission;
 
       const fullScript = RExecutor.getFullScript({
         token: Auth.user().x_jwt_token,
         submission,
-        formioUrl: this.$FAST_CONFIG.APP_URL,
+        formioUrl: this.$FAST_CONFIG.APP_URL
       });
 
       const { stdout, valout, consoleout } = await RExecutor.executeScript({
@@ -224,10 +243,10 @@ export default {
 
       const ScriptLog = Fluent.model({
         properties: {
-          name: 'ScriptLog',
+          name: "ScriptLog",
           config: {
             remote: {
-              path: 'scriptlog'
+              path: "scriptlog"
             }
           }
         }
@@ -281,7 +300,7 @@ export default {
     },
     async refreshData() {
       let path = this.$route.params.idForm;
-      let submissions = await Submission({ path }).showView({limit: 50000});
+      let submissions = await Submission({ path }).showView({ limit: 50000 });
       this.submissions = submissions;
     }
   }
