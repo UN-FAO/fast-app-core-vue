@@ -1,6 +1,6 @@
 <template>
   <div
-    style='font-family: Monaco, Menlo, "Ubuntu Mono", Consolas, source-code-pro, monospace !important;'
+    style="font-family: Monaco, Menlo, 'Ubuntu Mono', Consolas, source-code-pro, monospace !important;"
   >Write your custom R script
     <editor v-model="content" @init="editorInit" lang="r" theme="chrome" width="100%" height="50vh"></editor>
 
@@ -27,7 +27,7 @@
 <script>
 import { QBtn, QInput } from "quasar";
 import { Event } from "fast-fastjs";
-import RExecutor from './Rexecutor';
+import RExecutor from "./Rexecutor";
 
 export default {
   name: "rexecutor",
