@@ -25,6 +25,10 @@
             </span>
         </template>
 
+        <template slot="col-custom" scope="scope">
+          <slot name="col-custom-content" :row="scope.row"></slot>
+        </template>
+
         <template slot="col-status" scope="scope">
             <div v-if="scope.row.status === 'offline' && scope.row.draft">
                 <i class="material-icons tag--grey">description</i>

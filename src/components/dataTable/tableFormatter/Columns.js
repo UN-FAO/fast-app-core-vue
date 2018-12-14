@@ -61,6 +61,15 @@ let Columns = class {
       width: '150px'
     });
 
+    columns.push({
+      field: 'custom',
+      filter: false,
+      sort: false,
+      width: '50px'
+    });
+
+    console.log('columns', columns);
+
     return columns;
   }
 
