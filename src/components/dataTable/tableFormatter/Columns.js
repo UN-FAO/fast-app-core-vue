@@ -1,40 +1,52 @@
-import FormioUtils from 'formiojs/utils';
+import FormioUtils from "formiojs/utils";
 
 let Columns = class {
-  static get({ form, data, fastMode, vm }) {
-    let noForm = !!(!form || form.title === '');
+  static get({ form, data, hasCustomColumn, fastMode, vm }) {
+    let noForm = !!(!form || form.title === "");
     // If there is no Form
     if (noForm) {
       return [{}];
     }
 
     switch (fastMode) {
-      case 'show':
-        return Columns.getShow({ form, data, fastMode, vm });
+      case "show":
+        return Columns.getShow({ form, data, hasCustomColumn, fastMode, vm });
         break;
-      case 'show-admin':
-        return Columns.getShowAdmin({ form, data, fastMode, vm });
+      case "show-admin":
+        return Columns.getShowAdmin({
+          form,
+          data,
+          hasCustomColumn,
+          fastMode,
+          vm
+        });
         break;
-      case 'editGrid':
-        return Columns.getEditGrid({ form, data, fastMode, vm });
+      case "editGrid":
+        return Columns.getEditGrid({
+          form,
+          data,
+          hasCustomColumn,
+          fastMode,
+          vm
+        });
         break;
     }
   }
 
-  static getShow({ form, data, fastMode, vm }) {
+  static getShow({ form, data, hasCustomColumn, fastMode, vm }) {
     let columns = [];
     // First two Columns for the Table
     columns.push({
-      label: '',
-      field: 'status',
-      width: '45px'
+      label: "",
+      field: "status",
+      width: "45px"
     });
     // If we have a normal table
     let visibleColumns = Columns.getTableView(form);
 
-    if (fastMode !== 'show-admin') {
+    if (fastMode !== "show-admin") {
       visibleColumns.find((o, i) => {
-        if (o.key === 'deleted') {
+        if (o.key === "deleted") {
           visibleColumns.splice(i, 1);
           return true; // stop searching
         }
@@ -54,33 +66,35 @@ let Columns = class {
     */
 
     columns.push({
-      label: vm.$t('Updated at'),
-      field: 'HumanUpdated',
+      label: vm.$t("Updated at"),
+      field: "HumanUpdated",
       filter: true,
       sort: true,
-      width: '150px'
+      width: "150px"
     });
 
-    columns.push({
-      field: 'custom',
-      filter: false,
-      sort: false,
-      width: '50px'
-    });
+    if (hasCustomColumn) {
+      columns.push({
+        field: "custom",
+        filter: false,
+        sort: false,
+        width: "50px"
+      });
+    }
 
-    console.log('columns', columns);
+    console.log("columns", columns);
 
     return columns;
   }
 
-  static getEditGrid({ form, data, fastMode, vm }) {
+  static getEditGrid({ form, data, hasCustomColumn, fastMode, vm }) {
     let columns = [];
     let wantedKeys = data && data[0] ? Object.keys(data[0]) : [];
     // If we have and edit table
     let visibleColumns = FormioUtils.findComponents(form.components, {
       input: true,
       tableView: true
-    }).filter((o) => {
+    }).filter(o => {
       return wantedKeys.includes(o.key);
     });
     columns = columns.concat(Columns.format({ visibleColumns, vm }));
@@ -97,8 +111,8 @@ let Columns = class {
         field: column.key,
         filter: true,
         sort: true,
-        type: 'string',
-        width: '110px'
+        type: "string",
+        width: "110px"
       };
       columns.push(visibleColum);
     });
@@ -106,7 +120,7 @@ let Columns = class {
     return columns;
   }
 
-  static getShowAdmin({ form, data, fastMode, vm }) {
+  static getShowAdmin({ form, data, hasCustomColumn, fastMode, vm }) {
     let columns = [];
     // If we have a normal table
     let visibleColumns = Columns.getTableView(form);
@@ -133,8 +147,8 @@ let Columns = class {
       tableView: true
     })
       .slice(0, 7)
-      .filter((c) => {
-        return !!(c.label !== '');
+      .filter(c => {
+        return !!(c.label !== "");
       });
   }
 };

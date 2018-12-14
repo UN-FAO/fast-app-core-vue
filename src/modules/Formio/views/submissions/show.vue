@@ -36,19 +36,20 @@
           <datatable
             :data="submissions"
             :form="currentForm"
+            :hasCustomColumn="formTitle === 'Scripts'"
             :menuActions="['create', 'export', 'import']"
             :tableActions="$FAST_CONFIG.HAS_REPORT ? ['read-only','edit', 'delete', 'report'] : ['edit', 'delete', 'read-only']"
             fastMode="show"
             v-on:refresh="refreshData"
             v-if="!noSubmissions"
           >
-            <!--
-            <template slot="col-custom-content" scope="scope" v-if="formTitle === 'Scripts'">
-              <q-btn color="primary" @click="executeScript(scope.row._id)">
-                {{$t('Execute')}}
-              </q-btn>
+            <template slot="col-custom-content" scope="scope">
+              <q-btn
+                v-if="formTitle === 'Scripts'"
+                color="primary"
+                @click="executeScript(scope.row._id)"
+              >{{$t('Execute')}}</q-btn>
             </template>
-            -->
           </datatable>
           <loading :visible="noSubmissions"></loading>
         </q-card-main>
@@ -141,6 +142,8 @@ export default {
     this.$eventHub.on("FAST:LANGUAGE:CHANGED", async data => {
       await this.refreshData();
     });
+
+    console.log(this.formTitle === "Scripts");
   },
   beforeDestroy() {
     Event.remove({
@@ -297,10 +300,7 @@ export default {
     },
     async refreshData() {
       let path = this.$route.params.idForm;
-      let submissions = await Submission({ path }).showView({
-        limit: 50000,
-        owner: Auth.user()._id
-      });
+      let submissions = await Submission({ path }).showView({ limit: 50000 });
       this.submissions = submissions;
     }
   }
