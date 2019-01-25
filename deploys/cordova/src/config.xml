@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget android-versionCode="35" id="org.fao.sharp" version="0.6.4" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>SSFK</name>
+<widget android-versionCode="140" id="org.fao.faw" version="0.12.140" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>FAMEWS</name>
     <description>
-    Trinidad and Tobago SSFK POC
+       Fall Armyworm Monitoring and Early Warning System
     </description>
     <author email="ignacio.cabrera@fao.org" href="http://www.fao.org">
         FAO-UN  - CIO - IT DESIGN AND TECHNOLOGY
@@ -14,6 +14,7 @@
     <preference name="AndroidPersistentFileLocation" value="Compatibility" />
     <content src="index.html" />
     <plugin name="cordova-plugin-whitelist" spec="1" />
+    <plugin name="cordova-plugin-geolocation" version="2.1.0" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />

@@ -181,8 +181,6 @@ export default {
     this.$eventHub.on("FAST:GO:CREATE", () => {
       this.goToCreateView();
     });
-
-    console.log("hasCustomColumn", this.hasCustomColumn);
   },
   beforeDestroy() {
     this.$eventHub.off("FAST:EXPORT");

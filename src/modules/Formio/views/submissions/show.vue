@@ -142,8 +142,6 @@ export default {
     this.$eventHub.on("FAST:LANGUAGE:CHANGED", async data => {
       await this.refreshData();
     });
-
-    console.log(this.formTitle === "Scripts");
   },
   beforeDestroy() {
     Event.remove({
@@ -300,8 +298,7 @@ export default {
     },
     async refreshData() {
       let path = this.$route.params.idForm;
-      let submissions = await Submission({ path }).showView({ limit: 50000 });
-      this.submissions = submissions;
+      this.submissions = await Submission({ path }).showView({ limit: 50000 });
     }
   }
 };

@@ -81,9 +81,6 @@ let Columns = class {
         width: "50px"
       });
     }
-
-    console.log("columns", columns);
-
     return columns;
   }
 
